@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/prototype/Target.tscn" id="2_target"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(1920, 80)
@@ -20,7 +21,7 @@ offset_right = 890.0
 offset_bottom = 170.0
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 26
-text = "Project Knight — Movement Prototype\nA / D or Arrow Keys: Move    Space: Jump"
+text = "Project Knight — Combat Prototype\nA / D or Arrow Keys: Move    Space: Jump    J: Attack"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -36,3 +37,6 @@ shape = SubResource("RectangleShape2D_ground")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(320, 580)
+
+[node name="Target" parent="." instance=ExtResource("2_target")]
+position = Vector2(720, 588)
