@@ -24,10 +24,12 @@ Studio OS v0.1과 AI 조직 운영 방식을 실제 게임 개발에 적용하�
 
 ## 프로젝트 기술 방향
 
-- 게임 엔진: Godot
+- 게임 엔진: Godot 4.7.2 stable
 - 기본 스크립트 언어: GDScript
+- 프로토타입 기본 조작: 이동 / 공격 / 점프 / 회피
+- 회피: 독립 입력
 
-Project Knight는 AI Agent 중심의 빠른 프로토타이핑과 자동화 가능성을 우선하여 Godot + GDScript를 사용한다. 상세 결정 이유는 `WORK/DEC-001.md`를 따른다.
+Project Knight는 AI Agent 중심의 빠른 프로토타이핑과 자동화 가능성을 우선하여 Godot + GDScript를 사용한다. 상세 결정 이유와 기준은 `WORK/DEC-001.md`, `WORK/DEC-002.md`, `WORK/DEC-003.md`를 따른다.
 
 ## 현재 확정되지 않은 사항
 

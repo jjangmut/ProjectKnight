@@ -12,21 +12,27 @@
 
 ## 기술
 
-게임 엔진: Godot
+엔진: Godot 4.7.2 stable
 
-스크립트 언어: GDScript
+스크립트: GDScript
 
-기본 방향:
+렌더러: Compatibility
+
+기본 원칙:
 
 - 모바일 우선
 - 2D 횡스크롤 액션
-- AI Agent가 이해하고 수정하기 쉬운 구조를 우선
-- 불필요한 플러그인과 외부 의존성 최소화
-- Godot 기본 기능을 우선 사용
+- Godot 기본 Node / Resource / Scene 구조 우선
+- GDScript 우선
+- 외부 플러그인과 의존성 최소화
+- AI Agent가 구조를 쉽게 이해할 수 있도록 단순한 파일 구조 유지
+- 불필요한 Singleton 사용 금지
+- 과도한 추상화 금지
+- 프로토타입 단계에서 범용 Framework를 만들지 않음
 
 외부 Add-on 또는 Plugin 도입은 필요성이 명확할 때만 검토한다.
 
-Godot 버전은 실제 프로젝트 생성 단계에서 안정 버전을 확인한 뒤 결정한다.
+버전 업데이트는 자동으로 하지 않으며 필요할 경우 별도 결정(Decision)으로 처리한다.
 
 ## 프로젝트별 예외
 
