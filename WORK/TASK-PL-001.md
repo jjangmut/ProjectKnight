@@ -6,7 +6,7 @@
 
 작업 ID: TASK-PL-001
 제목: Project Knight 프로토타입 방향 및 범위 제안
-상태: READY
+상태: DONE
 담당 영역: 기획(Planning)
 책임자(Owner): 기획 리드(Planning Lead)
 작업자(Worker): 기획 리드(Planning Lead)
@@ -95,14 +95,20 @@
 
 ## 작업 결과
 
-미착수
+- `DESIGN/PROTOTYPE_PROPOSAL_001.md`에 5개 전문 리드의 독립 검토와 스튜디오 매니저 종합안을 작성했다.
+- 핵심 플레이 루프, 모바일 조작 후보, 포함·제외 범위, 기술·아트·서버·시장 권고를 정리했다.
+- 자체 검토와 스튜디오 매니저 검토를 완료하고 상태를 `READY → IN_PROGRESS → REVIEW → DONE`으로 변경했다.
+- 스튜디오 디렉터가 엔진을 Godot + GDScript로 확정했으며 `WORK/DEC-001.md`에 기록했다.
+- 조작 방식과 난이도 방향은 다음 제작계획 단계에서 세부 확정한다.
 
 ## 알려진 문제
 
-없음
+- 실제 모바일 기기에서 검증하기 전에는 버튼 배치와 난이도 적합성을 확정할 수 없다.
 
 ## 검토(Review)
 
 검토자: 스튜디오 매니저(Studio Manager)
-결과: 검토 전
-의견:
+결과: PASS
+의견: 모든 완료 조건을 충족했다.
+
+Director 결정: 엔진은 Godot + GDScript로 확정. 나머지 프로토타입 권고안은 다음 제작계획 단계에서 세부 확정한다.
