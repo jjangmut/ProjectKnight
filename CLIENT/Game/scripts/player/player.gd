@@ -13,6 +13,12 @@ extends CharacterBody2D
 @export var attack_cooldown: float = 0.32
 @export var attack_range: float = 72.0
 
+@export_category("Dodge")
+@export var dodge_speed: float = 720.0
+@export var dodge_duration: float = 0.18
+@export var dodge_cooldown: float = 0.45
+
+@onready var body_visual: Polygon2D = $Visual
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_collision: CollisionShape2D = $AttackArea/CollisionShape2D
 @onready var attack_visual: Polygon2D = $AttackArea/AttackVisual
@@ -23,9 +29,16 @@ var facing_direction: float = 1.0
 var _attack_time_remaining: float = 0.0
 var _cooldown_time_remaining: float = 0.0
 var _hit_targets: Dictionary = {}
+var is_dodging: bool = false
+var dodge_count: int = 0
+var _dodge_direction: float = 1.0
+var _dodge_time_remaining: float = 0.0
+var _dodge_cooldown_remaining: float = 0.0
+var _base_visual_color: Color
 
 
 func _ready() -> void:
+	_base_visual_color = body_visual.color
 	attack_collision.shape = attack_collision.shape.duplicate()
 	attack_area.area_entered.connect(_on_attack_area_entered)
 	_update_attack_geometry()
@@ -34,6 +47,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_attack_state(delta)
+	_update_dodge_state(delta)
 
 	var move_direction := Input.get_axis("move_left", "move_right")
 	if not is_zero_approx(move_direction):
@@ -41,15 +55,22 @@ func _physics_process(delta: float) -> void:
 		$FacingMark.scale.x = facing_direction
 		_update_attack_geometry()
 
-	if Input.is_action_just_pressed("attack") and _cooldown_time_remaining <= 0.0:
+	if Input.is_action_just_pressed("attack") and not is_dodging and _cooldown_time_remaining <= 0.0:
 		_start_attack()
 
-	if is_on_floor():
+	if Input.is_action_just_pressed("dodge") and _can_start_dodge():
+		_start_dodge(move_direction)
+
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+	if is_dodging:
+		velocity.x = _dodge_direction * dodge_speed
+	elif is_on_floor():
 		velocity.x = move_direction * move_speed
 		if Input.is_action_just_pressed("jump"):
 			velocity.y = jump_velocity
 	else:
-		velocity.y += gravity * delta
 		var air_target_speed := move_direction * move_speed
 		var air_acceleration := move_speed * 8.0 * air_control
 		velocity.x = move_toward(velocity.x, air_target_speed, air_acceleration * delta)
@@ -111,3 +132,34 @@ func _on_attack_area_entered(area: Area2D) -> void:
 
 	if target.has_method("receive_hit"):
 		target.receive_hit()
+
+
+func _can_start_dodge() -> bool:
+	return is_on_floor() and not is_dodging and not is_attacking and _dodge_cooldown_remaining <= 0.0
+
+
+func _start_dodge(move_direction: float) -> void:
+	_dodge_direction = signf(move_direction) if not is_zero_approx(move_direction) else facing_direction
+	facing_direction = _dodge_direction
+	$FacingMark.scale.x = facing_direction
+	_update_attack_geometry()
+	is_dodging = true
+	dodge_count += 1
+	_dodge_time_remaining = dodge_duration
+	_dodge_cooldown_remaining = dodge_cooldown
+	body_visual.color = Color(0.48, 1.0, 1.0, 0.55)
+
+
+func _end_dodge() -> void:
+	is_dodging = false
+	body_visual.color = _base_visual_color
+
+
+func _update_dodge_state(delta: float) -> void:
+	_dodge_cooldown_remaining = maxf(_dodge_cooldown_remaining - delta, 0.0)
+	if not is_dodging:
+		return
+
+	_dodge_time_remaining -= delta
+	if _dodge_time_remaining <= 0.0:
+		_end_dodge()
