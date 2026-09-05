@@ -18,6 +18,9 @@ extends CharacterBody2D
 @export var dodge_duration: float = 0.18
 @export var dodge_cooldown: float = 0.45
 
+@export_category("Health")
+@export var max_hp: int = 3
+
 @onready var body_visual: Polygon2D = $Visual
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_collision: CollisionShape2D = $AttackArea/CollisionShape2D
@@ -35,10 +38,14 @@ var _dodge_direction: float = 1.0
 var _dodge_time_remaining: float = 0.0
 var _dodge_cooldown_remaining: float = 0.0
 var _base_visual_color: Color
+var current_hp: int
+var hit_count: int = 0
+var _hurt_flash_remaining: float = 0.0
 
 
 func _ready() -> void:
 	_base_visual_color = body_visual.color
+	current_hp = max_hp
 	attack_collision.shape = attack_collision.shape.duplicate()
 	attack_area.area_entered.connect(_on_attack_area_entered)
 	_update_attack_geometry()
@@ -48,6 +55,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_update_attack_state(delta)
 	_update_dodge_state(delta)
+	_update_hurt_flash(delta)
 
 	var move_direction := Input.get_axis("move_left", "move_right")
 	if not is_zero_approx(move_direction):
@@ -152,7 +160,7 @@ func _start_dodge(move_direction: float) -> void:
 
 func _end_dodge() -> void:
 	is_dodging = false
-	body_visual.color = _base_visual_color
+	_refresh_body_color()
 
 
 func _update_dodge_state(delta: float) -> void:
@@ -163,3 +171,28 @@ func _update_dodge_state(delta: float) -> void:
 	_dodge_time_remaining -= delta
 	if _dodge_time_remaining <= 0.0:
 		_end_dodge()
+
+
+func receive_hit() -> void:
+	hit_count += 1
+	current_hp = maxi(current_hp - 1, 0)
+	_hurt_flash_remaining = 0.12
+	_refresh_body_color()
+	print("PLAYER HIT")
+
+
+func _update_hurt_flash(delta: float) -> void:
+	if _hurt_flash_remaining <= 0.0:
+		return
+	_hurt_flash_remaining = maxf(_hurt_flash_remaining - delta, 0.0)
+	if _hurt_flash_remaining <= 0.0:
+		_refresh_body_color()
+
+
+func _refresh_body_color() -> void:
+	if _hurt_flash_remaining > 0.0:
+		body_visual.color = Color.WHITE
+	elif is_dodging:
+		body_visual.color = Color(0.48, 1.0, 1.0, 0.55)
+	else:
+		body_visual.color = _base_visual_color
