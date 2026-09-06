@@ -41,6 +41,9 @@ var _base_visual_color: Color
 var current_hp: int
 var hit_count: int = 0
 var _hurt_flash_remaining: float = 0.0
+const HIT_INVULNERABILITY_USEC: int = 500_000
+var _hit_invulnerable_until_usec: int = 0
+var is_dead: bool = false
 
 
 func _ready() -> void:
@@ -53,6 +56,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+
 	_update_attack_state(delta)
 	_update_dodge_state(delta)
 	_update_hurt_flash(delta)
@@ -87,6 +93,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _start_attack() -> void:
+	if is_dead:
+		return
 	is_attacking = true
 	attack_count += 1
 	_attack_time_remaining = attack_duration
@@ -102,7 +110,7 @@ func _end_attack() -> void:
 
 func _update_attack_state(delta: float) -> void:
 	_cooldown_time_remaining = maxf(_cooldown_time_remaining - delta, 0.0)
-	if not is_attacking:
+	if is_dead or not is_attacking:
 		return
 
 	_attack_time_remaining -= delta
@@ -129,7 +137,7 @@ func _update_attack_geometry() -> void:
 
 
 func _on_attack_area_entered(area: Area2D) -> void:
-	if not is_attacking:
+	if is_dead or not is_attacking:
 		return
 
 	var target := area.get_parent()
@@ -143,10 +151,12 @@ func _on_attack_area_entered(area: Area2D) -> void:
 
 
 func _can_start_dodge() -> bool:
-	return is_on_floor() and not is_dodging and not is_attacking and _dodge_cooldown_remaining <= 0.0
+	return not is_dead and is_on_floor() and not is_dodging and not is_attacking and _dodge_cooldown_remaining <= 0.0
 
 
 func _start_dodge(move_direction: float) -> void:
+	if is_dead:
+		return
 	_dodge_direction = signf(move_direction) if not is_zero_approx(move_direction) else facing_direction
 	facing_direction = _dodge_direction
 	$FacingMark.scale.x = facing_direction
@@ -165,7 +175,7 @@ func _end_dodge() -> void:
 
 func _update_dodge_state(delta: float) -> void:
 	_dodge_cooldown_remaining = maxf(_dodge_cooldown_remaining - delta, 0.0)
-	if not is_dodging:
+	if is_dead or not is_dodging:
 		return
 
 	_dodge_time_remaining -= delta
@@ -174,11 +184,33 @@ func _update_dodge_state(delta: float) -> void:
 
 
 func receive_hit() -> void:
+	if is_dead:
+		return
+	var hit_time_usec := Time.get_ticks_usec()
+	if hit_time_usec < _hit_invulnerable_until_usec:
+		return
 	hit_count += 1
 	current_hp = maxi(current_hp - 1, 0)
+	if current_hp == 0:
+		_die()
+		return
+	_hit_invulnerable_until_usec = hit_time_usec + HIT_INVULNERABILITY_USEC
 	_hurt_flash_remaining = 0.12
 	_refresh_body_color()
 	print("PLAYER HIT")
+
+
+func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	_end_attack()
+	_hurt_flash_remaining = 0.0
+	_end_dodge()
+	_attack_time_remaining = 0.0
+	_dodge_time_remaining = 0.0
+	velocity = Vector2.ZERO
+	print("PLAYER DEAD")
 
 
 func _update_hurt_flash(delta: float) -> void:
