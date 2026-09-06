@@ -19,8 +19,12 @@ Project Knight
 - 원거리 Enemy
 - 3회 피격 사망
 - 0.5초 피격 무적
+- Player 사망 시 전투 실패(FAILED)
+- 모든 현재 전투 Enemy 제거 시 전투 성공(CLEARED)
+- 성공 또는 실패 후 1.5초 내 현재 전투 Scene 재시작
 
 ## 진행 중 작업
+
 
 
 없음

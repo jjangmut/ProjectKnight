@@ -1,0 +1,74 @@
+{
+  "task_id": "TASK-CL-008",
+  "title": "첫 전투 세션 종료 및 빠른 재시작 프로토타입",
+  "purpose": "현재 전투 Sandbox에 성공·실패 판정과 빠른 Scene 재시작을 추가하여 PLAYING → CLEARED 또는 FAILED → 최소 상태 표시 → 짧은 지연 → 같은 전투 재시작의 최소 게임 루프를 완성한다.",
+  "scope": [
+    "Player 사망을 FAILED로 판정한다.",
+    "현재 배치된 TestEnemy와 RangedEnemy가 모두 제거되고 Player가 생존한 경우에만 CLEARED로 판정한다.",
+    "같은 physics frame에 Player 사망과 마지막 Enemy 제거가 함께 발생하면 이벤트와 Signal 처리 순서와 무관하게 FAILED를 우선한다.",
+    "PLAYING에서 확정된 CLEARED 또는 FAILED 상태는 늦은 Projectile Hit나 Enemy 제거로 변경하지 않는다.",
+    "성공·실패 최소 상태 텍스트를 표시하고 짧은 지연 후 현재 전투 Scene을 한 번만 재시작한다.",
+    "Scene 전체 reload로 Player, Enemy, Projectile과 세션 상태를 초기화하며 별도 Reset 시스템을 만들지 않는다.",
+    "중복 종료 판정, 중복 Timer와 중복 reload를 차단한다."
+  ],
+  "out_of_scope": [
+    "체크포인트",
+    "다중 전투 구간과 스테이지 확장",
+    "결과 화면",
+    "새로운 Enemy",
+    "모바일 UI",
+    "저장",
+    "범용 Game State Framework",
+    "Singleton",
+    "Player, Enemy, Projectile 개별 Reset 시스템",
+    "기존 Player, TestEnemy, RangedEnemy, EnemyProjectile Script 변경"
+  ],
+  "implementation_plan": [
+    "CLIENT/Game/scripts/prototype/prototype_main.gd를 새로 만들고 PrototypeMain Node2D Root에 연결한다.",
+    "PrototypeMain 전용 PLAYING, CLEARED, FAILED 상태와 단일 종료 확정 Guard를 구현한다.",
+    "현재 Scene의 Player와 두 지정 Enemy Node만 직접 참조하여 상태를 관찰하며 Group 체계를 추가하지 않는다.",
+    "같은 physics frame의 Player 사망과 Enemy 전체 제거 후보를 모아 지연된 단일 판정에서 FAILED 우선 규칙을 적용한다.",
+    "CLEARED는 Player가 생존하고 두 현재 전투 Enemy가 모두 제거된 경우에만 확정한다.",
+    "PrototypeMain.tscn에 최소 상태 Label을 추가하고 종료 후 1~2초 지연 뒤 get_tree().reload_current_scene()을 정확히 한 번 호출한다.",
+    "Scene reload를 초기화 경계로 사용하고 개별 Reset 함수나 Framework를 추가하지 않는다."
+  ],
+  "acceptance_criteria": [
+    "초기 세션 상태는 PLAYING이다.",
+    "Player 사망 시 FAILED가 정확히 한 번 확정된다.",
+    "Player가 생존한 상태에서 TestEnemy와 RangedEnemy가 모두 제거되면 CLEARED가 정확히 한 번 확정된다.",
+    "같은 physics frame에 Player 사망과 마지막 Enemy 제거가 발생하면 호출 순서와 무관하게 FAILED가 된다.",
+    "CLEARED 이후 늦은 Projectile Hit가 도착해도 CLEARED를 유지한다.",
+    "FAILED 이후 마지막 Enemy가 제거되어도 FAILED를 유지한다.",
+    "종료 상태는 한 번만 확정되고 Timer와 Scene reload도 한 번만 실행된다.",
+    "성공과 실패를 최소 상태 텍스트로 구분할 수 있다.",
+    "종료 후 1~2초 안에 현재 Scene이 다시 시작된다.",
+    "Scene 재시작 후 Player는 HP 3과 생존 상태이고 두 Enemy는 다시 존재하며 이전 Projectile과 세션 상태가 남지 않는다.",
+    "기존 이동·점프·공격·회피·피격·사망 동작에 Regression이 없다.",
+    "Godot 4.7.2 Compatibility에서 Project load와 Main Scene 실행이 성공하고 Script Error 및 Missing Resource가 없다.",
+    "실제 변경은 승인된 두 Allowed Paths에만 한정된다."
+  ],
+  "allowed_paths": [
+    "CLIENT/Game/scenes/prototype/PrototypeMain.tscn",
+    "CLIENT/Game/scripts/prototype/prototype_main.gd"
+  ],
+  "validation_plan": [
+    "Player 사망 단독 상황에서 FAILED, 상태 텍스트, 지연과 reload 1회를 확인한다.",
+    "두 Enemy 제거 단독 상황에서 Player 생존, CLEARED, 상태 텍스트, 지연과 reload 1회를 확인한다.",
+    "마지막 Enemy 제거와 Player 사망을 같은 physics frame에 두 순서로 전달하여 모두 FAILED인지 확인한다.",
+    "CLEARED 후 Projectile Hit와 FAILED 후 마지막 Enemy 제거에서 상태가 바뀌지 않는지 확인한다.",
+    "종료 판정 반복 호출로 Timer와 reload가 중복되지 않는지 확인한다.",
+    "reload 전후 Player HP/is_dead, 두 Enemy 존재, Projectile과 세션 상태를 비교한다.",
+    "기존 이동·점프·공격·회피·피격 무적·사망 Regression을 확인한다.",
+    "Godot Project load, Main Scene, Script/Resource 오류와 Git Guard 허용 경로를 검증한다."
+  ],
+  "approval_status": "APPROVED",
+  "revision": null,
+  "approved_revision": null,
+  "approved_plan_hash": "bf977761a8392ac6dcd6964a87c1f7401e77c1ffd787fc3a3156bc42b7ea31ea",
+  "source_head": "ac568db54571c233f721e540bade2a630e20380e",
+  "source_state_hash": "c2c137edb3b0a3d9b509b6a4de83984e20d1ae2e4e53d181d462459bf0f3b0b2",
+  "execution_status": "COMPLETED",
+  "qa_result": "PASS",
+  "commit_approval": "APPROVED",
+  "merge_approval": "APPROVED"
+}
