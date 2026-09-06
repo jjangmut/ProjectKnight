@@ -1,0 +1,62 @@
+{
+  "task_id": "TASK-CL-007",
+  "title": "Player 3회 피격과 단일 사망·행동 차단 — 독립 피격 무적 보정",
+  "purpose": "존재하지 않는 기존 피격 무적을 재사용한다는 Execution BLOCKED 원인을 보정한다. 기존 체력과 receive_hit()를 활용하고 Flash와 독립적인 피격 무적 0.5초를 제안하여 3회 유효 피격 사이의 대응 기회를 확보한다. 0.5초는 본 Revision 승인 전까지 미확정 제안값이다.",
+  "scope": [
+    "player.gd 내부에 Flash와 독립적인 피격 무적을 최소 추가한다.",
+    "초기 HP 3, 유효 피격당 HP 1 차감, 세 번째 유효 피격의 단일 사망을 유지한다.",
+    "사망 후 이동·점프·공격·회피와 추가 피해를 차단한다.",
+    "전투 수치 변경 제외의 예외는 본 Revision에서 제안하는 피격 무적 0.5초 추가로 한정한다."
+  ],
+  "out_of_scope": [
+    "사망 UI, 재시작, 체크포인트",
+    "상태·Enemy·Projectile 복원",
+    "신규 Enemy, 공격 방식 및 피격 무적 외 전투 수치 변경",
+    "회피 규칙 변경, 신규 무적 연출",
+    "Scene·Resource·Enemy·Projectile 파일 변경",
+    "Singleton 추가, Framework 변경 및 대규모 정리"
+  ],
+  "implementation_plan": [
+    "재승인 후 TASK-CL-006 기준선과 실제 receive_hit(), 초기화, 회피 및 공격 종료 함수 본문을 확인한다. allowed_paths 밖의 수정이 필수이면 실행을 중단하고 Client Lead에 보고한다.",
+    "player.gd에서 기존 체력 구조를 활용한다. 기존 회피 차단 규칙을 보존하면서 사망 및 피격 무적 검사를 HP 차감보다 앞에 둔다.",
+    "유효 Hit에서 HP를 한 번만 1 차감한다. 생존 시 즉시 독립 피격 무적을 시작하여 동일 프레임 후속 Hit를 차단한다.",
+    "제안값 0.5초 채택 시 최초 생존 유효 피격부터 경과 시간 0.5초 미만은 피해를 차단한다. 차단된 Hit는 종료 시점을 갱신하지 않으며 _hurt_flash_remaining의 0.12초 Flash와 분리한다.",
+    "HP 0에서 사망 상태를 먼저 확정하고 사망 처리를 한 번만 수행한다. player.gd의 기존 행동 진입·갱신·공격 판정 경로에 차단을 연결하고 진행 중 공격 피해와 회피 추진을 종료한다.",
+    "피격 무적 자체는 행동 잠금을 추가하지 않는다. 지속 접촉에서는 종료 후 새로 전달된 Hit만 평가하며 자동 피해나 접촉 이탈 조건을 추가하지 않는다.",
+    "변경 내역과 Self Check·실행 검증 증거를 제출하고 독립 Review/QA 검토를 받는다. 문서화는 Runtime이 담당한다."
+  ],
+  "acceptance_criteria": [
+    "초기 HP 3에서 유효 피격마다 2 → 1 → 0으로 변하며 첫 두 피격에서는 생존하고 세 번째에서 사망 진입과 처리가 각각 정확히 한 번 발생한다.",
+    "0.5초 채택 시 생존 유효 피격 후 0.5초 미만의 Hit는 차단하고 0.5초 이상에서는 기존의 다른 차단 조건이 없으면 허용한다. 차단된 Hit는 HP와 무적 종료 시점을 변경하지 않는다.",
+    "동일 프레임 근접·투사체·혼합 Hit 중 최초 유효 Hit만 HP를 차감한다. HP 1에서도 사망이 중복 처리되지 않는다.",
+    "0.12초 Flash 종료가 피격 무적을 해제하지 않는다. 지속 접촉에서도 새 Hit 없이 자동으로 HP를 차감하지 않으며 접촉 이탈을 요구하지 않는다.",
+    "사망 후 추가 Hit는 HP와 사망 상태를 변경하지 않는다. Move·Jump·Attack·Dodge 입력과 진행 중 공격 피해·회피 추진이 사망 차단을 우회하지 않는다.",
+    "피격 무적은 추가 행동 잠금을 만들지 않는다. TASK-CL-006 대비 생존 행동, 기존 회피·피격 규칙과 근접·투사체 연동에 Regression이 없다.",
+    "Godot 4.7.2 stable Standard, GDScript, Compatibility 기준 Project load와 Main Scene 검증이 통과하고 Script Error 및 Missing Resource가 없다.",
+    "모바일에서 첫 피격 후 다음 유효 피격 전 대응 행동 가능 여부와 대응 불가 원인을 기록한다. 체감 기준이나 관측 증거가 없는 항목은 PASS로 처리하지 않는다.",
+    "실제 변경은 allowed_paths와 승인된 범위 안에 한정되며, 독립 Review/QA 검증 전 DONE으로 처리하지 않는다."
+  ],
+  "allowed_paths": [
+    "CLIENT/Game/scripts/player/player.gd"
+  ],
+  "validation_plan": [
+    "HP 단계 변화, 사망 진입·처리 횟수, 사망 후 반복 Hit 및 유지·동시 행동 입력을 기록한다.",
+    "독립 초기 조건에서 0.5초 직전·정확한 경계·직후와 반복 Hit 비갱신을 검증한다. 프레임 및 경과 시간을 기록하고 관측하지 못한 경계는 미검증으로 남긴다.",
+    "근접·투사체·혼합 Hit의 동일 프레임 수신 순서를 바꾸어 검증하고 HP 1 사례를 포함한다.",
+    "Flash 종료와 무적의 독립성, 지속 접촉의 실제 Hit 재전달 및 새 Hit 없는 자동 차감 부재를 확인한다.",
+    "TASK-CL-006 대비 생존 행동·회피 중첩과 사망 시 진행 중 공격·회피를 비교한다. 기존 규칙상 재현할 수 없는 사례는 제한을 기록한다.",
+    "모바일 대응 행동의 입력·실행 시각과 대응 불가 원인을 기록하여 Planning Lead 검토에 제공한다.",
+    "기존 CLIENT/Game/scenes/prototype/PrototypeMain.tscn을 변경 없이 통합 검증에 사용하고 Project load·오류 로그 및 diff·Git Guard로 범위 준수를 확인한다.",
+    "Review/QA 권고는 현재 BLOCKED 유지다. 시간 경계·회피 중첩·중복 피해·사망 후 공격 잔존을 주요 Regression Risk로 검증하며 실제 증거 없이 PASS나 BLOCKED 해소를 선언하지 않는다."
+  ],
+  "approval_status": "APPROVED",
+  "revision": 1,
+  "approved_revision": 1,
+  "approved_plan_hash": "db8a43216c51c9931288749be7383100dc5c50c8071864701de06cc2fe2855f7",
+  "source_head": "4bf2f5dd52471d1877d027881978b402d93cd1fe",
+  "source_state_hash": "baaca2db0cc37a46afb9b7ee2b3ef07746e264362170cfe9ca83be65f5ddd34f",
+  "execution_status": "COMPLETED",
+  "qa_result": "PASS",
+  "commit_approval": "APPROVED",
+  "merge_approval": "APPROVED"
+}
