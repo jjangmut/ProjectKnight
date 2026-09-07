@@ -10,7 +10,9 @@ Project Knight
 
 ## 현재 목표
 
-현재 전투 프로토타입의 완성 상태를 유지하며 다음 개발 목표에 대한 Studio Manager 제안을 기다린다.
+Director가 확인한 최소 Stage 골격을 기준으로 S05 체크포인트 후속 작업을 준비한다.
+TASK-CL-009는 DONE이며 Task Branch에 FirstStage가 구현되어 있다. main 병합은 별도 승인 대기다.
+FirstStage는 E1~E4 순차 전투 및 생존 상태의 Goal 도착으로 성공하며 기존 전투 프로토타입은 유지한다.
 
 현재 전투 프로토타입:
 
@@ -50,7 +52,7 @@ Project Knight
 
 ## 다음 목표
 
-Studio Manager 제안 대기
+TASK-CL-010 후보 — S05 체크포인트 활성화 및 후반 재시작. 아직 공식 Task 생성 및 실행 전이다.
 
 ## 스튜디오 디렉터 확인 필요
 
@@ -58,5 +60,5 @@ Studio Manager 제안 대기
 
 ## 마지막 갱신
 
-날짜: 2026-09-06
+날짜: 2026-09-07
 갱신자: 스튜디오 매니저(Studio Manager)
