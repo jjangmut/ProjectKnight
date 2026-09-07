@@ -60,7 +60,8 @@ S05는 위치 안내만 제공한다. 후속 체크포인트 작업 전까지 �
 
 별도 task/task-cl-009 Worktree에서 구현. 기존 main과 기본 실행 Scene은 유지한다.
 현재 세션에서 직접 구현했으며 StudioRuntime Execution Worker/Gate를 실행한 것으로 기록하지 않는다.
-외부 Runtime Agent 추가 호출 없음. Director 플레이 확인 후 Task Branch 커밋 승인. main 병합은 별도 승인 대기.
+외부 Runtime Agent 추가 호출 없음. Director 플레이 확인 후 Task Branch 커밋 승인.
+Director 후속 진행 승인으로 671b017을 main에 fast-forward 병합 완료.
 
 ## 검증 및 알려진 문제
 
