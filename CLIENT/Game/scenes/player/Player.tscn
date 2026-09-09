@@ -1,6 +1,14 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+
+[ext_resource type="Texture2D" path="res://assets/player/knight_idle_v1.png" id="2_art"]
+[ext_resource type="Script" path="res://scripts/player/player_art.gd" id="3_art_script"]
+[ext_resource type="Shader" path="res://scripts/player/player_art.gdshader" id="4_art_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_art"]
+shader = ExtResource("4_art_shader")
+shader_parameter/hurt_flash = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(40, 56)
@@ -45,6 +53,16 @@ color = Color(1, 0.31, 0.16, 0.55)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource("RectangleShape2D_attack")
 disabled = true
+
+[node name="CharacterArt" type="Sprite2D" parent="."]
+position = Vector2(0, 28)
+scale = Vector2(0.0578661844, 0.0578661844)
+texture = ExtResource("2_art")
+centered = false
+offset = Vector2(-627, -1163)
+material = SubResource("ShaderMaterial_art")
+script = ExtResource("3_art_script")
+metadata/visible_height = 1106
 
 [node name="Camera2D" type="Camera2D" parent="."]
 limit_left = 0

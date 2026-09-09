@@ -7,16 +7,17 @@ extends CharacterBody2D
 @export_category("Jump")
 @export var jump_velocity: float = -520.0
 @export var gravity: float = 1400.0
+@export var jump_buffer: float = 0.14
+@export var coyote_time: float = 0.12
 
 @export_category("Attack")
 @export var attack_duration: float = 0.16
 @export var attack_cooldown: float = 0.32
 @export var attack_range: float = 72.0
 
-@export_category("Dodge")
-@export var dodge_speed: float = 720.0
-@export var dodge_duration: float = 0.18
-@export var dodge_cooldown: float = 0.45
+@export_category("Guard")
+@export var guard_recovery: float = 0.12
+@export var guard_cooldown: float = 0.2
 
 @export_category("Health")
 @export var max_hp: int = 3
@@ -32,11 +33,16 @@ var facing_direction: float = 1.0
 var _attack_time_remaining: float = 0.0
 var _cooldown_time_remaining: float = 0.0
 var _hit_targets: Dictionary = {}
-var is_dodging: bool = false
-var dodge_count: int = 0
-var _dodge_direction: float = 1.0
-var _dodge_time_remaining: float = 0.0
-var _dodge_cooldown_remaining: float = 0.0
+var is_guarding: bool = false
+var guard_count: int = 0
+var guard_block_count: int = 0
+var _guard_direction: float = 1.0
+var _guard_elapsed: float = 0.0
+var _guard_recovery_remaining: float = 0.0
+var _guard_cooldown_remaining: float = 0.0
+var _guard_block_flash_remaining: float = 0.0
+var _jump_buffer_remaining: float = 0.0
+var _coyote_remaining: float = 0.0
 var _base_visual_color: Color
 var current_hp: int
 var hit_count: int = 0
@@ -60,40 +66,45 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_update_attack_state(delta)
-	_update_dodge_state(delta)
+	_update_guard_state(delta)
 	_update_hurt_flash(delta)
 
 	var move_direction := Input.get_axis("move_left", "move_right")
-	if not is_zero_approx(move_direction):
+	if not is_guarding and _guard_recovery_remaining <= 0.0 and not is_zero_approx(move_direction):
 		facing_direction = signf(move_direction)
 		$FacingMark.scale.x = facing_direction
 		_update_attack_geometry()
 
-	if Input.is_action_just_pressed("attack") and not is_dodging and _cooldown_time_remaining <= 0.0:
-		_start_attack()
+	# A held guard starts at the next legal moment; it never cancels an attack.
+	if Input.is_action_pressed("guard") and _can_start_guard():
+		_start_guard()
 
-	if Input.is_action_just_pressed("dodge") and _can_start_dodge():
-		_start_dodge(move_direction)
+	if Input.is_action_pressed("attack") and not is_attacking and not is_guarding and _guard_recovery_remaining <= 0.0 and _cooldown_time_remaining <= 0.0:
+		_start_attack()
 
 	if not is_on_floor():
 		velocity.y += gravity * delta
+	_coyote_remaining = coyote_time if is_on_floor() else maxf(0.0, _coyote_remaining - delta)
+	_jump_buffer_remaining = jump_buffer if Input.is_action_just_pressed("jump") else maxf(0.0, _jump_buffer_remaining - delta)
 
-	if is_dodging:
-		velocity.x = _dodge_direction * dodge_speed
+	if is_guarding or _guard_recovery_remaining > 0.0:
+		velocity.x = 0.0
 	elif is_on_floor():
 		velocity.x = move_direction * move_speed
-		if Input.is_action_just_pressed("jump"):
-			velocity.y = jump_velocity
 	else:
 		var air_target_speed := move_direction * move_speed
 		var air_acceleration := move_speed * 8.0 * air_control
 		velocity.x = move_toward(velocity.x, air_target_speed, air_acceleration * delta)
+	if not is_guarding and _guard_recovery_remaining <= 0.0 and _jump_buffer_remaining > 0.0 and _coyote_remaining > 0.0:
+		velocity.y = jump_velocity
+		_jump_buffer_remaining = 0.0
+		_coyote_remaining = 0.0
 
 	move_and_slide()
 
 
 func _start_attack() -> void:
-	if is_dead:
+	if is_dead or is_guarding or _guard_recovery_remaining > 0.0:
 		return
 	is_attacking = true
 	attack_count += 1
@@ -150,37 +161,52 @@ func _on_attack_area_entered(area: Area2D) -> void:
 		target.receive_hit()
 
 
-func _can_start_dodge() -> bool:
-	return not is_dead and is_on_floor() and not is_dodging and not is_attacking and _dodge_cooldown_remaining <= 0.0
+func _can_start_guard() -> bool:
+	return not is_dead and is_on_floor() and not is_guarding and not is_attacking and _cooldown_time_remaining <= 0.0 and _guard_cooldown_remaining <= 0.0
 
 
-func _start_dodge(move_direction: float) -> void:
-	if is_dead:
+func _start_guard() -> void:
+	if not _can_start_guard():
 		return
-	_dodge_direction = signf(move_direction) if not is_zero_approx(move_direction) else facing_direction
-	facing_direction = _dodge_direction
-	$FacingMark.scale.x = facing_direction
-	_update_attack_geometry()
-	is_dodging = true
-	dodge_count += 1
-	_dodge_time_remaining = dodge_duration
-	_dodge_cooldown_remaining = dodge_cooldown
-	body_visual.color = Color(0.48, 1.0, 1.0, 0.55)
-
-
-func _end_dodge() -> void:
-	is_dodging = false
+	_guard_direction = facing_direction
+	is_guarding = true
+	guard_count += 1
+	_guard_elapsed = 0.0
+	velocity.x = 0.0
 	_refresh_body_color()
 
 
-func _update_dodge_state(delta: float) -> void:
-	_dodge_cooldown_remaining = maxf(_dodge_cooldown_remaining - delta, 0.0)
-	if is_dead or not is_dodging:
+func _end_guard() -> void:
+	if not is_guarding:
 		return
+	is_guarding = false
+	_guard_recovery_remaining = guard_recovery
+	_guard_cooldown_remaining = guard_cooldown
+	_refresh_body_color()
 
-	_dodge_time_remaining -= delta
-	if _dodge_time_remaining <= 0.0:
-		_end_dodge()
+
+func _update_guard_state(delta: float) -> void:
+	_guard_cooldown_remaining = maxf(_guard_cooldown_remaining - delta, 0.0)
+	_guard_recovery_remaining = maxf(_guard_recovery_remaining - delta, 0.0)
+	_guard_block_flash_remaining = maxf(_guard_block_flash_remaining - delta, 0.0)
+	if is_dead or not is_guarding:
+		return
+	_guard_elapsed += delta
+	if not Input.is_action_pressed("guard") or not is_on_floor():
+		_end_guard()
+
+
+func receive_attack(source_position: Vector2, blockable: bool = true) -> bool:
+	if is_dead:
+		return false
+	# Source at exactly the player's center is not a frontal attack.
+	var in_front := (source_position.x - global_position.x) * _guard_direction > 0.0
+	if blockable and is_guarding and is_on_floor() and in_front:
+		guard_block_count += 1
+		_guard_block_flash_remaining = 0.14
+		return true
+	receive_hit()
+	return false
 
 
 func receive_hit() -> void:
@@ -189,6 +215,7 @@ func receive_hit() -> void:
 	var hit_time_usec := Time.get_ticks_usec()
 	if hit_time_usec < _hit_invulnerable_until_usec:
 		return
+	_end_guard()
 	hit_count += 1
 	current_hp = maxi(current_hp - 1, 0)
 	if current_hp == 0:
@@ -206,9 +233,8 @@ func _die() -> void:
 	is_dead = true
 	_end_attack()
 	_hurt_flash_remaining = 0.0
-	_end_dodge()
+	_end_guard()
 	_attack_time_remaining = 0.0
-	_dodge_time_remaining = 0.0
 	velocity = Vector2.ZERO
 	print("PLAYER DEAD")
 
@@ -224,7 +250,7 @@ func _update_hurt_flash(delta: float) -> void:
 func _refresh_body_color() -> void:
 	if _hurt_flash_remaining > 0.0:
 		body_visual.color = Color.WHITE
-	elif is_dodging:
-		body_visual.color = Color(0.48, 1.0, 1.0, 0.55)
+	elif is_guarding:
+		body_visual.color = Color(0.7, 0.85, 1.0, 1.0)
 	else:
 		body_visual.color = _base_visual_color

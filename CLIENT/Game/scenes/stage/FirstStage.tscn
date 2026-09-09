@@ -1,10 +1,15 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/stage/first_stage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/art/stage_art.gd" id="3_art"]
+[ext_resource type="Script" path="res://scripts/ui/stage_presentation.gd" id="4_ui"]
 
 [node name="FirstStage" type="Node2D"]
 script = ExtResource("1")
+
+[node name="StageArt" type="Node2D" parent="."]
+script = ExtResource("3_art")
 
 [node name="Player" parent="." instance=ExtResource("2")]
 position = Vector2(180, 580)
@@ -18,6 +23,16 @@ offset_right = 1250.0
 offset_bottom = 110.0
 theme_override_font_sizes/font_size = 24
 text = "첫 스테이지"
+
+[node name="Presentation" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_ui")
 
 [node name="RestartTimer" type="Timer" parent="."]
 wait_time = 1.5

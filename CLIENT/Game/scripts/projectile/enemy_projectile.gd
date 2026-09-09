@@ -5,6 +5,7 @@ extends Area2D
 
 var direction: float = 1.0
 var traveled_distance: float = 0.0
+var _consumed: bool = false
 
 
 func _ready() -> void:
@@ -26,9 +27,16 @@ func configure(new_direction: float) -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
+	if _consumed:
+		return
 	var target := area.get_parent()
 	if target.has_method("receive_hit"):
-		target.receive_hit()
+		_consumed = true
+		if target.has_method("receive_attack"):
+			# Incoming direction remains reliable even if a fast step crosses the center.
+			target.receive_attack(target.global_position - Vector2(direction * 100.0, 0), true)
+		else:
+			target.receive_hit()
 		queue_free()
 
 

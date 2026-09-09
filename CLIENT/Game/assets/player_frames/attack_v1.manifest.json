@@ -1,0 +1,31 @@
+{
+  "tool": "built-in image_gen",
+  "initial": "Use case: identity-preserve. Create a production animation SPRITE SHEET of the EXACT reference cute two-head-tall silver knight with cyan tabard and SHORT one-handed sword. Exactly FOUR sequential attacking poses in a 2x2 grid, reading left-to-right top-to-bottom. Real transparent RGBA background, NO checkerboard, labels, grid lines, effects or ground shadows. Each equal square cell has identical character scale and foot baseline; generous padding so sword never crosses cell boundaries. Face and body point RIGHT in all four frames. Same huge rounded closed helmet, same tiny body, silver armor brass trim, cyan cloth, same short sword length. Frame1 beginning of active diagonal cut, sword already extending forward diagonally upward; Frame2 strong forward waist-height cut with arm straightening; Frame3 downward follow-through, sword forward and down, body leaning; Frame4 end of active cut lower forward blade returning toward neutral. Clearly distinct arm/sword/body poses but stable helmet size and support feet. Do not merely rotate the entire reference picture. Feet baseline and body center fixed across cells. Head half body height. Clean painterly game art matching reference. This is a rapid 0.16second attack sequence, no long overhead windup, no alternate weapons.",
+  "retry": "Background extraction edit: retain these exact FOUR knight attack sprites, layout and colors completely unchanged. Remove ALL checkerboard pixels and replace with genuine fully transparent alpha outside character silhouettes. Output an RGBA PNG transparent background, not an illustration of transparency. No gray/white checkerboard, no solid color backdrop. Keep silver armor and white blade highlights opaque. Preserve 2x2 layout and pose silhouettes.",
+  "rejected": "exec-9d49fda3-98de-491b-abcb-6c02856288bb.png RGB checkerboard",
+  "selected": "exec-25361a0c-5c0e-43bc-a8c4-623d495ecbf6.png",
+  "frame_cell": [
+    627,
+    627
+  ],
+  "foot_pivots": [
+    [
+      255,
+      599
+    ],
+    [
+      210,
+      599
+    ],
+    [
+      250,
+      569
+    ],
+    [
+      212,
+      568
+    ]
+  ],
+  "nominal_duration": 0.16,
+  "review": "Art Lead confirms four distinct poses; last looks like recovery, visual approval remains pending."
+}

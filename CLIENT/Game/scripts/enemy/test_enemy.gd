@@ -139,8 +139,14 @@ func _on_attack_area_entered(area: Area2D) -> void:
 	if _hit_player_ids.has(target_id):
 		return
 	_hit_player_ids[target_id] = true
-	if target.has_method("receive_hit"):
+	if target.has_method("receive_attack"):
+		target.receive_attack(global_position, _is_attack_blockable())
+	elif target.has_method("receive_hit"):
 		target.receive_hit()
+
+
+func _is_attack_blockable() -> bool:
+	return true
 
 
 func _update_hit_flash(delta: float) -> void:

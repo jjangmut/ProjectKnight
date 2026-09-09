@@ -28,21 +28,22 @@ func kill_enemies(stage: Node) -> void:
 func _run() -> void:
 	var stage = fresh()
 	check(stage.enemies.is_empty(), "No future enemies before entry")
-	stage.player.position = Vector2(6300, 580)
+	stage.player.position = Vector2(stage.GOAL_X, 580)
 	stage._evaluate_stage()
 	check(stage.stage_state == 0, "Goal cannot clear unfinished encounters")
 	stage.free()
 	stage = fresh()
-	for index in range(4):
+	for index in range(stage.completed.size()):
 		stage.player.position.x = stage.ENTRY_X[index]
 		stage._evaluate_stage()
-		check(stage.enemies.size() == [1, 1, 2, 3][index], "Approved composition E%d" % (index + 1))
-		kill_enemies(stage)
-		stage._evaluate_stage()
+		for wave in range(2):
+			check(stage.enemies.size() == (1 if index < 2 and wave == 0 else 2), "Approved bounded wave E%d" % (index + 1))
+			kill_enemies(stage)
+			stage._evaluate_stage()
 		check(stage.completed[index], "Encounter completes on combat death")
 		check(stage.stage_state == 0, "Encounter death does not clear stage")
 		await process_frame
-	stage.player.position = Vector2(6300, 580)
+	stage.player.position = Vector2(stage.GOAL_X, 580)
 	stage._evaluate_stage()
 	check(stage.stage_state == 1, "All encounters plus alive plus goal clears")
 	stage.player.is_dead = true
@@ -58,10 +59,10 @@ func _run() -> void:
 	stage.free()
 	for death_first in [false, true]:
 		stage = fresh()
-		stage.player.position = Vector2(6300, 580)
-		for index in range(3):
+		stage.player.position = Vector2(stage.GOAL_X, 580)
+		for index in range(stage.completed.size() - 1):
 			stage.completed[index] = true
-		stage.encounter_index = 3
+		stage.encounter_index = stage.completed.size() - 1
 		stage._start_encounter()
 		if death_first:
 			stage.player.is_dead = true
@@ -83,7 +84,7 @@ func _run() -> void:
 	stage.free()
 	# Exercise real movement/collision callbacks, rather than only state methods.
 	stage = fresh()
-	stage.player.position = Vector2(1300, 580)
+	stage.player.position = Vector2(stage.EXIT_X[0] - 150, 580)
 	stage.player.set_physics_process(true)
 	Input.action_press("move_right")
 	for tick in range(90):
@@ -93,7 +94,7 @@ func _run() -> void:
 			Input.action_release("jump")
 		await physics_frame
 	Input.action_release("move_right")
-	check(stage.player.position.x < 1430 and stage.player.position.x > 1300, "Real movement and jump cannot bypass closed gate")
+	check(stage.player.position.x < stage.EXIT_X[0] - 20 and stage.player.position.x > stage.EXIT_X[0] - 150, "Real movement and jump cannot bypass relocated closed gate")
 	check(stage.player.is_on_floor(), "Player returns to floor")
 	stage.free()
 	print("STAGE CHECKS: %d; FAILURES: %d" % [checks, failures])
