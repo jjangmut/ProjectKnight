@@ -304,6 +304,15 @@ func _physics_process(delta: float) -> void:
 
 	if _hit_flash_timer > 0.0:
 		_hit_flash_timer -= delta
+		if is_instance_valid(boss_sprite):
+			boss_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
+	elif is_instance_valid(boss_sprite):
+		if current_phase == 3:
+			boss_sprite.modulate = Color(1.3, 0.4, 0.7, 1.0)
+		elif current_phase == 2:
+			boss_sprite.modulate = Color(0.9, 0.5, 1.3, 1.0)
+		else:
+			boss_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 	move_and_slide()
 	_update_boss_sprite(delta)
@@ -549,8 +558,10 @@ func _trigger_phase_two() -> void:
 	state = State.PHASE_TRANSITION
 	_phase_timer = 0.6
 	is_invulnerable = true
-	aura_poly.visible = true
+	aura_poly.visible = false
 	body_poly.color = Color(0.35, 0.15, 0.45, 1.0)
+	if is_instance_valid(boss_sprite):
+		boss_sprite.modulate = Color(0.9, 0.5, 1.3, 1.0)
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.55)
@@ -569,6 +580,9 @@ func _trigger_phase_three() -> void:
 	wing_right.visible = true
 	eye_poly.color = Color(1.0, 0.1, 0.1, 1.0)
 	body_poly.color = Color(0.45, 0.10, 0.25, 1.0)
+	aura_poly.visible = false
+	if is_instance_valid(boss_sprite):
+		boss_sprite.modulate = Color(1.3, 0.4, 0.7, 1.0)
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.75)
@@ -579,7 +593,10 @@ func _trigger_phase_three() -> void:
 func _process_phase_transition(delta: float) -> void:
 	_phase_timer -= delta
 	velocity.x = 0.0
-	aura_poly.scale = Vector2.ONE * (1.0 + sin(Time.get_ticks_msec() * 0.04) * 0.3)
+	if is_instance_valid(boss_sprite):
+		var pulse := 1.0 + sin(Time.get_ticks_msec() * 0.04) * 0.35
+		var base_col := Color(1.3, 0.4, 0.7, 1.0) if current_phase == 3 else Color(0.9, 0.5, 1.3, 1.0)
+		boss_sprite.modulate = base_col * pulse
 	if _phase_timer <= 0.0:
 		is_invulnerable = false
 		state = State.CHASE
@@ -596,6 +613,8 @@ func _die() -> void:
 			shape.set_deferred("disabled", true)
 	aura_poly.visible = false
 	body_poly.color = Color(0.15, 0.15, 0.15, 0.8)
+	if is_instance_valid(boss_sprite):
+		boss_sprite.modulate = Color(0.4, 0.4, 0.4, 0.8)
 
 	GameFeelManager.trigger_hit_stop(0.80, 0.15)
 	GameFeelManager.shake(0.85)

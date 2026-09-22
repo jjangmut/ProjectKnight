@@ -265,6 +265,13 @@ func _physics_process(delta: float) -> void:
 
 	if _hit_flash_timer > 0.0:
 		_hit_flash_timer -= delta
+		if is_instance_valid(boss_sprite):
+			boss_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
+	elif is_instance_valid(boss_sprite):
+		if current_phase == 2:
+			boss_sprite.modulate = Color(1.3, 0.6, 0.4, 1.0)
+		else:
+			boss_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 	move_and_slide()
 	_update_boss_sprite(delta)
@@ -470,9 +477,11 @@ func _trigger_phase_two() -> void:
 	state = State.PHASE_TRANSITION
 	_phase_timer = 0.6
 	is_invulnerable = true
-	aura_poly.visible = true
+	aura_poly.visible = false
 	core_poly.color = Color(1.0, 0.1, 0.1, 1.0)
 	body_poly.color = Color(0.48, 0.28, 0.22, 1.0)
+	if is_instance_valid(boss_sprite):
+		boss_sprite.modulate = Color(1.35, 0.55, 0.35, 1.0)
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.60)
@@ -483,7 +492,9 @@ func _trigger_phase_two() -> void:
 func _process_phase_transition(delta: float) -> void:
 	_phase_timer -= delta
 	velocity.x = 0.0
-	aura_poly.scale = Vector2.ONE * (1.0 + sin(Time.get_ticks_msec() * 0.03) * 0.25)
+	if is_instance_valid(boss_sprite):
+		var pulse := 1.0 + sin(Time.get_ticks_msec() * 0.03) * 0.3
+		boss_sprite.modulate = Color(1.35 * pulse, 0.55, 0.35, 1.0)
 	if _phase_timer <= 0.0:
 		is_invulnerable = false
 		state = State.CHASE
@@ -500,6 +511,8 @@ func _die() -> void:
 			shape.set_deferred("disabled", true)
 	aura_poly.visible = false
 	body_poly.color = Color(0.2, 0.2, 0.2, 0.8)
+	if is_instance_valid(boss_sprite):
+		boss_sprite.modulate = Color(0.4, 0.4, 0.4, 0.8)
 
 	GameFeelManager.trigger_hit_stop(0.65, 0.15)
 	GameFeelManager.shake(0.75)

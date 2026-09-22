@@ -191,31 +191,42 @@ func _draw() -> void:
 	# Expanded HUD band (245px) for 2x mobile legibility
 	draw_texture_rect(hud_shade, Rect2(0, 0, 1280, 245), false)
 
+	var has_boss_bar := (stage.get_node_or_null("HUD/BossHealthBar") != null)
+
 	# 1. Left Zone: Title, Hearts, Soul Shards, Checkpoint, Traits (Scaled 2x)
-	_text(Vector2(38, 44), "기사의 여정 · " + stage_label(), 36, GOLD)
-	for index in range(3):
-		var full: bool = stage.player.current_hp > index
-		_heart(Vector2(60 + index * 68, 92), full)
-	var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
-	_diamond(Vector2(296, 92), 16, Color(0.2, 0.9, 1.0))
-	_text(Vector2(322, 102), "%d" % shards, 32, Color(0.35, 0.95, 1.0))
-	if stage.checkpoint_active:
-		_diamond(Vector2(48, 144), 10, CYAN)
-		_text(Vector2(68, 152), "휴식처 %d / %d 저장됨" % [stage.checkpoint_index + 1, stage.CHECKPOINT_POSITIONS.size()], 28, CYAN)
-	_text(Vector2(38, 188), trait_label(), 24, MUTED)
-	_text(Vector2(38, 220), chapter_label(), 24, GOLD)
+	if not has_boss_bar:
+		_text(Vector2(38, 44), "기사의 여정 · " + stage_label(), 36, GOLD)
+		for index in range(3):
+			var full: bool = stage.player.current_hp > index
+			_heart(Vector2(60 + index * 68, 92), full)
+		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
+		_diamond(Vector2(296, 92), 16, Color(0.2, 0.9, 1.0))
+		_text(Vector2(322, 102), "%d" % shards, 32, Color(0.35, 0.95, 1.0))
+		if stage.checkpoint_active:
+			_diamond(Vector2(48, 144), 10, CYAN)
+			_text(Vector2(68, 152), "휴식처 %d / %d 저장됨" % [stage.checkpoint_index + 1, stage.CHECKPOINT_POSITIONS.size()], 28, CYAN)
+		_text(Vector2(38, 188), trait_label(), 24, MUTED)
+		_text(Vector2(38, 220), chapter_label(), 24, GOLD)
+	else:
+		# Compact left zone during boss battle (never overlaps BossHealthBar at x:290..990)
+		for index in range(3):
+			var full: bool = stage.player.current_hp > index
+			_heart(Vector2(40 + index * 52, 54), full)
+		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
+		_diamond(Vector2(204, 54), 14, Color(0.2, 0.9, 1.0))
+		_text(Vector2(228, 62), "%d" % shards, 28, Color(0.35, 0.95, 1.0))
 
 	# 2. Center Zone: Encounter Track, Objective, Hints (Scaled 2x)
-	for index in range(stage.required_count):
-		var x: float = 640 - (stage.required_count - 1) * 32 + index * 64
-		if index < stage.required_count - 1:
-			draw_line(Vector2(x + 16, 36), Vector2(x + 48, 36), Color(0.7, 0.64, 0.48, 0.45), 4)
-		var done: bool = stage.completed[index]
-		if index == stage.encounter_index:
-			draw_circle(Vector2(x, 36), 20, Color(0.85, 0.72, 0.47, 0.20))
-			draw_arc(Vector2(x, 36), 20, 0, TAU, 32, GOLD, 3.5, true)
-		_diamond(Vector2(x, 36), 12, CYAN if done else GOLD if index == stage.encounter_index else Color("52606b"))
-	var has_boss_bar := (stage.get_node_or_null("HUD/BossHealthBar") != null)
+	if not has_boss_bar:
+		for index in range(stage.required_count):
+			var x: float = 640 - (stage.required_count - 1) * 32 + index * 64
+			if index < stage.required_count - 1:
+				draw_line(Vector2(x + 16, 36), Vector2(x + 48, 36), Color(0.7, 0.64, 0.48, 0.45), 4)
+			var done: bool = stage.completed[index]
+			if index == stage.encounter_index:
+				draw_circle(Vector2(x, 36), 20, Color(0.85, 0.72, 0.47, 0.20))
+				draw_arc(Vector2(x, 36), 20, 0, TAU, 32, GOLD, 3.5, true)
+			_diamond(Vector2(x, 36), 12, CYAN if done else GOLD if index == stage.encounter_index else Color("52606b"))
 	var next_y: float = 92.0
 	if has_boss_bar:
 		# When boss bar is active at top center (y=72~140), show only compact hint below it to prevent overlap
