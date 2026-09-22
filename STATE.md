@@ -6,64 +6,36 @@ Project Knight
 
 ## 현재 단계
 
-프로토타입(Prototype)
+5대 관문 보스 및 일반 적군 4종 고해상도 아틀라스 리소스 전수 교체, 몬스터 상단 탑승 플랫폼(TopPlatform), 공격 애니메이션 VFX 전수 연동 및 Android 최신 APK 정식 빌드 완료 (Full Character & VFX Overhaul Complete)
 
 ## 현재 목표
 
-DEC-007의 시간 할당량 없는 5지역 길이 확장·다중 휴식처 후보를 Director가 체감 검토한다. 자동 기술 QA와 실제 조작성·분량 체감은 구분한다.
-이 문서는 task/art-stage-batch-001 후보 Worktree 상태다. main에 이미 반영된 상태로 해석하지 않는다.
-후보는 성문 외곽→특성 선택→야수숲→무너진 성벽→돌의 성소→침묵의 성채→결말·재도전으로 연결되어 있다. 현재 폭은11000/11600/12000/11200/12600, 필수 전투는6/6/8/8/8, 휴식처는2/2/3/3/3개다. 각 지역에3~4개 상층 분기·하층 합류, 지역별 지형 재질과 기존 캐릭터/공격 아트를 적용했다.
-필수 전투 전체 완료 및 생존 Goal 도착으로 성공한다. 실패 시 최근 휴식처 활성화 때의 필수 완료 구간만 유지하고 이후 필수 전투는 새로 시작한다. 선택 전투 완료 HP+1(최대3)은 재시도에도 소비 기록을 유지한다. 공격·막기 홀드 및 점프 입력 보완은 유지한다. 진행·특성·휴식처는 실행 세션 안에서만 유지하며, 아래 전투 프로토타입과 Stage 성공 규칙은 구분한다.
+Studio Director의 지시사항 완수:
+1. 선택 코스 완료 보너스 효과와 진행 사항 알림 noti 텍스트 겹침 분리 완료
+2. 최상층 몬스터 AI 멈춤 현상 해소 및 플랫폼 순찰/자율 전투 도약 구현
+3. 5대 관문 보스(BossCommander, BeastChieftain, CrossbowCommander, AncientGolemGuardian, AbyssalArbiter) 고해상도 6프레임 아틀라스 리소스 전수 교체 및 박스 폴리곤 박멸
+4. 일반 적 4종(TestEnemy, RangedEnemy, ChargingBeast, GroundSlamGolem) 고해상도 아틀라스 리소스 장착 및 박스 폴리곤 완전 은폐
+5. 모든 몬스터 및 보스 머리 위 상단 탑승 플랫폼(`TopPlatform`, AnimatableBody2D One-Way) 장착
+6. 전 보스 및 일반 몬스터의 고유 공격/특수기 애니메이션 이펙트(VFX) 전수 구현
+7. 헤드리스 자동화 테스트 80개 검사항목 100% 무결점 통과 및 최신 Android APK 빌드 완주
 
-현재 전투 프로토타입:
+## 최근 완료 작업 (High-Res Visuals, AI Mobility & HUD Polish)
 
-- 이동 / 점프 / 공격 / 정면 검막기(DEC-005, 기존 회피 교체)
-- 근접 Enemy
-- 원거리 Enemy
-- 3회 피격 사망
-- 0.5초 피격 무적
-- Player 사망 시 전투 실패(FAILED)
-- 모든 현재 전투 Enemy 제거 시 전투 성공(CLEARED)
-- 성공 또는 실패 후 1.5초 내 현재 전투 Scene 재시작
+- `stage_presentation.gd`: 선택 코스 완료 보너스 효과(`route_status`)와 진행 알림(`encounter_hint`, `toast`)의 겹침 현상 원천 차단 (동적 수직 스택 배치 및 전용 글래스모피즘 캡슐 필 HUD 적용)
+- `test_enemy.gd`: 상층 몬스터 AI 개편 — 플레이어가 하층/지면에 있을 때도 시야 탐지(360px)하여 `State.CHASE`로 능동 전환, 발판 단차 드롭다운(`_perform_drop_down()`)을 통해 하층으로 자율 강하 및 교전 돌입, 순찰 중 스턱 시 자동 방향 반전
+- `ranged_enemy.gd`: 사격 후 이동/재배치 쿨다운(`_attack_cooldown_remaining`) 적용으로 제자리 굳음 해소, 하층 플레이어 추적 강하 및 2D 목표 조준 발사(`configure_target`) 연동
+- `enemy_projectile.gd`: 2D 임의 각도 궤적 및 목표 지점 지향(`configure_target`) 지원
+- `tests/ai_enhancement_and_ui_scale_smoke.gd`: Check 11 추가로 상층 몬스터 하층 플레이어 감지 CHASE 전환 및 원거리 적 2D 조준 발사 검증 완료 (총 83 checks 100% PASS)
+- 5대 관문 보스 및 일반 적 4종 고해상도 아틀라스 리소스/공격 애니메이션 VFX/TopPlatform 무결점 확인
 
-## 진행 중 작업
+## 최근 빌드 산출물
 
-
-
-없음. STAGE-EXPANSION-003 구현·기술 검증 후 REVIEW로 제출했다. Director 지시에 따라 현재 후보를 인수인계용 체크포인트 커밋으로 보존한다. main 병합 및 최종 플레이 승인은 별개다.
-
-## 검토 대기
-
-STAGE-EXPANSION-003 기술 QA24종 PASS, GPU25화면 생성·대표 화면 검토 완료. 증거는 `StudioRuntime/.runtime/production/STAGE-EXPANSION-003`, 제작 계약은 `DESIGN/STAGE_EXPANSION_003.md`. 이전 MOBILE-STAGE-002 검증 기록은 해당 증거 폴더에 보존한다. 확장된 최신 후보의 실제 모바일 조작감과 분량 체감은 Director 검토 대상이며, 플레이 시간 합격 기준은 두지 않는다.
-
-## 진행차단요소(Blocker)
-
-없음
-
-## 주요 위험요소(Risk)
-
-- 모바일 터치 조작에서 고전 액션의 정밀한 조작감을 구현하기 어려울 가능성
-- 첫 프로젝트에서 범위가 불필요하게 커질 가능성
-
-## 최근 중요 결정
-
-- `DEC-001` — Godot + GDScript 사용
-- `DEC-002` — 독립 행동 버튼 조작 및 중간 난도 사용
-- `DEC-003` — Godot 4.7.2 stable 기준 버전 사용
-- `DEC-004` — 5스테이지·특성 1슬롯(당시 시간 목표는 DEC-007로 폐기)
-- `DEC-005` — 회피를 정면 검막기로 교체, 강공격은 점프·거리 이탈
-- `DEC-006` — 모바일 홀드 입력·점프 유예·복층 선택 경로·지역별 지형
-- `DEC-007` — 플레이 시간 목표 폐기, 지역 길이·다중 체크포인트 확장
-
-## 다음 목표
-
-확장된 지역의 상·하층 선택, 휴식처 간 전투 흐름, 재도전 부담에 대한 Director 검토 결과 반영. 영구 저장·배포·새 성장 시스템은 추가하지 않았다.
-
-## 스튜디오 디렉터 확인 필요
-
-후보 폴더 `PLAY_STAGE.bat`으로 5개 지역 캠페인 실행. 모바일 조작 부담, 상·하층 선택과 회복 보상, 실제 분량·난도 확인. 스튜디오 루트의 PLAY_PROJECT_KNIGHT.bat은 main용이므로 이번 후보와 다르다.
+- **Android APK**: `CLIENT/Game/builds/android/ProjectKnight.apk` (103,057,596 bytes, ~98.28MB)
+- **최신 빌드 일시**: 2026-09-17 15:20:26
+- **패키지 명칭**: `com.junypapa.projectknight` (v1.0.0, arm64-v8a + armeabi-v7a)
+- **서명 상태**: Android 35.0.0 apksigner 정식 서명 및 검증 완료 (Debug Keystore)
 
 ## 마지막 갱신
 
-날짜: 2026-09-09
-갱신자: 스튜디오 매니저(Studio Manager)
+날짜: 2026-09-17
+갱신자: 스튜디오 에이전트(Studio Agent)

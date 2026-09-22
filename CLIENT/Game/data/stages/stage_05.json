@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "stage_id": 5,
+  "stage_name": "침묵의 성채 (Silent Citadel)",
+  "theme": "silent_citadel",
+  "world_width": 12600.0,
+  "ground_height": 660.0,
+  "goal_x": 12300.0,
+  "parallax_layers": [
+    {
+      "name": "crimson_moon_sky",
+      "texture_path": "res://assets/terrain_v2/s05_background_v2.png",
+      "motion_scale": [0.05, 0.05],
+      "modulate": [0.85, 0.45, 0.45, 1.0]
+    },
+    {
+      "name": "gothic_cathedral_spires",
+      "texture_path": "res://assets/terrain_v2/s05_background_v2.png",
+      "motion_scale": [0.25, 0.15],
+      "modulate": [0.55, 0.35, 0.40, 0.85]
+    },
+    {
+      "name": "citadel_inner_colonnade",
+      "texture_path": "res://assets/terrain_v2/s05_terrain_v2.png",
+      "motion_scale": [0.55, 0.35],
+      "modulate": [0.45, 0.30, 0.35, 0.90]
+    }
+  ],
+  "encounters": [
+    { "index": 1, "name": "성채 외곽 경계선", "entry_x": 400.0, "gate_x": 1430.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 400.0 }] }] },
+    { "index": 2, "name": "철벽의 상승로", "entry_x": 1850.0, "gate_x": 2880.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 180.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 3, "name": "첨탑 교차점", "entry_x": 3300.0, "gate_x": 4330.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 320.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 220.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 440.0 }] }] },
+    { "index": 4, "name": "회랑의 대치선", "entry_x": 4750.0, "gate_x": 5780.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 240.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 5, "name": "흑철의 광장", "entry_x": 6200.0, "gate_x": 7230.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 6, "name": "기사단 회랑", "entry_x": 7650.0, "gate_x": 8680.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 240.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 440.0 }] }] },
+    { "index": 7, "name": "성채 알현실 앞길", "entry_x": 9100.0, "gate_x": 10130.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 240.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 8, "name": "성채 최종 방어선 (Citadel Grand Line - Final Trial)", "entry_x": 10550.0, "gate_x": 11580.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 260.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 450.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "shield_commander", "spawn_offset_x": 280.0 }, { "monster_id": "ground_slam_golem", "spawn_offset_x": 480.0 }] }] }
+  ],
+  "checkpoints": [
+    { "index": 1, "name": "성채 첨탑 휴식처 (CP1)", "x": 3060.0, "y": 580.0, "required_encounter_prefix": 2 },
+    { "index": 2, "name": "흑철 분수대 휴식처 (CP2)", "x": 5960.0, "y": 580.0, "required_encounter_prefix": 4 },
+    { "index": 3, "name": "알현실 성문 휴식처 (CP3)", "x": 8860.0, "y": 580.0, "required_encounter_prefix": 6 }
+  ],
+  "optional_routes": [
+    { "id": "opt_01", "name": "성채 상층 테라스", "left_x": 1670.0, "right_x": 2720.0, "rises": [60, 120, 180, 240, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }] },
+    { "id": "opt_02", "name": "첨탑 지붕 아치교", "left_x": 4570.0, "right_x": 5620.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "charging_beast", "offset_x": 45.0 }] },
+    { "id": "opt_03", "name": "대광장 상부 회랑", "left_x": 7470.0, "right_x": 8520.0, "rises": [60, 120, 180, 240, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ground_slam_golem", "offset_x": 45.0 }] },
+    { "id": "opt_04", "name": "최후의 공중 가도", "left_x": 10370.0, "right_x": 11420.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "charging_beast", "offset_x": 45.0 }] }
+  ]
+}

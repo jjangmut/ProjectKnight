@@ -11,6 +11,7 @@ func _ready() -> void:
 	set_meta("art_variant", "beast")
 	attack_collision.shape.size = Vector2(44, 40)
 	attack_area.position.y = 5.0
+	_build_enemy_sprite()
 
 func _physics_process(delta: float) -> void:
 	if current_hp <= 0:

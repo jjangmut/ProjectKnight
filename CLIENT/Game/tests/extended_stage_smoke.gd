@@ -41,7 +41,8 @@ func _run() -> void:
 		check(stage.required_count == (6 if number <= 2 else 8), "Required anchors extended")
 		check(stage.checkpoint_positions.size() == (2 if number <= 2 else 3), "Two or three checkpoints")
 		for gate in stage.gates:
-			gate.get_child(0).set_deferred("disabled", true)
+			if is_instance_valid(gate) and gate.get_child_count() > 0:
+				gate.get_child(0).set_deferred("disabled", true)
 		await ticks(3)
 		# Every upper cluster is traversed from the real starting position with real input.
 		for branch in range(stage.route_clusters.size()):

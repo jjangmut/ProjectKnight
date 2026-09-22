@@ -10,6 +10,7 @@ const BOUNDS := {
 const REVISION_BOUNDS := {"melee": Rect2(245,57,850,1174), "ranged": Rect2(136,75,1057,1088), "beast": Rect2(84,81,1369,834), "golem": Rect2(33,21,1331,1091)}
 const TERRAIN_NAMES := ["outskirts", "forest", "wall", "sanctuary", "citadel"]
 const TERRAIN_EDGES := [Color("d8cba0"), Color("91a365"), Color("a9c1cf"), Color("cbb484"), Color("a3a9bf")]
+const ParallaxStageBackdropClass := preload("res://scripts/art/parallax_stage_backdrop.gd")
 var textures: Dictionary = {}
 var enemy_motions: Dictionary = {}
 var actors: Array[Dictionary] = []
@@ -76,6 +77,11 @@ func _install() -> void:
 			textures.background = load(background_path)
 	textures.ground = load("res://assets/terrain_v2/%s.png" % TERRAIN_NAMES[stage.stage_number - 1])
 	_load_enemy_motions()
+	var parallax_bg = ParallaxStageBackdropClass.new()
+	parallax_bg.name = "ParallaxStageBackdrop"
+	add_child(parallax_bg)
+	parallax_bg.setup_parallax(stage.stage_number, textures.background)
+
 	var layer := CanvasLayer.new()
 	layer.name = "StageBackdrop"
 	layer.layer = -10
@@ -85,6 +91,7 @@ func _install() -> void:
 	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	background.stretch_mode = TextureRect.STRETCH_SCALE
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	background.modulate = Color(1, 1, 1, 0.45)
 	layer.add_child(background)
 	background.size = get_viewport_rect().size
 	for terrain in get_tree().get_nodes_in_group("stage_terrain"):

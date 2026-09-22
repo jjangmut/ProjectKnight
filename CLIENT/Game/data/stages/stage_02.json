@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "stage_id": 2,
+  "stage_name": "야수숲 (Wildwood)",
+  "theme": "wildwood",
+  "world_width": 11600.0,
+  "ground_height": 660.0,
+  "goal_x": 11300.0,
+  "parallax_layers": [
+    {
+      "name": "deep_forest_sky",
+      "texture_path": "res://assets/terrain_v2/s02_background_v2.png",
+      "motion_scale": [0.05, 0.05],
+      "modulate": [0.45, 0.65, 0.45, 1.0]
+    },
+    {
+      "name": "ancient_trees",
+      "texture_path": "res://assets/terrain_v2/s02_background_v2.png",
+      "motion_scale": [0.25, 0.15],
+      "modulate": [0.35, 0.50, 0.35, 0.85]
+    },
+    {
+      "name": "thorn_bushes",
+      "texture_path": "res://assets/terrain_v2/s02_terrain_v2.png",
+      "motion_scale": [0.55, 0.35],
+      "modulate": [0.30, 0.40, 0.30, 0.90]
+    }
+  ],
+  "encounters": [
+    {
+      "index": 1,
+      "name": "숲의 진입로 (Forest Entrance)",
+      "entry_x": 400.0,
+      "gate_x": 1740.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 280.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "뒤엉킨 뿌리길 (Tangled Roots)",
+      "entry_x": 2200.0,
+      "gate_x": 3540.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 250.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 220.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 420.0 }] }
+      ]
+    },
+    {
+      "index": 3,
+      "name": "맹수의 굴목 (Beast Den)",
+      "entry_x": 4000.0,
+      "gate_x": 5340.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 300.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 400.0 }] }
+      ]
+    },
+    {
+      "index": 4,
+      "name": "엇갈린 숲길 (Crossed Woods)",
+      "entry_x": 5800.0,
+      "gate_x": 7140.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 320.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 180.0 }, { "monster_id": "charging_beast", "spawn_offset_x": 380.0 }] }
+      ]
+    },
+    {
+      "index": 5,
+      "name": "메마른 늪지 (Dry Swamp)",
+      "entry_x": 7600.0,
+      "gate_x": 8940.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 300.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 220.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }
+      ]
+    },
+    {
+      "index": 6,
+      "name": "맞은편 숲 출구 (Opposite Ridge - Alpha Beast)",
+      "entry_x": 9400.0,
+      "gate_x": 10740.0,
+      "waves": [
+        { "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 280.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }] },
+        { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 250.0 }, { "monster_id": "charging_beast", "spawn_offset_x": 460.0 }] }
+      ]
+    }
+  ],
+  "checkpoints": [
+    { "index": 1, "name": "숲속 은신처 휴식처 (CP1)", "x": 3720.0, "y": 580.0, "required_encounter_prefix": 2 },
+    { "index": 2, "name": "고목 그루터기 휴식처 (CP2)", "x": 7320.0, "y": 580.0, "required_encounter_prefix": 4 }
+  ],
+  "optional_routes": [
+    {
+      "id": "opt_01",
+      "name": "거목 상부 덩굴길",
+      "left_x": 2020.0,
+      "right_x": 3380.0,
+      "rises": [60, 120, 120, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "test_enemy", "offset_x": 45.0 }]
+    },
+    {
+      "id": "opt_02",
+      "name": "절벽 위 사냥길",
+      "left_x": 5620.0,
+      "right_x": 6980.0,
+      "rises": [60, 120, 180, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "charging_beast", "offset_x": 45.0 }]
+    },
+    {
+      "id": "opt_03",
+      "name": "출구 언덕 오솔길",
+      "left_x": 9220.0,
+      "right_x": 10580.0,
+      "rises": [60, 120, 120, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }]
+    }
+  ]
+}

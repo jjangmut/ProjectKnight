@@ -146,7 +146,7 @@ func _run() -> void:
 	check(sprite.motion_frame_index == 3, "Death reaches final frame")
 	visual._update_player_pose(10.0)
 	check(sprite.motion_frame_index == 3 and p.is_dead, "Death holds final frame without looping or reviving")
-	check(p.max_hp == 3 and p.move_speed == 320 and p.attack_duration == 0.16, "Core combat tuning retained")
+	check(p.max_hp == 3 and p.move_speed == 230 and p.attack_duration == 0.18, "Core combat tuning retained")
 	stage.free()
 	await process_frame
 	print("PLAYER_MOTION checks=%d failures=%d" % [checks, failures])

@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "stage_id": 4,
+  "stage_name": "돌의 성소 (Stone Sanctuary)",
+  "theme": "stone_sanctuary",
+  "world_width": 11200.0,
+  "ground_height": 660.0,
+  "goal_x": 10900.0,
+  "parallax_layers": [
+    {
+      "name": "sanctuary_deep_cavern",
+      "texture_path": "res://assets/terrain_v2/s04_background_v2.png",
+      "motion_scale": [0.05, 0.05],
+      "modulate": [0.55, 0.55, 0.70, 1.0]
+    },
+    {
+      "name": "colossal_statues",
+      "texture_path": "res://assets/terrain_v2/s04_background_v2.png",
+      "motion_scale": [0.25, 0.15],
+      "modulate": [0.45, 0.45, 0.60, 0.85]
+    },
+    {
+      "name": "ancient_pillars",
+      "texture_path": "res://assets/terrain_v2/s04_terrain_v2.png",
+      "motion_scale": [0.55, 0.35],
+      "modulate": [0.35, 0.35, 0.50, 0.90]
+    }
+  ],
+  "encounters": [
+    { "index": 1, "name": "좁은 바위 틈 (Narrow Gap)", "entry_x": 400.0, "gate_x": 1255.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 260.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 2, "name": "성소 입구 마당", "entry_x": 1675.0, "gate_x": 2530.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 240.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 220.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 400.0 }] }] },
+    { "index": 3, "name": "거석 열주실", "entry_x": 2950.0, "gate_x": 3805.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 180.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 4, "name": "열린 제단 마당", "entry_x": 4225.0, "gate_x": 5080.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 240.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 5, "name": "성소 두 갈래길", "entry_x": 5500.0, "gate_x": 6355.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 6, "name": "침식된 회랑", "entry_x": 6775.0, "gate_x": 7630.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 240.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 220.0 }, { "monster_id": "charging_beast", "spawn_offset_x": 420.0 }] }] },
+    { "index": 7, "name": "제사장 통로", "entry_x": 8050.0, "gate_x": 8905.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 240.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 8, "name": "성소 끝자락 (Sanctuary Edge - Ancient Titan)", "entry_x": 9325.0, "gate_x": 10180.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 280.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 440.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ground_slam_golem", "spawn_offset_x": 260.0 }, { "monster_id": "ground_slam_golem", "spawn_offset_x": 480.0 }] }] }
+  ],
+  "checkpoints": [
+    { "index": 1, "name": "거석 기둥 휴식처 (CP1)", "x": 2710.0, "y": 580.0, "required_encounter_prefix": 2 },
+    { "index": 2, "name": "제단 샘터 휴식처 (CP2)", "x": 5260.0, "y": 580.0, "required_encounter_prefix": 4 },
+    { "index": 3, "name": "성소 관문 휴식처 (CP3)", "x": 7810.0, "y": 580.0, "required_encounter_prefix": 6 }
+  ],
+  "optional_routes": [
+    { "id": "opt_01", "name": "석상 어깨 발판길", "left_x": 1495.0, "right_x": 2370.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ground_slam_golem", "offset_x": 45.0 }] },
+    { "id": "opt_02", "name": "제단 상부 아치길", "left_x": 4045.0, "right_x": 4920.0, "rises": [60, 120, 180, 240, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ground_slam_golem", "offset_x": 45.0 }] },
+    { "id": "opt_03", "name": "천장 균열 벼랑길", "left_x": 6595.0, "right_x": 7470.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ground_slam_golem", "offset_x": 45.0 }] },
+    { "id": "opt_04", "name": "끝자락 상승 암벽", "left_x": 9145.0, "right_x": 10020.0, "rises": [60, 120, 180, 240, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ground_slam_golem", "offset_x": 45.0 }] }
+  ]
+}

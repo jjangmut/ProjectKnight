@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "stage_id": 3,
+  "stage_name": "무너진 성벽 (Ruined Ramparts)",
+  "theme": "ruined_ramparts",
+  "world_width": 12000.0,
+  "ground_height": 660.0,
+  "goal_x": 11700.0,
+  "parallax_layers": [
+    {
+      "name": "cloudy_twilight_sky",
+      "texture_path": "res://assets/terrain_v2/s03_background_v2.png",
+      "motion_scale": [0.05, 0.05],
+      "modulate": [0.65, 0.55, 0.65, 1.0]
+    },
+    {
+      "name": "shattered_ramparts_far",
+      "texture_path": "res://assets/terrain_v2/s03_background_v2.png",
+      "motion_scale": [0.25, 0.15],
+      "modulate": [0.50, 0.45, 0.55, 0.85]
+    },
+    {
+      "name": "broken_battlements",
+      "texture_path": "res://assets/terrain_v2/s03_terrain_v2.png",
+      "motion_scale": [0.55, 0.35],
+      "modulate": [0.40, 0.35, 0.45, 0.90]
+    }
+  ],
+  "encounters": [
+    { "index": 1, "name": "외벽 붕괴 구역", "entry_x": 400.0, "gate_x": 1355.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 260.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 400.0 }] }] },
+    { "index": 2, "name": "망루 계단 진입로", "entry_x": 1775.0, "gate_x": 2730.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 180.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 3, "name": "돌무더기 회랑", "entry_x": 3150.0, "gate_x": 4105.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 200.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 4, "name": "무너진 성벽 다리", "entry_x": 4525.0, "gate_x": 5480.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 240.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 220.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 400.0 }] }] },
+    { "index": 5, "name": "내벽 통로", "entry_x": 5900.0, "gate_x": 6855.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }] }] },
+    { "index": 6, "name": "성벽 위쪽 길", "entry_x": 7275.0, "gate_x": 8230.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 280.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 220.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 420.0 }] }] },
+    { "index": 7, "name": "돌아가는 협로", "entry_x": 8650.0, "gate_x": 9605.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 260.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "test_enemy", "spawn_offset_x": 200.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 400.0 }] }] },
+    { "index": 8, "name": "성벽 출구 관문", "entry_x": 10025.0, "gate_x": 10980.0, "waves": [{ "wave_index": 1, "enemies": [{ "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }, { "monster_id": "test_enemy", "spawn_offset_x": 440.0 }] }, { "wave_index": 2, "enemies": [{ "monster_id": "charging_beast", "spawn_offset_x": 250.0 }, { "monster_id": "ranged_enemy", "spawn_offset_x": 460.0 }] }] }
+  ],
+  "checkpoints": [
+    { "index": 1, "name": "성벽 초소 휴식처 (CP1)", "x": 2910.0, "y": 580.0, "required_encounter_prefix": 2 },
+    { "index": 2, "name": "망루 잔해 휴식처 (CP2)", "x": 5660.0, "y": 580.0, "required_encounter_prefix": 4 },
+    { "index": 3, "name": "외벽 출구 휴식처 (CP3)", "x": 8410.0, "y": 580.0, "required_encounter_prefix": 6 }
+  ],
+  "optional_routes": [
+    { "id": "opt_01", "name": "성벽 흉벽 상부", "left_x": 1595.0, "right_x": 2570.0, "rises": [60, 120, 180, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }] },
+    { "id": "opt_02", "name": "아치 지붕길", "left_x": 4345.0, "right_x": 5320.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }] },
+    { "id": "opt_03", "name": "성벽 감시탑 난간", "left_x": 7095.0, "right_x": 8070.0, "rises": [60, 120, 180, 240, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }] },
+    { "id": "opt_04", "name": "출구 위쪽 회랑", "left_x": 9845.0, "right_x": 10820.0, "rises": [60, 120, 180, 180, 180, 120, 60], "reward_type": "hp_plus_one", "enemies": [{ "monster_id": "test_enemy", "offset_x": -45.0 }, { "monster_id": "ranged_enemy", "offset_x": 45.0 }] }
+  ]
+}

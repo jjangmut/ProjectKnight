@@ -9,6 +9,8 @@ size = Vector2(70, 50)
 size = Vector2(44, 40)
 
 [node name="ChargingBeast" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 16
+collision_mask = 1
 script = ExtResource("1")
 move_speed = 90.0
 detection_range = 480.0

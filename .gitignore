@@ -11,3 +11,9 @@ Thumbs.db
 # Godot 4 generated cache
 .godot/
 *.translation
+
+# Build artifacts (APKs are distributed via GitHub Releases)
+CLIENT/Game/builds/
+*.apk
+*.aab
+

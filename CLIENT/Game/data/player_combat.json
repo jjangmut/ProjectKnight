@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "base_stats": {
+    "max_hp": 3,
+    "move_speed": 320.0,
+    "jump_velocity": -520.0,
+    "gravity": 1400.0,
+    "jump_buffer": 0.14,
+    "coyote_time": 0.12,
+    "hit_invulnerability_usec": 500000
+  },
+  "guard_system": {
+    "recovery_duration": 0.12,
+    "cooldown_duration": 0.20,
+    "block_flash_duration": 0.14,
+    "counter_window": 0.18,
+    "counter_damage": 2,
+    "counter_range": 84.0,
+    "counter_stun_duration": 0.40
+  },
+  "combo_system": {
+    "combo_steps": [
+      {
+        "step": 1,
+        "name": "thrust",
+        "duration": 0.12,
+        "cooldown": 0.15,
+        "range": 65.0,
+        "height": 40.0,
+        "damage": 1,
+        "stun_duration": 0.10,
+        "knockback": 40.0
+      },
+      {
+        "step": 2,
+        "name": "slash",
+        "duration": 0.14,
+        "cooldown": 0.18,
+        "range": 75.0,
+        "height": 55.0,
+        "damage": 1,
+        "stun_duration": 0.15,
+        "knockback": 80.0
+      },
+      {
+        "step": 3,
+        "name": "smash",
+        "duration": 0.20,
+        "cooldown": 0.35,
+        "range": 90.0,
+        "height": 60.0,
+        "damage": 2,
+        "stun_duration": 0.30,
+        "knockback": 200.0
+      }
+    ]
+  },
+  "aerial_system": {
+    "down_thrust": {
+      "descend_speed": 350.0,
+      "damage": 1,
+      "rebound_velocity": -420.0,
+      "rebound_height": 280.0,
+      "miss_landing_lag": 0.15
+    }
+  },
+  "traits": {
+    "basic": {
+      "name": "기본 검술",
+      "desc": "사거리 72 / 쿨다운 0.32초 / 카운터 유효 시간 0.24초로 완화",
+      "attack_range": 72.0,
+      "attack_cooldown": 0.32,
+      "counter_window_bonus": 0.06
+    },
+    "reach": {
+      "name": "리치 검술",
+      "desc": "사거리 90 / 쿨다운 0.40초 / 3타 콤보 사거리 110px",
+      "attack_range": 90.0,
+      "attack_cooldown": 0.40,
+      "combo_finisher_range_bonus": 20.0
+    }
+  }
+}

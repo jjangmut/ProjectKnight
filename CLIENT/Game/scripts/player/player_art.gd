@@ -88,6 +88,8 @@ func _load_motion_manifest() -> void:
 			attack_frames = frames
 
 func update_motion(delta: float) -> bool:
+	if actor == null or not is_instance_valid(actor) or not "is_guarding" in actor:
+		return false
 	flip_h = (actor._guard_direction if actor.is_guarding else actor.facing_direction) < 0.0
 	self_modulate = Color.WHITE
 	material.set_shader_parameter("hurt_flash", 1.0 if actor._hurt_flash_remaining > 0 and not actor.is_dead else 0.0)
@@ -109,6 +111,8 @@ func update_motion(delta: float) -> bool:
 	was_dead = false
 	if actor._hurt_flash_remaining > 0.0:
 		return _apply_motion("hurt", _phase(actor._hurt_flash_remaining, 0.12))
+	if "is_dashing" in actor and actor.is_dashing:
+		return _apply_motion("dodge", _phase(actor._dash_time_remaining, actor.DASH_DURATION))
 	if actor.is_guarding:
 		var pose := 2 if actor._guard_block_flash_remaining > 0.0 else 0 if actor._guard_elapsed < 0.08 else 1
 		return _apply_motion("guard", float(pose) / 3.0)

@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0.0",
+  "stage_id": 1,
+  "stage_name": "성문 외곽 (Castle Outskirts)",
+  "theme": "castle_outskirts",
+  "world_width": 11000.0,
+  "ground_height": 660.0,
+  "goal_x": 10700.0,
+  "parallax_layers": [
+    {
+      "name": "sky",
+      "texture_path": "res://assets/terrain_v2/s01_background_v2.png",
+      "motion_scale": [0.05, 0.05],
+      "modulate": [0.7, 0.75, 0.85, 1.0]
+    },
+    {
+      "name": "distant_mountains",
+      "texture_path": "res://assets/terrain_v2/s01_background_v2.png",
+      "motion_scale": [0.20, 0.10],
+      "modulate": [0.5, 0.55, 0.65, 0.8]
+    },
+    {
+      "name": "middle_ruins",
+      "texture_path": "res://assets/terrain_v2/s01_terrain_v2.png",
+      "motion_scale": [0.50, 0.30],
+      "modulate": [0.35, 0.4, 0.45, 0.9]
+    }
+  ],
+  "encounters": [
+    {
+      "index": 1,
+      "name": "첫 발걸음 (First Step)",
+      "entry_x": 400.0,
+      "gate_x": 1640.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "test_enemy", "spawn_offset_x": 250.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "test_enemy", "spawn_offset_x": 200.0 },
+            { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "성벽 감시초소 (Outpost)",
+      "entry_x": 2075.0,
+      "gate_x": 3315.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "ranged_enemy", "spawn_offset_x": 300.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "test_enemy", "spawn_offset_x": 180.0 },
+            { "monster_id": "ranged_enemy", "spawn_offset_x": 420.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "name": "돌무더기 협곡 (Rocky Pass)",
+      "entry_x": 3750.0,
+      "gate_x": 4990.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "charging_beast", "spawn_offset_x": 320.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "test_enemy", "spawn_offset_x": 180.0 },
+            { "monster_id": "test_enemy", "spawn_offset_x": 360.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "name": "무너진 성벽 다리 (Broken Bridge)",
+      "entry_x": 5425.0,
+      "gate_x": 6665.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "ranged_enemy", "spawn_offset_x": 350.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "charging_beast", "spawn_offset_x": 250.0 },
+            { "monster_id": "ranged_enemy", "spawn_offset_x": 450.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "name": "성문 앞 공터 (Outer Courtyard)",
+      "entry_x": 7100.0,
+      "gate_x": 8340.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "ground_slam_golem", "spawn_offset_x": 300.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "test_enemy", "spawn_offset_x": 200.0 },
+            { "monster_id": "test_enemy", "spawn_offset_x": 380.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "name": "성문 정면 방어선 (Castle Gate Line - Elite)",
+      "entry_x": 8775.0,
+      "gate_x": 10015.0,
+      "waves": [
+        {
+          "wave_index": 1,
+          "enemies": [
+            { "monster_id": "ranged_enemy", "spawn_offset_x": 280.0 },
+            { "monster_id": "test_enemy", "spawn_offset_x": 420.0 }
+          ]
+        },
+        {
+          "wave_index": 2,
+          "enemies": [
+            { "monster_id": "shield_commander", "spawn_offset_x": 350.0 }
+          ]
+        }
+      ]
+    }
+  ],
+  "checkpoints": [
+    {
+      "index": 1,
+      "name": "외곽 전초기지 휴식처 (CP1)",
+      "x": 3495.0,
+      "y": 580.0,
+      "required_encounter_prefix": 2
+    },
+    {
+      "index": 2,
+      "name": "성문 안뜰 분수대 휴식처 (CP2)",
+      "x": 6845.0,
+      "y": 580.0,
+      "required_encounter_prefix": 4
+    }
+  ],
+  "optional_routes": [
+    {
+      "id": "opt_01",
+      "name": "감시초소 상부 목책 (Outpost Watchdeck)",
+      "left_x": 1895.0,
+      "right_x": 3155.0,
+      "rises": [60, 120, 180, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [
+        { "monster_id": "test_enemy", "offset_x": -45.0 },
+        { "monster_id": "test_enemy", "offset_x": 45.0 }
+      ]
+    },
+    {
+      "id": "opt_02",
+      "name": "협곡 상부 절벽길 (Canyon Cliff)",
+      "left_x": 5245.0,
+      "right_x": 6505.0,
+      "rises": [60, 120, 180, 240, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [
+        { "monster_id": "test_enemy", "offset_x": -45.0 },
+        { "monster_id": "ranged_enemy", "offset_x": 45.0 }
+      ]
+    },
+    {
+      "id": "opt_03",
+      "name": "성문 회랑 아치길 (Gate Archway)",
+      "left_x": 8595.0,
+      "right_x": 9855.0,
+      "rises": [60, 120, 180, 180, 120, 60],
+      "reward_type": "hp_plus_one",
+      "enemies": [
+        { "monster_id": "test_enemy", "offset_x": -45.0 },
+        { "monster_id": "charging_beast", "offset_x": 45.0 }
+      ]
+    }
+  ]
+}
