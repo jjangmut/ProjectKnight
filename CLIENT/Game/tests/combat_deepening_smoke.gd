@@ -75,6 +75,7 @@ func _run() -> void:
 	player._guard_recovery_remaining = 0.0
 	Input.action_press("guard")
 	player._start_guard()
+	player._guard_elapsed = 0.20 # Held past perfect parry window for standard block
 	check(player.is_guarding, "Ground guard active")
 
 	# Block frontal attack

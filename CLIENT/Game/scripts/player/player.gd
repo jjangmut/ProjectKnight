@@ -68,6 +68,14 @@ var is_counter_attacking: bool = false
 var is_down_thrusting: bool = false
 var current_attack_damage: int = 1
 
+# Perfect Parry & Air Combat & Sword Beam (v1.1.0)
+const PERFECT_PARRY_WINDOW: float = 0.14
+var is_perfect_parry: bool = false
+var is_air_attacking: bool = false
+var _air_hang_timer: float = 0.0
+const SwordBeamScene = preload("res://scripts/player/sword_beam.gd")
+signal perfect_parry_performed
+
 # Economy & Reward (TASK-CL-019)
 var soul_shards: int = 0
 signal soul_shards_changed(new_count: int)
@@ -146,16 +154,24 @@ func _physics_process(delta: float) -> void:
 	var is_down_held := Input.is_action_pressed("ui_down") or (InputMap.has_action("move_down") and Input.is_action_pressed("move_down"))
 	if not is_on_floor() and is_down_held and Input.is_action_just_pressed("attack") and not is_attacking:
 		_start_down_thrust()
+	elif not is_on_floor() and Input.is_action_just_pressed("attack") and not is_attacking and not is_guarding and _cooldown_time_remaining <= 0.0:
+		_start_air_attack()
 	elif Input.is_action_pressed("attack") and not is_attacking and not is_guarding and _guard_recovery_remaining <= 0.0 and _cooldown_time_remaining <= 0.0:
 		_start_attack()
 
 	if not is_on_floor():
-		velocity.y += gravity * delta
+		if _air_hang_timer > 0.0:
+			_air_hang_timer -= delta
+			velocity.y = minf(velocity.y, 40.0) # Gravity suspension during aerial slash
+		else:
+			velocity.y += gravity * delta
 		if is_down_thrusting:
 			velocity.y = maxf(velocity.y, 420.0)
 	else:
 		if is_down_thrusting:
 			_end_down_thrust()
+		if is_air_attacking:
+			_end_air_attack()
 
 	_coyote_remaining = coyote_time if is_on_floor() else maxf(0.0, _coyote_remaining - delta)
 	_jump_buffer_remaining = jump_buffer if Input.is_action_just_pressed("jump") else maxf(0.0, _jump_buffer_remaining - delta)
@@ -250,21 +266,60 @@ func _start_attack() -> void:
 			_cooldown_time_remaining = 0.22 / attack_speed_multiplier
 			current_attack_damage = 1
 			AudioManager.play("slash_1", global_position)
+			_trigger_haptic(20)
 		2:
 			_attack_time_remaining = 0.20 / attack_speed_multiplier
 			_cooldown_time_remaining = 0.24 / attack_speed_multiplier
 			current_attack_damage = 1
 			AudioManager.play("slash_2", global_position)
+			_trigger_haptic(25)
 		3:
 			_attack_time_remaining = 0.28 / attack_speed_multiplier
 			_cooldown_time_remaining = 0.38 / attack_speed_multiplier
 			current_attack_damage = 2
 			AudioManager.play("smash_3", global_position)
+			_trigger_haptic(50)
+			_spawn_sword_beam()
 
 	_combo_window_remaining = COMBO_WINDOW_MAX
 	_hit_targets.clear()
 	_update_attack_geometry()
 	_set_attack_active(true)
+
+
+func _spawn_sword_beam() -> void:
+	var parent_node := get_parent()
+	if not is_instance_valid(parent_node):
+		return
+	var beam := SwordBeamScene.new()
+	beam.position = global_position + Vector2(facing_direction * 36.0, -8.0)
+	beam.direction = facing_direction
+	parent_node.add_child(beam)
+
+
+func _start_air_attack() -> void:
+	if is_dead or is_on_floor():
+		return
+	is_air_attacking = true
+	is_attacking = true
+	attack_count += 1
+	_air_hang_timer = 0.12
+	velocity.y = minf(velocity.y, 0.0) # Aerodynamic hover / lift
+	_attack_time_remaining = 0.20 / attack_speed_multiplier
+	_cooldown_time_remaining = 0.22 / attack_speed_multiplier
+	current_attack_damage = 1
+	AudioManager.play("slash_2", global_position)
+	_trigger_haptic(25)
+	_hit_targets.clear()
+	_update_attack_geometry()
+	_set_attack_active(true)
+
+
+func _end_air_attack() -> void:
+	is_air_attacking = false
+	_air_hang_timer = 0.0
+	if is_attacking and not is_down_thrusting:
+		_end_attack()
 
 
 func _start_counter_attack() -> void:
@@ -278,8 +333,10 @@ func _start_counter_attack() -> void:
 	combo_step = 3
 	_attack_time_remaining = 0.20 / attack_speed_multiplier
 	_cooldown_time_remaining = 0.22 / attack_speed_multiplier
-	current_attack_damage = 2
+	current_attack_damage = 3 if is_perfect_parry else 2
+	is_perfect_parry = false
 	AudioManager.play("counter_hit", global_position)
+	_trigger_haptic(60)
 	_hit_targets.clear()
 	_update_attack_geometry()
 	_set_attack_active(true)
@@ -307,6 +364,8 @@ func _end_down_thrust() -> void:
 func _end_attack() -> void:
 	is_attacking = false
 	is_counter_attacking = false
+	is_air_attacking = false
+	_air_hang_timer = 0.0
 	_set_attack_active(false)
 	_refresh_body_color()
 
@@ -342,6 +401,20 @@ func _update_attack_geometry() -> void:
 			Vector2(0.0, 18.0)
 		])
 		attack_visual.color = Color(0.9, 0.8, 0.2)
+		return
+	elif is_air_attacking:
+		attack_area.position.x = facing_direction * 38.0
+		attack_area.position.y = -4.0
+		var attack_shape := attack_collision.shape as RectangleShape2D
+		attack_shape.size = Vector2(76.0, 60.0)
+		var half_range := 38.0
+		attack_visual.polygon = PackedVector2Array([
+			Vector2(-half_range, -28.0),
+			Vector2(half_range, -20.0),
+			Vector2(half_range, 20.0),
+			Vector2(-half_range, 28.0),
+		])
+		attack_visual.color = Color(0.35, 0.9, 1.0, 0.85)
 		return
 
 	var effective_range := attack_range
@@ -498,12 +571,30 @@ func receive_attack(source_position: Vector2, blockable: bool = true) -> bool:
 	var in_front := (source_position.x - global_position.x) * _guard_direction > 0.0
 	if blockable and is_guarding and is_on_floor() and in_front:
 		guard_block_count += 1
-		_guard_block_flash_remaining = 0.14
-		_counter_window_remaining = counter_window
-		AudioManager.play("guard_clang", global_position)
-		if get_parent() is Node2D:
-			GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -35), "BLOCKED!", Color(0.85, 0.9, 0.95), false)
-		GameFeelManager.shake(0.15)
+		_guard_block_flash_remaining = 0.16
+		var parent_node := get_parent() as Node2D if get_parent() is Node2D else self
+
+		# Perfect Parry Check (Parry within initial window)
+		if _guard_elapsed <= PERFECT_PARRY_WINDOW:
+			is_perfect_parry = true
+			_counter_window_remaining = 0.65 # Extended golden counter window
+			perfect_parry_performed.emit()
+			AudioManager.play("counter_impact", global_position)
+			AudioManager.play("guard_clang", global_position)
+			GameFeelManager.shake(0.40)
+			GameFeelManager.trigger_hit_stop(0.14, 0.0)
+			if parent_node is Node2D:
+				GameFeelManager.damage_popup(parent_node, global_position + Vector2(0, -42), "PERFECT PARRY!", Color(1.0, 0.88, 0.2), true)
+				GameFeelManager.slash_spark(parent_node, global_position + Vector2(_guard_direction * 22.0, -12.0), _guard_direction, true)
+			_trigger_haptic(85)
+		else:
+			is_perfect_parry = false
+			_counter_window_remaining = counter_window
+			AudioManager.play("guard_clang", global_position)
+			GameFeelManager.shake(0.15)
+			if parent_node is Node2D:
+				GameFeelManager.damage_popup(parent_node, global_position + Vector2(0, -35), "BLOCKED!", Color(0.85, 0.9, 0.95), false)
+			_trigger_haptic(35)
 		return true
 	receive_hit()
 	return false
@@ -521,6 +612,7 @@ func receive_hit() -> void:
 	hit_count += 1
 	current_hp = maxi(current_hp - 1, 0)
 	AudioManager.play("player_hurt", global_position)
+	_trigger_haptic(110)
 
 	# Hurt juice: Hit stop & trauma
 	GameFeelManager.trigger_hit_stop(0.07, 0.05)
@@ -612,6 +704,7 @@ func dash() -> bool:
 
 	AudioManager.play("pogo_bounce", global_position)
 	GameFeelManager.shake(0.12)
+	_trigger_haptic(20)
 	_spawn_ghost_trail()
 	_refresh_body_color()
 	dash_performed.emit(is_air)
@@ -669,5 +762,9 @@ func update_stats_from_upgrades(spd_lvl: int, atk_spd_lvl: int) -> void:
 	attack_speed_level = atk_spd_lvl
 	move_speed = BASE_MOVE_SPEED + float(speed_level) * 25.0
 	attack_speed_multiplier = 1.0 + float(attack_speed_level) * 0.15
+
+
+func _trigger_haptic(duration_ms: int = 30) -> void:
+	Input.vibrate_handheld(duration_ms)
 
 
