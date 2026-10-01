@@ -105,14 +105,21 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Predator Champion Rim Aura
+	# Predator Champion Rim Aura (Transparent fill with sharp rim line to eliminate opaque plate artifact)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-50, -42), Vector2(50, -42), Vector2(58, 0),
-		Vector2(42, 32), Vector2(-42, 32), Vector2(-58, 0)
+		Vector2(-120, -95), Vector2(120, -95), Vector2(140, 0),
+		Vector2(110, 75), Vector2(-110, 75), Vector2(-140, 0)
 	])
-	aura_poly.color = Color(1.4, 0.25, 0.15, 0.35)
+	aura_poly.color = Color(1.4, 0.25, 0.15, 0.0) # Transparent plate
 	aura_poly.visible = true
+	var aura_rim := Line2D.new()
+	aura_rim.width = 2.4
+	aura_rim.default_color = Color(3.2, 0.6, 0.3, 0.85)
+	var closed_pts := aura_poly.polygon.duplicate()
+	closed_pts.append(closed_pts[0])
+	aura_rim.points = closed_pts
+	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
 	# Primitive placeholders (hidden in favor of high-res beast sprite)
@@ -204,9 +211,10 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	boss_sprite.scale = Vector2.ONE * 0.19
+	# Grand Predator Stature: 0.58 (~240px tall, ~380px wide, ~3x larger)
+	boss_sprite.scale = Vector2.ONE * 0.58
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 27)
+	boss_sprite.position = Vector2(0, 80)
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
@@ -218,12 +226,12 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
 	var body_shape := RectangleShape2D.new()
-	body_shape.size = Vector2(72, 54)
+	body_shape.size = Vector2(220, 160)
 	body_col.shape = body_shape
-	body_col.position = Vector2(0, 0)
+	body_col.position = Vector2(0, -10)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Beast
+	# Dynamic Top Platform: allows player to stand and ride on top of Grand Beast
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -231,9 +239,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(64.0, 12.0)
+	top_rect.size = Vector2(180.0, 20.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -28.0)
+	top_shape.position = Vector2(0.0, -95.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)

@@ -88,14 +88,21 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Ancient Titan Magma Rim Aura
+	# Ancient Titan Magma Rim Aura (Transparent fill with glowing rim line to eliminate opaque plate artifact)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-54, -56), Vector2(54, -56), Vector2(64, 10),
-		Vector2(48, 50), Vector2(-48, 50), Vector2(-64, 10)
+		Vector2(-120, -175), Vector2(120, -175), Vector2(145, 10),
+		Vector2(110, 105), Vector2(-110, 105), Vector2(-145, 10)
 	])
-	aura_poly.color = Color(1.6, 0.75, 0.25, 0.35)
+	aura_poly.color = Color(1.6, 0.75, 0.25, 0.0) # Transparent plate
 	aura_poly.visible = true
+	var aura_rim := Line2D.new()
+	aura_rim.width = 2.8
+	aura_rim.default_color = Color(3.5, 1.8, 0.5, 0.9)
+	var closed_pts := aura_poly.polygon.duplicate()
+	closed_pts.append(closed_pts[0])
+	aura_rim.points = closed_pts
+	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
 	# Stone Torso (84x76) - hidden in favor of high-res sprite
@@ -131,12 +138,12 @@ func _build_visuals() -> void:
 	head_poly.visible = false
 	visual.add_child(head_poly)
 
-	# Magma Rune Core in Chest (HDR Glowing Radiant Core)
+	# Magma Rune Core in Chest (HDR Glowing Radiant Core, scaled to titan stature)
 	core_poly = Polygon2D.new()
 	core_poly.polygon = PackedVector2Array([
-		Vector2(0, -26), Vector2(16, -10), Vector2(0, 8), Vector2(-16, -10)
+		Vector2(0, -65), Vector2(40, -25), Vector2(0, 20), Vector2(-40, -25)
 	])
-	core_poly.color = Color(2.0, 1.4, 0.35, 0.95)
+	core_poly.color = Color(3.5, 2.0, 0.4, 0.95)
 	core_poly.visible = true
 	core_poly.z_index = 2
 	visual.add_child(core_poly)
@@ -191,9 +198,10 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	boss_sprite.scale = Vector2.ONE * 0.22
+	# Grand Ancient Titan Stature: 0.70 (~300px tall, ~3.2x larger)
+	boss_sprite.scale = Vector2.ONE * 0.70
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 38)
+	boss_sprite.position = Vector2(0, 105)
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
@@ -205,12 +213,12 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
-	shape.size = Vector2(74, 90)
+	shape.size = Vector2(210, 270)
 	body_col.shape = shape
-	body_col.position = Vector2(0, -6)
+	body_col.position = Vector2(0, -35)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Ancient Golem
+	# Dynamic Top Platform: allows player to stand and ride on top of Grand Ancient Golem head (~170px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -218,9 +226,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(70.0, 12.0)
+	top_rect.size = Vector2(190.0, 22.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -42.0)
+	top_shape.position = Vector2(0.0, -170.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -231,9 +239,9 @@ func _build_collisions() -> void:
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := RectangleShape2D.new()
-	hurt_shape.size = Vector2(80, 94)
+	hurt_shape.size = Vector2(220, 280)
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -6)
+	hurt_col.position = Vector2(0, -35)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 

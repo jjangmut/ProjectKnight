@@ -12,6 +12,7 @@ const BeastChieftainClass = preload("res://scripts/enemy/beast_chieftain.gd")
 const CrossbowCommanderClass = preload("res://scripts/enemy/crossbow_commander.gd")
 const AncientGolemGuardianClass = preload("res://scripts/enemy/ancient_golem_guardian.gd")
 const AbyssalArbiterClass = preload("res://scripts/enemy/abyssal_arbiter.gd")
+const BoltScene = preload("res://scripts/enemy/crossbow_bolt.gd")
 
 func _initialize() -> void:
 	_run_suite.call_deferred()
@@ -282,6 +283,67 @@ func _run_suite() -> void:
 		_check(has_hdr, "Slash spark lines utilize intense HDR Overdrive bloom colors")
 
 	spark_holder.queue_free()
+
+	# =========================================================================
+	# [Check 8: 3x Grand Boss Scale, Transparent Aura Plate, & Crossbow Bolt Collision]
+	# =========================================================================
+	print("\n[Check 8: 3x Grand Boss Scale, Transparent Aura Plate, & Crossbow Bolt Collision]")
+	var b_test1 = BossCommanderClass.new()
+	var b_test2 = BeastChieftainClass.new()
+	var b_test3 = CrossbowCommanderClass.new()
+	var b_test4 = AncientGolemGuardianClass.new()
+	var b_test5 = AbyssalArbiterClass.new()
+	b_test1.set_physics_process(false)
+	b_test2.set_physics_process(false)
+	b_test3.set_physics_process(false)
+	b_test4.set_physics_process(false)
+	b_test5.set_physics_process(false)
+	root.add_child(b_test1)
+	root.add_child(b_test2)
+	root.add_child(b_test3)
+	root.add_child(b_test4)
+	root.add_child(b_test5)
+	await process_frame
+
+	_check(b_test1.boss_sprite.scale.x >= 0.65, "Boss 1: Imposing Grand Stature scaled >= 0.65 (Current: %.2f)" % b_test1.boss_sprite.scale.x)
+	_check(b_test2.boss_sprite.scale.x >= 0.50, "Boss 2: Imposing Grand Stature scaled >= 0.50 (Current: %.2f)" % b_test2.boss_sprite.scale.x)
+	_check(b_test3.boss_sprite.scale.x >= 0.50, "Boss 3: Imposing Grand Stature scaled >= 0.50 (Current: %.2f)" % b_test3.boss_sprite.scale.x)
+	_check(b_test4.boss_sprite.scale.x >= 0.65, "Boss 4: Imposing Grand Stature scaled >= 0.65 (Current: %.2f)" % b_test4.boss_sprite.scale.x)
+	_check(b_test5.boss_sprite.scale.x >= 0.55, "Boss 5: Imposing Grand Stature scaled >= 0.55 (Current: %.2f)" % b_test5.boss_sprite.scale.x)
+
+	_check(is_zero_approx(b_test1.aura_poly.color.a), "Boss 1: Opaque aura plate eliminated (fill alpha == 0)")
+	_check(is_zero_approx(b_test2.aura_poly.color.a), "Boss 2: Opaque aura plate eliminated (fill alpha == 0)")
+	_check(is_zero_approx(b_test3.aura_poly.color.a), "Boss 3: Opaque aura plate eliminated (fill alpha == 0)")
+	_check(is_zero_approx(b_test4.aura_poly.color.a), "Boss 4: Opaque aura plate eliminated (fill alpha == 0)")
+	_check(is_zero_approx(b_test5.aura_poly.color.a), "Boss 5: Opaque aura plate eliminated (fill alpha == 0)")
+
+	# Validate Crossbow Bolt Collision Mask & Hitbox
+	var test_bolt = BoltScene.new()
+	root.add_child(test_bolt)
+	await process_frame
+	_check((test_bolt.collision_mask & 8) != 0, "CrossbowBolt: collision_mask includes Player Body Layer 8")
+	_check((test_bolt.collision_mask & 1) != 0, "CrossbowBolt: collision_mask includes Environment Layer 1")
+	var bshape := test_bolt.get_node("CollisionShape2D").shape as RectangleShape2D
+	_check(bshape != null and bshape.size.x >= 35.0, "CrossbowBolt: Enlarged reliable hit shape (Length >= 35px)")
+
+	# Simulate hit on player
+	var hit_recorded := false
+	var mock_player = player_scene.instantiate()
+	root.add_child(mock_player)
+	mock_player.position = Vector2(500, 580)
+	await process_frame
+	var init_hp: int = mock_player.current_hp
+	test_bolt._hit_player(mock_player)
+	_check(mock_player.current_hp < init_hp or mock_player._hurt_flash_remaining > 0.0, "CrossbowBolt: Accurately delivers damage/hit reaction to player")
+
+	mock_player.queue_free()
+	test_bolt.queue_free()
+	b_test1.queue_free()
+	b_test2.queue_free()
+	b_test3.queue_free()
+	b_test4.queue_free()
+	b_test5.queue_free()
+
 	SaveManager.clear_save()
 	await process_frame
 

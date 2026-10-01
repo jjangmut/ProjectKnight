@@ -103,14 +103,21 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Champion Silhouette Rim Glow (subtle ambient glow in Phase 1, roaring fire in Phase 2)
+	# Champion Silhouette Rim Glow (Transparent fill with glowing rim line to eliminate opaque plate artifact)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-52, -80), Vector2(52, -80), Vector2(68, -20),
-		Vector2(54, 40), Vector2(-54, 40), Vector2(-68, -20)
+		Vector2(-75, -165), Vector2(75, -165), Vector2(95, -30),
+		Vector2(75, 85), Vector2(-75, 85), Vector2(-95, -30)
 	])
-	aura_poly.color = Color(1.0, 0.85, 0.3, 0.22)
+	aura_poly.color = Color(1.0, 0.85, 0.3, 0.0) # Transparent plate
 	aura_poly.visible = true
+	var aura_rim := Line2D.new()
+	aura_rim.width = 2.5
+	aura_rim.default_color = Color(2.8, 2.2, 0.8, 0.85)
+	var closed_pts := aura_poly.polygon.duplicate()
+	closed_pts.append(closed_pts[0])
+	aura_rim.points = closed_pts
+	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
 	# Primitive placeholders (hidden in favor of high-res boss sprite)
@@ -190,10 +197,10 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Imposing boss scale: 0.285 (~106px tall, 1.6x larger than regular melee enemies)
-	boss_sprite.scale = Vector2.ONE * 0.285
+	# Grand Boss Stature: 0.72 (~270px tall, ~2.5x larger)
+	boss_sprite.scale = Vector2.ONE * 0.72
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 36)
+	boss_sprite.position = Vector2(0, 90)
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
@@ -204,7 +211,7 @@ func _build_boss_sprite() -> void:
 		boss_sprite.texture = tex
 		boss_sprite.centered = true
 		boss_sprite.position = Vector2(0, 0)
-		boss_sprite.scale = Vector2.ONE * (106.0 / tex.get_height())
+		boss_sprite.scale = Vector2.ONE * (270.0 / tex.get_height())
 
 	visual.add_child(boss_sprite)
 
@@ -213,15 +220,15 @@ func _build_collisions() -> void:
 	collision_layer = 16
 	collision_mask = 1
 
-	# Main body physics collision (scaled to imposing boss stature)
+	# Main body physics collision (scaled to grand imposing boss stature)
 	var body_col := CollisionShape2D.new()
 	var body_shape := RectangleShape2D.new()
-	body_shape.size = Vector2(62, 102)
+	body_shape.size = Vector2(130, 240)
 	body_col.shape = body_shape
-	body_col.position = Vector2(0, -15)
+	body_col.position = Vector2(0, -30)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to jump and stand on top of Boss
+	# Dynamic Top Platform: allows player to jump and stand on top of Boss head (~150px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -229,9 +236,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(64.0, 14.0)
+	top_rect.size = Vector2(160.0, 20.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -68.0)
+	top_shape.position = Vector2(0.0, -150.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -693,13 +700,19 @@ func _restore_base_color() -> void:
 		if is_instance_valid(boss_sprite):
 			boss_sprite.modulate = Color(1.35, 0.45, 0.45, 1.0)
 		if is_instance_valid(aura_poly):
-			aura_poly.color = Color(1.0, 0.2, 0.1, 0.65)
+			aura_poly.color = Color(1.0, 0.2, 0.1, 0.0)
+			for c in aura_poly.get_children():
+				if c is Line2D:
+					c.default_color = Color(3.2, 0.5, 0.2, 0.95)
 	else:
 		body_poly.color = Color(0.18, 0.22, 0.28, 1.0)
 		if is_instance_valid(boss_sprite):
 			boss_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 		if is_instance_valid(aura_poly):
-			aura_poly.color = Color(1.0, 0.85, 0.3, 0.22)
+			aura_poly.color = Color(1.0, 0.85, 0.3, 0.0)
+			for c in aura_poly.get_children():
+				if c is Line2D:
+					c.default_color = Color(2.8, 2.2, 0.8, 0.85)
 	shield_poly.color = Color(0.35, 0.40, 0.48, 1.0)
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
 

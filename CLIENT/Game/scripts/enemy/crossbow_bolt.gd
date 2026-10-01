@@ -16,24 +16,27 @@ const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 
 func _ready() -> void:
 	z_index = 8
+	collision_layer = 4
+	collision_mask = 1 | 8  # Collide with Environment (1) and Player (8)
 	monitoring = true
 	monitorable = true
 	add_to_group("enemy_projectile")
 
-	# Collision Shape (Length 24, Width 6)
+	# Collision Shape (Length 40, Height 14 for reliable player impact)
 	var col := CollisionShape2D.new()
+	col.name = "CollisionShape2D"
 	var shape := RectangleShape2D.new()
-	shape.size = Vector2(24, 6)
+	shape.size = Vector2(40, 14)
 	col.shape = shape
 	add_child(col)
 
 	# Visual Shape (Sleek Iron Tipped Arrow)
 	visual_poly = Polygon2D.new()
 	visual_poly.polygon = PackedVector2Array([
-		Vector2(-12, -3), Vector2(6, -3), Vector2(14, 0),
-		Vector2(6, 3), Vector2(-12, 3), Vector2(-8, 0)
+		Vector2(-18, -4), Vector2(10, -4), Vector2(20, 0),
+		Vector2(10, 4), Vector2(-18, 4), Vector2(-12, 0)
 	])
-	visual_poly.color = Color(1.0, 0.85, 0.3, 1.0) if is_blockable else Color(1.0, 0.2, 0.2, 1.0)
+	visual_poly.color = Color(1.8, 1.4, 0.4, 1.0) if is_blockable else Color(2.5, 0.3, 0.3, 1.0)
 	add_child(visual_poly)
 
 	var sheet_path := "res://assets/projectiles/projectiles_sheet.png"
@@ -46,7 +49,7 @@ func _ready() -> void:
 			var spr := Sprite2D.new()
 			spr.name = "BoltSprite"
 			spr.texture = atlas
-			spr.scale = Vector2.ONE * 0.12
+			spr.scale = Vector2.ONE * 0.18
 			spr.rotation_degrees = 45.0
 			spr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 			add_child(spr)

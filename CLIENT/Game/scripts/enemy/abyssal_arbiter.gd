@@ -94,35 +94,44 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Abyssal Climax Champion Rim Aura
+	# Abyssal Climax Champion Rim Aura (Transparent fill with glowing rim line to eliminate opaque plate artifact)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-44, -54), Vector2(44, -54), Vector2(54, 5),
-		Vector2(40, 44), Vector2(-40, 44), Vector2(-54, 5)
+		Vector2(-95, -160), Vector2(95, -160), Vector2(120, 15),
+		Vector2(90, 95), Vector2(-90, 95), Vector2(-120, 15)
 	])
-	aura_poly.color = Color(1.3, 0.35, 2.2, 0.45)
+	aura_poly.color = Color(1.3, 0.35, 2.2, 0.0) # Transparent plate
 	aura_poly.visible = true
+	var aura_rim := Line2D.new()
+	aura_rim.width = 2.6
+	aura_rim.default_color = Color(2.6, 0.8, 3.5, 0.9)
+	var closed_pts := aura_poly.polygon.duplicate()
+	closed_pts.append(closed_pts[0])
+	aura_rim.points = closed_pts
+	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
-	# Black Wings (Revealed in Phase 3) with Radiant Violet Neon Edge
+	# Black Wings (Revealed in Phase 3) with Radiant Violet Neon Edge (scaled 2.8x)
 	wing_left = Polygon2D.new()
 	wing_left.polygon = PackedVector2Array([Vector2(-10, -20), Vector2(-60, -65), Vector2(-45, -10), Vector2(-20, 0)])
+	wing_left.scale = Vector2.ONE * 2.8
 	wing_left.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_left.visible = false
 	var wing_left_edge := Line2D.new()
-	wing_left_edge.width = 2.5
-	wing_left_edge.default_color = Color(1.8, 0.5, 2.4, 0.95)
+	wing_left_edge.width = 2.8
+	wing_left_edge.default_color = Color(2.8, 0.8, 3.6, 0.95)
 	wing_left_edge.points = wing_left.polygon
 	wing_left.add_child(wing_left_edge)
 	visual.add_child(wing_left)
 
 	wing_right = Polygon2D.new()
 	wing_right.polygon = PackedVector2Array([Vector2(10, -20), Vector2(60, -65), Vector2(45, -10), Vector2(20, 0)])
+	wing_right.scale = Vector2.ONE * 2.8
 	wing_right.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_right.visible = false
 	var wing_right_edge := Line2D.new()
-	wing_right_edge.width = 2.5
-	wing_right_edge.default_color = Color(1.8, 0.5, 2.4, 0.95)
+	wing_right_edge.width = 2.8
+	wing_right_edge.default_color = Color(2.8, 0.8, 3.6, 0.95)
 	wing_right_edge.points = wing_right.polygon
 	wing_right.add_child(wing_right_edge)
 	visual.add_child(wing_right)
@@ -166,21 +175,21 @@ func _build_visuals() -> void:
 
 	_build_boss_sprite()
 
-	# Melee Slash Area
+	# Melee Slash Area (scaled to grand stature)
 	slash_area = Area2D.new()
 	slash_area.name = "SlashArea"
 	slash_collision = CollisionShape2D.new()
 	var s_shape := RectangleShape2D.new()
-	s_shape.size = Vector2(75, 45)
+	s_shape.size = Vector2(180, 110)
 	slash_collision.shape = s_shape
-	slash_collision.position = Vector2(38, -6)
+	slash_collision.position = Vector2(85, -20)
 	slash_collision.disabled = true
 	slash_area.add_child(slash_collision)
 	slash_area.area_entered.connect(_on_slash_area_entered)
 	visual.add_child(slash_area)
 
 	slash_visual = Polygon2D.new()
-	slash_visual.polygon = PackedVector2Array([Vector2(10, -30), Vector2(78, -10), Vector2(70, 20), Vector2(15, 10)])
+	slash_visual.polygon = PackedVector2Array([Vector2(20, -70), Vector2(180, -25), Vector2(160, 50), Vector2(30, 25)])
 	slash_visual.color = Color(0.8, 0.2, 1.0, 0.0)
 	visual.add_child(slash_visual)
 
@@ -232,9 +241,10 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	boss_sprite.scale = Vector2.ONE * 0.20
+	# Grand Climax Boss Stature: 0.62 (~270px tall, ~3.1x larger)
+	boss_sprite.scale = Vector2.ONE * 0.62
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 36)
+	boss_sprite.position = Vector2(0, 95)
 	boss_sprite.modulate = Color(0.85, 0.75, 1.0)
 
 	if not _sprite_frames.is_empty():
@@ -247,13 +257,13 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var col := CollisionShape2D.new()
 	var shape := CapsuleShape2D.new()
-	shape.radius = 22.0
-	shape.height = 76.0
+	shape.radius = 55.0
+	shape.height = 230.0
 	col.shape = shape
-	col.position = Vector2(0, -2)
+	col.position = Vector2(0, -20)
 	add_child(col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Abyssal Arbiter
+	# Dynamic Top Platform: allows player to stand and ride on top of Grand Abyssal Arbiter head (~145px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -261,9 +271,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(52.0, 10.0)
+	top_rect.size = Vector2(140.0, 20.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -38.0)
+	top_shape.position = Vector2(0.0, -145.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -274,10 +284,10 @@ func _build_collisions() -> void:
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := CapsuleShape2D.new()
-	hurt_shape.radius = 26.0
-	hurt_shape.height = 80.0
+	hurt_shape.radius = 60.0
+	hurt_shape.height = 240.0
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -2)
+	hurt_col.position = Vector2(0, -20)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 

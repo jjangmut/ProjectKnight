@@ -91,15 +91,21 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Enrage Aura
-	# Ruins Commander Champion Rim Aura
+	# Enrage Aura (Transparent fill with sharp outline rim to eliminate opaque plate artifact)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-30, -52), Vector2(30, -52), Vector2(38, 0),
-		Vector2(28, 38), Vector2(-28, 38), Vector2(-38, 0)
+		Vector2(-70, -140), Vector2(70, -140), Vector2(90, 0),
+		Vector2(70, 90), Vector2(-70, 90), Vector2(-90, 0)
 	])
-	aura_poly.color = Color(0.4, 0.9, 1.8, 0.40)
+	aura_poly.color = Color(0.4, 0.9, 1.8, 0.0) # Transparent plate
 	aura_poly.visible = true
+	var aura_rim := Line2D.new()
+	aura_rim.width = 2.2
+	aura_rim.default_color = Color(1.2, 2.2, 3.2, 0.85)
+	var closed_pts := aura_poly.polygon.duplicate()
+	closed_pts.append(closed_pts[0])
+	aura_rim.points = closed_pts
+	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
 	# Longcoat (Ruins Commander Coat) - hidden in favor of high-res sprite
@@ -134,8 +140,8 @@ func _build_visuals() -> void:
 
 	# Aiming Laser Line (HDR Overdrive)
 	laser_line = Line2D.new()
-	laser_line.width = 3.0
-	laser_line.default_color = Color(2.4, 0.35, 0.15, 0.95)
+	laser_line.width = 3.2
+	laser_line.default_color = Color(2.8, 0.4, 0.2, 0.95)
 	laser_line.visible = false
 	visual.add_child(laser_line)
 
@@ -198,9 +204,10 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	boss_sprite.scale = Vector2.ONE * 0.19
+	# Imposing Grand Boss Stature: 0.56 (~230px tall, ~3x larger)
+	boss_sprite.scale = Vector2.ONE * 0.56
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 33)
+	boss_sprite.position = Vector2(0, 95)
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
@@ -212,13 +219,13 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
 	var shape := CapsuleShape2D.new()
-	shape.radius = 20.0
-	shape.height = 70.0
+	shape.radius = 48.0
+	shape.height = 190.0
 	body_col.shape = shape
-	body_col.position = Vector2(0, -2)
+	body_col.position = Vector2(0, -10)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Crossbow Commander
+	# Dynamic Top Platform: elevated to grand boss head level (~120px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -226,9 +233,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(48.0, 10.0)
+	top_rect.size = Vector2(130.0, 18.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -36.0)
+	top_shape.position = Vector2(0.0, -118.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -239,9 +246,10 @@ func _build_collisions() -> void:
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := CapsuleShape2D.new()
-	hurt_shape.radius = 24.0
-	hurt_shape.height = 74.0
+	hurt_shape.radius = 54.0
+	hurt_shape.height = 200.0
 	hurt_col.shape = hurt_shape
+	hurt_col.position = Vector2(0, -10)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
@@ -368,25 +376,56 @@ func _decide_next_action() -> void:
 			_start_fan_barrage()
 
 
+var _is_fan_barrage: bool = false
+
+
 func _start_aim_bolt() -> void:
 	state = State.AIM_BOLT
+	_is_fan_barrage = false
 	_phase_timer = 0.45 if current_phase == 1 else 0.30
 	laser_line.visible = true
-	laser_line.clear_points()
-	laser_line.add_point(Vector2(20, -18))
-	laser_line.add_point(Vector2(450, -18))
-	laser_line.default_color = Color(1.0, 0.8, 0.2, 0.8)
+	laser_line.default_color = Color(2.8, 0.4, 0.2, 0.95)
+	_update_laser_targeting()
 	AudioManager.play("slash_1", global_position)
+
+
+func _update_laser_targeting() -> void:
+	if not is_instance_valid(laser_line) or not laser_line.visible:
+		return
+	var muzzle_local := Vector2(40.0, -35.0)
+	var muzzle_global := visual.to_global(muzzle_local)
+	var target_global := _player.global_position + Vector2(0, -24.0) if is_instance_valid(_player) else muzzle_global + Vector2(facing_direction * 600.0, 0.0)
+	var dir_global := (target_global - muzzle_global).normalized()
+	var end_local := visual.to_local(muzzle_global + dir_global * 900.0)
+	laser_line.clear_points()
+	laser_line.add_point(muzzle_local)
+	laser_line.add_point(end_local)
 
 
 func _process_aim_bolt(delta: float) -> void:
 	_phase_timer -= delta
 	velocity.x = 0.0
+	_update_laser_targeting()
 	if _phase_timer <= 0.0:
 		laser_line.visible = false
-		_fire_bolt(Vector2(facing_direction, 0.0))
+		var aim_dir := _get_aim_direction_to_player()
+		if _is_fan_barrage:
+			_fire_fan_barrage(aim_dir)
+		else:
+			_fire_bolt(aim_dir)
 		state = State.FIRE_BOLT
 		_phase_timer = 0.25
+
+
+func _get_aim_direction_to_player() -> Vector2:
+	if not is_instance_valid(_player):
+		return Vector2(facing_direction, 0.0)
+	var muzzle_global := global_position + Vector2(facing_direction * 50.0, -35.0)
+	var target_global := _player.global_position + Vector2(0.0, -24.0)
+	var diff := target_global - muzzle_global
+	if diff.length_squared() < 4.0:
+		return Vector2(facing_direction, 0.0)
+	return diff.normalized()
 
 
 func _fire_bolt(dir: Vector2) -> void:
@@ -394,13 +433,31 @@ func _fire_bolt(dir: Vector2) -> void:
 	if not is_instance_valid(parent):
 		return
 	var bolt := BoltScene.new()
-	bolt.position = global_position + Vector2(facing_direction * 25.0, -18.0)
+	bolt.position = global_position + Vector2(facing_direction * 50.0, -35.0)
 	bolt.direction = dir.normalized()
 	parent.add_child(bolt)
 	_spawn_muzzle_flash_vfx(bolt.position, bolt.direction)
 	AudioManager.play("smash_3", global_position)
 	GameFeelManager.shake(0.20)
 	bolt_fired.emit(bolt.position, bolt.direction)
+
+
+func _fire_fan_barrage(center_dir: Vector2) -> void:
+	var parent := get_parent()
+	if not is_instance_valid(parent):
+		return
+	var spread_angles := [-0.22, 0.0, 0.22]
+	var muzzle_pos := global_position + Vector2(facing_direction * 50.0, -35.0)
+	for ang_offset in spread_angles:
+		var bolt := BoltScene.new()
+		bolt.position = muzzle_pos
+		bolt.direction = center_dir.rotated(ang_offset).normalized()
+		bolt.speed = 640.0
+		parent.add_child(bolt)
+		bolt_fired.emit(bolt.position, bolt.direction)
+	_spawn_muzzle_flash_vfx(muzzle_pos, center_dir)
+	AudioManager.play("smash_3", global_position)
+	GameFeelManager.shake(0.35)
 
 
 func _process_fire_bolt(delta: float) -> void:
@@ -434,11 +491,11 @@ func _fire_volley() -> void:
 	GameFeelManager.shake(0.30)
 
 	var target_x := _player.global_position.x if is_instance_valid(_player) else global_position.x + facing_direction * 200.0
-	for offset_x in [-80.0, 0.0, 80.0]:
+	for offset_x in [-120.0, -60.0, 0.0, 60.0, 120.0]:
 		var bolt := BoltScene.new()
 		bolt.position = Vector2(target_x + offset_x, global_position.y - 420.0)
 		bolt.direction = Vector2(0.0, 1.0)
-		bolt.speed = 480.0
+		bolt.speed = 520.0
 		bolt.is_blockable = false
 		parent.add_child(bolt)
 		bolt_fired.emit(bolt.position, bolt.direction)
@@ -453,11 +510,13 @@ func _process_fire_volley(delta: float) -> void:
 
 
 func _start_fan_barrage() -> void:
-	# Phase 2: Rapid 3-directional fan bolt shot
+	# Phase 2: Rapid 3-directional fan bolt shot directed at player
 	state = State.AIM_BOLT
+	_is_fan_barrage = true
 	_phase_timer = 0.35
 	laser_line.visible = true
-	laser_line.default_color = Color(1.0, 0.2, 0.2, 0.9)
+	laser_line.default_color = Color(3.0, 0.2, 0.2, 0.95)
+	_update_laser_targeting()
 
 
 func _start_backstep() -> void:
