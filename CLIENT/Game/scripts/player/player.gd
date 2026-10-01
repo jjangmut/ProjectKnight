@@ -452,31 +452,43 @@ func _set_attack_active(active: bool) -> void:
 	attack_collision.set_deferred("disabled", not active)
 
 
+func _build_crescent_polygon(radius: float, thickness: float, start_angle: float, end_angle: float, steps: int = 12) -> PackedVector2Array:
+	var outer: PackedVector2Array = []
+	var inner: PackedVector2Array = []
+	for i in range(steps + 1):
+		var t := float(i) / float(steps)
+		var angle := lerpf(start_angle, end_angle, t)
+		var dir := Vector2(cos(angle), sin(angle))
+		var cur_thick := sin(t * PI) * thickness
+		outer.append(dir * radius)
+		inner.append(dir * maxf(2.0, radius - cur_thick))
+	inner.reverse()
+	outer.append_array(inner)
+	return outer
+
+
 func _update_attack_geometry() -> void:
 	if is_down_thrusting:
 		attack_area.position = Vector2(0, 32.0)
 		var attack_shape := attack_collision.shape as RectangleShape2D
 		attack_shape.size = Vector2(44.0, 36.0)
 		attack_visual.polygon = PackedVector2Array([
-			Vector2(-22.0, -18.0),
-			Vector2(22.0, -18.0),
-			Vector2(0.0, 18.0)
+			Vector2(-20.0, -18.0),
+			Vector2(-12.0, 2.0),
+			Vector2(0.0, 22.0),
+			Vector2(12.0, 2.0),
+			Vector2(20.0, -18.0),
+			Vector2(0.0, -6.0)
 		])
-		attack_visual.color = Color(0.9, 0.8, 0.2)
+		attack_visual.color = Color(1.2, 0.95, 0.3, 0.95)
 		return
 	elif is_air_attacking:
 		attack_area.position.x = facing_direction * 38.0
 		attack_area.position.y = -4.0
 		var attack_shape := attack_collision.shape as RectangleShape2D
 		attack_shape.size = Vector2(76.0, 60.0)
-		var half_range := 38.0
-		attack_visual.polygon = PackedVector2Array([
-			Vector2(-half_range, -28.0),
-			Vector2(half_range, -20.0),
-			Vector2(half_range, 20.0),
-			Vector2(-half_range, 28.0),
-		])
-		attack_visual.color = Color(0.35, 0.9, 1.0, 0.85)
+		attack_visual.polygon = _build_crescent_polygon(38.0, 16.0, -PI * 0.9, PI * 0.9, 16)
+		attack_visual.color = Color(0.4, 0.95, 1.2, 0.88)
 		return
 
 	var effective_range := attack_range
@@ -493,18 +505,18 @@ func _update_attack_geometry() -> void:
 	var attack_shape := attack_collision.shape as RectangleShape2D
 	attack_shape.size = Vector2(effective_range, 52.0)
 	var half_range := effective_range * 0.5
-	attack_visual.polygon = PackedVector2Array([
-		Vector2(-half_range, -26.0),
-		Vector2(half_range, -18.0),
-		Vector2(half_range, 18.0),
-		Vector2(-half_range, 26.0),
-	])
 	if is_counter_attacking:
-		attack_visual.color = Color(0.2, 0.9, 1.0, 0.9)
+		attack_visual.polygon = _build_crescent_polygon(half_range * 1.05, 22.0, -PI * 0.45, PI * 0.45, 14)
+		attack_visual.color = Color(0.3, 1.2, 1.5, 0.95)
 	elif combo_step == 3:
-		attack_visual.color = Color(1.0, 0.75, 0.2, 0.9)
+		attack_visual.polygon = _build_crescent_polygon(half_range * 1.1, 20.0, -PI * 0.48, PI * 0.48, 16)
+		attack_visual.color = Color(1.3, 0.85, 0.25, 0.95)
+	elif combo_step == 2:
+		attack_visual.polygon = _build_crescent_polygon(half_range * 1.05, 15.0, PI * 0.35, -PI * 0.35, 12)
+		attack_visual.color = Color(0.70, 0.98, 1.15, 0.92)
 	else:
-		attack_visual.color = Color(1.0, 0.9, 0.6, 0.7)
+		attack_visual.polygon = _build_crescent_polygon(half_range * 1.05, 14.0, -PI * 0.45, PI * 0.25, 12)
+		attack_visual.color = Color(0.85, 0.95, 1.2, 0.88)
 
 
 func _on_attack_area_entered(area: Area2D) -> void:
@@ -809,14 +821,27 @@ func _spawn_ghost_trail() -> void:
 	var ghost := Polygon2D.new()
 	ghost.polygon = body_visual.polygon
 	ghost.position = global_position
-	ghost.scale = $FacingMark.scale if has_node("FacingMark") else Vector2.ONE
-	ghost.color = Color(0.25, 0.85, 1.0, 0.45)
+	var base_scale: Vector2 = $FacingMark.scale if has_node("FacingMark") else Vector2.ONE
+	ghost.scale = base_scale
+	ghost.color = Color(0.35, 0.95, 1.25, 0.45)
 	ghost.z_index = z_index - 1
+
+	var ghost_rim := Line2D.new()
+	ghost_rim.width = 1.6
+	ghost_rim.default_color = Color(0.8, 1.6, 2.2, 0.75)
+	var closed_poly := body_visual.polygon.duplicate()
+	if closed_poly.size() > 0:
+		closed_poly.append(closed_poly[0])
+	ghost_rim.points = closed_poly
+	ghost.add_child(ghost_rim)
+
 	parent.add_child(ghost)
 
 	var tween := ghost.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(ghost, "scale", base_scale * 1.14, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.22)
-	tween.tween_callback(ghost.queue_free)
+	tween.chain().tween_callback(ghost.queue_free)
 
 
 func update_stats_from_upgrades(spd_lvl: int, atk_spd_lvl: int) -> void:

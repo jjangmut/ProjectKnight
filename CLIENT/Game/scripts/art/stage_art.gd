@@ -454,6 +454,7 @@ func _draw() -> void:
 				draw_line(top_at + Vector2(-22, 1), top_at + Vector2(22, 1), edge.darkened(0.35), 7, true)
 		draw_polyline(points, edge.darkened(0.25), 4, true)
 		draw_polyline(points, edge, 1.5, true)
+		draw_polyline(points, edge.lightened(0.35) * 1.35, 1.0, true)
 	_draw_stage_markers()
 	_draw_combat_feedback()
 
@@ -498,26 +499,128 @@ func _draw_combat_feedback() -> void:
 	var player: CharacterBody2D = stage.player
 	var origin := to_local(player.global_position)
 	var facing: float = player.facing_direction
+
+	# 0. Hero Luminous Aura: Soft ambient radiance in dark stages
+	if not player.is_dead:
+		var hero_center := origin + Vector2(0, -26)
+		draw_circle(hero_center, 32.0, Color(0.9, 0.96, 1.2, 0.08))
+		draw_arc(hero_center, 24.0, 0, TAU, 24, Color(1.2, 1.5, 2.2, 0.16), 1.2, true)
+
 	if player.is_attacking and not player.attack_collision.disabled and not player.is_dead:
-		# A tapered silver sword ribbon, animated within the unchanged attack rectangle.
 		var shape: RectangleShape2D = player.attack_collision.shape
-		var points := PackedVector2Array()
-		var inner := PackedVector2Array()
 		var phase := _phase(player._attack_time_remaining, player.attack_duration)
 		var opacity := 0.45 + sin(phase * PI) * 0.55
-		for index in range(17):
-			var t := float(index) / 16.0
-			var angle := lerpf(-1.25 + phase * 0.6, 0.8 + phase * 0.6, t)
+		var points := PackedVector2Array()
+		var inner := PackedVector2Array()
+
+		if player.is_down_thrusting:
+			# Down Thrust: Piercing vertical incandescent spike
+			var spike_top := origin + Vector2(0, 10)
+			var spike_tip := origin + Vector2(0, 48)
+			var w := 18.0 * (1.0 - phase * 0.4)
+			var spike_poly := PackedVector2Array([
+				spike_top + Vector2(-w, 0),
+				spike_top + Vector2(w, 0),
+				spike_tip + Vector2(w * 0.3, 0),
+				spike_tip + Vector2(0, 8),
+				spike_tip + Vector2(-w * 0.3, 0)
+			])
+			draw_colored_polygon(spike_poly, Color(1.5, 1.2, 0.4, opacity * 0.9))
+			draw_polyline(spike_poly, Color(2.8, 2.4, 0.9, opacity), 2.5, true)
+			for side in [-1.0, 0.0, 1.0]:
+				draw_line(spike_top + Vector2(side * 8, 4), spike_tip + Vector2(side * 4, 12), Color(3.0, 2.8, 1.2, opacity), 1.5, true)
+
+		elif player.is_air_attacking:
+			# Aerial Spin: 360-degree whirlwind ring blade
+			var spin_radius := Vector2(shape.size.x * 0.48, shape.size.y * 0.48)
+			var start_ang := -PI * 0.9 + phase * TAU
+			var end_ang := start_ang + PI * 1.45
+			for index in range(21):
+				var t := float(index) / 20.0
+				var angle := lerpf(start_ang, end_ang, t)
+				var unit := Vector2(cos(angle) * facing, sin(angle))
+				var thick := sin(t * PI) * 12.0
+				points.append(to_local(player.attack_collision.to_global(unit * spin_radius)))
+				inner.append(to_local(player.attack_collision.to_global(unit * (spin_radius - Vector2.ONE * thick))))
+			inner.reverse()
+			var ribbon := points.duplicate()
+			ribbon.append_array(inner)
+			draw_colored_polygon(ribbon, Color(0.5, 1.2, 1.6, opacity * 0.88))
+			draw_polyline(points, Color(1.6, 2.6, 3.4, opacity), 3.5, true)
+			draw_polyline(points, Color(2.8, 2.8, 3.2, opacity), 1.5, true)
+
+		elif player.is_counter_attacking:
+			# Counter Slash: Blinding cyan arc with cross-flash
+			var radius := Vector2(shape.size.x * 0.5 - 2.0, shape.size.y * 0.5 - 2.0)
+			for index in range(19):
+				var t := float(index) / 18.0
+				var angle := lerpf(-1.35 + phase * 0.5, 1.1 + phase * 0.5, t)
+				var unit := Vector2(cos(angle) * facing, sin(angle))
+				var thick := sin(t * PI) * 14.0
+				points.append(to_local(player.attack_collision.to_global(unit * radius)))
+				inner.append(to_local(player.attack_collision.to_global(unit * (radius - Vector2.ONE * thick))))
+			inner.reverse()
+			var ribbon := points.duplicate()
+			ribbon.append_array(inner)
+			draw_colored_polygon(ribbon, Color(0.3, 1.4, 2.2, opacity * 0.95))
+			draw_polyline(points, Color(1.5, 3.0, 3.8, opacity), 4.5, true)
+			draw_polyline(points, Color(3.0, 3.2, 3.8, opacity), 2.0, true)
+
+		elif player.combo_step == 3:
+			# Combo 3 Heavy Finish: Wide 170-degree blazing golden crescent wave
+			var radius := Vector2(shape.size.x * 0.52 - 2.0, shape.size.y * 0.52 - 2.0)
+			for index in range(21):
+				var t := float(index) / 20.0
+				var angle := lerpf(-1.5 + phase * 0.55, 1.2 + phase * 0.55, t)
+				var unit := Vector2(cos(angle) * facing, sin(angle))
+				var thick := sin(t * PI) * 15.0
+				points.append(to_local(player.attack_collision.to_global(unit * radius)))
+				inner.append(to_local(player.attack_collision.to_global(unit * (radius - Vector2.ONE * thick))))
+			inner.reverse()
+			var ribbon := points.duplicate()
+			ribbon.append_array(inner)
+			draw_colored_polygon(ribbon, Color(1.8, 1.1, 0.35, opacity * 0.92))
+			draw_polyline(points, Color(3.5, 2.6, 0.9, opacity), 5.0, true)
+			draw_polyline(points, Color(3.5, 3.2, 2.5, opacity), 2.0, true)
+			var swing_center := to_local(player.attack_collision.global_position)
+			for s in range(3):
+				var s_ang := lerpf(-0.5, 0.5, float(s) / 2.0)
+				var s_dir := Vector2(cos(s_ang) * facing, sin(s_ang))
+				draw_line(swing_center + s_dir * (radius.x * 0.4), swing_center + s_dir * (radius.x * 0.95), Color(3.5, 2.8, 1.2, opacity * 0.8), 2.0, true)
+
+		elif player.combo_step == 2:
+			# Combo 2: Rising jade slash sweep
 			var radius := Vector2(shape.size.x * 0.5 - 3.0, shape.size.y * 0.5 - 3.0)
-			var unit := Vector2(cos(angle) * facing, sin(angle))
-			points.append(to_local(player.attack_collision.to_global(unit * radius)))
-			inner.append(to_local(player.attack_collision.to_global(unit * (radius - Vector2.ONE * sin(t * PI) * 6.0))))
-		inner.reverse()
-		var ribbon := points.duplicate()
-		ribbon.append_array(inner)
-		draw_polyline(points, Color(0.21, 0.31, 0.35, opacity * 0.8), 4.0, true)
-		draw_colored_polygon(ribbon, Color(0.81, 0.9, 0.93, opacity * 0.95))
-		draw_polyline(points, Color(0.96, 0.97, 0.87, opacity), 1.5, true)
+			for index in range(17):
+				var t := float(index) / 16.0
+				var angle := lerpf(1.1 - phase * 0.55, -0.9 - phase * 0.55, t)
+				var unit := Vector2(cos(angle) * facing, sin(angle))
+				var thick := sin(t * PI) * 10.0
+				points.append(to_local(player.attack_collision.to_global(unit * radius)))
+				inner.append(to_local(player.attack_collision.to_global(unit * (radius - Vector2.ONE * thick))))
+			inner.reverse()
+			var ribbon := points.duplicate()
+			ribbon.append_array(inner)
+			draw_colored_polygon(ribbon, Color(0.7, 1.35, 1.15, opacity * 0.92))
+			draw_polyline(points, Color(1.6, 2.8, 2.5, opacity), 3.8, true)
+			draw_polyline(points, Color(2.6, 3.2, 3.0, opacity), 1.8, true)
+
+		else:
+			# Combo 1: Sharp crisp azure downward diagonal slash
+			var radius := Vector2(shape.size.x * 0.5 - 3.0, shape.size.y * 0.5 - 3.0)
+			for index in range(17):
+				var t := float(index) / 16.0
+				var angle := lerpf(-1.35 + phase * 0.5, 0.65 + phase * 0.5, t)
+				var unit := Vector2(cos(angle) * facing, sin(angle))
+				var thick := sin(t * PI) * 8.5
+				points.append(to_local(player.attack_collision.to_global(unit * radius)))
+				inner.append(to_local(player.attack_collision.to_global(unit * (radius - Vector2.ONE * thick))))
+			inner.reverse()
+			var ribbon := points.duplicate()
+			ribbon.append_array(inner)
+			draw_colored_polygon(ribbon, Color(0.85, 1.15, 1.45, opacity * 0.92))
+			draw_polyline(points, Color(1.8, 2.5, 3.2, opacity), 3.5, true)
+			draw_polyline(points, Color(2.8, 2.8, 3.2, opacity), 1.6, true)
 	if player._guard_block_flash_remaining > 0.0 and not player.is_dead:
 		var contact := origin + Vector2(player._guard_direction * 34, -28)
 		var strength: float = player._guard_block_flash_remaining / 0.14

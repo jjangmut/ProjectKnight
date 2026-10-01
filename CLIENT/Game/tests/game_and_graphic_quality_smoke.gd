@@ -5,6 +5,7 @@ var checks_passed := 0
 var checks_failed := 0
 
 const SaveManager = preload("res://scripts/system/save_manager.gd")
+const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 const SwordBeamScene = preload("res://scripts/player/sword_beam.gd")
 const BossCommanderClass = preload("res://scripts/enemy/boss_commander.gd")
 const BeastChieftainClass = preload("res://scripts/enemy/beast_chieftain.gd")
@@ -200,8 +201,90 @@ func _run_suite() -> void:
 	_check(b5.wing_left != null and b5.wing_left.get_child_count() > 0, "Boss 5: Wings equipped with radiant violet neon edge Line2D")
 	b5.queue_free()
 
+	# =========================================================================
+	# [Check 6: Player Crescent Arc Geometry & Dash Ghost Neon Edge]
+	# =========================================================================
+	print("\n[Check 6: Player Crescent Arc Geometry & Dash Ghost Neon Edge]")
+	var p2 = player_scene.instantiate()
+	root.add_child(p2)
+	p2.position = Vector2(250, 580)
+	await process_frame
+
+	# Check Combo 1 Crescent Arc
+	p2.combo_step = 1
+	p2.is_counter_attacking = false
+	p2.is_air_attacking = false
+	p2.is_down_thrusting = false
+	p2._update_attack_geometry()
+	_check(p2.attack_visual.polygon.size() >= 12, "Combo 1: Attack visual uses smooth crescent arc polygon (>= 12 vertices)")
+
+	# Check Combo 2 Crescent Arc
+	p2.combo_step = 2
+	p2._update_attack_geometry()
+	_check(p2.attack_visual.polygon.size() >= 12, "Combo 2: Rising attack visual uses crescent arc polygon (>= 12 vertices)")
+
+	# Check Combo 3 Heavy Wave Crescent Arc
+	p2.combo_step = 3
+	p2._update_attack_geometry()
+	_check(p2.attack_visual.polygon.size() >= 16, "Combo 3: Heavy finish uses wide crescent wave polygon (>= 16 vertices)")
+
+	# Check Air Spin Wheel Arc
+	p2.is_air_attacking = true
+	p2._update_attack_geometry()
+	_check(p2.attack_visual.polygon.size() >= 16, "Air Attack: Uses circular whirlwind blade polygon (>= 16 vertices)")
+	p2.is_air_attacking = false
+
+	# Check Down Thrust Spike
+	p2.is_down_thrusting = true
+	p2._update_attack_geometry()
+	_check(p2.attack_visual.polygon.size() == 6, "Down Thrust: Uses piercing directional spike polygon (6 vertices)")
+	p2.is_down_thrusting = false
+
+	# Check Ghost Trail with Neon Contour
+	var initial_children := root.get_child_count()
+	p2._spawn_ghost_trail()
+	await process_frame
+	var new_children := root.get_child_count()
+	_check(new_children > initial_children, "Dash Ghost Trail: Spawned ghost polygon node in parent")
+	var ghost_node := root.get_child(root.get_child_count() - 1) as Polygon2D
+	if ghost_node != null:
+		var has_line := false
+		for c in ghost_node.get_children():
+			if c is Line2D:
+				has_line = true
+				break
+		_check(has_line, "Dash Ghost Trail: Equipped with glowing neon silhouette Line2D")
+
+	p2.queue_free()
+	await process_frame
+
+	# =========================================================================
+	# [Check 7: GameFeelManager HDR Overdrive Sparks & Critical Shockwave Ring]
+	# =========================================================================
+	print("\n[Check 7: GameFeelManager HDR Overdrive Sparks & Critical Shockwave Ring]")
+	var gfm = GameFeelManager.ensure_manager(self)
+	var spark_holder := Node2D.new()
+	root.add_child(spark_holder)
+	gfm.spawn_slash_spark(spark_holder, Vector2(300, 300), 1.0, true)
+	await process_frame
+
+	_check(spark_holder.get_child_count() > 0, "Slash spark root effect node spawned")
+	if spark_holder.get_child_count() > 0:
+		var fx_root := spark_holder.get_child(0)
+		var line_count := 0
+		var has_hdr := false
+		for c in fx_root.get_children():
+			if c is Line2D:
+				line_count += 1
+				if c.default_color.r > 1.2 or c.default_color.g > 1.2 or c.default_color.b > 1.2:
+					has_hdr = true
+		_check(line_count >= 3, "Critical hit effect spawns at least 3 Line2D elements (beam, cross, shockwave ring)")
+		_check(has_hdr, "Slash spark lines utilize intense HDR Overdrive bloom colors")
+
+	spark_holder.queue_free()
 	SaveManager.clear_save()
 	await process_frame
+
 	print("\n--- SUITE SUMMARY ---")
 	print("Checks Passed: %d, Failures: %d" % [checks_passed, checks_failed])
 	if checks_failed == 0:

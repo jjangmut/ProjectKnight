@@ -161,55 +161,79 @@ func spawn_slash_spark(parent_node: Node2D, world_pos: Vector2, facing_dir: floa
 	spark_fx.z_index = 32
 	parent_node.add_child(spark_fx)
 
-	# 1. Primary slash beam
+	# 1. Primary slash beam (HDR Overdrive for intense 2D Glow Bloom)
 	var line := Line2D.new()
-	line.width = 6.0 if is_crit else 4.0
-	line.default_color = Color(0.25, 0.95, 1.0, 1.0) if is_crit else Color(1.0, 0.85, 0.25, 1.0)
+	line.width = 6.5 if is_crit else 4.2
+	line.default_color = Color(0.8, 2.5, 3.2, 1.0) if is_crit else Color(2.4, 1.9, 0.6, 1.0)
 	var angle := randf_range(-0.4, 0.4) + (0.35 * facing_dir)
-	var length := 52.0 if is_crit else 36.0
+	var length := 56.0 if is_crit else 40.0
 	var dir_vec := Vector2.RIGHT.rotated(angle)
 	line.add_point(-dir_vec * length * 0.5)
 	line.add_point(dir_vec * length * 0.5)
 	spark_fx.add_child(line)
 
-	# 2. Secondary cross slash
+	# 2. Secondary cross slash (Incandescent white core)
 	var cross_line := Line2D.new()
-	cross_line.width = 3.5 if is_crit else 2.2
-	cross_line.default_color = Color.WHITE
+	cross_line.width = 4.0 if is_crit else 2.5
+	cross_line.default_color = Color(2.8, 2.8, 3.2, 1.0)
 	var cross_vec := dir_vec.orthogonal()
 	var cross_len := length * 0.65
 	cross_line.add_point(-cross_vec * cross_len * 0.5)
 	cross_line.add_point(cross_vec * cross_len * 0.5)
 	spark_fx.add_child(cross_line)
 
-	# 3. Flying spark particles
-	var spark_count := 8 if is_crit else 5
+	# 3. Expanding impact shockwave ring on critical/counter hits
+	var shockwave: Line2D = null
+	if is_crit:
+		shockwave = Line2D.new()
+		shockwave.width = 3.5
+		shockwave.default_color = Color(1.2, 2.6, 3.4, 0.85)
+		var ring_pts: PackedVector2Array = []
+		var segs := 16
+		for i in range(segs + 1):
+			var a := (float(i) / float(segs)) * TAU
+			ring_pts.append(Vector2(cos(a), sin(a)) * 26.0)
+		shockwave.points = ring_pts
+		shockwave.scale = Vector2(0.1, 0.1)
+		spark_fx.add_child(shockwave)
+
+	# 4. Sharp diamond spark particles
+	var spark_count := 10 if is_crit else 6
 	var spark_polys: Array[Polygon2D] = []
 	var spark_vels: Array[Vector2] = []
 	for i in range(spark_count):
 		var p := Polygon2D.new()
-		var psize := randf_range(2.0, 4.0) if not is_crit else randf_range(3.0, 5.0)
-		p.polygon = PackedVector2Array([Vector2(-psize, -psize), Vector2(psize, -psize), Vector2(psize, psize), Vector2(-psize, psize)])
-		p.color = Color(1.0, 0.95, 0.4, 1.0) if not is_crit else Color(0.5, 0.95, 1.0, 1.0)
+		var psize := randf_range(2.5, 4.5) if not is_crit else randf_range(3.5, 6.0)
+		# Sharp diamond shard geometry
+		p.polygon = PackedVector2Array([
+			Vector2(0.0, -psize * 1.4),
+			Vector2(psize * 0.75, 0.0),
+			Vector2(0.0, psize * 1.4),
+			Vector2(-psize * 0.75, 0.0)
+		])
+		p.color = Color(2.5, 2.2, 0.8, 1.0) if not is_crit else Color(1.0, 2.6, 3.2, 1.0)
 		spark_fx.add_child(p)
 		spark_polys.append(p)
-		var spd := randf_range(160.0, 340.0) if is_crit else randf_range(100.0, 240.0)
+		var spd := randf_range(180.0, 380.0) if is_crit else randf_range(120.0, 260.0)
 		var sp_angle := randf_range(-PI, PI)
 		spark_vels.append(Vector2(cos(sp_angle), sin(sp_angle)) * spd)
 
 	# Animate expansion and fade out
-	var duration := 0.20 if is_crit else 0.15
+	var duration := 0.22 if is_crit else 0.16
 	var tween := spark_fx.create_tween()
 	tween.set_parallel(true)
 	line.scale = Vector2(0.2, 0.2)
 	cross_line.scale = Vector2(0.2, 0.2)
-	tween.tween_property(line, "scale", Vector2(1.2, 1.2), duration * 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(cross_line, "scale", Vector2(1.2, 1.2), duration * 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(line, "scale", Vector2(1.25, 1.25), duration * 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(cross_line, "scale", Vector2(1.25, 1.25), duration * 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if shockwave != null:
+		tween.tween_property(shockwave, "scale", Vector2(1.8, 1.8), duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(shockwave, "width", 0.5, duration)
 	for i in range(spark_polys.size()):
 		var p := spark_polys[i]
 		var v := spark_vels[i]
 		tween.tween_property(p, "position", v * duration, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tween.tween_property(p, "scale", Vector2.ZERO, duration).set_delay(duration * 0.3)
+		tween.tween_property(p, "scale", Vector2.ZERO, duration).set_delay(duration * 0.25)
 	tween.tween_property(spark_fx, "modulate:a", 0.0, duration * 0.5).set_delay(duration * 0.5)
 	tween.chain().tween_callback(spark_fx.queue_free)
 

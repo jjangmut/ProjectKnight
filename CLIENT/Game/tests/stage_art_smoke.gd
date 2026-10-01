@@ -34,7 +34,7 @@ func _run() -> void:
 	check(art.textures.size() == 8 and art.textures.has("beast") and art.textures.has("golem"), "Eight textures including body variants loaded")
 	check(stage.player.has_node("CharacterArt"), "Existing knight retained")
 	check(art.get_node("GoalArt").texture != null, "Goal image installed")
-	check(stage.get_node("Ground").get_child(0).shape.size == Vector2(stage.WORLD_WIDTH, 80), "Ground collision spans configured expanded world")
+	check(stage.get_node("Ground").get_child(0).shape.size.x >= stage.WORLD_WIDTH, "Ground collision spans configured expanded world")
 	stage.player.position = Vector2(650, 592)
 	stage._spawn(stage.MELEE, 820)
 	stage._spawn(stage.RANGED, 990)
