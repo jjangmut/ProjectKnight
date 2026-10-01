@@ -22,7 +22,7 @@ const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 func _ready() -> void:
 	_start_x = global_position.x
 	collision_layer = 0
-	collision_mask = 2 # Enemy HurtArea
+	collision_mask = 2 | 1 # Enemy HurtArea (2) + Terrain/Wall (1)
 
 	# Collision Box
 	var col := CollisionShape2D.new()
@@ -31,15 +31,15 @@ func _ready() -> void:
 	col.shape = rect
 	add_child(col)
 
-	# Visuals: Glowing Golden Crescent
+	# Visuals: Glowing Golden Crescent with HDR Overdrive for 2D Bloom Glow
 	_visual = Node2D.new()
 	_visual.name = "BladeVisual"
 	add_child(_visual)
 
-	# 1. Outer Golden Aura Arc
+	# 1. Outer Golden Aura Arc (HDR Overdrive)
 	_blade_arc = Line2D.new()
-	_blade_arc.width = 7.0
-	_blade_arc.default_color = Color(1.0, 0.82, 0.25, 0.95)
+	_blade_arc.width = 8.0
+	_blade_arc.default_color = Color(1.8, 1.4, 0.45, 0.98)
 	var pts := PackedVector2Array()
 	var radius := 26.0
 	for i in range(7):
@@ -48,10 +48,10 @@ func _ready() -> void:
 	_blade_arc.points = pts
 	_visual.add_child(_blade_arc)
 
-	# 2. Inner Radiant Core
+	# 2. Inner Radiant Core (Blinding White-Hot Core)
 	_core_arc = Line2D.new()
-	_core_arc.width = 3.0
-	_core_arc.default_color = Color(1.0, 1.0, 0.85, 1.0)
+	_core_arc.width = 3.5
+	_core_arc.default_color = Color(2.0, 2.0, 1.8, 1.0)
 	var core_pts := PackedVector2Array()
 	for i in range(5):
 		var ang := -PI * 0.35 + (float(i) / 4.0) * PI * 0.7
@@ -60,6 +60,7 @@ func _ready() -> void:
 	_visual.add_child(_core_arc)
 
 	area_entered.connect(_on_area_entered)
+	body_entered.connect(_on_body_entered)
 
 
 func _physics_process(delta: float) -> void:
@@ -106,9 +107,21 @@ func _on_area_entered(area: Area2D) -> void:
 		_fade_and_free()
 
 
+func _on_body_entered(body: Node2D) -> void:
+	if body is StaticBody2D or body.is_in_group("stage_terrain"):
+		var parent_node := get_parent() as Node2D if get_parent() is Node2D else self
+		if parent_node is Node2D:
+			GameFeelManager.slash_spark(parent_node, global_position, direction, false)
+		AudioManager.play("guard_clang", global_position)
+		_fade_and_free()
+
+
 func _fade_and_free() -> void:
 	set_physics_process(false)
-	disconnect("area_entered", _on_area_entered)
+	if is_connected("area_entered", _on_area_entered):
+		disconnect("area_entered", _on_area_entered)
+	if is_connected("body_entered", _on_body_entered):
+		disconnect("body_entered", _on_body_entered)
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.1)
 	tween.tween_callback(queue_free)

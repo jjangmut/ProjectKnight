@@ -92,13 +92,14 @@ func _build_visuals() -> void:
 	add_child(visual)
 
 	# Enrage Aura
+	# Ruins Commander Champion Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-28, -50), Vector2(28, -50), Vector2(36, 0),
-		Vector2(26, 35), Vector2(-26, 35), Vector2(-36, 0)
+		Vector2(-30, -52), Vector2(30, -52), Vector2(38, 0),
+		Vector2(28, 38), Vector2(-28, 38), Vector2(-38, 0)
 	])
-	aura_poly.color = Color(0.2, 0.5, 1.0, 0.35)
-	aura_poly.visible = false
+	aura_poly.color = Color(0.4, 0.9, 1.8, 0.40)
+	aura_poly.visible = true
 	visual.add_child(aura_poly)
 
 	# Longcoat (Ruins Commander Coat) - hidden in favor of high-res sprite
@@ -131,10 +132,10 @@ func _build_visuals() -> void:
 	crossbow_poly.visible = false
 	visual.add_child(crossbow_poly)
 
-	# Aiming Laser Line
+	# Aiming Laser Line (HDR Overdrive)
 	laser_line = Line2D.new()
-	laser_line.width = 2.0
-	laser_line.default_color = Color(1.0, 0.2, 0.2, 0.6)
+	laser_line.width = 3.0
+	laser_line.default_color = Color(2.4, 0.35, 0.15, 0.95)
 	laser_line.visible = false
 	visual.add_child(laser_line)
 

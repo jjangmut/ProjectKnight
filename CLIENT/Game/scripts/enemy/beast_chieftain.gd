@@ -105,14 +105,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Enrage Blood Aura
+	# Predator Champion Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-48, -40), Vector2(48, -40), Vector2(56, 0),
-		Vector2(40, 30), Vector2(-40, 30), Vector2(-56, 0)
+		Vector2(-50, -42), Vector2(50, -42), Vector2(58, 0),
+		Vector2(42, 32), Vector2(-42, 32), Vector2(-58, 0)
 	])
-	aura_poly.color = Color(1.0, 0.12, 0.1, 0.4)
-	aura_poly.visible = false
+	aura_poly.color = Color(1.4, 0.25, 0.15, 0.35)
+	aura_poly.visible = true
 	visual.add_child(aura_poly)
 
 	# Primitive placeholders (hidden in favor of high-res beast sprite)
@@ -678,25 +678,33 @@ func _spawn_beast_attack_vfx(pattern: Pattern, facing_dir: float) -> void:
 	vfx.z_index = 8
 	parent.add_child(vfx)
 
-	# 3-Slash Beast Claw Arcs
+	# 3-Slash Beast Claw Arcs (Dual Layer: Outer Blazing Glow + Inner Razor Core)
 	var claw_offsets := [-14.0, 0.0, 14.0]
-	var claw_color := Color(1.0, 0.25, 0.1, 0.95) if current_phase == 2 else Color(1.0, 0.65, 0.2, 0.9)
+	var claw_color := Color(1.8, 0.35, 0.15, 0.98) if current_phase == 2 else Color(1.6, 0.85, 0.25, 0.95)
 	if pattern == Pattern.RAGING_RUSH:
-		claw_color = Color(1.2, 0.15, 0.1, 1.0)
+		claw_color = Color(2.0, 0.2, 0.1, 1.0)
 
 	for off_y in claw_offsets:
+		# Outer Glow
 		var line := Line2D.new()
-		line.width = 4.5
+		line.width = 6.0
 		line.default_color = claw_color
 		var pts := PackedVector2Array()
-		for i in range(6):
-			var t := float(i) / 5.0
+		for i in range(7):
+			var t := float(i) / 6.0
 			var ang := -PI * 0.25 + t * PI * 0.5
-			var r := 48.0 if pattern == Pattern.RAGING_RUSH else 40.0
+			var r := 52.0 if pattern == Pattern.RAGING_RUSH else 44.0
 			var pt := Vector2(cos(ang) * r * facing_dir, sin(ang) * r + off_y)
 			pts.append(pt)
 		line.points = pts
 		vfx.add_child(line)
+
+		# Inner White-hot Razor Core
+		var core_line := Line2D.new()
+		core_line.width = 2.0
+		core_line.default_color = Color(2.0, 1.9, 1.6, 1.0)
+		core_line.points = pts
+		vfx.add_child(core_line)
 
 	# Blood Spark Particles
 	var spark_count := 8

@@ -82,6 +82,60 @@ func _install() -> void:
 	add_child(parallax_bg)
 	parallax_bg.setup_parallax(stage.stage_number, textures.background)
 
+	# 1. World Environment: 2D HDR Glow & Atmospheric Bloom
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.02, 0.03, 0.05, 1.0)
+	env.glow_enabled = true
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
+	env.glow_hdr_threshold = 0.95
+	env.glow_hdr_scale = 1.4
+	env.glow_intensity = 0.85
+	env.glow_bloom = 0.20
+	var world_env := WorldEnvironment.new()
+	world_env.name = "StageWorldEnvironment"
+	world_env.environment = env
+	add_child(world_env)
+
+	# 2. Dynamic Ambiance: Thematic Stage Tint
+	var modulate_colors := [
+		Color(0.92, 0.95, 1.05, 1.0), # Stage 1: Castle dawn blue-gold
+		Color(0.88, 1.02, 0.90, 1.0), # Stage 2: Beast forest emerald
+		Color(1.05, 0.90, 0.82, 1.0), # Stage 3: Ruined twilight orange
+		Color(0.85, 0.96, 1.02, 1.0), # Stage 4: Ancient sanctuary cyan
+		Color(0.82, 0.78, 0.98, 1.0)  # Stage 5: Abyssal citadel violet
+	]
+	var canvas_mod := CanvasModulate.new()
+	canvas_mod.name = "StageCanvasModulate"
+	canvas_mod.color = modulate_colors[clampi(stage.stage_number - 1, 0, 4)]
+	add_child(canvas_mod)
+
+	# 3. Atmospheric Floating Motes & Embers
+	var motes := CPUParticles2D.new()
+	motes.name = "AtmosphericMotes"
+	motes.amount = 35
+	motes.lifetime = 5.5
+	motes.preprocess = 2.5
+	motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	motes.emission_rect_extents = Vector2(750, 420)
+	motes.gravity = Vector2(0, -8)
+	motes.initial_velocity_min = 12.0
+	motes.initial_velocity_max = 28.0
+	motes.spread = 180.0
+	motes.scale_amount_min = 2.0
+	motes.scale_amount_max = 4.5
+	var mote_colors := [
+		Color(1.5, 1.3, 0.7, 0.35), # S1 gold dust
+		Color(0.8, 1.5, 0.9, 0.35), # S2 emerald spores
+		Color(1.6, 0.8, 0.4, 0.35), # S3 embers
+		Color(0.7, 1.4, 1.5, 0.35), # S4 mystic runes
+		Color(1.3, 0.7, 1.6, 0.35)  # S5 void motes
+	]
+	motes.color = mote_colors[clampi(stage.stage_number - 1, 0, 4)]
+	motes.position = Vector2(stage.player.position.x, 480)
+	motes.z_index = 8
+	add_child(motes)
+
 	var layer := CanvasLayer.new()
 	layer.name = "StageBackdrop"
 	layer.layer = -10
@@ -228,6 +282,9 @@ func _process(delta: float) -> void:
 	if not installed:
 		return
 	motion_time += delta
+	var motes = get_node_or_null("AtmosphericMotes")
+	if motes != null and is_instance_valid(motes) and is_instance_valid(stage.player):
+		motes.position.x = lerpf(motes.position.x, stage.player.position.x, 6.0 * delta)
 	if stage.player.guard_block_count > previous_guard_blocks:
 		guard_audio.play()
 	previous_guard_blocks = stage.player.guard_block_count

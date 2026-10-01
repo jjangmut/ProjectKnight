@@ -94,27 +94,37 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Void Aura
+	# Abyssal Climax Champion Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-42, -50), Vector2(42, -50), Vector2(50, 5),
-		Vector2(38, 42), Vector2(-38, 42), Vector2(-50, 5)
+		Vector2(-44, -54), Vector2(44, -54), Vector2(54, 5),
+		Vector2(40, 44), Vector2(-40, 44), Vector2(-54, 5)
 	])
-	aura_poly.color = Color(0.45, 0.1, 0.8, 0.4)
-	aura_poly.visible = false
+	aura_poly.color = Color(1.3, 0.35, 2.2, 0.45)
+	aura_poly.visible = true
 	visual.add_child(aura_poly)
 
-	# Black Wings (Revealed in Phase 3)
+	# Black Wings (Revealed in Phase 3) with Radiant Violet Neon Edge
 	wing_left = Polygon2D.new()
 	wing_left.polygon = PackedVector2Array([Vector2(-10, -20), Vector2(-60, -65), Vector2(-45, -10), Vector2(-20, 0)])
 	wing_left.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_left.visible = false
+	var wing_left_edge := Line2D.new()
+	wing_left_edge.width = 2.5
+	wing_left_edge.default_color = Color(1.8, 0.5, 2.4, 0.95)
+	wing_left_edge.points = wing_left.polygon
+	wing_left.add_child(wing_left_edge)
 	visual.add_child(wing_left)
 
 	wing_right = Polygon2D.new()
 	wing_right.polygon = PackedVector2Array([Vector2(10, -20), Vector2(60, -65), Vector2(45, -10), Vector2(20, 0)])
 	wing_right.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_right.visible = false
+	var wing_right_edge := Line2D.new()
+	wing_right_edge.width = 2.5
+	wing_right_edge.default_color = Color(1.8, 0.5, 2.4, 0.95)
+	wing_right_edge.points = wing_right.polygon
+	wing_right.add_child(wing_right_edge)
 	visual.add_child(wing_right)
 
 	# Shadow Cloak - hidden in favor of high-res sprite

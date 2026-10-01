@@ -6,6 +6,7 @@ var checks := 0
 var failures := 0
 
 const SwordBeamClass := preload("res://scripts/player/sword_beam.gd")
+const SaveManager := preload("res://scripts/system/save_manager.gd")
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -22,6 +23,7 @@ func check(condition: bool, message: String) -> void:
 
 func _run() -> void:
 	print("--- START ADVANCED COMBAT POLISH SMOKE TEST ---")
+	SaveManager.clear_save()
 
 	var world := Node2D.new()
 	root.add_child(world)

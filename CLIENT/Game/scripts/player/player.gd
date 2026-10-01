@@ -34,6 +34,7 @@ var attack_speed_multiplier: float = 1.0
 const AudioManager = preload("res://scripts/audio/audio_manager.gd")
 const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 const PlayerEquipmentClass = preload("res://scripts/player/player_equipment.gd")
+const SaveManagerClass = preload("res://scripts/system/save_manager.gd")
 var equipment_visuals: Node2D = null
 
 var is_attacking: bool = false
@@ -77,6 +78,14 @@ var is_air_attacking: bool = false
 var _air_hang_timer: float = 0.0
 const SwordBeamScene = preload("res://scripts/player/sword_beam.gd")
 signal perfect_parry_performed
+
+# Relic Gameplay Passive Buffs (v1.1.3 Quality Polish)
+var relic_shield_active: bool = false   # Stage 1: Guard recovery -30% & knockback resistance
+var relic_cloak_active: bool = false    # Stage 2: Dash cooldown -25% & speed +15%
+var relic_quiver_active: bool = false   # Stage 3: Sword beam range +100px & pierce +1
+var relic_pauldrons_active: bool = false # Stage 4: Ground slam shockwave debris on landing
+var relic_crown_active: bool = false    # Stage 5: Perfect parry crit damage 4 (vs 3)
+var _attack_buffer_remaining: float = 0.0 # Responsive attack buffer (0.12s)
 
 # Economy & Reward (TASK-CL-019)
 var soul_shards: int = 0
@@ -122,11 +131,26 @@ func _ready() -> void:
 	equipment_visuals = PlayerEquipmentClass.new()
 	equipment_visuals.name = "EquipmentVisuals"
 	add_child(equipment_visuals)
+	refresh_relic_buffs()
 
 
 func refresh_equipment() -> void:
 	if equipment_visuals != null and is_instance_valid(equipment_visuals):
 		equipment_visuals.refresh_equipment()
+	refresh_relic_buffs()
+
+
+func refresh_relic_buffs() -> void:
+	var cleared: Array[bool] = SaveManagerClass.get_cleared_stages()
+	relic_shield_active = cleared[0]
+	relic_cloak_active = cleared[1]
+	relic_quiver_active = cleared[2]
+	relic_pauldrons_active = cleared[3]
+	relic_crown_active = cleared[4]
+
+	guard_recovery = 0.09 if relic_shield_active else 0.12
+	dash_cooldown = 0.45 if relic_cloak_active else 0.60
+	dash_speed = 620.0 if relic_cloak_active else 540.0
 
 
 
@@ -163,13 +187,21 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_action_pressed("guard") and _can_start_guard():
 		_start_guard()
 
+	_attack_buffer_remaining = maxf(0.0, _attack_buffer_remaining - delta)
+	if Input.is_action_just_pressed("attack"):
+		_attack_buffer_remaining = 0.14
+
 	# Down thrust trigger: in air + down + attack
 	var is_down_held := Input.is_action_pressed("ui_down") or (InputMap.has_action("move_down") and Input.is_action_pressed("move_down"))
-	if not is_on_floor() and is_down_held and Input.is_action_just_pressed("attack") and not is_attacking:
+	var attack_buffered := _attack_buffer_remaining > 0.0
+	if not is_on_floor() and is_down_held and (Input.is_action_just_pressed("attack") or attack_buffered) and not is_attacking:
+		_attack_buffer_remaining = 0.0
 		_start_down_thrust()
 	elif not is_on_floor() and Input.is_action_just_pressed("attack") and not is_attacking and not is_guarding and _cooldown_time_remaining <= 0.0:
+		_attack_buffer_remaining = 0.0
 		_start_air_attack()
-	elif Input.is_action_pressed("attack") and not is_attacking and not is_guarding and _guard_recovery_remaining <= 0.0 and _cooldown_time_remaining <= 0.0:
+	elif is_on_floor() and (Input.is_action_pressed("attack") or attack_buffered) and not is_attacking and not is_guarding and _guard_recovery_remaining <= 0.0 and _cooldown_time_remaining <= 0.0:
+		_attack_buffer_remaining = 0.0
 		_start_attack()
 
 	if not is_on_floor():
@@ -185,6 +217,9 @@ func _physics_process(delta: float) -> void:
 			_end_down_thrust()
 		if is_air_attacking:
 			_end_air_attack()
+		elif _attack_buffer_remaining > 0.0 and not is_attacking and not is_guarding and _guard_recovery_remaining <= 0.0 and _cooldown_time_remaining <= 0.0:
+			_attack_buffer_remaining = 0.0
+			_start_attack()
 
 	_coyote_remaining = coyote_time if is_on_floor() else maxf(0.0, _coyote_remaining - delta)
 	_jump_buffer_remaining = jump_buffer if Input.is_action_just_pressed("jump") else maxf(0.0, _jump_buffer_remaining - delta)
@@ -307,6 +342,9 @@ func _spawn_sword_beam() -> void:
 	var beam := SwordBeamScene.new()
 	beam.position = global_position + Vector2(facing_direction * 36.0, -8.0)
 	beam.direction = facing_direction
+	if relic_quiver_active:
+		beam.max_distance = 420.0
+		beam.max_pierce = 4
 	parent_node.add_child(beam)
 
 
@@ -333,6 +371,9 @@ func _end_air_attack() -> void:
 	_air_hang_timer = 0.0
 	if is_attacking and not is_down_thrusting:
 		_end_attack()
+	if _attack_buffer_remaining > 0.0 and is_on_floor() and not is_guarding and _guard_recovery_remaining <= 0.0:
+		_attack_buffer_remaining = 0.0
+		_start_attack()
 
 
 func _start_counter_attack() -> void:
@@ -346,7 +387,10 @@ func _start_counter_attack() -> void:
 	combo_step = 3
 	_attack_time_remaining = 0.20 / attack_speed_multiplier
 	_cooldown_time_remaining = 0.22 / attack_speed_multiplier
-	current_attack_damage = 3 if is_perfect_parry else 2
+	if is_perfect_parry:
+		current_attack_damage = 4 if relic_crown_active else 3
+	else:
+		current_attack_damage = 2
 	is_perfect_parry = false
 	AudioManager.play("counter_hit", global_position)
 	_trigger_haptic(60)
@@ -372,6 +416,11 @@ func _end_down_thrust() -> void:
 	is_down_thrusting = false
 	if is_attacking and _attack_time_remaining > 0.0:
 		_end_attack()
+	if relic_pauldrons_active and get_parent() is Node2D:
+		GameFeelManager.shake(0.30)
+		AudioManager.play("pogo_bounce", global_position)
+		GameFeelManager.slash_spark(get_parent() as Node2D, global_position + Vector2(18.0, 10.0), 1.0, true)
+		GameFeelManager.slash_spark(get_parent() as Node2D, global_position + Vector2(-18.0, 10.0), -1.0, true)
 
 
 func _end_attack() -> void:

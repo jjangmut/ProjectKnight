@@ -88,14 +88,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Magma Enrage Aura
+	# Ancient Titan Magma Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-52, -54), Vector2(52, -54), Vector2(62, 10),
-		Vector2(45, 48), Vector2(-45, 48), Vector2(-62, 10)
+		Vector2(-54, -56), Vector2(54, -56), Vector2(64, 10),
+		Vector2(48, 50), Vector2(-48, 50), Vector2(-64, 10)
 	])
-	aura_poly.color = Color(1.0, 0.35, 0.1, 0.4)
-	aura_poly.visible = false
+	aura_poly.color = Color(1.6, 0.75, 0.25, 0.35)
+	aura_poly.visible = true
 	visual.add_child(aura_poly)
 
 	# Stone Torso (84x76) - hidden in favor of high-res sprite
@@ -131,13 +131,14 @@ func _build_visuals() -> void:
 	head_poly.visible = false
 	visual.add_child(head_poly)
 
-	# Magma Rune Core in Chest
+	# Magma Rune Core in Chest (HDR Glowing Radiant Core)
 	core_poly = Polygon2D.new()
 	core_poly.polygon = PackedVector2Array([
 		Vector2(0, -26), Vector2(16, -10), Vector2(0, 8), Vector2(-16, -10)
 	])
-	core_poly.color = Color(0.9, 0.65, 0.2, 1.0)
-	core_poly.visible = false
+	core_poly.color = Color(2.0, 1.4, 0.35, 0.95)
+	core_poly.visible = true
+	core_poly.z_index = 2
 	visual.add_child(core_poly)
 
 	_build_boss_sprite()
