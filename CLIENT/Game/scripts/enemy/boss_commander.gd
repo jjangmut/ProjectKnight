@@ -546,7 +546,14 @@ func _process_phase_transition(delta: float) -> void:
 		_start_leap_slam()
 
 
-func receive_hit() -> void:
+func take_damage(amount: int = 1, _from_dir: Vector2 = Vector2.ZERO) -> void:
+	for i in range(amount):
+		if is_dead:
+			break
+		receive_hit(1)
+
+
+func receive_hit(damage: int = 1, _is_counter: bool = false, _dealer: Node = null) -> void:
 	if is_dead or is_invulnerable:
 		return
 
@@ -568,7 +575,7 @@ func receive_hit() -> void:
 				_player.velocity.x = -facing_direction * 220.0
 			return
 
-	current_hp -= 1
+	current_hp -= damage
 	boss_hp_changed.emit(current_hp, max_hp)
 
 	# Floating damage number
@@ -596,7 +603,7 @@ func receive_hit() -> void:
 		remove_meta("counter_stunned")
 		state = State.STUNNED
 		_hit_stun_timer = dur
-		attack_collision.disabled = true
+		attack_collision.set_deferred("disabled", true)
 		body_poly.color = Color(0.4, 0.85, 1.0)
 		if is_instance_valid(boss_sprite):
 			boss_sprite.modulate = Color(0.4, 0.85, 1.0, 1.0)
@@ -614,7 +621,7 @@ func _trigger_phase_two() -> void:
 	_phase_timer = 0.7
 	is_invulnerable = true
 	move_speed = 160.0
-	attack_collision.disabled = true
+	attack_collision.set_deferred("disabled", true)
 	aura_poly.visible = true
 	if is_instance_valid(boss_sprite):
 		boss_sprite.modulate = Color(1.4, 0.4, 0.4, 1.0)

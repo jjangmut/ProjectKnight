@@ -626,8 +626,16 @@ func _finish(result: StageState) -> void:
 				SaveManager.add_shards(player.soul_shards)
 			if player.has_method("refresh_equipment"):
 				player.refresh_equipment()
-	status_label.text = "스테이지 성공 · CLEARED" if result == StageState.CLEARED else "실패 · FAILED"
-	status_label.text += "\n1.5초 후 CP%d에서 재시작" % (checkpoint_index + 1) if result == StageState.FAILED and checkpoint_active else "\n1.5초 후 시작점에서 재시작"
+		var boss_bar := get_node_or_null("HUD/BossHealthBar")
+		if boss_bar != null and is_instance_valid(boss_bar):
+			boss_bar.visible = false
+			boss_bar.queue_free()
+		if status_label != null:
+			status_label.visible = false
+	else:
+		if status_label != null:
+			status_label.text = "실패 · FAILED"
+			status_label.text += "\n1.5초 후 CP%d에서 재시작" % (checkpoint_index + 1) if checkpoint_active else "\n1.5초 후 시작점에서 재시작"
 	# Freeze combat during the terminal display. The timer stays active.
 	for child in get_children():
 		if child is CharacterBody2D or child is Area2D:
