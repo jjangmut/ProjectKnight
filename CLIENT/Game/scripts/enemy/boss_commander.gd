@@ -37,7 +37,7 @@ var current_pattern: Pattern = Pattern.SHIELD_BASH
 
 var move_speed: float = 120.0
 var facing_direction: float = -1.0
-var attack_range: float = 85.0
+var attack_range: float = 105.0
 var detection_range: float = 9999.0
 var gravity: float = 980.0
 var is_dead: bool = false
@@ -103,14 +103,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Phase 2 Enrage Aura (starts hidden, kept hidden in favor of sprite modulation)
+	# Champion Silhouette Rim Glow (subtle ambient glow in Phase 1, roaring fire in Phase 2)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-48, -72), Vector2(48, -72), Vector2(62, 0),
-		Vector2(48, 52), Vector2(-48, 52), Vector2(-62, 0)
+		Vector2(-52, -80), Vector2(52, -80), Vector2(68, -20),
+		Vector2(54, 40), Vector2(-54, 40), Vector2(-68, -20)
 	])
-	aura_poly.color = Color(1.0, 0.15, 0.1, 0.0)
-	aura_poly.visible = false
+	aura_poly.color = Color(1.0, 0.85, 0.3, 0.22)
+	aura_poly.visible = true
 	visual.add_child(aura_poly)
 
 	# Primitive placeholders (hidden in favor of high-res boss sprite)
@@ -190,8 +190,8 @@ func _build_boss_sprite() -> void:
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Imposing boss scale: 0.19 (~96px tall, 1.4x larger than regular melee enemies)
-	boss_sprite.scale = Vector2.ONE * 0.19
+	# Imposing boss scale: 0.285 (~106px tall, 1.6x larger than regular melee enemies)
+	boss_sprite.scale = Vector2.ONE * 0.285
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	boss_sprite.position = Vector2(0, 36)
 
@@ -204,7 +204,7 @@ func _build_boss_sprite() -> void:
 		boss_sprite.texture = tex
 		boss_sprite.centered = true
 		boss_sprite.position = Vector2(0, 0)
-		boss_sprite.scale = Vector2.ONE * (96.0 / tex.get_height())
+		boss_sprite.scale = Vector2.ONE * (106.0 / tex.get_height())
 
 	visual.add_child(boss_sprite)
 
@@ -213,12 +213,12 @@ func _build_collisions() -> void:
 	collision_layer = 16
 	collision_mask = 1
 
-	# Main body physics collision
+	# Main body physics collision (scaled to imposing boss stature)
 	var body_col := CollisionShape2D.new()
 	var body_shape := RectangleShape2D.new()
-	body_shape.size = Vector2(48, 76)
+	body_shape.size = Vector2(62, 102)
 	body_col.shape = body_shape
-	body_col.position = Vector2(0, -2)
+	body_col.position = Vector2(0, -15)
 	add_child(body_col)
 
 	# Dynamic Top Platform: allows player to jump and stand on top of Boss
@@ -229,9 +229,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(52.0, 12.0)
+	top_rect.size = Vector2(64.0, 14.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -40.0)
+	top_shape.position = Vector2(0.0, -68.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -245,29 +245,29 @@ func _build_collisions() -> void:
 	hurt_area.collision_mask = 0
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := RectangleShape2D.new()
-	hurt_shape.size = Vector2(52, 78)
+	hurt_shape.size = Vector2(66, 104)
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -2)
+	hurt_col.position = Vector2(0, -15)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
-	# Attack Hitbox
+	# Attack Hitbox (scaled forward reach and arc coverage)
 	attack_area = Area2D.new()
 	attack_area.name = "AttackArea"
 	attack_area.collision_layer = 0
 	attack_area.collision_mask = 4
 	attack_collision = CollisionShape2D.new()
 	var at_shape := RectangleShape2D.new()
-	at_shape.size = Vector2(80, 70)
+	at_shape.size = Vector2(115, 95)
 	attack_collision.shape = at_shape
-	attack_collision.position = Vector2(45, -5)
+	attack_collision.position = Vector2(60, -15)
 	attack_collision.disabled = true
 	attack_area.add_child(attack_collision)
 
 	# Telegraph / Attack arc visual
 	attack_visual = Polygon2D.new()
 	attack_visual.polygon = PackedVector2Array([
-		Vector2(5, -40), Vector2(85, -25), Vector2(85, 30), Vector2(5, 35)
+		Vector2(5, -55), Vector2(115, -35), Vector2(115, 35), Vector2(5, 45)
 	])
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
 	attack_area.add_child(attack_visual)
@@ -442,9 +442,12 @@ func _process_attack_windup(delta: float) -> void:
 		elif current_pattern == Pattern.RAGING_THRUST:
 			velocity.x = facing_direction * 420.0
 			AudioManager.play("smash_3", global_position)
+			_emit_sword_beam(facing_direction)
 		else:
 			velocity.x = facing_direction * 120.0
 			AudioManager.play("slash_2", global_position)
+			if current_pattern == Pattern.COMBO_CLEAVE:
+				_emit_sword_beam(facing_direction)
 
 		# Visual Attack VFX: Spawn Boss Crescent Slash Arc
 		_spawn_boss_attack_vfx(current_pattern, facing_direction)
@@ -558,7 +561,7 @@ func receive_hit() -> void:
 		if hit_dir == facing_direction:
 			# Frontal block!
 			AudioManager.play("guard_clang", global_position)
-			GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -40), "BLOCKED!", Color(0.8, 0.85, 0.9))
+			GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -65), "BLOCKED!", Color(0.8, 0.85, 0.9))
 			GameFeelManager.shake(0.15)
 			# Knock player back
 			if is_instance_valid(_player) and "velocity" in _player:
@@ -572,7 +575,7 @@ func receive_hit() -> void:
 	var is_counter := has_meta("counter_stunned")
 	var dmg_color := Color(0.3, 0.95, 1.0) if is_counter else Color(1.0, 0.9, 0.4)
 	var dmg_text := "2! CRIT" if is_counter else "1"
-	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(randf_range(-15, 15), -45), dmg_text, dmg_color, is_counter)
+	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(randf_range(-15, 15), -68), dmg_text, dmg_color, is_counter)
 
 	# Hitstop & Shake
 	GameFeelManager.trigger_hit_stop(0.08 if is_counter else 0.05, 0.03)
@@ -620,7 +623,7 @@ func _trigger_phase_two() -> void:
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.45)
 	GameFeelManager.trigger_hit_stop(0.12, 0.0)
-	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -60), "ENRAGED!", Color(1.0, 0.1, 0.1), true)
+	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -90), "ENRAGED!", Color(1.0, 0.1, 0.1), true)
 
 
 func _die() -> void:
@@ -641,7 +644,7 @@ func _die() -> void:
 	GameFeelManager.trigger_hit_stop(0.60, 0.15)
 	GameFeelManager.shake(0.65)
 	AudioManager.play("counter_hit", global_position)
-	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -50), "BOSS DEFEATED", Color(1.0, 0.85, 0.2), true)
+	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -85), "BOSS DEFEATED", Color(1.0, 0.85, 0.2), true)
 
 	# Fountain burst of 10 Soul Shards
 	_spawn_shard_burst(10)
@@ -682,10 +685,14 @@ func _restore_base_color() -> void:
 		body_poly.color = Color(0.35, 0.18, 0.22, 1.0)
 		if is_instance_valid(boss_sprite):
 			boss_sprite.modulate = Color(1.35, 0.45, 0.45, 1.0)
+		if is_instance_valid(aura_poly):
+			aura_poly.color = Color(1.0, 0.2, 0.1, 0.65)
 	else:
 		body_poly.color = Color(0.18, 0.22, 0.28, 1.0)
 		if is_instance_valid(boss_sprite):
 			boss_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		if is_instance_valid(aura_poly):
+			aura_poly.color = Color(1.0, 0.85, 0.3, 0.22)
 	shield_poly.color = Color(0.35, 0.40, 0.48, 1.0)
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
 
@@ -696,66 +703,99 @@ func _spawn_boss_attack_vfx(pattern: Pattern, facing_dir: float) -> void:
 		return
 
 	var vfx := Node2D.new()
-	vfx.position = global_position + Vector2(facing_dir * 55.0, -10.0)
+	vfx.position = global_position + Vector2(facing_dir * 70.0, -18.0)
 	vfx.z_index = 35
 	parent.add_child(vfx)
 
-	# 1. Crescent slash arc line
-	var arc := Line2D.new()
-	arc.width = 10.0 if current_phase == 2 else 7.5
-	var arc_color := Color(1.0, 0.15, 0.1, 0.95) if pattern == Pattern.RAGING_THRUST else (Color(1.0, 0.8, 0.15, 0.95) if pattern == Pattern.SHIELD_BASH else Color(1.0, 0.45, 0.1, 0.95))
-	arc.default_color = arc_color
+	var arc_radius := 90.0
+	var is_raging := (pattern == Pattern.RAGING_THRUST or current_phase == 2)
 
-	var points := PackedVector2Array()
-	var arc_radius := 65.0
-	for i in range(9):
-		var ang := -PI * 0.45 + (float(i) / 8.0) * PI * 0.9
-		var pt := Vector2(cos(ang) * arc_radius * facing_dir, sin(ang) * arc_radius)
-		points.append(pt)
-	arc.points = points
+	# 2. Filled crescent energy sweep body
+	var crescent_poly := Polygon2D.new()
+	var poly_pts := PackedVector2Array()
+	var step_count := 12
+	# Outer curve
+	for i in range(step_count + 1):
+		var ang := -PI * 0.48 + (float(i) / float(step_count)) * PI * 0.96
+		poly_pts.append(Vector2(cos(ang) * (arc_radius + 12.0) * facing_dir, sin(ang) * (arc_radius + 12.0)))
+	# Inner curve back
+	for i in range(step_count, -1, -1):
+		var ang := -PI * 0.42 + (float(i) / float(step_count)) * PI * 0.84
+		poly_pts.append(Vector2(cos(ang) * (arc_radius - 14.0) * facing_dir, sin(ang) * (arc_radius - 14.0)))
+	crescent_poly.polygon = poly_pts
+	crescent_poly.color = Color(1.0, 0.22, 0.1, 0.85) if is_raging else Color(1.0, 0.55, 0.12, 0.80)
+	vfx.add_child(crescent_poly)
+
+	# 3. Outer blazing energy arc
+	var arc := Line2D.new()
+	arc.width = 18.0 if is_raging else 14.0
+	arc.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	arc.end_cap_mode = Line2D.LINE_CAP_ROUND
+	arc.default_color = Color(1.0, 0.15, 0.08, 0.95) if is_raging else Color(1.0, 0.65, 0.15, 0.95)
+	var arc_pts := PackedVector2Array()
+	for i in range(11):
+		var ang := -PI * 0.46 + (float(i) / 10.0) * PI * 0.92
+		arc_pts.append(Vector2(cos(ang) * arc_radius * facing_dir, sin(ang) * arc_radius))
+	arc.points = arc_pts
 	vfx.add_child(arc)
 
-	# 2. Inner bright core blade
+	# 4. Inner white-hot cutting blade core
 	var inner := Line2D.new()
-	inner.width = 4.0
-	inner.default_color = Color.WHITE
-	var inner_points := PackedVector2Array()
-	for i in range(7):
-		var ang := -PI * 0.35 + (float(i) / 6.0) * PI * 0.7
-		var pt := Vector2(cos(ang) * (arc_radius * 0.85) * facing_dir, sin(ang) * (arc_radius * 0.85))
-		inner_points.append(pt)
-	inner.points = inner_points
+	inner.width = 5.5
+	inner.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	inner.end_cap_mode = Line2D.LINE_CAP_ROUND
+	inner.default_color = Color(1.0, 0.98, 0.90, 1.0)
+	var inner_pts := PackedVector2Array()
+	for i in range(9):
+		var ang := -PI * 0.38 + (float(i) / 8.0) * PI * 0.76
+		inner_pts.append(Vector2(cos(ang) * (arc_radius * 0.96) * facing_dir, sin(ang) * (arc_radius * 0.96)))
+	inner.points = inner_pts
 	vfx.add_child(inner)
 
-	# 3. Burst spark particles
-	var spark_count := 8
+	# 5. Dynamic spark burst explosion
+	var spark_count := 14
 	var spark_polys: Array[Polygon2D] = []
 	var spark_vels: Array[Vector2] = []
 	for i in range(spark_count):
 		var p := Polygon2D.new()
-		var psize := randf_range(3.0, 6.0)
+		var psize := randf_range(3.5, 7.0)
 		p.polygon = PackedVector2Array([Vector2(-psize, -psize), Vector2(psize, -psize), Vector2(psize, psize), Vector2(-psize, psize)])
-		p.color = Color(1.0, 0.9, 0.3, 1.0) if pattern != Pattern.RAGING_THRUST else Color(1.0, 0.3, 0.2, 1.0)
+		p.color = Color(1.0, randf_range(0.4, 0.95), 0.15, 1.0) if not is_raging else Color(1.0, randf_range(0.2, 0.4), 0.1, 1.0)
 		vfx.add_child(p)
 		spark_polys.append(p)
-		var spd := randf_range(180.0, 360.0)
-		var sp_angle := randf_range(-PI * 0.35, PI * 0.35)
+		var spd := randf_range(220.0, 480.0)
+		var sp_angle := randf_range(-PI * 0.40, PI * 0.40)
 		if facing_dir < 0.0:
 			sp_angle = PI - sp_angle
 		spark_vels.append(Vector2(cos(sp_angle), sin(sp_angle)) * spd)
 
-	# Tween animate forward slash burst & fade
-	var duration := 0.25
+	# Kinetic slash animation & camera shake
+	GameFeelManager.shake(0.32 if not is_raging else 0.45)
+	var duration := 0.28
 	var tween := vfx.create_tween()
 	tween.set_parallel(true)
-	vfx.scale = Vector2(0.3, 0.3)
-	tween.tween_property(vfx, "scale", Vector2(1.35, 1.35), duration * 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(vfx, "position:x", vfx.position.x + facing_dir * 45.0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	vfx.scale = Vector2(0.4, 0.4)
+	tween.tween_property(vfx, "scale", Vector2(1.4, 1.4), duration * 0.40).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(vfx, "position:x", vfx.position.x + facing_dir * 55.0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	for i in range(spark_polys.size()):
 		var p := spark_polys[i]
 		var v := spark_vels[i]
 		tween.tween_property(p, "position", v * duration, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tween.tween_property(p, "scale", Vector2.ZERO, duration).set_delay(duration * 0.3)
-	tween.tween_property(vfx, "modulate:a", 0.0, duration * 0.5).set_delay(duration * 0.5)
+		tween.tween_property(p, "scale", Vector2.ZERO, duration).set_delay(duration * 0.25)
+	tween.tween_property(vfx, "modulate:a", 0.0, duration * 0.45).set_delay(duration * 0.55)
 	tween.chain().tween_callback(vfx.queue_free)
+
+
+func _emit_sword_beam(dir: float) -> void:
+	var parent := get_parent()
+	if not is_instance_valid(parent):
+		return
+	var beam := ShockwaveScene.new()
+	beam.position = Vector2(position.x + dir * 65.0, position.y + 36.0)
+	beam.direction = dir
+	if current_phase == 2:
+		beam.speed = 460.0
+		beam.max_travel_distance = 540.0
+	parent.add_child(beam)
+
 
