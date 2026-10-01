@@ -620,8 +620,12 @@ func _finish(result: StageState) -> void:
 		return
 	stage_state = result
 	if result == StageState.CLEARED:
-		if is_instance_valid(player) and "soul_shards" in player and player.soul_shards > 0:
-			SaveManager.add_shards(player.soul_shards)
+		SaveManager.mark_stage_cleared(stage_number)
+		if is_instance_valid(player):
+			if "soul_shards" in player and player.soul_shards > 0:
+				SaveManager.add_shards(player.soul_shards)
+			if player.has_method("refresh_equipment"):
+				player.refresh_equipment()
 	status_label.text = "스테이지 성공 · CLEARED" if result == StageState.CLEARED else "실패 · FAILED"
 	status_label.text += "\n1.5초 후 CP%d에서 재시작" % (checkpoint_index + 1) if result == StageState.FAILED and checkpoint_active else "\n1.5초 후 시작점에서 재시작"
 	# Freeze combat during the terminal display. The timer stays active.

@@ -1,5 +1,6 @@
 extends Control
 ## Stage presentation: observes campaign and combat state, never chooses outcomes.
+const SaveManagerClass = preload("res://scripts/system/save_manager.gd")
 const INK := Color("101b26")
 const GOLD := Color("ddc18a")
 const CYAN := Color("69d5dc")
@@ -202,11 +203,12 @@ func _draw() -> void:
 		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
 		_diamond(Vector2(296, 92), 16, Color(0.2, 0.9, 1.0))
 		_text(Vector2(322, 102), "%d" % shards, 32, Color(0.35, 0.95, 1.0))
+		_draw_relic_bar(Vector2(110, 140))
 		if stage.checkpoint_active:
-			_diamond(Vector2(48, 144), 10, CYAN)
-			_text(Vector2(68, 152), "휴식처 %d / %d 저장됨" % [stage.checkpoint_index + 1, stage.CHECKPOINT_POSITIONS.size()], 28, CYAN)
-		_text(Vector2(38, 188), trait_label(), 24, MUTED)
-		_text(Vector2(38, 220), chapter_label(), 24, GOLD)
+			_diamond(Vector2(48, 178), 10, CYAN)
+			_text(Vector2(68, 186), "휴식처 %d / %d 저장됨" % [stage.checkpoint_index + 1, stage.CHECKPOINT_POSITIONS.size()], 26, CYAN)
+		_text(Vector2(38, 212), trait_label(), 22, MUTED)
+		_text(Vector2(38, 238), chapter_label(), 22, GOLD)
 	else:
 		# Compact left zone during boss battle (never overlaps BossHealthBar at x:290..990)
 		for index in range(3):
@@ -215,6 +217,7 @@ func _draw() -> void:
 		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
 		_diamond(Vector2(204, 54), 14, Color(0.2, 0.9, 1.0))
 		_text(Vector2(228, 62), "%d" % shards, 28, Color(0.35, 0.95, 1.0))
+		_draw_relic_bar(Vector2(110, 96))
 
 	# 2. Center Zone: Encounter Track, Objective, Hints (Scaled 2x)
 	if not has_boss_bar:
@@ -272,13 +275,16 @@ func _draw() -> void:
 	if stage.stage_state != 0:
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.015, 0.025, 0.04, 0.75))
 		var cleared: bool = stage.stage_state == 1
-		var accent := GOLD if cleared else Color("e99589")
-		_plate(Rect2(200, 140, 880, 440), accent)
-		_center(Vector2(640, 200), stage_label(), 28, accent)
-		_center(Vector2(640, 270), "스테이지 완료" if cleared else "다시 일어설 시간", 54, accent)
-		_center(Vector2(640, 345), objective(), 34)
-		_center(Vector2(640, 410), "필수 전투 %d / %d 완료" % [stage.encounter_index, stage.required_count], 28, MUTED)
-		_center(Vector2(640, 485), transition_message(), 28)
+		if cleared:
+			_draw_stage_clear_reward_card()
+		else:
+			var accent := Color("e99589")
+			_plate(Rect2(200, 140, 880, 440), accent)
+			_center(Vector2(640, 200), stage_label(), 28, accent)
+			_center(Vector2(640, 270), "다시 일어설 시간", 54, accent)
+			_center(Vector2(640, 345), objective(), 34)
+			_center(Vector2(640, 410), "필수 전투 %d / %d 완료" % [stage.encounter_index, stage.required_count], 28, MUTED)
+			_center(Vector2(640, 485), transition_message(), 28)
 	elif get_tree().paused or show_help:
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.015, 0.025, 0.04, 0.75))
 		_plate(Rect2(160, 110, 960, 500), GOLD)
@@ -391,3 +397,140 @@ func _exit_tree() -> void:
 	release_touches()
 	if pause_owned and get_tree() != null:
 		get_tree().paused = false
+
+
+func _draw_relic_bar(pos: Vector2) -> void:
+	var cleared := SaveManagerClass.get_cleared_stages()
+	for i in range(5):
+		var st_num := i + 1
+		var relic: Dictionary = SaveManagerClass.STAGE_RELICS.get(st_num, {})
+		var is_unlocked: bool = cleared[i]
+		var slot_pos := pos + Vector2(i * 38, 0)
+		var base_color: Color = relic.get("icon_color", GOLD) if is_unlocked else Color(0.35, 0.42, 0.48, 0.4)
+		
+		# Slot background pill / circle
+		var bg_color := Color(0.04, 0.08, 0.12, 0.75) if not is_unlocked else Color(0.08, 0.16, 0.22, 0.90)
+		draw_circle(slot_pos, 16.0, bg_color)
+		draw_arc(slot_pos, 16.0, 0, TAU, 24, base_color, 2.0 if is_unlocked else 1.0, true)
+		
+		if is_unlocked:
+			_draw_relic_icon(slot_pos, st_num, base_color, 0.85)
+		else:
+			# Locked slot dot indicator
+			draw_circle(slot_pos, 3.0, Color(0.4, 0.5, 0.55, 0.6))
+
+
+func _draw_relic_icon(center: Vector2, st_num: int, color: Color, sz: float = 1.0) -> void:
+	match st_num:
+		1: # Bastion Shield
+			var pts := PackedVector2Array([
+				center + Vector2(-8, -10) * sz,
+				center + Vector2(8, -10) * sz,
+				center + Vector2(10, 2) * sz,
+				center + Vector2(0, 12) * sz,
+				center + Vector2(-10, 2) * sz
+			])
+			draw_colored_polygon(pts, Color(color.r, color.g, color.b, 0.35))
+			draw_polyline(pts + PackedVector2Array([pts[0]]), color, 2.0 * sz, true)
+			# Cross / crest
+			draw_line(center + Vector2(0, -6) * sz, center + Vector2(0, 8) * sz, color, 1.8 * sz)
+			draw_line(center + Vector2(-5, -1) * sz, center + Vector2(5, -1) * sz, color, 1.8 * sz)
+
+		2: # Shadow Cloak
+			var cape_pts := PackedVector2Array([
+				center + Vector2(-4, -10) * sz,
+				center + Vector2(4, -10) * sz,
+				center + Vector2(10, 11) * sz,
+				center + Vector2(0, 7) * sz,
+				center + Vector2(-10, 11) * sz
+			])
+			draw_colored_polygon(cape_pts, Color(color.r, color.g, color.b, 0.45))
+			draw_polyline(cape_pts + PackedVector2Array([cape_pts[0]]), color, 2.0 * sz, true)
+			draw_line(center + Vector2(-6, -10) * sz, center + Vector2(6, -10) * sz, Color.WHITE, 2.0 * sz)
+
+		3: # Piercing Quiver
+			var q_pts := PackedVector2Array([
+				center + Vector2(-4, -8) * sz,
+				center + Vector2(4, -8) * sz,
+				center + Vector2(3, 11) * sz,
+				center + Vector2(-3, 11) * sz
+			])
+			draw_colored_polygon(q_pts, Color(color.r, color.g, color.b, 0.35))
+			draw_polyline(q_pts + PackedVector2Array([q_pts[0]]), color, 1.8 * sz, true)
+			# Arrows
+			draw_line(center + Vector2(0, -8) * sz, center + Vector2(0, -14) * sz, color, 2.0 * sz)
+			draw_line(center + Vector2(-3, -12) * sz, center + Vector2(0, -14) * sz, color, 1.5 * sz)
+			draw_line(center + Vector2(3, -12) * sz, center + Vector2(0, -14) * sz, color, 1.5 * sz)
+
+		4: # Golem Pauldrons
+			var paul_pts := PackedVector2Array([
+				center + Vector2(-11, -5) * sz,
+				center + Vector2(11, -5) * sz,
+				center + Vector2(13, 6) * sz,
+				center + Vector2(0, 11) * sz,
+				center + Vector2(-13, 6) * sz
+			])
+			draw_colored_polygon(paul_pts, Color(color.r, color.g, color.b, 0.35))
+			draw_polyline(paul_pts + PackedVector2Array([paul_pts[0]]), color, 2.0 * sz, true)
+			_diamond(center + Vector2(0, 1) * sz, 4.0 * sz, Color(1.0, 0.85, 0.4))
+
+		5: # Abyssal Crown
+			var cr_pts := PackedVector2Array([
+				center + Vector2(-11, 4) * sz,
+				center + Vector2(-10, -5) * sz,
+				center + Vector2(-5, 0) * sz,
+				center + Vector2(0, -9) * sz,
+				center + Vector2(5, 0) * sz,
+				center + Vector2(10, -5) * sz,
+				center + Vector2(11, 4) * sz
+			])
+			draw_colored_polygon(cr_pts, Color(color.r, color.g, color.b, 0.4))
+			draw_polyline(cr_pts + PackedVector2Array([cr_pts[0]]), color, 2.0 * sz, true)
+			draw_arc(center + Vector2(0, -11) * sz, 8.0 * sz, 0, TAU, 16, Color(1.0, 0.7, 1.0), 1.5 * sz, true)
+
+
+func _draw_stage_clear_reward_card() -> void:
+	var relic: Dictionary = SaveManagerClass.STAGE_RELICS.get(stage.stage_number, {})
+	var relic_color: Color = relic.get("icon_color", GOLD)
+	
+	# Main Outer Container
+	_plate(Rect2(140, 75, 1000, 570), GOLD, Color(0.02, 0.05, 0.08, 0.96))
+	
+	# Header
+	_center(Vector2(640, 126), "★  " + stage_label() + " 돌파 완료  ★", 38, GOLD)
+	_center(Vector2(640, 166), "전설 보스 유물 획득 · 기사 장비 외형 장착 완료!", 24, CYAN)
+	
+	# Inner Card Frame
+	_plate(Rect2(180, 190, 920, 310), relic_color, Color(0.04, 0.09, 0.14, 0.92))
+	
+	# Left: Large Showcase Emblem
+	var icon_center := Vector2(320, 335)
+	draw_circle(icon_center, 72.0, Color(relic_color.r, relic_color.g, relic_color.b, 0.16))
+	draw_arc(icon_center, 72.0, 0, TAU, 48, relic_color, 3.0, true)
+	draw_arc(icon_center, 64.0, 0, TAU, 48, Color(1.0, 1.0, 1.0, 0.25), 1.5, true)
+	_draw_relic_icon(icon_center, stage.stage_number, relic_color, 3.6)
+	
+	# Rarity Badge
+	var rarity_text: String = relic.get("rarity", "전설 유물")
+	var badge_w := font.get_string_size(rarity_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 20).x + 36.0
+	_pill(Rect2(icon_center.x - badge_w * 0.5, 435, badge_w, 36.0))
+	_center(Vector2(icon_center.x, 460), rarity_text, 20, relic_color)
+	
+	# Right: Detailed Info Section
+	var text_x := 440.0
+	var relic_name: String = relic.get("name", "고대 사령관의 유물")
+	_text(Vector2(text_x, 245), relic_name, 34, GOLD)
+	
+	# Ability / Effect
+	_text(Vector2(text_x, 292), "▶ 유물 고유 지속 효과", 22, CYAN)
+	_text(Vector2(text_x + 20, 326), relic.get("desc", ""), 22, WHITE)
+	
+	# Visual Equipment Transformation
+	_text(Vector2(text_x, 376), "▶ 캐릭터 장비 외형 변화", 22, Color(1.0, 0.75, 0.35))
+	_text(Vector2(text_x + 20, 410), relic.get("visual_name", "새로운 장비 외형 장착"), 22, WHITE)
+	_text(Vector2(text_x + 20, 442), "인게임 플레이 및 대기 모션 시 캐릭터 모델에 실시간 반영됩니다.", 19, MUTED)
+	
+	# Bottom Status / Navigation
+	_center(Vector2(640, 545), "필수 전투 %d / %d 완료 · 영구 세이브 저장됨" % [stage.encounter_index, stage.required_count], 22, MUTED)
+	_center(Vector2(640, 595), transition_message(), 26, CYAN)
+

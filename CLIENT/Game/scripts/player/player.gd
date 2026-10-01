@@ -33,6 +33,8 @@ var attack_speed_multiplier: float = 1.0
 
 const AudioManager = preload("res://scripts/audio/audio_manager.gd")
 const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
+const PlayerEquipmentClass = preload("res://scripts/player/player_equipment.gd")
+var equipment_visuals: Node2D = null
 
 var is_attacking: bool = false
 var attack_count: int = 0
@@ -87,7 +89,8 @@ var has_shadow_dash: bool = true
 var is_dashing: bool = false
 var is_invulnerable: bool = false
 var dash_speed: float = 540.0
-var dash_duration: float = 0.22
+const DASH_DURATION: float = 0.22
+var dash_duration: float = DASH_DURATION
 var dash_cooldown: float = 0.60
 var _dash_time_remaining: float = 0.0
 var _dash_cooldown_remaining: float = 0.0
@@ -114,6 +117,16 @@ func _ready() -> void:
 
 	platform_on_leave = 2 # PLATFORM_ON_LEAVE_DO_NOT_ADD_VELOCITY
 	platform_floor_layers = 0
+
+	# Attach dynamic visual equipment system
+	equipment_visuals = PlayerEquipmentClass.new()
+	equipment_visuals.name = "EquipmentVisuals"
+	add_child(equipment_visuals)
+
+
+func refresh_equipment() -> void:
+	if equipment_visuals != null and is_instance_valid(equipment_visuals):
+		equipment_visuals.refresh_equipment()
 
 
 

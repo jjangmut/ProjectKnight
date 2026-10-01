@@ -252,7 +252,7 @@ func _update_player_pose(delta: float = 0.0) -> void:
 	player_art.rotation = 0.0
 	# Replace only the opaque placeholder drawing, retaining controller visibility/state.
 	player.attack_visual.self_modulate.a = 0.0
-	if player_art.update_motion(delta):
+	if player_art.has_method("update_motion") and player_art.update_motion(delta):
 		var pose_names := {"death": "dead", "hurt": "hit", "run": "move"}
 		player_pose = pose_names.get(player_art.motion_name, player_art.motion_name)
 		if player_art.motion_name == "jump":

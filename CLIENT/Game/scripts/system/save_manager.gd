@@ -100,6 +100,89 @@ static func apply_upgrades_to_player(player: Node) -> void:
 		player.update_stats_from_upgrades(spd_boost, atk_spd_boost)
 
 
+const STAGE_RELICS := {
+	1: {
+		"id": "bastion_shield",
+		"name": "타락한 사령관의 수호 방패",
+		"title": "사령관의 대형 방패",
+		"rarity": "전설 유물",
+		"icon_color": Color(1.0, 0.85, 0.25),
+		"desc": "저스트 패링 시 3 데미지 치명타 반격 활성화",
+		"visual": "shield",
+		"visual_name": "강철 수호 방패 외형 장착",
+	},
+	2: {
+		"id": "shadow_cloak",
+		"name": "심연 맹수의 그림자 망토",
+		"title": "맹수의 바람 망토",
+		"rarity": "전설 유물",
+		"icon_color": Color(0.95, 0.25, 0.35),
+		"desc": "그림자 대시 쿨타임 -25% & 이동 속도 +20 영구 증가",
+		"visual": "cloak",
+		"visual_name": "진홍빛 그림자 망토 외형 장착",
+	},
+	3: {
+		"id": "piercing_quiver",
+		"name": "폐허 저격수의 예기 화살깃",
+		"title": "폐허 저격수의 시위",
+		"rarity": "전설 유물",
+		"icon_color": Color(0.3, 0.95, 1.0),
+		"desc": "3타 콤보 피니셔 검기 사거리 +40% 및 비행 속도 +20% 증가",
+		"visual": "quiver",
+		"visual_name": "예기 화살통 및 검기 광륜 외형 장착",
+	},
+	4: {
+		"id": "golem_pauldrons",
+		"name": "고대 수호자의 룬 견갑",
+		"title": "타이탄 룬 견갑",
+		"rarity": "신화 유물",
+		"icon_color": Color(0.95, 0.65, 0.2),
+		"desc": "최대 체력 +1 영구 증가 및 피격 시 넉백 저항",
+		"visual": "pauldrons",
+		"visual_name": "고대 타이탄 룬 어깨 견갑 외형 장착",
+	},
+	5: {
+		"id": "abyssal_crown",
+		"name": "심연 심판관의 공허 날개깃",
+		"title": "공허의 심판관 크라운",
+		"rarity": "신화 유물",
+		"icon_color": Color(0.8, 0.4, 1.0),
+		"desc": "기본 공격력 +1 영구 강화 및 공중 체공 시간 증가",
+		"visual": "crown",
+		"visual_name": "공허의 에테르 헤일로/날개깃 외형 장착",
+	}
+}
+
+
+static func mark_stage_cleared(stage_num: int) -> void:
+	var data := load_game()
+	var raw_cleared: Array = data.get("cleared", [false, false, false, false, false])
+	var cleared_arr: Array = raw_cleared.duplicate()
+	var idx := stage_num - 1
+	if idx >= 0 and idx < cleared_arr.size():
+		cleared_arr[idx] = true
+	var stats: Dictionary = data.get("stats", {})
+	save_game(maxi(stage_num, int(data.get("stage_index", 0))), str(data.get("selected_trait", "basic")), cleared_arr, stats)
+
+
+static func is_stage_cleared(stage_num: int) -> bool:
+	var data := load_game()
+	var cleared_arr: Array = data.get("cleared", [false, false, false, false, false])
+	var idx := stage_num - 1
+	if idx >= 0 and idx < cleared_arr.size():
+		return bool(cleared_arr[idx])
+	return false
+
+
+static func get_cleared_stages() -> Array[bool]:
+	var data := load_game()
+	var raw: Array = data.get("cleared", [false, false, false, false, false])
+	var res: Array[bool] = [false, false, false, false, false]
+	for i in range(mini(raw.size(), 5)):
+		res[i] = bool(raw[i])
+	return res
+
+
 
 
 

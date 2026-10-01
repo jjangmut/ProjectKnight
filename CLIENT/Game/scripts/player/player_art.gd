@@ -112,7 +112,8 @@ func update_motion(delta: float) -> bool:
 	if actor._hurt_flash_remaining > 0.0:
 		return _apply_motion("hurt", _phase(actor._hurt_flash_remaining, 0.12))
 	if "is_dashing" in actor and actor.is_dashing:
-		return _apply_motion("dodge", _phase(actor._dash_time_remaining, actor.DASH_DURATION))
+		var d_dur: float = actor.dash_duration if ("dash_duration" in actor) else 0.22
+		return _apply_motion("dodge", _phase(actor._dash_time_remaining, d_dur))
 	if actor.is_guarding:
 		var pose := 2 if actor._guard_block_flash_remaining > 0.0 else 0 if actor._guard_elapsed < 0.08 else 1
 		return _apply_motion("guard", float(pose) / 3.0)
