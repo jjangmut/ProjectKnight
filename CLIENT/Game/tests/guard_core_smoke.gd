@@ -9,6 +9,8 @@ func check(ok: bool, message: String) -> void:
 		failures += 1
 		push_error(message)
 func _run() -> void:
+	var SaveManagerClass = preload("res://scripts/system/save_manager.gd")
+	SaveManagerClass.clear_save()
 	var world := Node2D.new()
 	root.add_child(world)
 	var floor_body := StaticBody2D.new()

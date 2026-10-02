@@ -103,20 +103,35 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Champion Silhouette Rim Glow (Transparent fill with glowing rim line to eliminate opaque plate artifact)
+	# Champion Ground Sigil & Ambient Contact Shadow (replaces crude wireframe box)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
 		Vector2(-75, -165), Vector2(75, -165), Vector2(95, -30),
 		Vector2(75, 85), Vector2(-75, 85), Vector2(-95, -30)
 	])
-	aura_poly.color = Color(1.0, 0.85, 0.3, 0.0) # Transparent plate
+	aura_poly.color = Color(1.0, 0.85, 0.3, 0.0) # Transparent plate (retained for test contract)
 	aura_poly.visible = true
+
+	# Ground Contact Shadow: smooth dark grounding ellipse under feet
+	var shadow_poly := Polygon2D.new()
+	shadow_poly.name = "GroundShadow"
+	var shadow_pts := PackedVector2Array()
+	for i in range(24):
+		var rad := float(i) * TAU / 24.0
+		shadow_pts.append(Vector2(cos(rad) * 80.0, sin(rad) * 18.0))
+	shadow_poly.polygon = shadow_pts
+	shadow_poly.color = Color(0.02, 0.03, 0.05, 0.62)
+	visual.add_child(shadow_poly)
+
+	# Ground Champion Runic Sigil: glowing elliptical ring on floor
 	var aura_rim := Line2D.new()
-	aura_rim.width = 2.5
+	aura_rim.width = 2.4
 	aura_rim.default_color = Color(2.8, 2.2, 0.8, 0.85)
-	var closed_pts := aura_poly.polygon.duplicate()
-	closed_pts.append(closed_pts[0])
-	aura_rim.points = closed_pts
+	var sigil_pts := PackedVector2Array()
+	for i in range(25):
+		var rad := float(i) * TAU / 24.0
+		sigil_pts.append(Vector2(cos(rad) * 72.0, sin(rad) * 15.0))
+	aura_rim.points = sigil_pts
 	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
@@ -271,12 +286,32 @@ func _build_collisions() -> void:
 	attack_collision.disabled = true
 	attack_area.add_child(attack_collision)
 
-	# Telegraph / Attack arc visual
+	# Telegraph / Attack arc visual (Curved dynamic blade hazard zone with luminous boundary)
 	attack_visual = Polygon2D.new()
-	attack_visual.polygon = PackedVector2Array([
-		Vector2(5, -55), Vector2(115, -35), Vector2(115, 35), Vector2(5, 45)
-	])
+	var arc_points := PackedVector2Array()
+	var num_pts := 14
+	var r_outer := 125.0
+	var r_inner := 18.0
+	var start_ang := -PI * 0.36
+	var end_ang := PI * 0.28
+	for i in range(num_pts + 1):
+		var t := float(i) / float(num_pts)
+		var ang := lerpf(start_ang, end_ang, t)
+		arc_points.append(Vector2(cos(ang) * r_outer + 8.0, sin(ang) * r_outer - 15.0))
+	for i in range(num_pts, -1, -1):
+		var t := float(i) / float(num_pts)
+		var ang := lerpf(start_ang, end_ang, t)
+		arc_points.append(Vector2(cos(ang) * r_inner + 8.0, sin(ang) * r_inner - 15.0))
+	attack_visual.polygon = arc_points
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
+	var attack_rim := Line2D.new()
+	attack_rim.name = "AttackRim"
+	attack_rim.width = 2.4
+	attack_rim.default_color = Color(1.0, 0.3, 0.1, 0.0)
+	var closed_at := arc_points.duplicate()
+	closed_at.append(closed_at[0])
+	attack_rim.points = closed_at
+	attack_visual.add_child(attack_rim)
 	attack_area.add_child(attack_visual)
 	add_child(attack_area)
 
@@ -427,10 +462,14 @@ func _start_attack(pattern: Pattern, windup: float, active_time: float, blockabl
 	_phase_timer = windup
 	velocity.x = 0.0
 
-	# Telegraph visual color: Gold (blockable) vs Crimson Red (unblockable)
-	var color := Color(1.0, 0.85, 0.2, 0.8) if blockable else Color(1.0, 0.18, 0.12, 0.9)
-	attack_visual.color = color
-	body_poly.color = color
+	# Telegraph visual: Transparent warning zone with luminous danger rim
+	var rim_color := Color(3.2, 2.6, 0.8, 0.95) if blockable else Color(3.5, 0.8, 0.4, 0.95)
+	var fill_color := Color(1.0, 0.85, 0.2, 0.22) if blockable else Color(1.0, 0.18, 0.12, 0.26)
+	attack_visual.color = fill_color
+	var rim := attack_visual.get_node_or_null("AttackRim") as Line2D
+	if rim != null:
+		rim.default_color = rim_color
+	body_poly.color = fill_color
 	AudioManager.play("slash_1", global_position)
 
 
@@ -715,6 +754,9 @@ func _restore_base_color() -> void:
 					c.default_color = Color(2.8, 2.2, 0.8, 0.85)
 	shield_poly.color = Color(0.35, 0.40, 0.48, 1.0)
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
+	var rim := attack_visual.get_node_or_null("AttackRim") as Line2D
+	if rim != null:
+		rim.default_color = Color(1.0, 0.3, 0.1, 0.0)
 
 
 func _spawn_boss_attack_vfx(pattern: Pattern, facing_dir: float) -> void:

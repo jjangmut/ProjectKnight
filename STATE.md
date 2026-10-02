@@ -81,21 +81,32 @@ Project Knight
 - `cd13f545`: 품질 스모크 테스트 생명주기 보완, **60/60 PASS**
 - `96dd4f71`: 테스트 UID 추가
 
-### 2026-10-02 AI 인계/브랜치 운영 정비
-- `main`, `integration` 생성
-- 첫 ChatGPT 전용 작업 브랜치 `chatgpt/handoff-governance` 생성
-- `AGENTS.md`에 표준 브랜치 정책, CODEX ↔ ChatGPT 인계 규칙, 작업 종료 강제 체크리스트 추가
-- `WORK/DEC-014.md`에 AI 다중 작업 환경 브랜치 정책 결정 기록
-- `WORK/HANDOFF_CHECKLIST.md`에 공통 인계 체크리스트 추가
-- PR #1 `chatgpt/handoff-governance → integration` **병합 완료**
-- 통합 커밋: `6ef897da`
+### 2026-10-02 JPStudio Graphics Quality Director (Pass 001: Stage 1 Vertical Slice)
+- `WORK/TASK-AR-010.md` 및 `DESIGN/GRAPHICS_QUALITY_AUTONOMOUS_AGENT_SPEC_001.md` 기반 Graphics Quality Director 구축
+- 작업 브랜치: `antigravity/graphics-quality-pass-001` (from `origin/integration`)
+- Stage 1 5대 대표 구간 캡처 및 Before/After 시각 평가 완료 (`ART_REVIEW/graphics-pass-001/`)
+- 주요 비주얼 개선:
+  - 보스 와이어프레임 박스 완전 제거 및 곡면 블레이드 호형 전조(`AttackRim` HDR 라인) 적용
+  - 플레이어, 몬스터, 보스 발밑 동적 접지 그림자(`Color(0.02, 0.03, 0.05, 0.55)`) 및 지면 룬 오라 추가
+  - 패럴랙스 배경 대각선 폴리곤 쐐기 아티팩트 제거 및 정적 CanvasLayer 중복 스티커 숨김(선명도/공간감 100% 회복)
+  - 상단 HUD 비겹침 대역 재배치 및 스테이지 클리어 보상 카드 풀스크린 암전 스크림 적용
+  - 인카운터 게이트 물리 충돌 복구 및 마법 봉인 비주얼 연동
+- 자동 회귀 테스트: 10개 스위트 **100% PASS** (총 360+ 체크 무결점)
+- 상세 리뷰 보고서: `ART_REVIEW/graphics-pass-001/REVIEW.md`
 
 ## QA 상태
 
 최신 확인 가능한 게임 품질 회귀 기록:
-- `game_and_graphic_quality_smoke.gd`: **60/60 PASS** (`cd13f545`)
-
-이번 브랜치 운영/문서 정비는 GitHub 기반 작업으로, Godot 로컬 실행이나 Android APK 빌드는 **미실행**이다. 게임 로직은 변경하지 않았다.
+- `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
+- `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
+- `boss1_visual_polish_smoke.gd`: **17/17 PASS**
+- `campaign_transition_test.gd`: **PASS**
+- `stage_smoke.gd`: **37/37 PASS**
+- `combat_deepening_smoke.gd`: **10/10 PASS**
+- `guard_core_smoke.gd`: **21/21 PASS**
+- `sprint4_smoke.gd`: **23/23 PASS**
+- `enemy_motion_smoke.gd`: **130/130 PASS**
+- `data_driven_smoke.gd`: **38/38 PASS**
 
 ## 빌드 / 배포 상태
 
@@ -111,12 +122,10 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. Codex/Antigravity 로컬 환경을 `integration` 기준 전용 브랜치 방식으로 전환
-2. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
-4. 플레이어/적/보스/배경 아트 스타일 일관성 검토
-5. 자동 QA가 놓치는 실제 조작감·가독성·카메라·충돌 문제 목록화
-6. CI/Android 서명·빌드 파이프라인 정리
+1. `antigravity/graphics-quality-pass-001` 브랜치 원격 저장소(`origin`) push 및 PR 생성
+2. Stage 2 (맹수의 숲) 패럴랙스 배경 및 비주얼 폴리시 패스 (Pass 002) 착수
+3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
+4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
 
@@ -127,4 +136,5 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: ChatGPT / 브랜치·인계 운영 정비 완료
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001 Stage 1 Vertical Slice 완료
+

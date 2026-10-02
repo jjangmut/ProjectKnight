@@ -139,13 +139,14 @@ func _install() -> void:
 	var layer := CanvasLayer.new()
 	layer.name = "StageBackdrop"
 	layer.layer = -10
+	layer.visible = false
 	add_child(layer)
 	background = TextureRect.new()
 	background.texture = textures.background
 	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	background.stretch_mode = TextureRect.STRETCH_SCALE
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	background.modulate = Color(1, 1, 1, 0.45)
+	background.visible = false
 	layer.add_child(background)
 	background.size = get_viewport_rect().size
 	for terrain in get_tree().get_nodes_in_group("stage_terrain"):
@@ -155,14 +156,16 @@ func _install() -> void:
 			if visual is Polygon2D:
 				visual.texture = textures.ground
 				visual.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+				var min_x := INF
+				var min_y := INF
+				for vertex in visual.polygon:
+					min_x = minf(min_x, vertex.x)
+					min_y = minf(min_y, vertex.y)
 				var uv := PackedVector2Array()
-				var top := INF
 				for vertex in visual.polygon:
-					top = minf(top, vertex.y)
-				for vertex in visual.polygon:
-					uv.append(Vector2(vertex.x * textures.ground.get_width() / 384.0, (vertex.y - top) * textures.ground.get_height() / 128.0))
+					uv.append(Vector2((vertex.x - min_x) * textures.ground.get_width() / 384.0, (vertex.y - min_y) * textures.ground.get_height() / 128.0))
 				visual.uv = uv
-				visual.color = Color.WHITE
+				visual.color = Color(0.92, 0.95, 0.98, 1.0)
 	for child in stage.get_children():
 		if child is Label:
 			child.visible = false
@@ -459,11 +462,15 @@ func _draw() -> void:
 	_draw_combat_feedback()
 
 func _draw_stage_markers() -> void:
-	for cluster in stage.route_clusters:
-		var at := Vector2(cluster.left + 10, 376)
-		draw_style_box(_route_sign_style(), Rect2(at - Vector2(10, 23), Vector2(256, 52)))
-		draw_string(world_font, at, "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("ecd6a7"))
-		draw_string(world_font, at + Vector2(0, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d1dddd"))
+	if stage.stage_state != 0:
+		return
+	var in_boss: bool = stage.encounter_index >= stage.required_count - 1 and stage.encounter_active
+	if not in_boss:
+		for cluster in stage.route_clusters:
+			var at := Vector2(cluster.left + 10, 376)
+			draw_style_box(_route_sign_style(), Rect2(at - Vector2(10, 23), Vector2(256, 52)))
+			draw_string(world_font, at, "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("ecd6a7"))
+			draw_string(world_font, at + Vector2(0, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d1dddd"))
 	for index in range(stage.gates.size()):
 		var gate = stage.gates[index]
 		if not is_instance_valid(gate) or gate.is_queued_for_deletion():
@@ -500,11 +507,29 @@ func _draw_combat_feedback() -> void:
 	var origin := to_local(player.global_position)
 	var facing: float = player.facing_direction
 
-	# 0. Hero Luminous Aura: Soft ambient radiance in dark stages
+	# 0. Contact Shadows & Hero Ambiance: Grounding ambient shadows for player and enemies
 	if not player.is_dead:
+		var floor_contact := origin + Vector2(0, 2.0)
+		draw_set_transform(floor_contact, 0, Vector2(1.0, 0.32))
+		draw_circle(Vector2.ZERO, 22.0, Color(0.02, 0.03, 0.06, 0.50))
+		draw_set_transform(Vector2.ZERO)
+
+		# Soft hero ambient light
 		var hero_center := origin + Vector2(0, -26)
-		draw_circle(hero_center, 32.0, Color(0.9, 0.96, 1.2, 0.08))
-		draw_arc(hero_center, 24.0, 0, TAU, 24, Color(1.2, 1.5, 2.2, 0.16), 1.2, true)
+		draw_circle(hero_center, 28.0, Color(0.9, 0.96, 1.2, 0.06))
+		draw_circle(hero_center, 18.0, Color(1.1, 1.3, 1.8, 0.08))
+
+	# Dynamic grounding shadows under active enemies
+	if "enemies" in stage and stage.enemies != null:
+		for e in stage.enemies:
+			if is_instance_valid(e) and not e.is_queued_for_deletion():
+				var is_dead_enemy: bool = e.get("is_dead") if "is_dead" in e else false
+				if not is_dead_enemy:
+					var e_pos: Vector2 = to_local(e.global_position)
+					var rad: float = 65.0 if e.is_in_group("boss") else 18.0
+					draw_set_transform(e_pos + Vector2(0, 2.0), 0, Vector2(1.0, 0.30))
+					draw_circle(Vector2.ZERO, rad, Color(0.02, 0.03, 0.06, 0.45))
+					draw_set_transform(Vector2.ZERO)
 
 	if player.is_attacking and not player.attack_collision.disabled and not player.is_dead:
 		var shape: RectangleShape2D = player.attack_collision.shape
