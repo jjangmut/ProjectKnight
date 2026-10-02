@@ -189,85 +189,94 @@ func _draw() -> void:
 	if not initialized or not is_instance_valid(stage):
 		return
 	draw_set_transform(ui_offset, 0, Vector2.ONE * ui_scale)
-	# Expanded HUD band (245px) for 2x mobile legibility
-	draw_texture_rect(hud_shade, Rect2(0, 0, 1280, 245), false)
+	# -------------------------------------------------------------------------
+	# In-Game Combat HUD (rendered only during active gameplay)
+	# -------------------------------------------------------------------------
+	if stage.stage_state == 0 and not get_tree().paused and not show_help:
+		draw_texture_rect(hud_shade, Rect2(0, 0, 1280, 185), false)
 
-	var has_boss_bar := (stage.get_node_or_null("HUD/BossHealthBar") != null)
+		var has_boss_bar := (stage.get_node_or_null("HUD/BossHealthBar") != null)
 
-	# 1. Left Zone: Title, Hearts, Soul Shards, Checkpoint, Traits (Scaled 2x)
-	if not has_boss_bar:
-		_text(Vector2(38, 44), "기사의 여정 · " + stage_label(), 36, GOLD)
-		for index in range(3):
-			var full: bool = stage.player.current_hp > index
-			_heart(Vector2(60 + index * 68, 92), full)
-		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
-		_diamond(Vector2(296, 92), 16, Color(0.2, 0.9, 1.0))
-		_text(Vector2(322, 102), "%d" % shards, 32, Color(0.35, 0.95, 1.0))
-		_draw_relic_bar(Vector2(110, 140))
-		if stage.checkpoint_active:
-			_diamond(Vector2(48, 178), 10, CYAN)
-			_text(Vector2(68, 186), "휴식처 %d / %d 저장됨" % [stage.checkpoint_index + 1, stage.CHECKPOINT_POSITIONS.size()], 26, CYAN)
-		_text(Vector2(38, 212), trait_label(), 22, MUTED)
-		_text(Vector2(38, 238), chapter_label(), 22, GOLD)
-	else:
-		# Compact left zone during boss battle (never overlaps BossHealthBar at x:290..990)
-		for index in range(3):
-			var full: bool = stage.player.current_hp > index
-			_heart(Vector2(40 + index * 52, 54), full)
-		var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
-		_diamond(Vector2(204, 54), 14, Color(0.2, 0.9, 1.0))
-		_text(Vector2(228, 62), "%d" % shards, 28, Color(0.35, 0.95, 1.0))
-		_draw_relic_bar(Vector2(110, 96))
-
-	# 2. Center Zone: Encounter Track, Objective, Hints (Scaled 2x)
-	if not has_boss_bar:
-		for index in range(stage.required_count):
-			var x: float = 640 - (stage.required_count - 1) * 32 + index * 64
-			if index < stage.required_count - 1:
-				draw_line(Vector2(x + 16, 36), Vector2(x + 48, 36), Color(0.7, 0.64, 0.48, 0.45), 4)
-			var done: bool = stage.completed[index]
-			if index == stage.encounter_index:
-				draw_circle(Vector2(x, 36), 20, Color(0.85, 0.72, 0.47, 0.20))
-				draw_arc(Vector2(x, 36), 20, 0, TAU, 32, GOLD, 3.5, true)
-			_diamond(Vector2(x, 36), 12, CYAN if done else GOLD if index == stage.encounter_index else Color("52606b"))
-	var next_y: float = 92.0
-	if has_boss_bar:
-		# When boss bar is active at top center (y=72~140), show only compact hint below it to prevent overlap
-		if stage.stage_state == 0 and stage.encounter_active:
-			_center(Vector2(640, 168), encounter_hint(), 26, Color(1.0, 0.9, 0.75, 0.9))
-			next_y = 205.0
+		# 1. Left Zone: Title, Hearts, Soul Shards, Checkpoint, Traits
+		if not has_boss_bar:
+			_text(Vector2(38, 36), "기사의 여정 · " + stage_label(), 24, GOLD)
+			for index in range(3):
+				var full: bool = stage.player.current_hp > index
+				_heart(Vector2(50 + index * 48, 68), full)
+			var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
+			_diamond(Vector2(204, 68), 12, Color(0.2, 0.9, 1.0))
+			_text(Vector2(224, 76), "%d" % shards, 24, Color(0.35, 0.95, 1.0))
+			_draw_relic_bar(Vector2(85, 100))
+			if stage.checkpoint_active:
+				_diamond(Vector2(42, 128), 8, CYAN)
+				_text(Vector2(58, 134), "휴식처 CP%d 저장됨" % (stage.checkpoint_index + 1), 18, CYAN)
+			_text(Vector2(38, 148), trait_label(), 16, MUTED)
+			_text(Vector2(38, 168), chapter_label(), 16, GOLD)
 		else:
-			next_y = 168.0
-	else:
-		_center(Vector2(640, 92), objective(), 36, WHITE)
-		next_y = 136.0
-		if stage.stage_state == 0 and stage.encounter_active and stage.encounter_index < stage.required_count:
-			_center(Vector2(640, next_y), encounter_hint(), 26, Color(1.0, 0.9, 0.75, 0.9))
-			next_y += 38.0
-		if stage.stage_state == 0 and stage.get("route_status") != null and str(stage.route_status) != "":
-			var route_text: String = str(stage.route_status)
-			var tw := font.get_string_size(route_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 24).x + 44.0
-			_pill(Rect2(640.0 - tw * 0.5, next_y - 20.0, tw, 36.0))
-			_center(Vector2(640, next_y + 4.0), route_text, 24, CYAN)
-			next_y += 44.0
-	if intro_remaining > 0 and stage.stage_state == 0 and not stage.encounter_active and not get_tree().paused:
-		_center(Vector2(640, next_y + 16.0), region_intro(), 36, GOLD)
-		_center(Vector2(640, next_y + 52.0), region_strategy(), 24, MUTED)
-	elif toast_remaining > 0 and stage.stage_state == 0:
-		var toast_w := font.get_string_size(toast, HORIZONTAL_ALIGNMENT_CENTER, -1, 30).x + 56.0
-		_pill(Rect2(640.0 - toast_w * 0.5, next_y + 8.0, toast_w, 48.0))
-		_center(Vector2(640, next_y + 38.0), toast, 30, GOLD)
+			# Compact left zone during boss battle
+			for index in range(3):
+				var full: bool = stage.player.current_hp > index
+				_heart(Vector2(36 + index * 42, 48), full)
+			var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
+			_diamond(Vector2(174, 48), 11, Color(0.2, 0.9, 1.0))
+			_text(Vector2(192, 55), "%d" % shards, 22, Color(0.35, 0.95, 1.0))
+			_draw_relic_bar(Vector2(85, 80))
 
-	if touch_visible and stage.stage_state == 0 and not get_tree().paused:
-		_draw_touch()
-	elif not _has_dedicated_mobile_controls():
-		_center(Vector2(640, 693), "A/D 이동    Space 점프    J 누르고 연속 공격    K 누르고 막기    H 도움말", 22, MUTED)
-	# Compact dark pills retain contrast against bright scenery and existing hit regions.
-	if not _has_dedicated_mobile_controls():
-		_pill(Rect2(1070, 130, 180, 52))
-		_center(Vector2(1160, 164), "터치 " + ("켜짐" if touch_visible else "꺼짐"), 24, CYAN if touch_visible else WHITE)
-	_pill(Rect2(1070, 48, 180, 56))
-	_center(Vector2(1160, 84), "Ⅱ  쉬어가기", 26, WHITE)
+		# 2. Center Zone: Encounter Track (Y: 30) & Objective (Y: 74)
+		if not has_boss_bar:
+			var track_spacing := 48.0
+			var start_x: float = 640.0 - float(stage.required_count - 1) * track_spacing * 0.5
+			for index in range(stage.required_count):
+				var x: float = start_x + index * track_spacing
+				if index < stage.required_count - 1:
+					draw_line(Vector2(x + 10, 30), Vector2(x + track_spacing - 10, 30), Color(0.7, 0.64, 0.48, 0.40), 2.5)
+				var done: bool = stage.completed[index]
+				if index == stage.encounter_index:
+					draw_circle(Vector2(x, 30), 16, Color(0.85, 0.72, 0.47, 0.22))
+					draw_arc(Vector2(x, 30), 16, 0, TAU, 28, GOLD, 2.5, true)
+				_diamond(Vector2(x, 30), 9, CYAN if done else GOLD if index == stage.encounter_index else Color("52606b"))
+
+		var next_y: float = 74.0
+		if has_boss_bar:
+			if stage.encounter_active:
+				var hint_text: String = encounter_hint()
+				var hw := font.get_string_size(hint_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 18).x + 36.0
+				_pill(Rect2(640.0 - hw * 0.5, 144.0, hw, 28.0))
+				_center(Vector2(640, 163.0), hint_text, 18, Color(1.0, 0.92, 0.78, 0.92))
+				next_y = 184.0
+			else:
+				next_y = 144.0
+		else:
+			_center(Vector2(640, 74), objective(), 26, WHITE)
+			next_y = 106.0
+			if stage.encounter_active and stage.encounter_index < stage.required_count:
+				_center(Vector2(640, next_y), encounter_hint(), 20, Color(1.0, 0.9, 0.75, 0.85))
+				next_y += 32.0
+			var in_boss: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active)
+			if not in_boss and stage.get("route_status") != null and str(stage.route_status) != "" and toast_remaining <= 0.0:
+				var route_text: String = str(stage.route_status)
+				var tw := font.get_string_size(route_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 20).x + 36.0
+				_pill(Rect2(640.0 - tw * 0.5, next_y - 16.0, tw, 28.0))
+				_center(Vector2(640, next_y + 3.0), route_text, 18, CYAN)
+				next_y += 34.0
+
+		if intro_remaining > 0 and not stage.encounter_active:
+			_center(Vector2(640, next_y + 12.0), region_intro(), 28, GOLD)
+			_center(Vector2(640, next_y + 40.0), region_strategy(), 20, MUTED)
+		elif toast_remaining > 0 and not has_boss_bar:
+			var toast_w := font.get_string_size(toast, HORIZONTAL_ALIGNMENT_CENTER, -1, 22).x + 44.0
+			_pill(Rect2(640.0 - toast_w * 0.5, next_y + 6.0, toast_w, 36.0))
+			_center(Vector2(640, next_y + 30.0), toast, 22, GOLD)
+
+		if touch_visible:
+			_draw_touch()
+		elif not _has_dedicated_mobile_controls():
+			_center(Vector2(640, 693), "A/D 이동    Space 점프    J 누르고 연속 공격    K 누르고 막기    H 도움말", 20, MUTED)
+
+		# Top Right: Pause button
+		_pill(Rect2(1110, 18, 140, 44))
+		_center(Vector2(1180, 47), "Ⅱ  쉬어가기", 22, WHITE)
+
 
 	if hit_remaining > 0:
 		var alpha := hit_remaining / 0.22 * 0.5
@@ -493,15 +502,31 @@ func _draw_stage_clear_reward_card() -> void:
 	var relic: Dictionary = SaveManagerClass.STAGE_RELICS.get(stage.stage_number, {})
 	var relic_color: Color = relic.get("icon_color", GOLD)
 	
+	# Modal Backdrop Dimmer (Scrim) to isolate stage clear reward presentation
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.01, 0.02, 0.04, 0.65))
+
 	# Main Outer Container
 	_plate(Rect2(140, 75, 1000, 570), GOLD, Color(0.02, 0.05, 0.08, 0.96))
 	
+	# Corner Filigree Accents (Outer Plate)
+	var corn_color := Color(GOLD.r, GOLD.g, GOLD.b, 0.72)
+	draw_line(Vector2(146, 96), Vector2(146, 81), corn_color, 2.5)
+	draw_line(Vector2(146, 81), Vector2(161, 81), corn_color, 2.5)
+	draw_line(Vector2(1134, 96), Vector2(1134, 81), corn_color, 2.5)
+	draw_line(Vector2(1134, 81), Vector2(1119, 81), corn_color, 2.5)
+	draw_line(Vector2(146, 624), Vector2(146, 639), corn_color, 2.5)
+	draw_line(Vector2(146, 639), Vector2(161, 639), corn_color, 2.5)
+	draw_line(Vector2(1134, 624), Vector2(1134, 639), corn_color, 2.5)
+	draw_line(Vector2(1134, 639), Vector2(1119, 639), corn_color, 2.5)
+
 	# Header
 	_center(Vector2(640, 126), "★  " + stage_label() + " 돌파 완료  ★", 38, GOLD)
 	_center(Vector2(640, 166), "전설 보스 유물 획득 · 기사 장비 외형 장착 완료!", 24, CYAN)
 	
 	# Inner Card Frame
 	_plate(Rect2(180, 190, 920, 310), relic_color, Color(0.04, 0.09, 0.14, 0.92))
+	for corner in [Vector2(188, 198), Vector2(1092, 198), Vector2(188, 492), Vector2(1092, 492)]:
+		_diamond(corner, 4.0, relic_color)
 	
 	# Left: Large Showcase Emblem
 	var icon_center := Vector2(320, 335)
@@ -531,6 +556,7 @@ func _draw_stage_clear_reward_card() -> void:
 	_text(Vector2(text_x + 20, 442), "인게임 플레이 및 대기 모션 시 캐릭터 모델에 실시간 반영됩니다.", 19, MUTED)
 	
 	# Bottom Status / Navigation
-	_center(Vector2(640, 545), "필수 전투 %d / %d 완료 · 영구 세이브 저장됨" % [stage.encounter_index, stage.required_count], 22, MUTED)
+	var finished_count: int = stage.required_count if stage.stage_state == 1 else stage.encounter_index
+	_center(Vector2(640, 545), "필수 전투 %d / %d 완료 · 영구 세이브 저장됨" % [finished_count, stage.required_count], 22, MUTED)
 	_center(Vector2(640, 595), transition_message(), 26, CYAN)
 

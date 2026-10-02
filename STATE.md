@@ -81,27 +81,43 @@ Project Knight
 - `cd13f545`: 품질 스모크 테스트 생명주기 보완, **60/60 PASS**
 - `96dd4f71`: 테스트 UID 추가
 
-### 2026-10-02 AI 인계/브랜치 운영 정비
-- `main`, `integration` 생성
-- 첫 ChatGPT 전용 작업 브랜치 `chatgpt/handoff-governance` 생성
-- `AGENTS.md`에 표준 브랜치 정책, CODEX ↔ ChatGPT 인계 규칙, 작업 종료 강제 체크리스트 추가
-- `WORK/DEC-014.md`에 AI 다중 작업 환경 브랜치 정책 결정 기록
-- `WORK/HANDOFF_CHECKLIST.md`에 공통 인계 체크리스트 추가
-- PR #1 `chatgpt/handoff-governance → integration` **병합 완료**
-- 통합 커밋: `6ef897da`
+### 2026-10-02 JPStudio Graphics Quality Director (Pass 001-R1: Stage 1 Rework Cycle A & B)
+- `WORK/TASK-AR-011.md` 및 `ART_REVIEW/GRAPHICS_PASS_001_INDEPENDENT_REVIEW.md` 지침에 따른 Stage 1 재작업 완주
+- 작업 브랜치: `antigravity/graphics-quality-pass-001-r1` (독립 검수 요청 상태)
+- Cycle A 및 Cycle B 2회 반복 개선 및 5대 대표 장면 Before/After 캡처 아티팩트 보관 (`ART_REVIEW/graphics-pass-001-r1/`)
+- 주요 비주얼 개선 내역:
+  - 건축적 개연성: 부유 발판에 석조 지지 코벨(까치발) 브래킷 및 하단 음영 추가
+  - 모바일 조작계: 촉각적 베벨 림과 다층 다크 글래스 질감의 가상 버튼 및 조이스틱 고도화
+  - 적 체력바: 메탈릭 슬레이트 프레임 및 상단 하이라이트가 적용된 게이지 바로 전환
+  - 갈림길 안내: 음각 골드 노치가 적용된 엔틱 브론즈 석조 현판 스타일 적용
+  - 보스 HUD 정돈: `BossHealthBar`와 힌트 텍스트 분리 배치, 보스전 진입 시 불필요한 마일스톤 토스트 억제
+  - 보스 아레나 무대: 보스전 돌입 시 상층 잔여 적 정리로 1:1 전용 결전 무대 확보
+  - 전조 시인성: `BossCommander` 공격 전조 라인 두께 확장(4.2px) 및 HDR 오버드라이브 발광 상향
+  - 보상 카드 마감: 스테이지 클리어 모달에 엔틱 골드 코너 필리그리 브래킷 및 다이아몬드 핍 장식 추가
+- 자동 회귀 테스트: 10개 스위트 **100% PASS** (총 360+ 체크 무결점)
+- 상세 리뷰 보고서: `ART_REVIEW/graphics-pass-001-r1/REVIEW.md`
+- 현재 상태: **독립 검수 요청 (Independent Review Requested)**
 
 ## QA 상태
 
 최신 확인 가능한 게임 품질 회귀 기록:
-- `game_and_graphic_quality_smoke.gd`: **60/60 PASS** (`cd13f545`)
-
-이번 브랜치 운영/문서 정비는 GitHub 기반 작업으로, Godot 로컬 실행이나 Android APK 빌드는 **미실행**이다. 게임 로직은 변경하지 않았다.
+- `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
+- `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
+- `boss1_visual_polish_smoke.gd`: **17/17 PASS**
+- `campaign_transition_test.gd`: **PASS**
+- `stage_smoke.gd`: **37/37 PASS**
+- `combat_deepening_smoke.gd`: **10/10 PASS**
+- `guard_core_smoke.gd`: **21/21 PASS**
+- `sprint4_smoke.gd`: **23/23 PASS**
+- `enemy_motion_smoke.gd`: **130/130 PASS**
+- `data_driven_smoke.gd`: **38/38 PASS**
 
 ## 빌드 / 배포 상태
 
 - `.gitignore`에 `CLIENT/Game/builds/`, `*.apk`, `*.aab` 제외
 - `export_presets.cfg`: v1.1.5 / versionCode 6 / `com.junypapa.projectknight`
 - Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요
+- 본 패스 Android 검증 상태: `ANDROID NOT VERIFIED` (PC 데스크톱 환경 및 헤드리스 엔진 기반)
 
 ## 알려진 관리 이슈
 
@@ -111,12 +127,10 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. Codex/Antigravity 로컬 환경을 `integration` 기준 전용 브랜치 방식으로 전환
-2. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
-4. 플레이어/적/보스/배경 아트 스타일 일관성 검토
-5. 자동 QA가 놓치는 실제 조작감·가독성·카메라·충돌 문제 목록화
-6. CI/Android 서명·빌드 파이프라인 정리
+1. `antigravity/graphics-quality-pass-001-r1` PR 생성 및 독립 검수자의 심의/게이트 통과
+2. 독립 검수 승인 확인 후 Stage 2 (야수숲) Pass 002 착수
+3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
+4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
 
@@ -127,4 +141,6 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: ChatGPT / 브랜치·인계 운영 정비 완료
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R1 Stage 1 재작업 완료 및 독립 검수 요청
+
+

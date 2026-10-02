@@ -138,12 +138,8 @@ func _ready() -> void:
 	_solid("LeftWall", Vector2(-40, 320), Vector2(80, 800), Color(0.22, 0.27, 0.34))
 	_solid("RightWall", Vector2(WORLD_WIDTH + 40, 320), Vector2(80, 800), Color(0.22, 0.27, 0.34))
 	for index in range(required_count):
-		# Open Encounter Waypoint (No blocking solid gates: seamless natural traversal)
-		var open_marker := Node2D.new()
-		open_marker.name = "Gate%d" % index
-		open_marker.position = Vector2(EXIT_X[index], 300)
-		add_child(open_marker)
-		gates.append(open_marker)
+		var gate := _solid("Gate%d" % index, Vector2(EXIT_X[index], 300), Vector2(32, 600), Color(0.24, 0.28, 0.35))
+		gates.append(gate)
 		_sign("E%d — 격전 구역" % (index + 1), Vector2(ENTRY_X[index], 400))
 	_sign("시작 → 이동 A/D · 점프 Space · 공격 J · 검막기 K", Vector2(80, 300))
 	for index in range(CHECKPOINT_POSITIONS.size()):
@@ -358,8 +354,18 @@ func _start_encounter() -> void:
 
 
 func _spawn_boss_encounter() -> void:
+	for e in enemies:
+		if is_instance_valid(e):
+			e.queue_free()
 	enemies.clear()
 	defeated.clear()
+
+	for group in optional_groups:
+		for actor in group.get("actors", []):
+			if is_instance_valid(actor):
+				actor.queue_free()
+		group["actors"].clear()
+		group["cleared"] = true
 
 	# Seamless boss encounter: no blocking gates behind the player
 	if is_instance_valid(arena_entrance_gate):
@@ -407,7 +413,7 @@ func _spawn_boss_encounter() -> void:
 		var bar := BossHealthBarClass.new()
 		bar.name = "BossHealthBar"
 		bar.boss_name = boss_title
-		bar.position = Vector2((1280.0 - bar.BAR_WIDTH) * 0.5, 72.0)
+		bar.position = Vector2((1280.0 - bar.BAR_WIDTH) * 0.5, 54.0)
 		hud.add_child(bar)
 		bar.attach_boss(boss)
 

@@ -79,75 +79,93 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 		sky_rect.size = Vector2(LAYER_WIDTH, LAYER_HEIGHT)
 		l1.add_child(sky_rect)
 
-		# Celestial Moon / Red Star
+		# Celestial Body: Soft atmospheric sun / moon with diffuse corona
+		var celestial := Node2D.new()
+		celestial.name = "CelestialBody"
+		var center := Vector2(1400.0, 150.0)
+
+		# Outer diffuse corona
+		var corona := Polygon2D.new()
+		var corona_pts := PackedVector2Array()
+		for i in range(24):
+			var rad := float(i) * TAU / 24.0
+			corona_pts.append(center + Vector2(cos(rad), sin(rad)) * 54.0)
+		corona.polygon = corona_pts
+		corona.color = Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15)
+		celestial.add_child(corona)
+
+		# Core luminous body
 		var moon := Polygon2D.new()
 		var points := PackedVector2Array()
-		var radius := 38.0
-		var center := Vector2(1400.0, 150.0)
+		var radius := 36.0
 		for i in range(24):
 			var rad := float(i) * TAU / 24.0
 			points.append(center + Vector2(cos(rad), sin(rad)) * radius)
 		moon.polygon = points
-		moon.color = Color(0.95, 0.85, 0.65, 0.88) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.90)
-		l1.add_child(moon)
+		moon.color = Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85))
+		celestial.add_child(moon)
+		l1.add_child(celestial)
 
 	var l2 := get_node_or_null("LayerDistantPeaks") as ParallaxLayer
 	if l2:
 		for c in l2.get_children():
 			c.queue_free()
-		var peaks := Polygon2D.new()
-		var peak_points := PackedVector2Array([
-			Vector2(0, LAYER_HEIGHT),
-			Vector2(0, 380),
-			Vector2(280, 260),
-			Vector2(550, 360),
-			Vector2(820, 220),
-			Vector2(1100, 310),
-			Vector2(1420, 190),
-			Vector2(1680, 300),
-			Vector2(LAYER_WIDTH, 240),
-			Vector2(LAYER_WIDTH, LAYER_HEIGHT)
-		])
-		peaks.polygon = peak_points
-		peaks.color = silhouette_color
-		l2.add_child(peaks)
+		# Only draw geometric peak silhouettes as fallback if no illustrated backdrop exists
+		if base_texture == null:
+			var peaks := Polygon2D.new()
+			var peak_points := PackedVector2Array([
+				Vector2(0, LAYER_HEIGHT),
+				Vector2(0, 380),
+				Vector2(280, 260),
+				Vector2(550, 360),
+				Vector2(820, 220),
+				Vector2(1100, 310),
+				Vector2(1420, 190),
+				Vector2(1680, 300),
+				Vector2(LAYER_WIDTH, 240),
+				Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+			])
+			peaks.polygon = peak_points
+			peaks.color = silhouette_color
+			l2.add_child(peaks)
 
 	var l3 := get_node_or_null("LayerMidRuins") as ParallaxLayer
 	if l3:
 		for c in l3.get_children():
 			c.queue_free()
-		# If base texture is available, map it with subtle opacity for ruins atmosphere
+		# When illustrated backdrop texture is available, display it with high fidelity
 		if base_texture != null:
 			var tex_rect := TextureRect.new()
 			tex_rect.texture = base_texture
 			tex_rect.size = Vector2(LAYER_WIDTH, LAYER_HEIGHT)
 			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-			tex_rect.modulate = Color(1, 1, 1, 0.35)
+			tex_rect.modulate = Color(1, 1, 1, 0.95)
 			l3.add_child(tex_rect)
-
-		var ruins := Polygon2D.new()
-		var ruin_points := PackedVector2Array([
-			Vector2(0, LAYER_HEIGHT),
-			Vector2(0, 480),
-			Vector2(120, 480),
-			Vector2(140, 430),
-			Vector2(200, 430),
-			Vector2(220, 480),
-			Vector2(600, 490),
-			Vector2(750, 410),
-			Vector2(850, 410),
-			Vector2(950, 490),
-			Vector2(1300, 470),
-			Vector2(1450, 420),
-			Vector2(1520, 420),
-			Vector2(1600, 470),
-			Vector2(LAYER_WIDTH, 480),
-			Vector2(LAYER_WIDTH, LAYER_HEIGHT)
-		])
-		ruins.polygon = ruin_points
-		ruins.color = Color(silhouette_color.r * 0.7, silhouette_color.g * 0.7, silhouette_color.b * 0.7, 0.75)
-		l3.add_child(ruins)
+		else:
+			# Fallback procedural ruins silhouette for stages without dedicated textures
+			var ruins := Polygon2D.new()
+			var ruin_points := PackedVector2Array([
+				Vector2(0, LAYER_HEIGHT),
+				Vector2(0, 480),
+				Vector2(120, 480),
+				Vector2(140, 430),
+				Vector2(200, 430),
+				Vector2(220, 480),
+				Vector2(600, 490),
+				Vector2(750, 410),
+				Vector2(850, 410),
+				Vector2(950, 490),
+				Vector2(1300, 470),
+				Vector2(1450, 420),
+				Vector2(1520, 420),
+				Vector2(1600, 470),
+				Vector2(LAYER_WIDTH, 480),
+				Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+			])
+			ruins.polygon = ruin_points
+			ruins.color = Color(silhouette_color.r * 0.7, silhouette_color.g * 0.7, silhouette_color.b * 0.7, 0.75)
+			l3.add_child(ruins)
 
 	var l4 := get_node_or_null("LayerForegroundFog") as ParallaxLayer
 	if l4:
