@@ -303,6 +303,11 @@ func _run_suite() -> void:
 	root.add_child(b_test3)
 	root.add_child(b_test4)
 	root.add_child(b_test5)
+	b_test1.set_physics_process(false)
+	b_test2.set_physics_process(false)
+	b_test3.set_physics_process(false)
+	b_test4.set_physics_process(false)
+	b_test5.set_physics_process(false)
 	await process_frame
 
 	_check(b_test1.boss_sprite.scale.x >= 0.65, "Boss 1: Imposing Grand Stature scaled >= 0.65 (Current: %.2f)" % b_test1.boss_sprite.scale.x)
@@ -317,8 +322,16 @@ func _run_suite() -> void:
 	_check(is_zero_approx(b_test4.aura_poly.color.a), "Boss 4: Opaque aura plate eliminated (fill alpha == 0)")
 	_check(is_zero_approx(b_test5.aura_poly.color.a), "Boss 5: Opaque aura plate eliminated (fill alpha == 0)")
 
+	b_test1.queue_free()
+	b_test2.queue_free()
+	b_test3.queue_free()
+	b_test4.queue_free()
+	b_test5.queue_free()
+	await process_frame
+
 	# Validate Crossbow Bolt Collision Mask & Hitbox
 	var test_bolt = BoltScene.new()
+	test_bolt.position = Vector2(1000, 1000)
 	root.add_child(test_bolt)
 	await process_frame
 	_check((test_bolt.collision_mask & 8) != 0, "CrossbowBolt: collision_mask includes Player Body Layer 8")
@@ -327,7 +340,6 @@ func _run_suite() -> void:
 	_check(bshape != null and bshape.size.x >= 35.0, "CrossbowBolt: Enlarged reliable hit shape (Length >= 35px)")
 
 	# Simulate hit on player
-	var hit_recorded := false
 	var mock_player = player_scene.instantiate()
 	root.add_child(mock_player)
 	mock_player.position = Vector2(500, 580)
@@ -337,12 +349,8 @@ func _run_suite() -> void:
 	_check(mock_player.current_hp < init_hp or mock_player._hurt_flash_remaining > 0.0, "CrossbowBolt: Accurately delivers damage/hit reaction to player")
 
 	mock_player.queue_free()
-	test_bolt.queue_free()
-	b_test1.queue_free()
-	b_test2.queue_free()
-	b_test3.queue_free()
-	b_test4.queue_free()
-	b_test5.queue_free()
+	if is_instance_valid(test_bolt):
+		test_bolt.queue_free()
 
 	SaveManager.clear_save()
 	await process_frame
