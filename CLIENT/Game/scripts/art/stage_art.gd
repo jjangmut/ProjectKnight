@@ -448,12 +448,24 @@ func _draw() -> void:
 		# Decorative supports remain behind traversable surfaces, never colliders.
 		if points.size() == 2 and points[0].y < 540 and points[1].x - points[0].x > 140:
 			var shade := Color(0.63, 0.66, 0.65, 0.88)
+			# Drop shadow under platform slab
+			var slab_shadow := Rect2(points[0].x, points[0].y + 18, points[1].x - points[0].x, 8)
+			draw_rect(slab_shadow, Color(0.02, 0.04, 0.06, 0.42))
 			for x in [points[0].x + 36, points[1].x - 36]:
 				var top_at := Vector2(x, points[0].y + 18)
 				var width := 24.0 if stage.stage_number == 2 else 30.0
 				var support := Rect2(top_at - Vector2(width * 0.5, 0), Vector2(width, 620 - top_at.y))
 				var source := Rect2(ground.get_width() * 0.28, ground.get_height() * 0.18, ground.get_width() * 0.09, ground.get_height() * 0.82)
 				draw_texture_rect_region(ground, support, source, shade)
+				# Architectural stone corbel bracket where pillar meets platform
+				var corbel := PackedVector2Array([
+					top_at + Vector2(-width * 0.8, 0),
+					top_at + Vector2(width * 0.8, 0),
+					top_at + Vector2(width * 0.45, 14),
+					top_at + Vector2(-width * 0.45, 14)
+				])
+				draw_colored_polygon(corbel, edge.darkened(0.45))
+				draw_polyline(corbel + PackedVector2Array([corbel[0]]), edge.darkened(0.20), 1.5, true)
 				draw_line(top_at + Vector2(-22, 1), top_at + Vector2(22, 1), edge.darkened(0.35), 7, true)
 		draw_polyline(points, edge.darkened(0.25), 4, true)
 		draw_polyline(points, edge, 1.5, true)
@@ -468,9 +480,12 @@ func _draw_stage_markers() -> void:
 	if not in_boss:
 		for cluster in stage.route_clusters:
 			var at := Vector2(cluster.left + 10, 376)
-			draw_style_box(_route_sign_style(), Rect2(at - Vector2(10, 23), Vector2(256, 52)))
-			draw_string(world_font, at, "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("ecd6a7"))
-			draw_string(world_font, at + Vector2(0, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d1dddd"))
+			var sign_rect := Rect2(at - Vector2(10, 23), Vector2(264, 54))
+			draw_style_box(_route_sign_style(), sign_rect)
+			# Decorative marker emblem notch on left
+			draw_rect(Rect2(sign_rect.position.x + 3, sign_rect.position.y + 4, 4, sign_rect.size.y - 8), Color(0.85, 0.72, 0.45, 0.9))
+			draw_string(world_font, at + Vector2(6, 0), "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
+			draw_string(world_font, at + Vector2(6, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
 	for index in range(stage.gates.size()):
 		var gate = stage.gates[index]
 		if not is_instance_valid(gate) or gate.is_queued_for_deletion():
@@ -496,8 +511,16 @@ func _draw_stage_markers() -> void:
 
 func _route_sign_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.10, 0.12, 0.85)
-	style.set_corner_radius_all(4)
+	style.bg_color = Color(0.07, 0.11, 0.15, 0.94)
+	style.border_color = Color(0.78, 0.65, 0.42, 0.88)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.set_corner_radius_all(6)
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.45)
+	style.shadow_size = 4
+	style.shadow_offset = Vector2(0, 2)
 	return style
 
 func _draw_combat_feedback() -> void:
@@ -671,9 +694,16 @@ func _draw_combat_feedback() -> void:
 			# Expected travel, not a second hitbox; walls can shorten the charge.
 			draw_line(start, end, Color(1.0, 0.65, 0.15, 0.65), 5.0, true)
 			draw_line(end, end + Vector2(-entry.actor._attack_direction * 12, -7), Color(1.0, 0.8, 0.3), 3, true)
-		var health_at := to_local(entry.actor.global_position) + Vector2(-18, 23 - float(entry.height))
-		draw_rect(Rect2(health_at, Vector2(36, 3)), Color(0.1, 0.13, 0.17, 0.9))
-		draw_rect(Rect2(health_at, Vector2(36.0 * maxf(0, float(entry.actor.current_hp) / entry.actor.max_hp), 3)), Color(0.9, 0.53, 0.43))
+		var bar_width := 42.0
+		var bar_height := 5.0
+		var health_at := to_local(entry.actor.global_position) + Vector2(-bar_width * 0.5, 20.0 - float(entry.height))
+		# Outer metallic slate frame
+		draw_rect(Rect2(health_at - Vector2(1, 1), Vector2(bar_width + 2, bar_height + 2)), Color(0.04, 0.07, 0.10, 0.92))
+		draw_rect(Rect2(health_at, Vector2(bar_width, bar_height)), Color(0.16, 0.20, 0.24, 0.90))
+		var fill_w := bar_width * maxf(0.0, float(entry.actor.current_hp) / maxf(1.0, float(entry.actor.max_hp)))
+		if fill_w > 0.0:
+			draw_rect(Rect2(health_at, Vector2(fill_w, bar_height)), Color(0.92, 0.30, 0.25))
+			draw_line(health_at + Vector2(0, 1), health_at + Vector2(fill_w, 1), Color(1.0, 0.65, 0.55, 0.85), 1.0)
 
 func _draw_enemy_effect(entry: Dictionary) -> void:
 	# Presentation only: existing controller phases gate every effect. No timers,

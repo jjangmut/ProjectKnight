@@ -375,39 +375,41 @@ class MobileJoypad:
 	func _draw() -> void:
 		var center := size * 0.5
 
-		# 1. Outer Dark Base Disk
-		draw_circle(center, base_radius, Color(0.06, 0.10, 0.18, 0.60))
+		# 1. Outer Dark Base Disk with depth
+		draw_circle(center + Vector2(0, 3), base_radius, Color(0.0, 0.0, 0.0, 0.35))
+		draw_circle(center, base_radius, Color(0.05, 0.09, 0.15, 0.65))
 
-		# 2. Base Glowing Ring
-		var base_ring_color := Color(0.25, 0.65, 0.95, 0.80) if is_touch_down else Color(0.20, 0.45, 0.70, 0.50)
-		draw_arc(center, base_radius, 0, TAU, 48, base_ring_color, 3.5, true)
+		# 2. Concentric Target Rings
+		draw_arc(center, base_radius * 0.60, 0, TAU, 36, Color(0.25, 0.45, 0.70, 0.25), 1.5, true)
+		var base_ring_color := Color(0.28, 0.70, 1.0, 0.85) if is_touch_down else Color(0.22, 0.50, 0.75, 0.55)
+		draw_arc(center, base_radius, 0, TAU, 48, base_ring_color, 3.0, true)
+		draw_arc(center, base_radius - 1.0, -PI * 0.85, -PI * 0.15, 24, Color(1.0, 1.0, 1.0, 0.35), 1.5, true)
 
 		# 3. 8-Direction Rune Tick Marks
 		for i in range(8):
 			var angle := i * (TAU / 8.0)
 			var dir_vec := Vector2(cos(angle), sin(angle))
-			var p1 := center + dir_vec * (base_radius - 12.0)
+			var p1 := center + dir_vec * (base_radius - 10.0)
 			var p2 := center + dir_vec * (base_radius - 2.0)
 
-			# Check if this sector is currently active
 			var is_sector_active := false
 			if is_touch_down and current_direction != Vector2.ZERO:
 				if current_direction.dot(dir_vec) > 0.75:
 					is_sector_active = true
 
 			var tick_col := Color(1.0, 0.85, 0.30, 0.95) if is_sector_active else Color(0.35, 0.55, 0.75, 0.45)
-			var line_width := 4.0 if is_sector_active else 2.0
+			var line_width := 3.5 if is_sector_active else 1.8
 			draw_line(p1, p2, tick_col, line_width, true)
 
 		# 4. Guide Direction Labels (Jump Up ▲, Drop Down ▼, ◀, ▶)
 		var font := ThemeDB.fallback_font
-		var jump_col := Color(1.0, 0.85, 0.30, 0.95) if active_actions["jump"] else Color(0.6, 0.85, 1.0, 0.65)
-		var drop_col := Color(1.0, 0.85, 0.30, 0.95) if active_actions["move_down"] else Color(0.6, 0.85, 1.0, 0.65)
-		var left_col := Color(1.0, 0.85, 0.30, 0.95) if active_actions["move_left"] else Color(0.6, 0.85, 1.0, 0.65)
-		var right_col := Color(1.0, 0.85, 0.30, 0.95) if active_actions["move_right"] else Color(0.6, 0.85, 1.0, 0.65)
+		var jump_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["jump"] else Color(0.7, 0.88, 1.0, 0.70)
+		var drop_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_down"] else Color(0.7, 0.88, 1.0, 0.70)
+		var left_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_left"] else Color(0.7, 0.88, 1.0, 0.70)
+		var right_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_right"] else Color(0.7, 0.88, 1.0, 0.70)
 
-		draw_string(font, center + Vector2(-18, -base_radius + 24), "▲점프", HORIZONTAL_ALIGNMENT_CENTER, -1, 14, jump_col)
-		draw_string(font, center + Vector2(-18, base_radius - 12), "▼하강", HORIZONTAL_ALIGNMENT_CENTER, -1, 14, drop_col)
+		draw_string(font, center + Vector2(-16, -base_radius + 24), "▲점프", HORIZONTAL_ALIGNMENT_CENTER, -1, 13, jump_col)
+		draw_string(font, center + Vector2(-16, base_radius - 12), "▼하강", HORIZONTAL_ALIGNMENT_CENTER, -1, 13, drop_col)
 		draw_string(font, center + Vector2(-base_radius + 10, 6), "◀", HORIZONTAL_ALIGNMENT_CENTER, -1, 16, left_col)
 		draw_string(font, center + Vector2(base_radius - 24, 6), "▶", HORIZONTAL_ALIGNMENT_CENTER, -1, 16, right_col)
 
@@ -504,21 +506,32 @@ class VirtualButton:
 		var radius := minf(size.x, size.y) * 0.5
 		var draw_radius := radius * (0.92 if is_pressed else 1.0)
 
-		# Outer glowing ring
+		# 1. Outer subtle drop shadow
+		draw_circle(center + Vector2(0, 3), draw_radius, Color(0.0, 0.0, 0.0, 0.35))
+
+		# 2. Dark glass tinted plate
+		var plate_color := Color(0.04, 0.07, 0.11, 0.75 if is_pressed else 0.60)
+		draw_circle(center, draw_radius - 2.0, plate_color)
+
+		# 3. Inner theme colored glow fill
+		var inner_glow := Color(theme_color.r, theme_color.g, theme_color.b, 0.42 if is_pressed else 0.18)
+		draw_circle(center, draw_radius - 4.0, inner_glow)
+
+		# 4. Beveled outer ring with top rim highlight
 		var ring_color := theme_color
-		ring_color.a = 0.95 if is_pressed else 0.75
-		draw_arc(center, draw_radius, 0, TAU, 32, ring_color, 4.0, true)
+		ring_color.a = 0.95 if is_pressed else 0.70
+		draw_arc(center, draw_radius, 0, TAU, 36, ring_color, 3.5, true)
+		# Top arc gloss highlight
+		draw_arc(center, draw_radius - 1.0, -PI * 0.85, -PI * 0.15, 20, Color(1.0, 1.0, 1.0, 0.45), 2.0, true)
 
-		# Semi-transparent background disc
-		var bg_color := theme_color
-		bg_color.a = 0.55 if is_pressed else 0.28
-		draw_circle(center, draw_radius - 2.0, bg_color)
+		# 5. Inner fine tactile ring
+		var inner_ring_col := Color(theme_color.r * 1.2, theme_color.g * 1.2, theme_color.b * 1.2, 0.35 if not is_pressed else 0.70)
+		draw_arc(center, draw_radius * 0.82, 0, TAU, 28, inner_ring_col, 1.5, true)
 
-		# Inner active burst
+		# 6. Inner active burst when pressed
 		if is_pressed:
-			var burst_color := Color.WHITE
-			burst_color.a = 0.38
-			draw_circle(center, draw_radius * 0.7, burst_color)
+			var burst_color := Color(1.0, 1.0, 1.0, 0.35)
+			draw_circle(center, draw_radius * 0.65, burst_color)
 
 		# Center text / icon label (2x Scale)
 		var font := ThemeDB.fallback_font

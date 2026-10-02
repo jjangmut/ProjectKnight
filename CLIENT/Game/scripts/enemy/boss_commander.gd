@@ -306,7 +306,7 @@ func _build_collisions() -> void:
 	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
 	var attack_rim := Line2D.new()
 	attack_rim.name = "AttackRim"
-	attack_rim.width = 2.4
+	attack_rim.width = 4.2
 	attack_rim.default_color = Color(1.0, 0.3, 0.1, 0.0)
 	var closed_at := arc_points.duplicate()
 	closed_at.append(closed_at[0])
@@ -463,8 +463,8 @@ func _start_attack(pattern: Pattern, windup: float, active_time: float, blockabl
 	velocity.x = 0.0
 
 	# Telegraph visual: Transparent warning zone with luminous danger rim
-	var rim_color := Color(3.2, 2.6, 0.8, 0.95) if blockable else Color(3.5, 0.8, 0.4, 0.95)
-	var fill_color := Color(1.0, 0.85, 0.2, 0.22) if blockable else Color(1.0, 0.18, 0.12, 0.26)
+	var rim_color := Color(4.0, 3.2, 1.0, 1.0) if blockable else Color(4.2, 1.0, 0.4, 1.0)
+	var fill_color := Color(1.0, 0.85, 0.25, 0.38) if blockable else Color(1.0, 0.22, 0.15, 0.38)
 	attack_visual.color = fill_color
 	var rim := attack_visual.get_node_or_null("AttackRim") as Line2D
 	if rim != null:

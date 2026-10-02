@@ -13,6 +13,7 @@ var boss_name: String = "타락한 방패 기사단장":
 			_title_label.text = val
 var is_enraged: bool = false
 var is_active: bool = false
+var _fade_tween: Tween = null
 
 var _title_label: Label
 var _phase_label: Label
@@ -104,8 +105,17 @@ func attach_boss(boss: CharacterBody2D) -> void:
 
 	# Fade in smoothly
 	is_active = true
-	var tween := create_tween()
-	tween.tween_property(self, "modulate:a", 1.0, 0.6)
+	if _fade_tween != null and _fade_tween.is_valid():
+		_fade_tween.kill()
+	_fade_tween = create_tween()
+	_fade_tween.tween_property(self, "modulate:a", 1.0, 0.6)
+
+
+func snap_to_visible() -> void:
+	if _fade_tween != null and _fade_tween.is_valid():
+		_fade_tween.kill()
+	_fade_tween = null
+	modulate.a = 1.0
 
 
 func _on_hp_changed(new_hp: int, new_max: int) -> void:

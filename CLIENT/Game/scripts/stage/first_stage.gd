@@ -354,8 +354,18 @@ func _start_encounter() -> void:
 
 
 func _spawn_boss_encounter() -> void:
+	for e in enemies:
+		if is_instance_valid(e):
+			e.queue_free()
 	enemies.clear()
 	defeated.clear()
+
+	for group in optional_groups:
+		for actor in group.get("actors", []):
+			if is_instance_valid(actor):
+				actor.queue_free()
+		group["actors"].clear()
+		group["cleared"] = true
 
 	# Seamless boss encounter: no blocking gates behind the player
 	if is_instance_valid(arena_entrance_gate):
@@ -403,7 +413,7 @@ func _spawn_boss_encounter() -> void:
 		var bar := BossHealthBarClass.new()
 		bar.name = "BossHealthBar"
 		bar.boss_name = boss_title
-		bar.position = Vector2((1280.0 - bar.BAR_WIDTH) * 0.5, 72.0)
+		bar.position = Vector2((1280.0 - bar.BAR_WIDTH) * 0.5, 54.0)
 		hud.add_child(bar)
 		bar.attach_boss(boss)
 

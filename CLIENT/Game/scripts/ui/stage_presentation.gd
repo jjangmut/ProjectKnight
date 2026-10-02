@@ -239,17 +239,21 @@ func _draw() -> void:
 		var next_y: float = 74.0
 		if has_boss_bar:
 			if stage.encounter_active:
-				_center(Vector2(640, 142), encounter_hint(), 22, Color(1.0, 0.9, 0.75, 0.9))
-				next_y = 176.0
+				var hint_text: String = encounter_hint()
+				var hw := font.get_string_size(hint_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 18).x + 36.0
+				_pill(Rect2(640.0 - hw * 0.5, 144.0, hw, 28.0))
+				_center(Vector2(640, 163.0), hint_text, 18, Color(1.0, 0.92, 0.78, 0.92))
+				next_y = 184.0
 			else:
-				next_y = 142.0
+				next_y = 144.0
 		else:
 			_center(Vector2(640, 74), objective(), 26, WHITE)
 			next_y = 106.0
 			if stage.encounter_active and stage.encounter_index < stage.required_count:
 				_center(Vector2(640, next_y), encounter_hint(), 20, Color(1.0, 0.9, 0.75, 0.85))
 				next_y += 32.0
-			if stage.get("route_status") != null and str(stage.route_status) != "":
+			var in_boss: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active)
+			if not in_boss and stage.get("route_status") != null and str(stage.route_status) != "" and toast_remaining <= 0.0:
 				var route_text: String = str(stage.route_status)
 				var tw := font.get_string_size(route_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 20).x + 36.0
 				_pill(Rect2(640.0 - tw * 0.5, next_y - 16.0, tw, 28.0))
@@ -259,7 +263,7 @@ func _draw() -> void:
 		if intro_remaining > 0 and not stage.encounter_active:
 			_center(Vector2(640, next_y + 12.0), region_intro(), 28, GOLD)
 			_center(Vector2(640, next_y + 40.0), region_strategy(), 20, MUTED)
-		elif toast_remaining > 0:
+		elif toast_remaining > 0 and not has_boss_bar:
 			var toast_w := font.get_string_size(toast, HORIZONTAL_ALIGNMENT_CENTER, -1, 22).x + 44.0
 			_pill(Rect2(640.0 - toast_w * 0.5, next_y + 6.0, toast_w, 36.0))
 			_center(Vector2(640, next_y + 30.0), toast, 22, GOLD)
@@ -504,12 +508,25 @@ func _draw_stage_clear_reward_card() -> void:
 	# Main Outer Container
 	_plate(Rect2(140, 75, 1000, 570), GOLD, Color(0.02, 0.05, 0.08, 0.96))
 	
+	# Corner Filigree Accents (Outer Plate)
+	var corn_color := Color(GOLD.r, GOLD.g, GOLD.b, 0.72)
+	draw_line(Vector2(146, 96), Vector2(146, 81), corn_color, 2.5)
+	draw_line(Vector2(146, 81), Vector2(161, 81), corn_color, 2.5)
+	draw_line(Vector2(1134, 96), Vector2(1134, 81), corn_color, 2.5)
+	draw_line(Vector2(1134, 81), Vector2(1119, 81), corn_color, 2.5)
+	draw_line(Vector2(146, 624), Vector2(146, 639), corn_color, 2.5)
+	draw_line(Vector2(146, 639), Vector2(161, 639), corn_color, 2.5)
+	draw_line(Vector2(1134, 624), Vector2(1134, 639), corn_color, 2.5)
+	draw_line(Vector2(1134, 639), Vector2(1119, 639), corn_color, 2.5)
+
 	# Header
 	_center(Vector2(640, 126), "★  " + stage_label() + " 돌파 완료  ★", 38, GOLD)
 	_center(Vector2(640, 166), "전설 보스 유물 획득 · 기사 장비 외형 장착 완료!", 24, CYAN)
 	
 	# Inner Card Frame
 	_plate(Rect2(180, 190, 920, 310), relic_color, Color(0.04, 0.09, 0.14, 0.92))
+	for corner in [Vector2(188, 198), Vector2(1092, 198), Vector2(188, 492), Vector2(1092, 492)]:
+		_diamond(corner, 4.0, relic_color)
 	
 	# Left: Large Showcase Emblem
 	var icon_center := Vector2(320, 335)
@@ -539,6 +556,7 @@ func _draw_stage_clear_reward_card() -> void:
 	_text(Vector2(text_x + 20, 442), "인게임 플레이 및 대기 모션 시 캐릭터 모델에 실시간 반영됩니다.", 19, MUTED)
 	
 	# Bottom Status / Navigation
-	_center(Vector2(640, 545), "필수 전투 %d / %d 완료 · 영구 세이브 저장됨" % [stage.encounter_index, stage.required_count], 22, MUTED)
+	var finished_count: int = stage.required_count if stage.stage_state == 1 else stage.encounter_index
+	_center(Vector2(640, 545), "필수 전투 %d / %d 완료 · 영구 세이브 저장됨" % [finished_count, stage.required_count], 22, MUTED)
 	_center(Vector2(640, 595), transition_message(), 26, CYAN)
 

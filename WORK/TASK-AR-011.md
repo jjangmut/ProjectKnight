@@ -1,24 +1,25 @@
 # [TASK-AR-011] Stage 1 Graphics Pass 001 재작업 및 독립 검수 게이트 통과
 
-- 상태: READY
+- 상태: IN_REVIEW (독립 검수 요청)
 - 담당: Antigravity / JPStudio Graphics Quality Director
 - 우선순위: P0
 - 작성일: 2026-10-02
 - 선행 작업: `antigravity/graphics-quality-pass-001`
 - 검수 문서: `ART_REVIEW/GRAPHICS_PASS_001_INDEPENDENT_REVIEW.md`
+- 완료 보고: `ART_REVIEW/graphics-pass-001-r1/REVIEW.md`
 - 목표: Stage 1을 한 번 더 재작업해 독립 검수 가능한 수준으로 만든 뒤에만 Stage 2로 이동
 
 ## 1. 현재 상태
 
-Pass 001의 자체 PASS는 최종 승인으로 인정하지 않는다.
-
-현재 상태는:
+Pass 001-R1 Cycle A 및 Cycle B 2회 반복 개선 완료 후 독립 검수 요청 상태.
 
 ```text
 Stage 1 Pass 001
 → Self Review PASS
 → Independent Review
 → REWORK REQUIRED
+→ Pass 001-R1 Cycle A & Cycle B 완주
+→ 독립 검수 요청 (IN_REVIEW)
 ```
 
 Antigravity는 Stage 2 작업을 시작하지 말고 Stage 1을 먼저 재작업한다.

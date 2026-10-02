@@ -81,18 +81,22 @@ Project Knight
 - `cd13f545`: 품질 스모크 테스트 생명주기 보완, **60/60 PASS**
 - `96dd4f71`: 테스트 UID 추가
 
-### 2026-10-02 JPStudio Graphics Quality Director (Pass 001: Stage 1 Vertical Slice)
-- `WORK/TASK-AR-010.md` 및 `DESIGN/GRAPHICS_QUALITY_AUTONOMOUS_AGENT_SPEC_001.md` 기반 Graphics Quality Director 구축
-- 작업 브랜치: `antigravity/graphics-quality-pass-001` (from `origin/integration`)
-- Stage 1 5대 대표 구간 캡처 및 Before/After 시각 평가 완료 (`ART_REVIEW/graphics-pass-001/`)
-- 주요 비주얼 개선:
-  - 보스 와이어프레임 박스 완전 제거 및 곡면 블레이드 호형 전조(`AttackRim` HDR 라인) 적용
-  - 플레이어, 몬스터, 보스 발밑 동적 접지 그림자(`Color(0.02, 0.03, 0.05, 0.55)`) 및 지면 룬 오라 추가
-  - 패럴랙스 배경 대각선 폴리곤 쐐기 아티팩트 제거 및 정적 CanvasLayer 중복 스티커 숨김(선명도/공간감 100% 회복)
-  - 상단 HUD 비겹침 대역 재배치 및 스테이지 클리어 보상 카드 풀스크린 암전 스크림 적용
-  - 인카운터 게이트 물리 충돌 복구 및 마법 봉인 비주얼 연동
+### 2026-10-02 JPStudio Graphics Quality Director (Pass 001-R1: Stage 1 Rework Cycle A & B)
+- `WORK/TASK-AR-011.md` 및 `ART_REVIEW/GRAPHICS_PASS_001_INDEPENDENT_REVIEW.md` 지침에 따른 Stage 1 재작업 완주
+- 작업 브랜치: `antigravity/graphics-quality-pass-001-r1` (독립 검수 요청 상태)
+- Cycle A 및 Cycle B 2회 반복 개선 및 5대 대표 장면 Before/After 캡처 아티팩트 보관 (`ART_REVIEW/graphics-pass-001-r1/`)
+- 주요 비주얼 개선 내역:
+  - 건축적 개연성: 부유 발판에 석조 지지 코벨(까치발) 브래킷 및 하단 음영 추가
+  - 모바일 조작계: 촉각적 베벨 림과 다층 다크 글래스 질감의 가상 버튼 및 조이스틱 고도화
+  - 적 체력바: 메탈릭 슬레이트 프레임 및 상단 하이라이트가 적용된 게이지 바로 전환
+  - 갈림길 안내: 음각 골드 노치가 적용된 엔틱 브론즈 석조 현판 스타일 적용
+  - 보스 HUD 정돈: `BossHealthBar`와 힌트 텍스트 분리 배치, 보스전 진입 시 불필요한 마일스톤 토스트 억제
+  - 보스 아레나 무대: 보스전 돌입 시 상층 잔여 적 정리로 1:1 전용 결전 무대 확보
+  - 전조 시인성: `BossCommander` 공격 전조 라인 두께 확장(4.2px) 및 HDR 오버드라이브 발광 상향
+  - 보상 카드 마감: 스테이지 클리어 모달에 엔틱 골드 코너 필리그리 브래킷 및 다이아몬드 핍 장식 추가
 - 자동 회귀 테스트: 10개 스위트 **100% PASS** (총 360+ 체크 무결점)
-- 상세 리뷰 보고서: `ART_REVIEW/graphics-pass-001/REVIEW.md`
+- 상세 리뷰 보고서: `ART_REVIEW/graphics-pass-001-r1/REVIEW.md`
+- 현재 상태: **독립 검수 요청 (Independent Review Requested)**
 
 ## QA 상태
 
@@ -113,6 +117,7 @@ Project Knight
 - `.gitignore`에 `CLIENT/Game/builds/`, `*.apk`, `*.aab` 제외
 - `export_presets.cfg`: v1.1.5 / versionCode 6 / `com.junypapa.projectknight`
 - Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요
+- 본 패스 Android 검증 상태: `ANDROID NOT VERIFIED` (PC 데스크톱 환경 및 헤드리스 엔진 기반)
 
 ## 알려진 관리 이슈
 
@@ -122,8 +127,8 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. `antigravity/graphics-quality-pass-001` 브랜치 원격 저장소(`origin`) push 및 PR 생성
-2. Stage 2 (맹수의 숲) 패럴랙스 배경 및 비주얼 폴리시 패스 (Pass 002) 착수
+1. `antigravity/graphics-quality-pass-001-r1` PR 생성 및 독립 검수자의 심의/게이트 통과
+2. 독립 검수 승인 확인 후 Stage 2 (야수숲) Pass 002 착수
 3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
@@ -136,5 +141,6 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001 Stage 1 Vertical Slice 완료
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R1 Stage 1 재작업 완료 및 독립 검수 요청
+
 

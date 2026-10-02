@@ -10,7 +10,7 @@ const BossCommanderClass = preload("res://scripts/enemy/boss_commander.gd")
 func _init() -> void:
 	output_dir = OS.get_environment("STAGE1_CAPTURE_DIR")
 	if output_dir == "":
-		output_dir = ProjectSettings.globalize_path("res://../../ART_REVIEW/graphics-pass-001/after")
+		output_dir = ProjectSettings.globalize_path("res://../../ART_REVIEW/graphics-pass-001-r1/cycle_b")
 	DirAccess.make_dir_recursive_absolute(output_dir)
 
 func _initialize() -> void:
@@ -96,35 +96,39 @@ func _run_captures() -> void:
 	# -------------------------------------------------------------------------
 	print("\n[Capturing Scene 4: BossCommander Combat Encounter]")
 	await _setup_stage()
+	stage.set_meta("boss_mode", true)
 	stage.encounter_index = stage.required_count - 1
 	for i in range(stage.required_count - 1):
 		stage.completed[i] = true
 		if i < stage.gates.size() and is_instance_valid(stage.gates[i]):
 			stage.gates[i].queue_free()
-	stage.player.position = Vector2(9200, 592)
+	stage.player.position = Vector2(9280, 592)
+	stage.player.facing_direction = 1.0
 	stage.player.get_node("Camera2D").force_update_scroll()
 	stage._start_encounter()
 	await process_frame
 	await process_frame
-	# Find boss in enemies or spawn directly if encounter spawning handles it
+	var bar := stage.get_node_or_null("HUD/BossHealthBar")
+	if bar != null and bar.has_method("snap_to_visible"):
+		bar.snap_to_visible()
+	for group in stage.optional_groups:
+		for actor in group.get("actors", []):
+			if is_instance_valid(actor):
+				actor.queue_free()
+		group["actors"].clear()
+		group["cleared"] = true
+	# Find boss in enemies
 	var boss_found: Node2D = null
 	for e in stage.enemies:
 		if is_instance_valid(e) and (e.is_in_group("boss") or e is BossCommanderClass):
 			boss_found = e
 			break
-	if boss_found == null:
-		# If boss hasn't spawned yet in wave 2, instantiate and place
-		boss_found = BossCommanderClass.new()
-		stage.add_child(boss_found)
-		stage.enemies.append(boss_found)
-	boss_found.position = Vector2(9450, 590)
-	boss_found.set_physics_process(false)
-	stage.player.position = Vector2(9280, 592)
-	stage.player.facing_direction = 1.0
-	stage.player.get_node("Camera2D").force_update_scroll()
-	# Boss in threatening heavy attack windup pose
-	if boss_found.has_method("_start_attack"):
-		boss_found.call("_start_attack", 1, 0.5, 0.25, true)
+	if boss_found != null:
+		boss_found.position = Vector2(9450, 580)
+		boss_found.set_physics_process(false)
+		if boss_found.has_method("_start_attack"):
+			boss_found.call("_start_attack", 1, 0.5, 0.25, true)
+	await process_frame
 	await process_frame
 	await _capture_frame("04_stage1_boss_combat.png")
 
@@ -133,6 +137,9 @@ func _run_captures() -> void:
 	# -------------------------------------------------------------------------
 	print("\n[Capturing Scene 5: Boss Defeat & Stage Clear Relic Card]")
 	await _setup_stage()
+	stage.encounter_index = stage.required_count
+	for i in range(stage.required_count):
+		stage.completed[i] = true
 	stage.player.position = Vector2(9300, 592)
 	stage.player.get_node("Camera2D").force_update_scroll()
 	# Trigger stage cleared state
