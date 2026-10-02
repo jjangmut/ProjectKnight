@@ -9,7 +9,7 @@ Project Knight
 - 기준일: **2026-10-02**
 - 안정 기준 브랜치: `main`
 - 통합 기준 브랜치: `integration`
-- 현재 ChatGPT 작업 브랜치: `chatgpt/handoff-governance`
+- 통합 기준 HEAD: `6ef897da` — AI 브랜치 전략 및 Codex-ChatGPT 인계 운영 정비
 - 기존 장기 작업 기준선: `task/art-stage-batch-001`
 - 브랜치 전환 기준 커밋: `aa057ec4`
 - 게임 엔진: Godot 4.7.2 stable / GDScript / Compatibility Renderer
@@ -82,18 +82,20 @@ Project Knight
 - `96dd4f71`: 테스트 UID 추가
 
 ### 2026-10-02 AI 인계/브랜치 운영 정비
-- `main`, `integration`, `chatgpt/handoff-governance` 브랜치를 `aa057ec4` 기준으로 생성
+- `main`, `integration` 생성
+- 첫 ChatGPT 전용 작업 브랜치 `chatgpt/handoff-governance` 생성
 - `AGENTS.md`에 표준 브랜치 정책, CODEX ↔ ChatGPT 인계 규칙, 작업 종료 강제 체크리스트 추가
 - `WORK/DEC-014.md`에 AI 다중 작업 환경 브랜치 정책 결정 기록
 - `WORK/HANDOFF_CHECKLIST.md`에 공통 인계 체크리스트 추가
-- ChatGPT 변경은 전용 `chatgpt/*` 브랜치에서 작업 후 `integration` PR로 통합하는 구조로 전환
+- PR #1 `chatgpt/handoff-governance → integration` **병합 완료**
+- 통합 커밋: `6ef897da`
 
 ## QA 상태
 
-최신 확인 가능한 품질 회귀 기록:
+최신 확인 가능한 게임 품질 회귀 기록:
 - `game_and_graphic_quality_smoke.gd`: **60/60 PASS** (`cd13f545`)
 
-이번 브랜치 운영/문서 정비는 GitHub 기반 작업으로, Godot 로컬 실행이나 Android APK 빌드는 **미실행**이다. 소스 코드 게임 로직은 변경하지 않았다.
+이번 브랜치 운영/문서 정비는 GitHub 기반 작업으로, Godot 로컬 실행이나 Android APK 빌드는 **미실행**이다. 게임 로직은 변경하지 않았다.
 
 ## 빌드 / 배포 상태
 
@@ -103,26 +105,26 @@ Project Knight
 
 ## 알려진 관리 이슈
 
-1. GitHub 저장소의 default branch는 아직 기존 `task/art-stage-batch-001`일 수 있다. 표준 운영 기준은 문서상 `integration`으로 전환했으며, GitHub default branch 변경은 별도 저장소 설정이 필요하다.
+1. GitHub 저장소의 default branch는 아직 기존 `task/art-stage-batch-001`일 수 있다. 표준 통합 기준은 `integration`으로 전환했다.
 2. 오래된 TASK/설계 문서의 상태 표현이 최신 코드와 충돌할 수 있으므로 코드/최근 커밋 우선.
 3. Android 서명/빌드 설정의 로컬 경로 의존성 정리 필요.
 
 ## 다음 우선 작업
 
-1. `chatgpt/handoff-governance` → `integration` PR 통합
-2. Codex/Antigravity 로컬 환경을 `integration` 기준 작업 브랜치 방식으로 전환
-3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
-5. 플레이어/적/보스/배경 아트 스타일 일관성 검토
+1. Codex/Antigravity 로컬 환경을 `integration` 기준 전용 브랜치 방식으로 전환
+2. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
+3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
+4. 플레이어/적/보스/배경 아트 스타일 일관성 검토
+5. 자동 QA가 놓치는 실제 조작감·가독성·카메라·충돌 문제 목록화
 6. CI/Android 서명·빌드 파이프라인 정리
 
 ## 인계 규칙
 
 `AGENTS.md`와 `WORK/HANDOFF_CHECKLIST.md`를 따른다.
 
-특히 ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigravity는 인계 전 반드시 **STATE 갱신 + commit + push**를 완료한다.
+ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigravity는 인계 전 반드시 **STATE 갱신 + commit + push**를 완료한다.
 
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: ChatGPT / 브랜치·인계 운영 정비
+- 갱신자: ChatGPT / 브랜치·인계 운영 정비 완료
