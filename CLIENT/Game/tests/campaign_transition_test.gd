@@ -14,6 +14,18 @@ func _run() -> void:
 
 	print("Campaign loaded, stage_index: ", campaign.stage_index)
 
+	# Stage transition must never carry held mobile actions into the next stage.
+	Input.action_press("move_down")
+	Input.action_press("dash")
+	campaign._start_stage(0)
+	await physics_frame
+	if Input.is_action_pressed("move_down") or Input.is_action_pressed("dash"):
+		push_error("FAIL: Stage transition leaked held move_down/dash input")
+		campaign.queue_free()
+		quit(1)
+		return
+	print("PASS: Stage transition releases move_down/dash input")
+
 	# Trigger stage 0 clear
 	campaign._on_stage_finished(1)
 

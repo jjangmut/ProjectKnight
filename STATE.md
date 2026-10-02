@@ -9,7 +9,8 @@ Project Knight
 - 기준일: **2026-10-02**
 - 안정 기준 브랜치: `main`
 - 통합 기준 브랜치: `integration`
-- 통합 기준 HEAD: `6ef897da` — AI 브랜치 전략 및 Codex-ChatGPT 인계 운영 정비
+- 통합 기준 HEAD: `4e05e1c2` — AI 인계 운영 상태 확정
+- 현재 ChatGPT 작업 브랜치: `chatgpt/playtest-audit-001`
 - 기존 장기 작업 기준선: `task/art-stage-batch-001`
 - 브랜치 전환 기준 커밋: `aa057ec4`
 - 게임 엔진: Godot 4.7.2 stable / GDScript / Compatibility Renderer
@@ -92,6 +93,16 @@ Project Knight
 
 ## QA 상태
 
+### 2026-10-02 Stage 1~5 실기 QA 준비
+- `WORK/QA_PLAYTEST_AUDIT_001.md` 작성
+- 정적 점검에서 스테이지 전환 시 `dash` / `move_down` 입력이 release 목록에서 누락된 것을 확인
+- `campaign.gd`에 두 입력 해제 추가
+- `campaign_transition_test.gd`에 잔류 입력 회귀 검증 추가
+- `campaign_full_qa.gd`는 Stage 3~5 일부 경로/Stage 4 골렘 중심이라 전체 5스테이지 실플레이를 대표하지 않는다는 커버리지 공백 기록
+- `studio_manager_playtest_analysis.gd`의 상용성 9.x 점수와 104 Shards 경제 수치는 하드코딩된 분석값이므로 실제 QA 근거로 사용하지 않도록 분리
+
+이번 수정은 GitHub 정적 분석 기반이며 **Godot 테스트 및 Android 실기는 미실행**이다.
+
 최신 확인 가능한 게임 품질 회귀 기록:
 - `game_and_graphic_quality_smoke.gd`: **60/60 PASS** (`cd13f545`)
 
@@ -111,12 +122,13 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. Codex/Antigravity 로컬 환경을 `integration` 기준 전용 브랜치 방식으로 전환
-2. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
-4. 플레이어/적/보스/배경 아트 스타일 일관성 검토
-5. 자동 QA가 놓치는 실제 조작감·가독성·카메라·충돌 문제 목록화
-6. CI/Android 서명·빌드 파이프라인 정리
+1. Codex/Antigravity에서 `campaign_transition_test.gd` 실행 — 이번 `dash/move_down` 잔류 입력 수정 검증
+2. `mobile_controls_smoke.gd` 실행
+3. `campaign_full_qa.gd` 및 `game_and_graphic_quality_smoke.gd` 회귀 실행
+4. Stage 1→5 PC 실제 완주 QA — `WORK/QA_PLAYTEST_AUDIT_001.md` 체크리스트 사용
+5. Android 실기에서 Stage 1/3/5 우선 검증 후 전체 완주
+6. 실측 결과에 따라 보스/난이도/모바일 UI 수정
+7. CI/Android 서명·빌드 파이프라인 정리
 
 ## 인계 규칙
 
@@ -127,4 +139,4 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: ChatGPT / 브랜치·인계 운영 정비 완료
+- 갱신자: ChatGPT / Stage 1~5 실기 QA 준비 및 입력 잔류 수정

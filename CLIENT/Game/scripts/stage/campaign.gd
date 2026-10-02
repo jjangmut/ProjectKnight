@@ -30,7 +30,7 @@ func _start_stage(index: int, checkpoint: bool = false) -> void:
 	get_tree().paused = false
 	ad_bonus_claimed = false
 	AdManagerClass.reset_run_ad_counters()
-	for action in ["move_left", "move_right", "attack", "jump", "guard"]:
+	for action in ["move_left", "move_right", "move_down", "attack", "jump", "dash", "guard"]:
 		Input.action_release(action)
 	if is_instance_valid(panel):
 		panel.queue_free()
