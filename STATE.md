@@ -98,9 +98,23 @@ Project Knight
 - 상세 리뷰 보고서: `ART_REVIEW/graphics-pass-001-r1/REVIEW.md`
 - 현재 상태: **독립 검수 요청 (Independent Review Requested)**
 
+### 2026-10-02 JPStudio Graphics Quality Director (Pass 001-R2: Blocker 수정 및 독립 검수 재요청)
+- `WORK/TASK-AR-012.md` 및 `ART_REVIEW/GRAPHICS_PASS_001_R1_CODE_REVIEW.md` 코드 리뷰 Blocker 전면 해결
+- 작업 브랜치: `antigravity/graphics-quality-pass-001-r2`
+- 주요 해결 내역:
+  - **BLOCKER-01 (렌더 분리)**: `StageStaticArt` 분리 구현으로 지형 타일(43개), 발판 지형/코벨(19개), 선택 경로 현판(3개)의 1회 사전 캐시 구축. `stage_art.gd`는 동적 전투 피드백(섀도우, VFX, HP 바) 전용으로 분리하여 모바일 CPU 드로우 부하 근본적 제거
+  - **BLOCKER-02 (로직 보존)**: `first_stage.gd`에서 인위적 `group["cleared"] = true` 및 `queue_free()` 제거. 아레나 인접 선택 적만 프레젠테이션 비가시화(`visible = false`)하여 퀘스트/보상 상태 100% 보존
+  - **MAJOR-01 (HDR 전조 튜닝)**: `AttackRim.width = 3.4px`, rim_color 2.4/2.6, fill alpha 0.22로 캘리브레이션하여 밝은/어두운 배경 4종 캡처(`ART_REVIEW/graphics-pass-001-r2/telegraph/`) 검증 완료
+  - **MAJOR-02 (실측 성능 기록)**: Stage 1 3대 구간 실시간 벤치마크 수행 (평균 60.0~60.1 FPS, 1% Low 59.1~59.3 FPS, 평균 프레임타임 16.65~16.66ms 기록, `ART_REVIEW/graphics-pass-001-r2/performance.md`)
+- 신규 스모크 테스트: `tests/stage1_r2_blocker_fixes_smoke.gd` (27/27 PASS)
+- 자동 회귀 테스트: 11개 스위트 **100% PASS** (총 387개 체크 무결점 통과)
+- 상세 보고서: `ART_REVIEW/graphics-pass-001-r2/CODE_REVIEW_FIX_REPORT.md`
+- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 재요청)**
+
 ## QA 상태
 
 최신 확인 가능한 게임 품질 회귀 기록:
+- `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
 - `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
 - `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
 - `boss1_visual_polish_smoke.gd`: **17/17 PASS**
@@ -117,7 +131,7 @@ Project Knight
 - `.gitignore`에 `CLIENT/Game/builds/`, `*.apk`, `*.aab` 제외
 - `export_presets.cfg`: v1.1.5 / versionCode 6 / `com.junypapa.projectknight`
 - Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요
-- 본 패스 Android 검증 상태: `ANDROID NOT VERIFIED` (PC 데스크톱 환경 및 헤드리스 엔진 기반)
+- 본 패스 Android 검증 상태: `ANDROID NOT VERIFIED` (PC 데스크톱 환경 및 헤드리스 엔진 기반 실측)
 
 ## 알려진 관리 이슈
 
@@ -127,7 +141,7 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. `antigravity/graphics-quality-pass-001-r1` PR 생성 및 독립 검수자의 심의/게이트 통과
+1. `antigravity/graphics-quality-pass-001-r2` 독립 검수 재심의 진행
 2. 독립 검수 승인 확인 후 Stage 2 (야수숲) Pass 002 착수
 3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
@@ -141,6 +155,6 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-02**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R1 Stage 1 재작업 완료 및 독립 검수 요청
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R2 Blocker 해결 및 독립 검수 재요청
 
 

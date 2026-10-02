@@ -1,10 +1,12 @@
 # [TASK-AR-012] Stage 1 Graphics R1 코드 리뷰 Blocker 수정
 
-- 상태: READY
+- 상태: IN_REVIEW (독립 검수 재요청)
 - 담당: Antigravity / JPStudio Graphics Quality Director + Client QA
 - 우선순위: P0
 - 선행 브랜치: `antigravity/graphics-quality-pass-001-r1`
 - 검수 문서: `ART_REVIEW/GRAPHICS_PASS_001_R1_CODE_REVIEW.md`
+- 완료 보고: `ART_REVIEW/graphics-pass-001-r2/CODE_REVIEW_FIX_REPORT.md`
+- 성능 보고: `ART_REVIEW/graphics-pass-001-r2/performance.md`
 - 목표: PR #6의 코드 Blocker를 제거한 뒤 독립 검수 재요청
 
 ## 1. 작업 브랜치

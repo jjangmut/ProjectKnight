@@ -360,12 +360,13 @@ func _spawn_boss_encounter() -> void:
 	enemies.clear()
 	defeated.clear()
 
+	# Presentation-only: Temporarily suppress active arena-adjacent optional actors without altering gameplay/quest state
 	for group in optional_groups:
 		for actor in group.get("actors", []):
-			if is_instance_valid(actor):
-				actor.queue_free()
-		group["actors"].clear()
-		group["cleared"] = true
+			if is_instance_valid(actor) and actor.position.x >= ENTRY_X[encounter_index] - 200.0:
+				actor.visible = false
+				actor.set_physics_process(false)
+				actor.set_process(false)
 
 	# Seamless boss encounter: no blocking gates behind the player
 	if is_instance_valid(arena_entrance_gate):

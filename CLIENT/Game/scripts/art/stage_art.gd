@@ -26,6 +26,12 @@ var previous_guard_blocks := 0
 var world_font := SystemFont.new()
 @onready var stage: Node2D = get_parent()
 
+const StageStaticArtClass := preload("res://scripts/art/stage_static_art.gd")
+var static_art: Node2D = null
+var _last_gate_count := -1
+var _last_checkpoint := -1
+var _last_in_boss := false
+
 func _guard_clang() -> AudioStreamWAV:
 	# Original short procedural metallic placeholder; no external audio asset.
 	var wav := AudioStreamWAV.new()
@@ -198,6 +204,13 @@ func _install() -> void:
 		player_art.set_process(false)
 	for child in stage.get_children():
 		_attach(child)
+
+	static_art = StageStaticArtClass.new()
+	static_art.name = "StageStaticArt"
+	add_child(static_art)
+	var edge: Color = TERRAIN_EDGES[stage.stage_number - 1]
+	static_art.build_cache(stage, textures.ground, edge, world_font)
+
 	queue_redraw()
 
 func _on_stage_child(child: Node) -> void:
@@ -300,6 +313,22 @@ func _process(delta: float) -> void:
 			actors.remove_at(index)
 		else:
 			_update_actor(actors[index])
+
+	# Invalidate static art only when stage progression flags change
+	var current_gate_count := 0
+	if "gates" in stage and stage.gates != null:
+		for g in stage.gates:
+			if is_instance_valid(g) and not g.is_queued_for_deletion():
+				current_gate_count += 1
+	var current_cp: int = stage.checkpoint_index if "checkpoint_index" in stage else -1
+	var in_boss: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
+	if current_gate_count != _last_gate_count or current_cp != _last_checkpoint or in_boss != _last_in_boss:
+		_last_gate_count = current_gate_count
+		_last_checkpoint = current_cp
+		_last_in_boss = in_boss
+		if static_art != null:
+			static_art.invalidate()
+
 	queue_redraw()
 
 func _update_player_pose(delta: float = 0.0) -> void:
@@ -422,106 +451,11 @@ func _apply_enemy_frame(entry: Dictionary) -> bool:
 func _draw() -> void:
 	if not installed:
 		return
-	var ground: Texture2D = textures.ground
-	# Mirror alternate full tiles to match border colors without changing the PNG.
-	for index in range(ceili(stage.WORLD_WIDTH / 256.0)):
-		var x := index * 256.0
-		var width := minf(256.0, stage.WORLD_WIDTH - x)
-		var source_width := ground.get_width() * width / 256.0
-		var source := Rect2(0, 0, source_width, ground.get_height())
-		if index % 2 == 1:
-			source.position.x = ground.get_width() - source_width
-			draw_set_transform(Vector2(x + width, 620), 0, Vector2(-1, 1))
-		else:
-			draw_set_transform(Vector2(x, 620))
-		draw_texture_rect_region(ground, Rect2(0, 0, width, 80), source)
-	draw_set_transform(Vector2.ZERO)
-	var edge: Color = TERRAIN_EDGES[stage.stage_number - 1]
-	draw_line(Vector2(0, 620), Vector2(stage.WORLD_WIDTH, 620), edge, 2.0)
-	for terrain in get_tree().get_nodes_in_group("stage_terrain"):
-		if not stage.is_ancestor_of(terrain):
-			continue
-		var surface: PackedVector2Array = terrain.get_meta("surface_points")
-		var points := PackedVector2Array()
-		for point in surface:
-			points.append(point + terrain.position)
-		# Decorative supports remain behind traversable surfaces, never colliders.
-		if points.size() == 2 and points[0].y < 540 and points[1].x - points[0].x > 140:
-			var shade := Color(0.63, 0.66, 0.65, 0.88)
-			# Drop shadow under platform slab
-			var slab_shadow := Rect2(points[0].x, points[0].y + 18, points[1].x - points[0].x, 8)
-			draw_rect(slab_shadow, Color(0.02, 0.04, 0.06, 0.42))
-			for x in [points[0].x + 36, points[1].x - 36]:
-				var top_at := Vector2(x, points[0].y + 18)
-				var width := 24.0 if stage.stage_number == 2 else 30.0
-				var support := Rect2(top_at - Vector2(width * 0.5, 0), Vector2(width, 620 - top_at.y))
-				var source := Rect2(ground.get_width() * 0.28, ground.get_height() * 0.18, ground.get_width() * 0.09, ground.get_height() * 0.82)
-				draw_texture_rect_region(ground, support, source, shade)
-				# Architectural stone corbel bracket where pillar meets platform
-				var corbel := PackedVector2Array([
-					top_at + Vector2(-width * 0.8, 0),
-					top_at + Vector2(width * 0.8, 0),
-					top_at + Vector2(width * 0.45, 14),
-					top_at + Vector2(-width * 0.45, 14)
-				])
-				draw_colored_polygon(corbel, edge.darkened(0.45))
-				draw_polyline(corbel + PackedVector2Array([corbel[0]]), edge.darkened(0.20), 1.5, true)
-				draw_line(top_at + Vector2(-22, 1), top_at + Vector2(22, 1), edge.darkened(0.35), 7, true)
-		draw_polyline(points, edge.darkened(0.25), 4, true)
-		draw_polyline(points, edge, 1.5, true)
-		draw_polyline(points, edge.lightened(0.35) * 1.35, 1.0, true)
-	_draw_stage_markers()
-	_draw_combat_feedback()
-
-func _draw_stage_markers() -> void:
-	if stage.stage_state != 0:
-		return
-	var in_boss: bool = stage.encounter_index >= stage.required_count - 1 and stage.encounter_active
-	if not in_boss:
-		for cluster in stage.route_clusters:
-			var at := Vector2(cluster.left + 10, 376)
-			var sign_rect := Rect2(at - Vector2(10, 23), Vector2(264, 54))
-			draw_style_box(_route_sign_style(), sign_rect)
-			# Decorative marker emblem notch on left
-			draw_rect(Rect2(sign_rect.position.x + 3, sign_rect.position.y + 4, 4, sign_rect.size.y - 8), Color(0.85, 0.72, 0.45, 0.9))
-			draw_string(world_font, at + Vector2(6, 0), "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
-			draw_string(world_font, at + Vector2(6, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
-	for index in range(stage.gates.size()):
-		var gate = stage.gates[index]
-		if not is_instance_valid(gate) or gate.is_queued_for_deletion():
-			continue
-		var x: float = gate.position.x
-		draw_rect(Rect2(x - 12, 0, 24, 620), Color(0.25, 0.65, 0.7, 0.12))
-		draw_line(Vector2(x - 10, 0), Vector2(x - 10, 620), Color(0.42, 0.82, 0.84, 0.65), 2)
-		draw_line(Vector2(x + 10, 0), Vector2(x + 10, 620), Color(0.42, 0.82, 0.84, 0.65), 2)
-		for y in range(30, 620, 42):
-			draw_line(Vector2(x - 7, y), Vector2(x + 7, y + 12), Color(0.55, 0.88, 0.85, 0.45), 2)
-		draw_string_outline(world_font, Vector2(x - 38, 516), "%d구간 봉인" % (index + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, 4, Color("203137"))
-		draw_string(world_font, Vector2(x - 38, 516), "%d구간 봉인" % (index + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.65, 0.88, 0.86))
-	for index in range(stage.CHECKPOINT_POSITIONS.size()):
-		var checkpoint_text := "휴식처 %d · %s" % [index + 1, "최근 저장" if index == stage.checkpoint_index else "통과함" if index < stage.checkpoint_index else "체크포인트"]
-		draw_string_outline(world_font, stage.CHECKPOINT_POSITIONS[index] + Vector2(-65, -93), checkpoint_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, 4, Color("142126"))
-		draw_string(world_font, stage.CHECKPOINT_POSITIONS[index] + Vector2(-65, -93), checkpoint_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.47, 0.88, 0.9))
-	var goal_ready: bool = not stage.completed.has(false)
-	draw_string_outline(world_font, Vector2(stage.GOAL_X - 46, 474), "목표에 도착하세요" if goal_ready else "최종 목적지", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, 4, Color("142126"))
-	draw_string(world_font, Vector2(stage.GOAL_X - 46, 474), "목표에 도착하세요" if goal_ready else "최종 목적지", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.89, 0.79, 0.55))
+	var goal_ready: bool = "completed" in stage and not stage.completed.has(false)
 	if goal_ready:
 		var y := 457.0 + sin(motion_time * 3.0) * 3.0
 		draw_colored_polygon(PackedVector2Array([Vector2(stage.GOAL_X - 8, y), Vector2(stage.GOAL_X + 8, y), Vector2(stage.GOAL_X, y + 9)]), Color(0.95, 0.82, 0.52))
-
-func _route_sign_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.11, 0.15, 0.94)
-	style.border_color = Color(0.78, 0.65, 0.42, 0.88)
-	style.border_width_left = 2
-	style.border_width_right = 2
-	style.border_width_top = 2
-	style.border_width_bottom = 2
-	style.set_corner_radius_all(6)
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.45)
-	style.shadow_size = 4
-	style.shadow_offset = Vector2(0, 2)
-	return style
+	_draw_combat_feedback()
 
 func _draw_combat_feedback() -> void:
 	if not is_instance_valid(stage.player):
@@ -682,7 +616,7 @@ func _draw_combat_feedback() -> void:
 			var unit := Vector2(cos(angle), sin(angle))
 			draw_line(origin + unit * 31.0, origin + unit * 37.0, Color(1.0, 0.75, 0.6), 2.0, true)
 	for entry in actors:
-		if not is_instance_valid(entry.actor):
+		if not is_instance_valid(entry.actor) or not entry.actor.visible:
 			continue
 		_draw_enemy_effect(entry)
 		if entry.key == "projectile":

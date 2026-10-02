@@ -10,7 +10,7 @@ const BossCommanderClass = preload("res://scripts/enemy/boss_commander.gd")
 func _init() -> void:
 	output_dir = OS.get_environment("STAGE1_CAPTURE_DIR")
 	if output_dir == "":
-		output_dir = ProjectSettings.globalize_path("res://../../ART_REVIEW/graphics-pass-001-r1/cycle_b")
+		output_dir = ProjectSettings.globalize_path("res://../../ART_REVIEW/graphics-pass-001-r2/scenes")
 	DirAccess.make_dir_recursive_absolute(output_dir)
 
 func _initialize() -> void:
@@ -111,12 +111,6 @@ func _run_captures() -> void:
 	var bar := stage.get_node_or_null("HUD/BossHealthBar")
 	if bar != null and bar.has_method("snap_to_visible"):
 		bar.snap_to_visible()
-	for group in stage.optional_groups:
-		for actor in group.get("actors", []):
-			if is_instance_valid(actor):
-				actor.queue_free()
-		group["actors"].clear()
-		group["cleared"] = true
 	# Find boss in enemies
 	var boss_found: Node2D = null
 	for e in stage.enemies:
