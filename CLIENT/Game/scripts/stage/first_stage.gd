@@ -7,6 +7,8 @@ signal stage_finished(result: int)
 
 const MELEE = preload("res://scenes/enemy/TestEnemy.tscn")
 const RANGED = preload("res://scenes/enemy/RangedEnemy.tscn")
+const BEAST = preload("res://scenes/enemy/ChargingBeast.tscn")
+const GOLEM = preload("res://scenes/enemy/GroundSlamGolem.tscn")
 var WORLD_WIDTH: float
 var EXIT_X: Array[float] = []
 var ENTRY_X: Array[float] = []
@@ -424,15 +426,13 @@ func _spawn_required_wave() -> void:
 	enemies.clear()
 	defeated.clear()
 	var count: int = 1 if encounter_index < 2 and encounter_wave == 0 else 2
-	var beast := load("res://scenes/enemy/ChargingBeast.tscn") as PackedScene
-	var golem := load("res://scenes/enemy/GroundSlamGolem.tscn") as PackedScene
 	for slot in range(count):
 		var role: PackedScene = MELEE
 		if slot == 0:
 			if stage_number == 2 or (stage_number == 5 and encounter_index % 2 == 0):
-				role = beast
+				role = BEAST
 			elif stage_number == 4 or stage_number == 5:
-				role = golem
+				role = GOLEM
 			elif stage_number == 3 or (encounter_index > 0 and encounter_wave == 1):
 				role = RANGED
 
@@ -466,7 +466,7 @@ func _spawn_optional_group_actors(group: Dictionary) -> void:
 		if stage_number == 3 and offset > 0:
 			role = RANGED
 		elif stage_number >= 4 and offset > 0:
-			role = load("res://scenes/enemy/GroundSlamGolem.tscn") as PackedScene
+			role = GOLEM
 		var actor := role.instantiate() as CharacterBody2D
 		actor.position = Vector2(group.x + offset, group.y)
 		actor.detection_range = 460.0

@@ -1,0 +1,398 @@
+{
+	"BASELINE": {
+		"desc": "All Render Features ON (Default)",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 500.75,
+				"avg_fps": 46.7140118367078,
+				"avg_frame_ms": 21.4068533333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 25.490695895998,
+				"max_frame_ms": 45.392,
+				"min_fps": 22.0303137116673,
+				"p95_frame_ms": 33.52,
+				"p99_frame_ms": 39.23
+			},
+			"first_combat": {
+				"avg_draw_calls": 555.2,
+				"avg_fps": 40.3055428854335,
+				"avg_frame_ms": 24.8104833333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 12.2138896352933,
+				"max_frame_ms": 306.398,
+				"min_fps": 3.26372887551485,
+				"p95_frame_ms": 40.436,
+				"p99_frame_ms": 81.874
+			},
+			"stage_start": {
+				"avg_draw_calls": 543.24,
+				"avg_fps": 44.0439576314745,
+				"avg_frame_ms": 22.70459,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 22.544864279917,
+				"max_frame_ms": 157.118,
+				"min_fps": 6.36464313445945,
+				"p95_frame_ms": 39.192,
+				"p99_frame_ms": 44.356
+			}
+		}
+	},
+	"COMBINED": {
+		"desc": "Combined Top Culprits OFF (Glow + HUD redraw + Motes)",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 441.726666666667,
+				"avg_fps": 337.354220807334,
+				"avg_frame_ms": 2.96424333333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 217.722621380361,
+				"max_frame_ms": 5.215,
+				"min_fps": 191.754554170662,
+				"p95_frame_ms": 4.102,
+				"p99_frame_ms": 4.593
+			},
+			"first_combat": {
+				"avg_draw_calls": 469.58,
+				"avg_fps": 280.628758086785,
+				"avg_frame_ms": 3.56342666666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 124.177325220415,
+				"max_frame_ms": 9.86,
+				"min_fps": 101.419878296146,
+				"p95_frame_ms": 5.43,
+				"p99_frame_ms": 8.053
+			},
+			"stage_start": {
+				"avg_draw_calls": 457.24,
+				"avg_fps": 363.546909063588,
+				"avg_frame_ms": 2.75067666666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 226.551880380607,
+				"max_frame_ms": 5.364,
+				"min_fps": 186.428038777032,
+				"p95_frame_ms": 3.597,
+				"p99_frame_ms": 4.414
+			}
+		}
+	},
+	"TEST_A": {
+		"desc": "WorldEnvironment Glow OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 500.57,
+				"avg_fps": 42.6247224242555,
+				"avg_frame_ms": 23.4605633333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 24.6883100851747,
+				"max_frame_ms": 40.817,
+				"min_fps": 24.49959575667,
+				"p95_frame_ms": 36.105,
+				"p99_frame_ms": 40.505
+			},
+			"first_combat": {
+				"avg_draw_calls": 554.013333333333,
+				"avg_fps": 36.4730998730736,
+				"avg_frame_ms": 27.4174666666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 12.3432408413153,
+				"max_frame_ms": 264.455,
+				"min_fps": 3.78136166833677,
+				"p95_frame_ms": 40.612,
+				"p99_frame_ms": 81.016
+			},
+			"stage_start": {
+				"avg_draw_calls": 532.673333333333,
+				"avg_fps": 38.2549421559771,
+				"avg_frame_ms": 26.1404133333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 21.7424390668145,
+				"max_frame_ms": 59.931,
+				"min_fps": 16.6858554003771,
+				"p95_frame_ms": 39.991,
+				"p99_frame_ms": 45.993
+			}
+		}
+	},
+	"TEST_B": {
+		"desc": "StageCanvasModulate OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 499.71,
+				"avg_fps": 243.758363958863,
+				"avg_frame_ms": 4.10242333333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 153.327200245324,
+				"max_frame_ms": 6.854,
+				"min_fps": 145.900204260286,
+				"p95_frame_ms": 5.248,
+				"p99_frame_ms": 6.522
+			},
+			"first_combat": {
+				"avg_draw_calls": 553.146666666667,
+				"avg_fps": 165.305376887994,
+				"avg_frame_ms": 6.04941,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 82.9668962084128,
+				"max_frame_ms": 13.902,
+				"min_fps": 71.9320961012804,
+				"p95_frame_ms": 10.135,
+				"p99_frame_ms": 12.053
+			},
+			"stage_start": {
+				"avg_draw_calls": 524.46,
+				"avg_fps": 35.8942870174192,
+				"avg_frame_ms": 27.8595866666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 22.5692877132798,
+				"max_frame_ms": 54.959,
+				"min_fps": 18.1953820120453,
+				"p95_frame_ms": 40.335,
+				"p99_frame_ms": 44.308
+			}
+		}
+	},
+	"TEST_C": {
+		"desc": "AtmosphericMotes (CPUParticles2D) OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 498.823333333333,
+				"avg_fps": 170.837765624252,
+				"avg_frame_ms": 5.85350666666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 95.6205775482884,
+				"max_frame_ms": 11.062,
+				"min_fps": 90.3995660820828,
+				"p95_frame_ms": 8.501,
+				"p99_frame_ms": 10.458
+			},
+			"first_combat": {
+				"avg_draw_calls": 551.81,
+				"avg_fps": 202.815073216241,
+				"avg_frame_ms": 4.9306,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 142.633005277421,
+				"max_frame_ms": 7.657,
+				"min_fps": 130.599451482304,
+				"p95_frame_ms": 6.397,
+				"p99_frame_ms": 7.011
+			},
+			"stage_start": {
+				"avg_draw_calls": 539.47,
+				"avg_fps": 210.085063442188,
+				"avg_frame_ms": 4.75997666666667,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 146.563095412575,
+				"max_frame_ms": 7.092,
+				"min_fps": 141.003948110547,
+				"p95_frame_ms": 6.014,
+				"p99_frame_ms": 6.823
+			}
+		}
+	},
+	"TEST_D": {
+		"desc": "ParallaxStageBackdrop OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 492.843333333333,
+				"avg_fps": 187.593562289192,
+				"avg_frame_ms": 5.33067333333334,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 98.2318271119843,
+				"max_frame_ms": 13.095,
+				"min_fps": 76.3650248186331,
+				"p95_frame_ms": 8.449,
+				"p99_frame_ms": 10.18
+			},
+			"first_combat": {
+				"avg_draw_calls": 549.51,
+				"avg_fps": 210.039760526668,
+				"avg_frame_ms": 4.76100333333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 157.232704402516,
+				"max_frame_ms": 6.594,
+				"min_fps": 151.653017895056,
+				"p95_frame_ms": 5.729,
+				"p99_frame_ms": 6.36
+			},
+			"stage_start": {
+				"avg_draw_calls": 538.166666666667,
+				"avg_fps": 180.734105790901,
+				"avg_frame_ms": 5.53299,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 76.138267093041,
+				"max_frame_ms": 13.855,
+				"min_fps": 72.1761097076867,
+				"p95_frame_ms": 9.848,
+				"p99_frame_ms": 13.134
+			}
+		}
+	},
+	"TEST_E": {
+		"desc": "StageArt Dynamic Draw OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 499.893333333333,
+				"avg_fps": 93.3417174938246,
+				"avg_frame_ms": 10.7133233333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 34.9858307385509,
+				"max_frame_ms": 32.317,
+				"min_fps": 30.9434662870935,
+				"p95_frame_ms": 24.749,
+				"p99_frame_ms": 28.583
+			},
+			"first_combat": {
+				"avg_draw_calls": 547.21,
+				"avg_fps": 112.277634145575,
+				"avg_frame_ms": 8.90649333333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 32.7535947070191,
+				"max_frame_ms": 34.692,
+				"min_fps": 28.825089357777,
+				"p95_frame_ms": 25.328,
+				"p99_frame_ms": 30.531
+			},
+			"stage_start": {
+				"avg_draw_calls": 538.803333333333,
+				"avg_fps": 231.073180876383,
+				"avg_frame_ms": 4.32763333333334,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 167.196121049992,
+				"max_frame_ms": 6.839,
+				"min_fps": 146.220207632695,
+				"p95_frame_ms": 5.396,
+				"p99_frame_ms": 5.981
+			}
+		}
+	},
+	"TEST_F": {
+		"desc": "HUD Presentation redraw OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 442.54,
+				"avg_fps": 331.456186463992,
+				"avg_frame_ms": 3.01699,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 219.44261575598,
+				"max_frame_ms": 4.874,
+				"min_fps": 205.170291341814,
+				"p95_frame_ms": 4.06,
+				"p99_frame_ms": 4.557
+			},
+			"first_combat": {
+				"avg_draw_calls": 470.956666666667,
+				"avg_fps": 187.618786143978,
+				"avg_frame_ms": 5.32995666666666,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 104.405930256839,
+				"max_frame_ms": 11.014,
+				"min_fps": 90.7935355002724,
+				"p95_frame_ms": 8.225,
+				"p99_frame_ms": 9.578
+			},
+			"stage_start": {
+				"avg_draw_calls": 458.16,
+				"avg_fps": 347.786570337516,
+				"avg_frame_ms": 2.87532666666666,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 202.675314146737,
+				"max_frame_ms": 8.401,
+				"min_fps": 119.033448399,
+				"p95_frame_ms": 3.904,
+				"p99_frame_ms": 4.934
+			}
+		}
+	},
+	"TEST_G": {
+		"desc": "MobileControls OFF",
+		"sectors": {
+			"boss_combat": {
+				"avg_draw_calls": 435.786666666667,
+				"avg_fps": 161.930732509862,
+				"avg_frame_ms": 6.17548,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 71.3063320022818,
+				"max_frame_ms": 15.939,
+				"min_fps": 62.7391931739758,
+				"p95_frame_ms": 11.25,
+				"p99_frame_ms": 14.024
+			},
+			"first_combat": {
+				"avg_draw_calls": 488.536666666667,
+				"avg_fps": 221.459417561732,
+				"avg_frame_ms": 4.5155,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 157.778479015462,
+				"max_frame_ms": 7.004,
+				"min_fps": 142.775556824672,
+				"p95_frame_ms": 5.769,
+				"p99_frame_ms": 6.338
+			},
+			"stage_start": {
+				"avg_draw_calls": 477.59,
+				"avg_fps": 158.071444077485,
+				"avg_frame_ms": 6.32625333333333,
+				"avg_proc_ms": 0.0,
+				"avg_render_ms": 0.0,
+				"frames": 300,
+				"low_1pct_fps": 52.3505392105539,
+				"max_frame_ms": 27.415,
+				"min_fps": 36.4763815429509,
+				"p95_frame_ms": 12.453,
+				"p99_frame_ms": 19.102
+			}
+		}
+	}
+}

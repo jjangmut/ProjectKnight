@@ -31,6 +31,7 @@ var static_art: Node2D = null
 var _last_gate_count := -1
 var _last_checkpoint := -1
 var _last_in_boss := false
+var _had_combat_draw := false
 
 func _guard_clang() -> AudioStreamWAV:
 	# Original short procedural metallic placeholder; no external audio asset.
@@ -119,9 +120,9 @@ func _install() -> void:
 	# 3. Atmospheric Floating Motes & Embers
 	var motes := CPUParticles2D.new()
 	motes.name = "AtmosphericMotes"
-	motes.amount = 35
+	motes.amount = 22
 	motes.lifetime = 5.5
-	motes.preprocess = 2.5
+	motes.preprocess = 0.5
 	motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
 	motes.emission_rect_extents = Vector2(750, 420)
 	motes.gravity = Vector2(0, -8)
@@ -202,6 +203,7 @@ func _install() -> void:
 		player_base_scale = player_art.scale
 		# One presentation pass after physics owns both tint/facing and pose.
 		player_art.set_process(false)
+	_build_persistent_hero_shadows()
 	for child in stage.get_children():
 		_attach(child)
 
@@ -291,7 +293,8 @@ func _attach(actor: Node) -> void:
 	label.add_theme_constant_override("outline_size", 4)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	actor.add_child(label)
-	actors.append({"actor": actor, "sprite": sprite, "visual": visual, "label": label, "key": key, "height": height, "variant": variant, "charging": source.ends_with("/charging_beast.gd"), "last_x": actor.global_position.x, "distance": 0.0, "frame_index": -1})
+	var hp_bar: Node2D = _build_persistent_enemy_shadow_and_bar(actor, height, key)
+	actors.append({"actor": actor, "sprite": sprite, "visual": visual, "label": label, "hp_bar": hp_bar, "key": key, "height": height, "variant": variant, "charging": source.ends_with("/charging_beast.gd"), "last_x": actor.global_position.x, "distance": 0.0, "frame_index": -1})
 	_update_actor(actors.back())
 
 func _process(delta: float) -> void:
@@ -329,7 +332,28 @@ func _process(delta: float) -> void:
 		if static_art != null:
 			static_art.invalidate()
 
-	queue_redraw()
+	var needs_redraw := false
+	if is_instance_valid(stage.player):
+		if stage.player.is_attacking and not stage.player.attack_collision.disabled:
+			needs_redraw = true
+		elif stage.player._guard_block_flash_remaining > 0.0:
+			needs_redraw = true
+		elif player_pose == "hit":
+			needs_redraw = true
+	var goal_ready: bool = "completed" in stage and not stage.completed.has(false)
+	if goal_ready:
+		needs_redraw = true
+	for entry in actors:
+		if is_instance_valid(entry.actor) and entry.charging and entry.actor.state == 2 and entry.actor.attack_phase == 0:
+			needs_redraw = true
+			break
+
+	if needs_redraw:
+		_had_combat_draw = true
+		queue_redraw()
+	elif _had_combat_draw:
+		_had_combat_draw = false
+		queue_redraw()
 
 func _update_player_pose(delta: float = 0.0) -> void:
 	if not is_instance_valid(player_art) or not is_instance_valid(stage.player):
@@ -398,6 +422,17 @@ func _update_actor(entry: Dictionary) -> void:
 	label.modulate = color if not color.is_equal_approx(base) else Color.WHITE
 	sprite.position = Vector2(0, 30.0 - float(entry.height) * 0.5)
 	sprite.rotation = 0.0
+	var hp_bar: Node2D = entry.get("hp_bar", null)
+	if hp_bar != null and is_instance_valid(hp_bar):
+		var is_dead_e: bool = bool(actor.get("is_dead")) if "is_dead" in actor else false
+		if is_dead_e or not actor.visible:
+			hp_bar.visible = false
+		else:
+			hp_bar.visible = true
+			var fill: Polygon2D = hp_bar.get_node_or_null("Fill")
+			if fill != null:
+				var ratio: float = clampf(float(actor.current_hp) / maxf(1.0, float(actor.max_hp)), 0.0, 1.0)
+				fill.scale.x = ratio
 	if _apply_enemy_frame(entry):
 		return
 	var facing := -1.0 if sprite.flip_h else 1.0
@@ -628,16 +663,7 @@ func _draw_combat_feedback() -> void:
 			# Expected travel, not a second hitbox; walls can shorten the charge.
 			draw_line(start, end, Color(1.0, 0.65, 0.15, 0.65), 5.0, true)
 			draw_line(end, end + Vector2(-entry.actor._attack_direction * 12, -7), Color(1.0, 0.8, 0.3), 3, true)
-		var bar_width := 42.0
-		var bar_height := 5.0
-		var health_at := to_local(entry.actor.global_position) + Vector2(-bar_width * 0.5, 20.0 - float(entry.height))
-		# Outer metallic slate frame
-		draw_rect(Rect2(health_at - Vector2(1, 1), Vector2(bar_width + 2, bar_height + 2)), Color(0.04, 0.07, 0.10, 0.92))
-		draw_rect(Rect2(health_at, Vector2(bar_width, bar_height)), Color(0.16, 0.20, 0.24, 0.90))
-		var fill_w := bar_width * maxf(0.0, float(entry.actor.current_hp) / maxf(1.0, float(entry.actor.max_hp)))
-		if fill_w > 0.0:
-			draw_rect(Rect2(health_at, Vector2(fill_w, bar_height)), Color(0.92, 0.30, 0.25))
-			draw_line(health_at + Vector2(0, 1), health_at + Vector2(fill_w, 1), Color(1.0, 0.65, 0.55, 0.85), 1.0)
+
 
 func _draw_enemy_effect(entry: Dictionary) -> void:
 	# Presentation only: existing controller phases gate every effect. No timers,
@@ -740,3 +766,72 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 		draw_polyline(outer, Color(0.32, 0.22, 0.12, opacity * 0.6), 6.0, true)
 		draw_colored_polygon(ribbon, Color(1.0, 0.69, 0.32, opacity * 0.72))
 		draw_polyline(outer, Color(1.0, 0.97, 0.80, opacity), 3.5, true)
+
+func _build_persistent_hero_shadows() -> void:
+	if not is_instance_valid(stage.player):
+		return
+	if stage.player.get_node_or_null("HeroShadow") == null:
+		var shadow := Polygon2D.new()
+		shadow.name = "HeroShadow"
+		var pts := PackedVector2Array()
+		for i in range(16):
+			var a := TAU * float(i) / 16.0
+			pts.append(Vector2(cos(a) * 22.0, sin(a) * 7.0))
+		shadow.polygon = pts
+		shadow.color = Color(0.02, 0.03, 0.06, 0.50)
+		shadow.position = Vector2(0, 2.0)
+		shadow.z_index = -1
+		stage.player.add_child(shadow)
+
+		var aura := Polygon2D.new()
+		aura.name = "HeroAura"
+		var a_pts := PackedVector2Array()
+		for i in range(16):
+			var a := TAU * float(i) / 16.0
+			a_pts.append(Vector2(cos(a) * 24.0, sin(a) * 24.0))
+		aura.polygon = a_pts
+		aura.color = Color(0.9, 0.96, 1.2, 0.06)
+		aura.position = Vector2(0, -26.0)
+		aura.z_index = -1
+		stage.player.add_child(aura)
+
+func _build_persistent_enemy_shadow_and_bar(actor: Node, height: float, key: String) -> Node2D:
+	if actor.get_node_or_null("EnemyShadow") == null:
+		var rad: float = 65.0 if actor.is_in_group("boss") else 18.0
+		var shadow := Polygon2D.new()
+		shadow.name = "EnemyShadow"
+		var pts := PackedVector2Array()
+		for i in range(16):
+			var a := TAU * float(i) / 16.0
+			pts.append(Vector2(cos(a) * rad, sin(a) * (rad * 0.30)))
+		shadow.polygon = pts
+		shadow.color = Color(0.02, 0.03, 0.06, 0.45)
+		shadow.position = Vector2(0, 2.0)
+		shadow.z_index = -1
+		actor.add_child(shadow)
+
+	if key == "projectile":
+		return null
+
+	if actor.get_node_or_null("EnemyHealthBar") == null:
+		var bar := Node2D.new()
+		bar.name = "EnemyHealthBar"
+		bar.position = Vector2(0, 20.0 - height)
+		var bg := Polygon2D.new()
+		bg.name = "BG"
+		bg.polygon = PackedVector2Array([Vector2(-22, -1), Vector2(22, -1), Vector2(22, 6), Vector2(-22, 6)])
+		bg.color = Color(0.04, 0.07, 0.10, 0.92)
+		bar.add_child(bg)
+		var inner_bg := Polygon2D.new()
+		inner_bg.name = "InnerBG"
+		inner_bg.polygon = PackedVector2Array([Vector2(-21, 0), Vector2(21, 0), Vector2(21, 5), Vector2(-21, 5)])
+		inner_bg.color = Color(0.16, 0.20, 0.24, 0.90)
+		bar.add_child(inner_bg)
+		var fill := Polygon2D.new()
+		fill.name = "Fill"
+		fill.polygon = PackedVector2Array([Vector2(-21, 0), Vector2(21, 0), Vector2(21, 5), Vector2(-21, 5)])
+		fill.color = Color(0.92, 0.30, 0.25)
+		bar.add_child(fill)
+		actor.add_child(bar)
+		return bar
+	return actor.get_node_or_null("EnemyHealthBar")

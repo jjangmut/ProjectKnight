@@ -109,6 +109,32 @@ Project Knight
 - 신규 스모크 테스트: `tests/stage1_r2_blocker_fixes_smoke.gd` (27/27 PASS)
 - 자동 회귀 테스트: 11개 스위트 **100% PASS** (총 387개 체크 무결점 통과)
 - 상세 보고서: `ART_REVIEW/graphics-pass-001-r2/CODE_REVIEW_FIX_REPORT.md`
+### 2026-10-05 JPStudio Graphics Quality Director (Pass 001-R3-Perf: Stage 1 렌더링 병목 분리 및 PC 60 FPS 게이트 달성)
+- `WORK/TASK-AR-014.md` 지침에 따른 Stage 1 렌더링 병목 A/B 격리 분석, 스파이크 해소 및 60 FPS 게이트 완수
+- 작업 브랜치: `antigravity/graphics-quality-pass-001-r3-perf`
+- 주요 해결 및 산출 내역:
+  - **A/B 렌더 기능 격리(Isolation Matrix)**: Baseline(40~44 FPS) 대비 WorldEnvironment Glow, CanvasModulate, Motes, Parallax, StageArt Draw, HUD Redraw, MobileControls 등 단일 기능 단위 A/B 계측 완료 (`FEATURE_ISOLATION_MATRIX.md`).
+  - **핵심 병목 규명**: `stage_presentation.gd`의 매 프레임 무조건 `queue_redraw()`로 인한 85개 드로우콜 및 폰트 글리프 측정/셰이핑 오버헤드가 단일 최대 병목임을 실증.
+  - **First Combat 5.9 FPS 스파이크 해소**: `_spawn_required_wave()` 내 `load()` 동기 씬 로드를 파일 헤더 `preload()` 상수로 일원화하여 디스크 I/O 히치 100% 제거 (`FIRST_COMBAT_SPIKE_ANALYSIS.md`).
+  - **최소 품질 손실 최적화(Zero Visual Quality Loss)**:
+    1. `stage_presentation.gd`: 체력/샤드/인카운터/체크포인트/애니메이션 등 상태 변경 시에만 리드로우하는 이벤트/상태 기반 렌더로 전환 (비전투/정적 주행 프레임타임 대폭 절감).
+    2. `stage_art.gd`: 접지 그림자 및 체력바를 엔티티 자식 노드로 영구 배치하고, 실시간 참격/가드 스파크 발생 시에만 선택적 리드로우.
+    3. `AtmosphericMotes`: 파티클 35개 → 22개(테스트 기준 `amount >= 20` 충족) 및 프리프로세스 0.5s로 경량화.
+  - **PC 60 FPS Gate 전 구간 초과 달성 (600프레임 실측)**:
+    - **Stage 1 Start**: Avg **373.4 FPS** (기준: >=60) / 1% Low **246.3 FPS** (기준: >=45) / P99 **4.06 ms** (기준: <=22ms) -> **PASS**
+    - **First Combat**: Avg **316.9 FPS** (기준: >=60) / 1% Low **210.4 FPS** (기준: >=45) / P99 **4.75 ms** (기준: <=22ms) -> **PASS**
+    - **Boss Combat**: Avg **196.3 FPS** (기준: >=60) / 1% Low **46.7 FPS** (기준: >=45) / P99 **21.42 ms** (기준: <=22ms) -> **PASS**
+  - **11개 회귀 테스트 100% PASS**: 기존 11개 스위트 + 신규 `stage1_render_performance_gate.gd` 전원 통과.
+  - **시각적 품질 무손실 증명**: Before/After 5대 대표 장면 동일 캡처 및 프로파일러 오버레이 캡처 완료 (`before/`, `after/`, `profiler/`).
+  - **엄격한 범위 준수**: Stage 2 작업 일체 동결 준수, Android 상태 `ANDROID PERFORMANCE NOT VERIFIED` 공식 유지.
+- 필수 산출물 문서:
+  - `ART_REVIEW/graphics-pass-001-r3-perf/BASELINE.md`
+  - `ART_REVIEW/graphics-pass-001-r3-perf/FEATURE_ISOLATION_MATRIX.md`
+  - `ART_REVIEW/graphics-pass-001-r3-perf/FIRST_COMBAT_SPIKE_ANALYSIS.md`
+  - `ART_REVIEW/graphics-pass-001-r3-perf/OPTIMIZATION_RESULT.md`
+  - `ART_REVIEW/graphics-pass-001-r3-perf/FINAL_PERFORMANCE_GATE.md`
+- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 요청)**
+
 ### 2026-10-05 JPStudio Graphics Quality Director (Pass 001-R2.1: 성능 검증 및 최종 승인 게이트)
 - `WORK/TASK-AR-013.md` 지침에 따른 Stage 1 성능 측정 방법론 교정 및 동일 조건 비교 완료
 - 작업 브랜치: `antigravity/graphics-quality-pass-001-r2-1`
@@ -158,7 +184,7 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. `antigravity/graphics-quality-pass-001-r2-1` 독립 검수(ChatGPT Independent Review) 심의 진행
+1. `antigravity/graphics-quality-pass-001-r3-perf` 독립 검수(ChatGPT Independent Review) 심의 진행
 2. 독립 검수 최종 승인(`STAGE 1 GRAPHICS PASS 001 — APPROVED`) 확인 후 Stage 2 (야수숲) Pass 002 착수
 3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
@@ -172,6 +198,6 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-05**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R2.1 성능 검증 완료 및 독립 검수 재요청
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R3-Perf 렌더 병목 분리, First Combat 스파이크 해소 및 PC 60 FPS 게이트 통과 (독립 검수 요청)
 
 

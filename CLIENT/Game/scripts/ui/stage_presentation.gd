@@ -37,6 +37,23 @@ var fingers: Dictionary = {}
 var touch_actions: Dictionary = {}
 var ui_scale := 1.0
 var ui_offset := Vector2.ZERO
+var _last_hp := -1
+var _last_shards := -1
+var _last_encounter := -1
+var _last_checkpoint := -1
+var _last_checkpoint_active := false
+var _last_stage_state := -1
+var _last_alive_enemies := -1
+var _last_encounter_active := false
+var _last_size := Vector2.ZERO
+var _last_show_help := false
+var _last_paused := false
+var _last_has_boss_bar := false
+var _last_touch_visible := false
+var _last_route_status := ""
+var _had_intro := false
+var _had_toast := false
+var _had_hit := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -62,13 +79,15 @@ func _setup() -> void:
 	previous_completed = stage.encounter_index
 	previous_checkpoint = stage.checkpoint_index
 	initialized = true
+	queue_redraw()
 
 func _process(delta: float) -> void:
 	if not initialized or not is_instance_valid(stage):
 		return
 	ui_scale = minf(size.x / 1280.0, size.y / 720.0)
 	ui_offset = (size - Vector2(1280, 720) * ui_scale) * 0.5
-	if not get_tree().paused:
+	var is_paused := get_tree().paused
+	if not is_paused:
 		if stage.stage_state == 0:
 			elapsed += delta
 		intro_remaining = maxf(0, intro_remaining - delta)
@@ -85,9 +104,75 @@ func _process(delta: float) -> void:
 	previous_hp = stage.player.current_hp
 	previous_completed = stage.encounter_index
 	previous_checkpoint = stage.checkpoint_index
-	if stage.stage_state != 0 or get_tree().paused:
+	if stage.stage_state != 0 or is_paused:
 		release_touches()
-	queue_redraw()
+
+	var needs_redraw := false
+	if intro_remaining > 0.0:
+		needs_redraw = true
+		_had_intro = true
+	elif _had_intro:
+		_had_intro = false
+		needs_redraw = true
+
+	if toast_remaining > 0.0:
+		needs_redraw = true
+		_had_toast = true
+	elif _had_toast:
+		_had_toast = false
+		needs_redraw = true
+
+	if hit_remaining > 0.0:
+		needs_redraw = true
+		_had_hit = true
+	elif _had_hit:
+		_had_hit = false
+		needs_redraw = true
+
+	if stage.stage_state != 0:
+		needs_redraw = true
+
+	var cur_shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
+	var cur_route: String = str(stage.get("route_status")) if stage.get("route_status") != null else ""
+	var cur_has_boss_bar: bool = (stage.get_node_or_null("HUD/BossHealthBar") != null)
+	var cur_alive := 0
+	if stage.encounter_active and "enemies" in stage and stage.enemies != null:
+		for enemy in stage.enemies:
+			if is_instance_valid(enemy) and not enemy.is_queued_for_deletion() and enemy.current_hp > 0:
+				cur_alive += 1
+
+	if stage.player.current_hp != _last_hp \
+	or cur_shards != _last_shards \
+	or stage.encounter_index != _last_encounter \
+	or stage.checkpoint_index != _last_checkpoint \
+	or stage.checkpoint_active != _last_checkpoint_active \
+	or stage.stage_state != _last_stage_state \
+	or size != _last_size \
+	or show_help != _last_show_help \
+	or is_paused != _last_paused \
+	or cur_has_boss_bar != _last_has_boss_bar \
+	or touch_visible != _last_touch_visible \
+	or cur_route != _last_route_status \
+	or cur_alive != _last_alive_enemies \
+	or stage.encounter_active != _last_encounter_active:
+		_last_hp = stage.player.current_hp
+		_last_shards = cur_shards
+		_last_encounter = stage.encounter_index
+		_last_checkpoint = stage.checkpoint_index
+		_last_checkpoint_active = stage.checkpoint_active
+		_last_stage_state = stage.stage_state
+		_last_size = size
+		_last_show_help = show_help
+		_last_paused = is_paused
+		_last_has_boss_bar = cur_has_boss_bar
+		_last_touch_visible = touch_visible
+		_last_route_status = cur_route
+		_last_alive_enemies = cur_alive
+		_last_encounter_active = stage.encounter_active
+		needs_redraw = true
+
+	if needs_redraw:
+		queue_redraw()
 
 func objective() -> String:
 	if not initialized:
