@@ -1,0 +1,182 @@
+{
+  "display_server": "Windows",
+  "exp_a_engine_in_physics_frame": true,
+  "exp_a_initial_window": {
+    "avg_frame_dt_ms": 5.45718545454546,
+    "distinct_physics_values": 3,
+    "distinct_process_values": 3,
+    "frames": 275,
+    "legacy_mean_of_mon_physics_ms": 44.1951709090906,
+    "legacy_mean_of_mon_process_ms": 12.0915345454545,
+    "max_mon_physics_ms": 121.401,
+    "max_mon_process_ms": 13.678
+  },
+  "exp_a_injected_ms": 120.0,
+  "exp_b_idle": {
+    "avg_frame_dt_ms": 4.22552535211268,
+    "distinct_physics_values": 4,
+    "distinct_process_values": 4,
+    "frames": 710,
+    "legacy_mean_of_mon_physics_ms": 0.103767605633803,
+    "legacy_mean_of_mon_process_ms": 14.2972788732395,
+    "max_mon_physics_ms": 0.147,
+    "max_mon_process_ms": 24.171
+  },
+  "exp_c_after_100ms_process_spike": {
+    "avg_frame_dt_ms": 4.27735726495726,
+    "distinct_physics_values": 4,
+    "distinct_process_values": 4,
+    "frames": 585,
+    "legacy_mean_of_mon_physics_ms": 0.0552564102564099,
+    "legacy_mean_of_mon_process_ms": 46.8846102564102,
+    "max_mon_physics_ms": 0.083,
+    "max_mon_process_ms": 101.114
+  },
+  "exp_c_trace_t_mon_dt": [
+    [
+      1.1,
+      5.109,
+      1.137
+    ],
+    [
+      92.0,
+      101.114,
+      4.163
+    ],
+    [
+      187.9,
+      101.114,
+      4.202
+    ],
+    [
+      284.3,
+      101.114,
+      4.503
+    ],
+    [
+      380.0,
+      101.114,
+      4.113
+    ],
+    [
+      476.0,
+      101.114,
+      4.135
+    ],
+    [
+      572.0,
+      101.114,
+      4.179
+    ],
+    [
+      668.1,
+      101.114,
+      4.194
+    ],
+    [
+      764.1,
+      101.114,
+      4.248
+    ],
+    [
+      860.0,
+      101.114,
+      4.166
+    ],
+    [
+      969.6,
+      11.038,
+      5.105
+    ],
+    [
+      1082.1,
+      11.038,
+      2.242
+    ],
+    [
+      1215.0,
+      11.038,
+      19.671
+    ],
+    [
+      1310.9,
+      11.038,
+      4.158
+    ],
+    [
+      1406.9,
+      11.038,
+      4.116
+    ],
+    [
+      1502.9,
+      11.038,
+      3.132
+    ],
+    [
+      1599.5,
+      11.038,
+      4.742
+    ],
+    [
+      1695.0,
+      11.038,
+      4.169
+    ],
+    [
+      1791.0,
+      11.038,
+      4.236
+    ],
+    [
+      1887.0,
+      11.038,
+      4.224
+    ],
+    [
+      1983.0,
+      19.44,
+      4.159
+    ],
+    [
+      2079.0,
+      19.44,
+      4.171
+    ],
+    [
+      2175.0,
+      19.44,
+      4.127
+    ],
+    [
+      2271.1,
+      19.44,
+      4.183
+    ],
+    [
+      2367.2,
+      19.44,
+      4.33
+    ],
+    [
+      2463.4,
+      19.44,
+      4.385
+    ]
+  ],
+  "exp_d_constant_2ms_load": {
+    "avg_frame_dt_ms": 4.17445757997218,
+    "distinct_physics_values": 3,
+    "distinct_process_values": 4,
+    "frames": 719,
+    "legacy_mean_of_mon_physics_ms": 0.0394394993045898,
+    "legacy_mean_of_mon_process_ms": 7.71599165507643,
+    "max_mon_physics_ms": 0.083,
+    "max_mon_process_ms": 19.44
+  },
+  "godot_version": "4.7.2-stable (official)",
+  "low_processor_usage_mode": false,
+  "low_processor_usage_mode_sleep_usec": 6900,
+  "max_fps": 0,
+  "vsync_mode": 1
+}

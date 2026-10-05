@@ -109,7 +109,24 @@ Project Knight
 - 신규 스모크 테스트: `tests/stage1_r2_blocker_fixes_smoke.gd` (27/27 PASS)
 - 자동 회귀 테스트: 11개 스위트 **100% PASS** (총 387개 체크 무결점 통과)
 - 상세 보고서: `ART_REVIEW/graphics-pass-001-r2/CODE_REVIEW_FIX_REPORT.md`
-- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 재요청)**
+### 2026-10-05 JPStudio Graphics Quality Director (Pass 001-R2.1: 성능 검증 및 최종 승인 게이트)
+- `WORK/TASK-AR-013.md` 지침에 따른 Stage 1 성능 측정 방법론 교정 및 동일 조건 비교 완료
+- 작업 브랜치: `antigravity/graphics-quality-pass-001-r2-1`
+- 주요 해결 및 산출 내역:
+  - **방법론 오류 규명**: `Performance.TIME_PROCESS`가 1초 창의 "단일 프레임 피크"를 보존하는 엔진 특성(`process_max`)에 기인하여 씬 초기 로딩 스파이크(100~160ms)가 매 프레임 평균 계산에 반영되었던 결함을 인위 부하 프로브(`perf_monitor_semantics_probe.gd`)로 100% 실증.
+  - **정밀 시그널 분리 계측**: 워밍업(1.5초) 분리 및 `physics_iter_ms`, `process_ms`, `render_ms` 프레임별 타임스탬프 직접 계측 적용 (`stage1_perf_validation.gd`).
+  - **R1 ↔ R2.1 동일 조건 비교**: 동일 PC, 동일 해상도(1280×720), VSync OFF 환경에서 600프레임 이상 실측. `StageStaticArt` 캐시 도입으로 `_process()` 실행 시간이 20.21ms → 7.37ms (Stage 1 Start, -63.5%), 20.22ms → 7.92ms (First Combat, -60.8%), 16.89ms → 7.04ms (Boss Combat, -58.3%)로 대폭 단축됨을 증명.
+  - **헤드리스 엔진 보조 계측**: 보스 결전 구간 CPU 스텝 프레임 타임 5.48ms → 5.16ms 단축, P95 8.74ms → 7.84ms 안정화.
+  - **프로파일러 오버레이 캡처**: 3대 주요 장면 인게임 프로파일러 오버레이 렌더링 캡처본 보관 (`ART_REVIEW/graphics-pass-001-r2-1/profiler/`).
+  - **모바일 상태**: `ANDROID PERFORMANCE NOT VERIFIED` 공식 유지 (과장 표현 배제).
+  - **게임 로직 보존 및 Stage 2 동결**: 게임플레이 로직 일절 무변경, Stage 2 작업 일체 동결 준수.
+- 자동 회귀 테스트: 11개 스위트 **100% PASS** (스모크, 시각 품질, 전투 심화, 가드, 데이터 드리븐 등 전원 통과)
+- 필수 산출물 문서:
+  - `ART_REVIEW/graphics-pass-001-r2-1/PERFORMANCE_VALIDATION.md`
+  - `ART_REVIEW/graphics-pass-001-r2-1/R1_VS_R2_PERFORMANCE.md`
+  - `ART_REVIEW/graphics-pass-001-r2-1/PROFILER_NOTES.md`
+  - `ART_REVIEW/graphics-pass-001-r2-1/FINAL_GATE_REPORT.md`
+- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 요청)**
 
 ## QA 상태
 
@@ -131,7 +148,7 @@ Project Knight
 - `.gitignore`에 `CLIENT/Game/builds/`, `*.apk`, `*.aab` 제외
 - `export_presets.cfg`: v1.1.5 / versionCode 6 / `com.junypapa.projectknight`
 - Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요
-- 본 패스 Android 검증 상태: `ANDROID NOT VERIFIED` (PC 데스크톱 환경 및 헤드리스 엔진 기반 실측)
+- 본 패스 Android 검증 상태: **`ANDROID PERFORMANCE NOT VERIFIED`** (PC 데스크톱 환경 및 헤드리스 엔진 기반 실측)
 
 ## 알려진 관리 이슈
 
@@ -141,8 +158,8 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. `antigravity/graphics-quality-pass-001-r2` 독립 검수 재심의 진행
-2. 독립 검수 승인 확인 후 Stage 2 (야수숲) Pass 002 착수
+1. `antigravity/graphics-quality-pass-001-r2-1` 독립 검수(ChatGPT Independent Review) 심의 진행
+2. 독립 검수 최종 승인(`STAGE 1 GRAPHICS PASS 001 — APPROVED`) 확인 후 Stage 2 (야수숲) Pass 002 착수
 3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
@@ -154,7 +171,7 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 
 ## 마지막 갱신
 
-- 날짜: **2026-10-02**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R2 Blocker 해결 및 독립 검수 재요청
+- 날짜: **2026-10-05**
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R2.1 성능 검증 완료 및 독립 검수 재요청
 
 
