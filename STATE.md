@@ -109,6 +109,14 @@ Project Knight
 - 신규 스모크 테스트: `tests/stage1_r2_blocker_fixes_smoke.gd` (27/27 PASS)
 - 자동 회귀 테스트: 11개 스위트 **100% PASS** (총 387개 체크 무결점 통과)
 - 상세 보고서: `ART_REVIEW/graphics-pass-001-r2/CODE_REVIEW_FIX_REPORT.md`
+### 2026-10-05 JPStudio Graphics Quality Director (Pass 002: Stage 2 야수숲 Graphics Pass 002)
+- `WORK/TASK-AR-015.md` 지침에 따른 Stage 2 (야수숲) 그래픽스 패스 002 진행
+- 작업 브랜치: `antigravity/graphics-quality-pass-002-stage2`
+- 작업 목적: Stage 1과 명확히 구별되는 고유한 야수숲(Ancient Beast Forest) 환경 정체성 확립, 지형 부유 플랫폼감 제거 및 유기적 지지 구조화, Charging Beast 및 Beast Chieftain 시인성/돌진 전조 가독성 강화, 전용 보스 아레나 무대감 구축, PC 60 FPS Gate(전 구간 600f) 초과 달성.
+- 모바일 상태: `ANDROID PERFORMANCE NOT VERIFIED` 공식 유지.
+- 게임플레이 로직 변경 금지: 이동/공격 수치, 가드/패링 판정, 적/보스 AI, 웨이브 수, 인카운터/체크포인트 위치 일체 보존.
+- 현재 상태: `IN_PROGRESS`
+
 ### 2026-10-05 JPStudio Graphics Quality Director (Pass 001-R3-Perf: Stage 1 렌더링 병목 분리 및 PC 60 FPS 게이트 달성)
 - `WORK/TASK-AR-014.md` 지침에 따른 Stage 1 렌더링 병목 A/B 격리 분석, 스파이크 해소 및 60 FPS 게이트 완수
 - 작업 브랜치: `antigravity/graphics-quality-pass-001-r3-perf`
@@ -133,7 +141,16 @@ Project Knight
   - `ART_REVIEW/graphics-pass-001-r3-perf/FIRST_COMBAT_SPIKE_ANALYSIS.md`
   - `ART_REVIEW/graphics-pass-001-r3-perf/OPTIMIZATION_RESULT.md`
   - `ART_REVIEW/graphics-pass-001-r3-perf/FINAL_PERFORMANCE_GATE.md`
-- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 요청)**
+- 현재 상태: **`STAGE 1 GRAPHICS PASS 001 — APPROVED` (독립 검수 최종 승인 완료)**
+- **독립 검수 승인 근거**:
+  - TASK-AR-014 independent review: **PASS**
+  - Stage 1 Start: Avg 373.4 FPS / 1% Low 246.3 FPS / P99 4.06 ms
+  - First Combat: Avg 316.9 FPS / 1% Low 210.4 FPS / P99 4.75 ms
+  - Boss Combat: Avg 196.3 FPS / 1% Low 46.7 FPS / P99 21.42 ms
+  - 11 regression suites PASS
+  - Gameplay state preserved
+  - StageStaticArt cache verified
+  - Android performance NOT VERIFIED
 
 ### 2026-10-05 JPStudio Graphics Quality Director (Pass 001-R2.1: 성능 검증 및 최종 승인 게이트)
 - `WORK/TASK-AR-013.md` 지침에 따른 Stage 1 성능 측정 방법론 교정 및 동일 조건 비교 완료
@@ -150,13 +167,35 @@ Project Knight
 - 필수 산출물 문서:
   - `ART_REVIEW/graphics-pass-001-r2-1/PERFORMANCE_VALIDATION.md`
   - `ART_REVIEW/graphics-pass-001-r2-1/R1_VS_R2_PERFORMANCE.md`
-  - `ART_REVIEW/graphics-pass-001-r2-1/PROFILER_NOTES.md`
-  - `ART_REVIEW/graphics-pass-001-r2-1/FINAL_GATE_REPORT.md`
-- 현재 상태: **`INDEPENDENT REVIEW REQUESTED` (독립 검수 요청)**
+## 최신 그래픽 패스 상태
+
+### Stage 1: Castle Outskirts (성문 외곽)
+- **상태**: **`STAGE 1 GRAPHICS PASS 001 — APPROVED`** (승인 완료)
+- 근거: TASK-AR-014 독립 검수 PASS, PC 60 FPS Gate 충족, 회귀 테스트 11종 무결점 통과
+
+### Stage 2: Ancient Beast Forest (야수숲)
+- **상태**: **`STAGE 2 GRAPHICS PASS 002 — INDEPENDENT REVIEW REQUESTED`** (독립 검수 요청)
+- 작업 브랜치: `antigravity/graphics-quality-pass-002-stage2`
+- 개선 주기: Cycle A ➔ Cycle B 2회 완주 (가랜드형 이끼 결함 퇴출, 유기적 수직 덩굴 실선/잎, 100% 발판 뿌리 지지, 3대 랜드마크 구축, 앰버 셰브론 돌진 전조, 보스 아레나 무대화)
+- 10대 자체 품질 평가: **8.73 / 10** (기준 ≥ 8.0 통과)
+- PC 60 FPS Gate: **4개 전 구간 압도적 PASS** (Entry: 270.6 FPS, First Beast: 257.7 FPS, Mid Forest: 244.1 FPS, Boss Combat: 272.5 FPS)
+- 산출물:
+  - `ART_REVIEW/graphics-pass-002-stage2/before/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-002-stage2/cycle_a/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-002-stage2/after/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-002-stage2/profiler/` (4종 캡처)
+  - `ART_REVIEW/graphics-pass-002-stage2/BASELINE_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-002-stage2/CYCLE_A_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-002-stage2/CYCLE_B_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-002-stage2/VISUAL_COMPARISON.md`
+  - `ART_REVIEW/graphics-pass-002-stage2/PERFORMANCE.md`
+  - `ART_REVIEW/graphics-pass-002-stage2/FINAL_REVIEW.md`
 
 ## QA 상태
 
 최신 확인 가능한 게임 품질 회귀 기록:
+- `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
+- `stage2_render_performance_gate.gd`: **4/4 Sectors PASS**
 - `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
 - `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
 - `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
@@ -184,8 +223,8 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. `antigravity/graphics-quality-pass-001-r3-perf` 독립 검수(ChatGPT Independent Review) 심의 진행
-2. 독립 검수 최종 승인(`STAGE 1 GRAPHICS PASS 001 — APPROVED`) 확인 후 Stage 2 (야수숲) Pass 002 착수
+1. Stage 2 Graphics Pass 002 독립 검수 수행 및 검수 피드백 대응
+2. Stage 3 Graphics Pass 003 계획 수립
 3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
@@ -197,7 +236,8 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 
 ## 마지막 갱신
 
-- 날짜: **2026-10-05**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Pass 001-R3-Perf 렌더 병목 분리, First Combat 스파이크 해소 및 PC 60 FPS 게이트 통과 (독립 검수 요청)
+- 날짜: **2026-10-06**
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 2 Graphics Pass 002 (야수숲) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
+
 
 

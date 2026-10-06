@@ -2,7 +2,7 @@
 
 ## 상태
 
-`INDEPENDENT REVIEW REQUESTED`
+`APPROVED / CLOSED`
 
 ## 담당
 

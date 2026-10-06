@@ -301,9 +301,13 @@ func _process(delta: float) -> void:
 	if not installed:
 		return
 	motion_time += delta
-	var motes = get_node_or_null("AtmosphericMotes")
+	var motes = get_node_or_null("AtmosphericMotes") as CPUParticles2D
 	if motes != null and is_instance_valid(motes) and is_instance_valid(stage.player):
 		motes.position.x = lerpf(motes.position.x, stage.player.position.x, 6.0 * delta)
+		if stage.stage_number == 2:
+			var in_boss_now: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
+			var target_color := Color(1.8, 1.1, 0.35, 0.45) if in_boss_now else Color(0.8, 1.5, 0.9, 0.35)
+			motes.color = motes.color.lerp(target_color, 3.0 * delta)
 	if stage.player.guard_block_count > previous_guard_blocks:
 		guard_audio.play()
 	previous_guard_blocks = stage.player.guard_block_count
@@ -414,7 +418,10 @@ func _update_actor(entry: Dictionary) -> void:
 		sprite.flip_h = direction < 0.0
 	var color: Color = entry.visual.color
 	var base := Color(0.92, 0.3, 0.28, 1) if entry.key == "melee" else Color(0.55, 0.3, 0.92, 1)
-	sprite.self_modulate = Color.WHITE if color.is_equal_approx(base) else Color.WHITE.lerp(color, 0.35)
+	if entry.variant == "beast":
+		sprite.self_modulate = Color(1.22, 1.15, 1.05, 1.0) if color.is_equal_approx(base) else Color(1.2, 1.1, 1.0).lerp(color, 0.35)
+	else:
+		sprite.self_modulate = Color.WHITE if color.is_equal_approx(base) else Color.WHITE.lerp(color, 0.35)
 	label.text = ""
 	if not color.is_equal_approx(Color.WHITE) and not color.is_equal_approx(base):
 		label.text = "!"
@@ -660,9 +667,40 @@ func _draw_combat_feedback() -> void:
 			var start := to_local(entry.actor.global_position) + Vector2(0, 29)
 			var distance: float = entry.actor.charge_speed * entry.actor.attack_active
 			var end := start + Vector2(entry.actor._attack_direction * distance, 0)
-			# Expected travel, not a second hitbox; walls can shorten the charge.
-			draw_line(start, end, Color(1.0, 0.65, 0.15, 0.65), 5.0, true)
-			draw_line(end, end + Vector2(-entry.actor._attack_direction * 12, -7), Color(1.0, 0.8, 0.3), 3, true)
+			var dir: float = entry.actor._attack_direction
+			var min_x := minf(start.x, end.x)
+			var max_x := maxf(start.x, end.x)
+			var runway_h := 26.0
+			var runway_rect := Rect2(min_x, start.y - runway_h * 0.5, max_x - min_x, runway_h)
+			# 1. Semi-transparent warm amber hazard runway
+			draw_rect(runway_rect, Color(1.0, 0.42, 0.08, 0.22))
+			# 2. Outer hazard border rails
+			draw_line(Vector2(min_x, runway_rect.position.y), Vector2(max_x, runway_rect.position.y), Color(1.8, 0.75, 0.2, 0.65), 2.0, true)
+			draw_line(Vector2(min_x, runway_rect.end.y), Vector2(max_x, runway_rect.end.y), Color(1.8, 0.75, 0.2, 0.65), 2.0, true)
+			# 3. Directional glowing chevrons >> >> >>
+			var chevron_count := int((max_x - min_x) / 36.0)
+			for c_idx in range(chevron_count):
+				var cx := (min_x + 18.0 + float(c_idx) * 36.0) if dir > 0.0 else (max_x - 18.0 - float(c_idx) * 36.0)
+				var chev := PackedVector2Array([
+					Vector2(cx - dir * 10.0, start.y - 8.0),
+					Vector2(cx, start.y),
+					Vector2(cx - dir * 10.0, start.y + 8.0)
+				])
+				draw_polyline(chev, Color(2.4, 1.2, 0.25, 0.85), 3.0, true)
+				draw_polyline(chev, Color(3.2, 2.2, 0.8, 0.95), 1.2, true)
+			# 4. Target impact bracket
+			var bracket := PackedVector2Array([
+				end + Vector2(dir * 2, -13),
+				end + Vector2(dir * 8, -13),
+				end + Vector2(dir * 8, 13),
+				end + Vector2(dir * 2, 13)
+			])
+			draw_polyline(bracket, Color(2.8, 1.3, 0.25, 0.95), 3.0, true)
+			# 5. Glowing predator eye spark at head
+			var eye_pos := to_local(entry.actor.global_position) + Vector2(dir * 20, -10)
+			draw_circle(eye_pos, 4.5, Color(2.8, 1.2, 0.2, 0.95))
+			draw_line(eye_pos - Vector2(8, 0), eye_pos + Vector2(8, 0), Color(3.5, 2.4, 1.0, 0.9), 1.5, true)
+			draw_line(eye_pos - Vector2(0, 6), eye_pos + Vector2(0, 6), Color(3.5, 2.4, 1.0, 0.9), 1.5, true)
 
 
 func _draw_enemy_effect(entry: Dictionary) -> void:
