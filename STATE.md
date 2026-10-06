@@ -229,10 +229,26 @@ Project Knight
   - `ART_REVIEW/graphics-pass-004-stage4/PERFORMANCE.md`
   - `ART_REVIEW/graphics-pass-004-stage4/FINAL_REVIEW.md`
 
+### TASK-AR-018 Stage 4 Ground Slam Redraw Blocker Fix
+- GroundSlamGolem windup redraw fixed
+- GroundSlamGolem active slam redraw fixed
+- attack-end cleanup redraw verified
+- idle per-frame redraw regression prevented
+- performance gate PASS (Entry: 263.7 FPS, First Golem: 244.1 FPS, Mid Sanctuary: 218.0 FPS, Boss: 265.8 FPS)
+- regression PASS (총 17개 테스트 스위트 100% PASS)
+- 상태: **`INDEPENDENT REVIEW REQUESTED`**
+- 모바일 상태: **`ANDROID PERFORMANCE NOT VERIFIED`**
+- 산출물:
+  - `ART_REVIEW/graphics-pass-004-stage4-r1/01_ground_slam_windup.png`
+  - `ART_REVIEW/graphics-pass-004-stage4-r1/02_ground_slam_active.png`
+  - `ART_REVIEW/graphics-pass-004-stage4-r1/BLOCKER_FIX_REPORT.md`
+
 ## QA 상태
 
-최신 확인 가능한 게임 품질 회귀 기록 (총 16개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 14개):
-- **신규 Stage 4 테스트 (2개)**:
+최신 확인 가능한 게임 품질 회귀 기록 (총 17개 테스트 스위트 전원 PASS / 신규 3개 + 기존 회귀 14개):
+- **신규 Stage 4 R1 테스트**:
+  - `stage4_ground_slam_redraw_smoke.gd`: **17/17 PASS**
+- **Stage 4 테스트**:
   - `stage4_graphics_pass_smoke.gd`: **25/25 PASS**
   - `stage4_render_performance_gate.gd`: **4/4 Sectors PASS**
 - **기존 회귀 테스트 (14개, Stage 1 / Stage 2 / Stage 3 무회귀 입증)**:
@@ -268,7 +284,7 @@ Project Knight
 
 1. Stage 2 Graphics Pass 002 독립 검수 피드백 대응
 2. Stage 3 Graphics Pass 003 독립 검수 피드백 대응
-3. Stage 4 Graphics Pass 004 독립 검수 피드백 대응
+3. Stage 4 Graphics Pass 004 및 TASK-AR-018 독립 검수 피드백 대응
 4. Stage 5 Graphics Pass 005 착수 준비
 5. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
 6. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
@@ -282,7 +298,7 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-06**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 4 Graphics Pass 004 (돌의 성소) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / TASK-AR-018 Stage 4 Ground Slam Redraw Blocker Fix 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
 
 
 

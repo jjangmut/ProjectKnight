@@ -32,6 +32,8 @@ var _last_gate_count := -1
 var _last_checkpoint := -1
 var _last_in_boss := false
 var _had_combat_draw := false
+var redraw_request_count: int = 0
+var combat_redraw_active: bool = false
 
 func _guard_clang() -> AudioStreamWAV:
 	# Original short procedural metallic placeholder; no external audio asset.
@@ -294,7 +296,9 @@ func _attach(actor: Node) -> void:
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	actor.add_child(label)
 	var hp_bar: Node2D = _build_persistent_enemy_shadow_and_bar(actor, height, key)
-	actors.append({"actor": actor, "sprite": sprite, "visual": visual, "label": label, "hp_bar": hp_bar, "key": key, "height": height, "variant": variant, "charging": source.ends_with("/charging_beast.gd"), "last_x": actor.global_position.x, "distance": 0.0, "frame_index": -1})
+	var is_charging: bool = source.ends_with("/charging_beast.gd")
+	var is_ground_slam: bool = source.ends_with("/ground_slam_golem.gd") or actor.get_meta("ground_slam", false) or variant == "golem"
+	actors.append({"actor": actor, "sprite": sprite, "visual": visual, "label": label, "hp_bar": hp_bar, "key": key, "height": height, "variant": variant, "charging": is_charging, "ground_slam": is_ground_slam, "last_x": actor.global_position.x, "distance": 0.0, "frame_index": -1})
 	_update_actor(actors.back())
 
 func _process(delta: float) -> void:
@@ -352,15 +356,27 @@ func _process(delta: float) -> void:
 	if goal_ready:
 		needs_redraw = true
 	for entry in actors:
-		if is_instance_valid(entry.actor) and entry.charging and entry.actor.state == 2 and entry.actor.attack_phase == 0:
+		var actor = entry.actor
+		if not is_instance_valid(actor):
+			continue
+		# Stage 2: Charging Beast windup
+		if entry.charging and actor.state == 2 and actor.attack_phase == 0:
 			needs_redraw = true
 			break
+		# Stage 4: Ground Slam Golem windup or active slam
+		if (entry.get("ground_slam", false) or entry.variant == "golem") and actor.state == 2:
+			if actor.attack_phase == 0 or actor.is_attack_active:
+				needs_redraw = true
+				break
 
+	combat_redraw_active = needs_redraw
 	if needs_redraw:
 		_had_combat_draw = true
+		redraw_request_count += 1
 		queue_redraw()
 	elif _had_combat_draw:
 		_had_combat_draw = false
+		redraw_request_count += 1
 		queue_redraw()
 
 func _update_player_pose(delta: float = 0.0) -> void:
