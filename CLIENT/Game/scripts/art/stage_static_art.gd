@@ -107,9 +107,9 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 		var p_width := max_px - min_px
 		var top_y := minf(points[0].y, points[1].y)
 
-		var is_stage2: bool = (cached_stage_num == 2)
-		var valid_height: bool = (top_y < 595) if is_stage2 else (top_y < 540)
-		var valid_width: bool = (p_width > 40.0) if is_stage2 else (p_width > 140.0)
+		var is_grounded_stage: bool = (cached_stage_num >= 2)
+		var valid_height: bool = (top_y < 595) if is_grounded_stage else (top_y < 540)
+		var valid_width: bool = (p_width > 40.0) if is_grounded_stage else (p_width > 140.0)
 
 		if points.size() == 2 and valid_height and valid_width:
 			platform_data.has_supports = true
@@ -167,6 +167,51 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 						Vector2(mid_x - 10, lerpf(top_at.y, 620.0, 0.45))
 					])
 					platform_data.root_polys.append(bracket_poly)
+			elif cached_stage_num == 3:
+				# Stage 3: Fractured stone masonry pillars & timber scaffolding struts
+				platform_data["scaffold_struts"] = []
+				platform_data["fractured_pillars"] = []
+				platform_data["slab_timber"] = Rect2(min_px, top_y + 18, p_width, 10)
+
+				if p_width > 120.0:
+					for x_pos in [min_px + 34, max_px - 34]:
+						var top_at := Vector2(x_pos, top_y + 18)
+						var pillar_rect := Rect2(top_at - Vector2(16, 0), Vector2(32, 620 - top_at.y))
+						var joints: Array[Vector2] = []
+						var j_y := top_at.y + 35.0
+						while j_y < 600.0:
+							joints.append(Vector2(x_pos - 16, j_y))
+							joints.append(Vector2(x_pos + 16, j_y))
+							j_y += 45.0
+						var corbel_poly := PackedVector2Array([
+							top_at + Vector2(-26, 0),
+							top_at + Vector2(26, 0),
+							top_at + Vector2(16, 16),
+							top_at + Vector2(-16, 16)
+						])
+						platform_data.fractured_pillars.append({
+							"rect": pillar_rect,
+							"joints": joints,
+							"corbel": corbel_poly,
+							"clamp": Rect2(top_at.x - 18, lerpf(top_at.y, 620.0, 0.4), 36, 8)
+						})
+				else:
+					var mid_x := (min_px + max_px) * 0.5
+					var top_at := Vector2(mid_x, top_y + 18)
+					var strut_left := PackedVector2Array([
+						Vector2(min_px + 6, top_y + 18), Vector2(min_px + 16, top_y + 18),
+						Vector2(mid_x + 8, 620), Vector2(mid_x - 2, 620)
+					])
+					var strut_right := PackedVector2Array([
+						Vector2(max_px - 6, top_y + 18), Vector2(max_px - 16, top_y + 18),
+						Vector2(mid_x - 8, 620), Vector2(mid_x + 2, 620)
+					])
+					var crossbeam := Rect2(min_px + 10, lerpf(top_at.y, 620.0, 0.5) - 6, p_width - 20, 12)
+					platform_data.scaffold_struts.append({
+						"left": strut_left,
+						"right": strut_right,
+						"cross": crossbeam
+					})
 			else:
 				var shade := Color(0.63, 0.66, 0.65, 0.88)
 				var width := 30.0
@@ -283,6 +328,117 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 			"altar_center": Vector2(10160, 555),
 			"braziers": [Vector2(10035, 565), Vector2(10285, 565)]
 		})
+	elif cached_stage_num == 3:
+		# Landmark 1: Leaning Ruined Watchtower (x ≈ 370)
+		cached_landmarks.append({
+			"type": "leaning_watchtower",
+			"tower_poly": PackedVector2Array([
+				Vector2(300, 620), Vector2(330, 265), Vector2(420, 275), Vector2(440, 620)
+			]),
+			"battlements": [
+				Rect2(325, 245, 24, 25),
+				Rect2(365, 250, 24, 25),
+				Rect2(405, 255, 26, 25)
+			],
+			"fractures": [
+				[Vector2(350, 285), Vector2(380, 350)],
+				[Vector2(380, 350), Vector2(370, 450)],
+				[Vector2(370, 450), Vector2(410, 540)],
+				[Vector2(410, 370), Vector2(435, 420)]
+			],
+			"exposed_beams": [
+				Rect2(400, 310, 45, 10),
+				Rect2(320, 390, 35, 10)
+			],
+			"courses": [
+				[Vector2(308, 540), Vector2(435, 540)],
+				[Vector2(315, 460), Vector2(430, 460)],
+				[Vector2(322, 380), Vector2(425, 380)],
+				[Vector2(326, 300), Vector2(422, 300)]
+			],
+			"arrow_slit": Rect2(375, 360, 8, 30),
+			"rubble": [
+				Rect2(260, 580, 40, 40),
+				Rect2(435, 590, 35, 30),
+				Rect2(455, 600, 25, 20)
+			],
+			"ember_sparks": [Vector2(350, 265), Vector2(410, 275)]
+		})
+
+		# Landmark 2: Shattered Trebuchet & Siege Engine Wreckage (x ≈ 5500)
+		cached_landmarks.append({
+			"type": "trebuchet_wreckage",
+			"a_frame_left": PackedVector2Array([
+				Vector2(5380, 620), Vector2(5470, 380), Vector2(5495, 380), Vector2(5420, 620)
+			]),
+			"a_frame_right": PackedVector2Array([
+				Vector2(5580, 620), Vector2(5495, 380), Vector2(5470, 380), Vector2(5540, 620)
+			]),
+			"cross_beam": Rect2(5405, 490, 150, 16),
+			"throwing_arm": PackedVector2Array([
+				Vector2(5440, 360), Vector2(5580, 490), Vector2(5570, 505), Vector2(5430, 375)
+			]),
+			"counterweight_box": Rect2(5410, 350, 45, 40),
+			"broken_wheel_center": Vector2(5600, 580),
+			"broken_wheel_radius": 36.0,
+			"siege_bolts": [
+				[Vector2(5350, 615), Vector2(5390, 600)],
+				[Vector2(5365, 618), Vector2(5410, 608)],
+				[Vector2(5590, 612), Vector2(5635, 618)]
+			]
+		})
+
+		# Landmark 3: Crossbow Commander's Command Parapet (x ≈ 10000)
+		cached_landmarks.append({
+			"type": "command_parapet",
+			"base_rampart": Rect2(9880, 360, 240, 260),
+			"courses": [
+				[Vector2(9880, 430), Vector2(10120, 430)],
+				[Vector2(9880, 500), Vector2(10120, 500)],
+				[Vector2(9880, 570), Vector2(10120, 570)]
+			],
+			"crenels": [
+				Rect2(9880, 320, 42, 45),
+				Rect2(9946, 320, 42, 45),
+				Rect2(10012, 320, 42, 45),
+				Rect2(10078, 320, 42, 45)
+			],
+			"flagpoles": [
+				[Vector2(9915, 300), Vector2(9915, 415)],
+				[Vector2(10100, 300), Vector2(10100, 420)]
+			],
+			"ballista_mount": Rect2(9940, 280, 70, 45),
+			"ballista_bow": PackedVector2Array([
+				Vector2(9920, 290), Vector2(9975, 275), Vector2(10030, 290),
+				Vector2(10025, 298), Vector2(9975, 285), Vector2(9925, 298)
+			]),
+			"banners": [
+				PackedVector2Array([Vector2(9905, 325), Vector2(9930, 335), Vector2(9920, 410), Vector2(9895, 395)]),
+				PackedVector2Array([Vector2(10090, 325), Vector2(10115, 335), Vector2(10105, 415), Vector2(10080, 400)])
+			],
+			"braziers": [Vector2(9870, 350), Vector2(10130, 350)]
+		})
+
+		# Boss Arena Architecture (x ≈ 10000..11200)
+		cached_landmarks.append({
+			"type": "boss_arena_wall",
+			"arena_backdrop_crenels": [
+				Rect2(10250, 480, 50, 40), Rect2(10350, 480, 50, 40),
+				Rect2(10450, 480, 50, 40), Rect2(10550, 480, 50, 40),
+				Rect2(10650, 480, 50, 40), Rect2(10750, 480, 50, 40),
+				Rect2(10850, 480, 50, 40), Rect2(10950, 480, 50, 40)
+			],
+			"burnt_stakes": [
+				[Vector2(10220, 620), Vector2(10235, 570)],
+				[Vector2(10240, 620), Vector2(10250, 575)],
+				[Vector2(11020, 620), Vector2(11005, 570)],
+				[Vector2(11040, 620), Vector2(11030, 575)]
+			],
+			"scorch_rects": [
+				Rect2(10300, 615, 120, 5),
+				Rect2(10600, 615, 160, 5)
+			]
+		})
 
 	# 4. Precompute route choice plaques
 	cached_route_signs.clear()
@@ -382,6 +538,70 @@ func _draw() -> void:
 				draw_rect(Rect2(bz.x - 7, bz.y, 14, 30), Color(0.20, 0.17, 0.14, 0.95))
 				draw_circle(bz + Vector2(0, -3), 7.0, Color(2.8, 1.2, 0.25, 0.85))
 				draw_circle(bz + Vector2(0, -3), 3.0, Color(3.5, 2.5, 1.0, 0.98))
+		elif lm.type == "leaning_watchtower":
+			draw_colored_polygon(lm.tower_poly, Color(0.22, 0.20, 0.24, 0.95))
+			draw_polyline(lm.tower_poly, Color(0.36, 0.32, 0.38, 0.85), 2.0, true)
+			if lm.has("courses"):
+				for c in lm.courses:
+					draw_line(c[0], c[1], Color(0.14, 0.12, 0.16, 0.70), 1.5)
+			if lm.has("arrow_slit"):
+				draw_rect(lm.arrow_slit, Color(0.10, 0.08, 0.12, 0.98))
+				draw_rect(lm.arrow_slit, Color(0.35, 0.30, 0.38, 0.80), false, 1.0)
+			for b in lm.battlements:
+				draw_rect(b, Color(0.24, 0.21, 0.26, 0.95))
+				draw_rect(b, Color(0.38, 0.33, 0.40, 0.80), false, 1.5)
+			for f in lm.fractures:
+				draw_line(f[0], f[1], Color(0.10, 0.08, 0.12, 0.90), 2.5)
+			for bm in lm.exposed_beams:
+				draw_rect(bm, Color(0.18, 0.13, 0.10, 0.98))
+			for r in lm.rubble:
+				draw_rect(r, Color(0.20, 0.18, 0.22, 0.95))
+				draw_rect(r, Color(0.32, 0.28, 0.34, 0.75), false, 1.5)
+			for spk in lm.ember_sparks:
+				draw_circle(spk, 4.0, Color(2.4, 1.1, 0.3, 0.85))
+		elif lm.type == "trebuchet_wreckage":
+			draw_colored_polygon(lm.a_frame_left, Color(0.20, 0.15, 0.12, 0.95))
+			draw_polyline(lm.a_frame_left, Color(0.34, 0.26, 0.19, 0.80), 2.0, true)
+			draw_colored_polygon(lm.a_frame_right, Color(0.20, 0.15, 0.12, 0.95))
+			draw_polyline(lm.a_frame_right, Color(0.34, 0.26, 0.19, 0.80), 2.0, true)
+			draw_rect(lm.cross_beam, Color(0.24, 0.18, 0.14, 0.95))
+			draw_colored_polygon(lm.throwing_arm, Color(0.16, 0.12, 0.09, 0.98))
+			draw_polyline(lm.throwing_arm, Color(0.30, 0.22, 0.16, 0.85), 1.5, true)
+			draw_rect(lm.counterweight_box, Color(0.14, 0.13, 0.15, 0.98))
+			draw_arc(lm.broken_wheel_center, lm.broken_wheel_radius, 0.4, PI * 1.6, 16, Color(0.26, 0.20, 0.16, 0.95), 5.0, true)
+			draw_circle(lm.broken_wheel_center, 8.0, Color(0.18, 0.17, 0.18, 0.95))
+			for blt in lm.siege_bolts:
+				draw_line(blt[0], blt[1], Color(0.45, 0.38, 0.32, 0.90), 2.5)
+		elif lm.type == "command_parapet":
+			draw_rect(lm.base_rampart, Color(0.22, 0.20, 0.25, 0.95))
+			draw_rect(lm.base_rampart, Color(0.35, 0.30, 0.38, 0.85), false, 2.0)
+			if lm.has("courses"):
+				for c in lm.courses:
+					draw_line(c[0], c[1], Color(0.14, 0.12, 0.16, 0.65), 1.5)
+			for cr in lm.crenels:
+				draw_rect(cr, Color(0.24, 0.21, 0.27, 0.95))
+				draw_rect(cr, Color(0.38, 0.33, 0.42, 0.80), false, 1.5)
+			draw_rect(lm.ballista_mount, Color(0.16, 0.14, 0.18, 0.98))
+			draw_colored_polygon(lm.ballista_bow, Color(0.38, 0.28, 0.20, 0.95))
+			draw_polyline(lm.ballista_bow, Color(0.55, 0.42, 0.30, 0.85), 2.0, true)
+			if lm.has("flagpoles"):
+				for fp in lm.flagpoles:
+					draw_line(fp[0], fp[1], Color(0.25, 0.20, 0.16, 0.95), 3.0)
+			for bnr in lm.banners:
+				draw_colored_polygon(bnr, Color(0.75, 0.18, 0.16, 0.90))
+				draw_polyline(bnr, Color(1.0, 0.35, 0.25, 0.80), 1.5, true)
+			for bz in lm.braziers:
+				draw_rect(Rect2(bz.x - 8, bz.y, 16, 32), Color(0.18, 0.16, 0.19, 0.95))
+				draw_circle(bz + Vector2(0, -4), 8.0, Color(2.6, 1.1, 0.3, 0.85))
+				draw_circle(bz + Vector2(0, -4), 4.0, Color(3.5, 2.4, 1.0, 0.98))
+		elif lm.type == "boss_arena_wall":
+			for cr in lm.arena_backdrop_crenels:
+				draw_rect(cr, Color(0.18, 0.16, 0.20, 0.90))
+				draw_rect(cr, Color(0.28, 0.24, 0.30, 0.75), false, 1.5)
+			for stk in lm.burnt_stakes:
+				draw_line(stk[0], stk[1], Color(0.14, 0.11, 0.09, 0.95), 3.5)
+			for sc in lm.scorch_rects:
+				draw_rect(sc, Color(0.08, 0.06, 0.08, 0.85))
 
 	# 3. Platforms, slab shadows, corbels/roots, polylines from cache
 	for p in cached_platforms:
@@ -399,6 +619,27 @@ func _draw() -> void:
 				for vine in p.hanging_moss:
 					draw_line(vine.start, vine.end, Color(0.22, 0.38, 0.15, 0.90), 1.5, true)
 					draw_circle(vine.leaf, 2.0, Color(0.35, 0.55, 0.24, 0.95))
+			elif cached_stage_num == 3:
+				if p.has("slab_timber"):
+					draw_rect(p.slab_timber, Color(0.16, 0.12, 0.10, 0.95))
+				if p.has("fractured_pillars"):
+					for pil in p.fractured_pillars:
+						draw_rect(pil.rect, Color(0.22, 0.20, 0.24, 0.95))
+						draw_rect(pil.rect, Color(0.34, 0.30, 0.36, 0.85), false, 1.5)
+						for j_idx in range(0, pil.joints.size(), 2):
+							if j_idx + 1 < pil.joints.size():
+								draw_line(pil.joints[j_idx], pil.joints[j_idx + 1], Color(0.11, 0.09, 0.12, 0.85), 2.0)
+						draw_rect(pil.clamp, Color(0.14, 0.13, 0.16, 0.98))
+						draw_colored_polygon(pil.corbel, Color(0.19, 0.17, 0.21, 0.95))
+						draw_polyline(pil.corbel, Color(0.36, 0.31, 0.38, 0.80), 1.5, true)
+				if p.has("scaffold_struts"):
+					for st in p.scaffold_struts:
+						draw_colored_polygon(st.left, Color(0.18, 0.14, 0.11, 0.95))
+						draw_polyline(st.left, Color(0.30, 0.23, 0.17, 0.80), 1.5, true)
+						draw_colored_polygon(st.right, Color(0.18, 0.14, 0.11, 0.95))
+						draw_polyline(st.right, Color(0.30, 0.23, 0.17, 0.80), 1.5, true)
+						draw_rect(st.cross, Color(0.22, 0.17, 0.13, 0.95))
+						draw_rect(st.cross, Color(0.34, 0.26, 0.19, 0.85), false, 1.5)
 			else:
 				for s in p.supports:
 					draw_texture_rect_region(ground_texture, s.rect, s.source, s.shade)
@@ -424,6 +665,9 @@ func _draw() -> void:
 			if cached_stage_num == 2:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 거목 덩굴길 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 야수 숲길로 진행", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
+			elif cached_stage_num == 3:
+				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 성벽 흉벽 상부 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
+				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 무너진 성벽 다리로 전진", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
 			else:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))

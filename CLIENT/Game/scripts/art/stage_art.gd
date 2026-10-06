@@ -713,6 +713,9 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 		for index in range(4):
 			var offset := float(index) * 7.0
 			draw_line(at - Vector2(direction * (8.0 + offset), 0), at - Vector2(direction * (14.0 + offset), 0), Color(0.69, 0.43, 0.95, 0.48 - index * 0.10), 3.0 - index * 0.5, true)
+		# Luminous projectile head for high combat contrast across dark/dusty backgrounds
+		draw_circle(at, 4.0, Color(2.6, 1.3, 0.4, 0.95))
+		draw_circle(at, 2.0, Color(3.5, 2.5, 1.2, 0.98))
 		return
 	var direction := -1.0 if entry.sprite.flip_h else 1.0
 	if (entry.charging or actor.get_meta("ground_slam", false)) and actor.state == 2 and actor.attack_phase == 0:
@@ -737,6 +740,29 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 		for index in range(4):
 			var unit := Vector2.from_angle(index * PI * 0.5 + motion_time * 2.0)
 			draw_line(tip + unit * 5.0, tip + unit * (9.0 + phase * 5.0), Color(0.96, 0.85, 1.0, opacity), 1.5, true)
+
+		# Stage 3 Enhanced Warm Amber Telegraph & Trajectory Aiming Line (High Contrast)
+		if windup:
+			var target_pt := tip + Vector2(direction * 320.0, 0)
+			if is_instance_valid(stage.player):
+				var p_local := to_local(stage.player.global_position) + Vector2(0, -16)
+				var dir_vec := (p_local - tip).normalized()
+				var aim_dist := minf(360.0, tip.distance_to(p_local))
+				target_pt = tip + dir_vec * aim_dist
+			# 1. Outer warm amber guide line
+			draw_line(tip, target_pt, Color(1.8, 0.72, 0.20, opacity * 0.55), 2.5, true)
+			# 2. Inner high-intensity laser core
+			draw_line(tip, target_pt, Color(3.2, 1.8, 0.6, opacity * 0.85), 1.0, true)
+			# 3. Reticle diamond at aim target
+			var reticle := PackedVector2Array([
+				target_pt + Vector2(0, -6), target_pt + Vector2(6, 0),
+				target_pt + Vector2(0, 6), target_pt + Vector2(-6, 0), target_pt + Vector2(0, -6)
+			])
+			draw_polyline(reticle, Color(2.6, 1.2, 0.3, opacity * 0.95), 1.5, true)
+			# 4. Muzzle spark flash at weapon tip
+			draw_circle(tip, 4.5 * phase, Color(2.8, 1.4, 0.4, opacity * 0.95))
+			draw_line(tip - Vector2(6, 0), tip + Vector2(6, 0), Color(3.5, 2.4, 1.0, opacity), 1.2, true)
+			draw_line(tip - Vector2(0, 6), tip + Vector2(0, 6), Color(3.5, 2.4, 1.0, opacity), 1.2, true)
 		return
 	if entry.variant == "golem" and actor.state == 2 and actor.attack_phase == 0:
 		var warning_shape: CollisionShape2D = actor.get_node("AttackArea/CollisionShape2D")

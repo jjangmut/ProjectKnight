@@ -191,9 +191,30 @@ Project Knight
   - `ART_REVIEW/graphics-pass-002-stage2/PERFORMANCE.md`
   - `ART_REVIEW/graphics-pass-002-stage2/FINAL_REVIEW.md`
 
+### Stage 3 Graphics Pass 003 (무너진 성벽)
+- 상태: **`INDEPENDENT REVIEW REQUESTED`**
+- 10대 자체 품질 평가: **9.25 / 10** (기준 ≥ 8.0 통과)
+- PC 60 FPS Gate: **4개 전 구간 압도적 PASS** (Entry: 213.5 FPS, First Ranged: 305.0 FPS, Vertical Route: 275.3 FPS, Boss Combat: 349.3 FPS)
+- 4계층 패럴랙스 (황혼 폭풍 하늘, 파괴된 성벽 능선, 틴트 일러스트, 흉벽 및 전장 분진) 및 3대 랜드마크 (무너진 망루, 부서진 투석기, 사령관 성루) 구축
+- 전 플랫폼 기둥/비계 트러스 100% 접지 및 공중 부유감 완전 제거
+- RangedEnemy 호박색 HDR 발광 조준선/투사체 가독성 극대화 및 보스 아레나 무대화
+- 산출물:
+  - `ART_REVIEW/graphics-pass-003-stage3/before/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-003-stage3/cycle_a/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-003-stage3/after/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-003-stage3/profiler/` (4종 캡처)
+  - `ART_REVIEW/graphics-pass-003-stage3/BASELINE_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-003-stage3/CYCLE_A_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-003-stage3/CYCLE_B_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-003-stage3/VISUAL_COMPARISON.md`
+  - `ART_REVIEW/graphics-pass-003-stage3/PERFORMANCE.md`
+  - `ART_REVIEW/graphics-pass-003-stage3/FINAL_REVIEW.md`
+
 ## QA 상태
 
 최신 확인 가능한 게임 품질 회귀 기록:
+- `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
+- `stage3_render_performance_gate.gd`: **4/4 Sectors PASS**
 - `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
 - `stage2_render_performance_gate.gd`: **4/4 Sectors PASS**
 - `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
@@ -201,6 +222,7 @@ Project Knight
 - `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
 - `boss1_visual_polish_smoke.gd`: **17/17 PASS**
 - `campaign_transition_test.gd`: **PASS**
+- `stage_art_smoke.gd`: **37/37 PASS**
 - `stage_smoke.gd`: **37/37 PASS**
 - `combat_deepening_smoke.gd`: **10/10 PASS**
 - `guard_core_smoke.gd`: **21/21 PASS**
@@ -223,10 +245,11 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. Stage 2 Graphics Pass 002 독립 검수 수행 및 검수 피드백 대응
-2. Stage 3 Graphics Pass 003 계획 수립
-3. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-4. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
+1. Stage 2 Graphics Pass 002 독립 검수 피드백 대응
+2. Stage 3 Graphics Pass 003 독립 검수 피드백 대응
+3. Stage 4 Graphics Pass 004 착수 준비
+4. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
+5. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
 
@@ -237,7 +260,7 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-06**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 2 Graphics Pass 002 (야수숲) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 3 Graphics Pass 003 (무너진 성벽) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
 
 
 

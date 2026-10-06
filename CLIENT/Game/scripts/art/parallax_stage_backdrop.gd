@@ -95,11 +95,27 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				r_poly.color = Color(0.85, 1.25, 0.75, cfg[4])
 				rays.add_child(r_poly)
 			l1.add_child(rays)
+		elif stage_num == 3:
+			# Stage 3: Distant siege smoke plumes rising into dusty twilight sky
+			var smoke_group := Node2D.new()
+			smoke_group.name = "SiegeSmokePlumes"
+			var smoke_columns := [
+				[Vector2(260, 720), Vector2(340, 720), Vector2(420, 0), Vector2(280, 0), 0.045],
+				[Vector2(680, 720), Vector2(780, 720), Vector2(890, 0), Vector2(720, 0), 0.060],
+				[Vector2(1150, 720), Vector2(1260, 720), Vector2(1380, 0), Vector2(1200, 0), 0.055],
+				[Vector2(1650, 720), Vector2(1740, 720), Vector2(1880, 0), Vector2(1720, 0), 0.050]
+			]
+			for col in smoke_columns:
+				var s_poly := Polygon2D.new()
+				s_poly.polygon = PackedVector2Array([col[0], col[1], col[2], col[3]])
+				s_poly.color = Color(0.18, 0.12, 0.19, col[4])
+				smoke_group.add_child(s_poly)
+			l1.add_child(smoke_group)
 
 		# Celestial Body: Soft atmospheric sun / moon with diffuse corona
 		var celestial := Node2D.new()
 		celestial.name = "CelestialBody"
-		var center := Vector2(1400.0, 150.0)
+		var center := Vector2(1480.0, 200.0) if stage_num == 3 else Vector2(1400.0, 150.0)
 
 		# Outer diffuse corona
 		var corona := Polygon2D.new()
@@ -108,7 +124,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			var rad := float(i) * TAU / 24.0
 			corona_pts.append(center + Vector2(cos(rad), sin(rad)) * 54.0)
 		corona.polygon = corona_pts
-		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15))
+		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.8, 0.7, 0.25, 0.20) if stage_num == 3 else (Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15)))
 		celestial.add_child(corona)
 
 		# Core luminous body
@@ -119,7 +135,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			var rad := float(i) * TAU / 24.0
 			points.append(center + Vector2(cos(rad), sin(rad)) * radius)
 		moon.polygon = points
-		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85)))
+		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(2.2, 1.15, 0.45, 0.80) if stage_num == 3 else (Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85))))
 		celestial.add_child(moon)
 		l1.add_child(celestial)
 
@@ -158,6 +174,38 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				trunk.color = Color(0.03, 0.09, 0.05, 0.92)
 				trees.add_child(trunk)
 			l2.add_child(trees)
+		elif stage_num == 3:
+			# Stage 3: Distant Jagged Ruined Fortress Silhouettes & Leaning Watchtowers
+			var fortress := Node2D.new()
+			fortress.name = "DistantRuinedFortressSilhouettes"
+			var ridge_pts := PackedVector2Array([
+				Vector2(0, LAYER_HEIGHT),
+				Vector2(0, 420),
+				Vector2(80, 420), Vector2(100, 360), Vector2(180, 360), Vector2(200, 410),
+				Vector2(290, 410), Vector2(320, 290), Vector2(390, 275), Vector2(430, 430),
+				Vector2(550, 440), Vector2(590, 380), Vector2(650, 380), Vector2(700, 450),
+				Vector2(780, 450), Vector2(810, 260), Vector2(880, 245), Vector2(920, 420),
+				Vector2(1020, 430), Vector2(1080, 390), Vector2(1150, 440),
+				Vector2(1230, 440), Vector2(1260, 280), Vector2(1330, 295), Vector2(1370, 430),
+				Vector2(1480, 440), Vector2(1540, 370), Vector2(1610, 370), Vector2(1660, 440),
+				Vector2(1730, 440), Vector2(1760, 270), Vector2(1830, 285), Vector2(1870, 430),
+				Vector2(LAYER_WIDTH, 420),
+				Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+			])
+			var ridge_poly := Polygon2D.new()
+			ridge_poly.polygon = ridge_pts
+			ridge_poly.color = Color(0.12, 0.09, 0.14, 0.90)
+			fortress.add_child(ridge_poly)
+			# Smoldering ember spots atop shattered towers
+			for em_x in [355.0, 845.0, 1295.0, 1795.0]:
+				var ember := Polygon2D.new()
+				ember.polygon = PackedVector2Array([
+					Vector2(em_x - 12, 280), Vector2(em_x + 12, 280),
+					Vector2(em_x + 6, 290), Vector2(em_x - 6, 290)
+				])
+				ember.color = Color(1.8, 0.65, 0.25, 0.70)
+				fortress.add_child(ember)
+			l2.add_child(fortress)
 		elif base_texture == null:
 			# Fallback geometric peak silhouettes for stages without dedicated textures
 			var peaks := Polygon2D.new()
@@ -188,8 +236,20 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			tex_rect.size = Vector2(LAYER_WIDTH, LAYER_HEIGHT)
 			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else Color(1, 1, 1, 0.95)
+			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else (Color(0.68, 0.52, 0.64, 0.95) if stage_num == 3 else Color(1, 1, 1, 0.95))
 			l3.add_child(tex_rect)
+			if stage_num == 3:
+				var mid_fracture := Polygon2D.new()
+				mid_fracture.polygon = PackedVector2Array([
+					Vector2(0, LAYER_HEIGHT), Vector2(0, 520),
+					Vector2(160, 520), Vector2(210, 480), Vector2(320, 480), Vector2(360, 525),
+					Vector2(580, 530), Vector2(640, 475), Vector2(760, 475), Vector2(810, 525),
+					Vector2(1040, 525), Vector2(1090, 480), Vector2(1200, 480), Vector2(1250, 530),
+					Vector2(1480, 530), Vector2(1530, 475), Vector2(1640, 475), Vector2(1690, 525),
+					Vector2(LAYER_WIDTH, 520), Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+				])
+				mid_fracture.color = Color(0.16, 0.12, 0.18, 0.70)
+				l3.add_child(mid_fracture)
 		else:
 			# Fallback procedural ruins silhouette for stages without dedicated textures
 			var ruins := Polygon2D.new()
@@ -239,6 +299,27 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			fog.color = Color(0.08, 0.28, 0.16, 0.12)
 			fog.position = Vector2(0, 510)
 			fog.size = Vector2(LAYER_WIDTH, 210)
+			l4.add_child(fog)
+		elif stage_num == 3:
+			# Stage 3: Top broken battlements / burned timber beams framing
+			var fg_debris := Polygon2D.new()
+			fg_debris.polygon = PackedVector2Array([
+				Vector2(0, 0), Vector2(LAYER_WIDTH, 0),
+				Vector2(LAYER_WIDTH, 50), Vector2(1840, 40), Vector2(1780, 80),
+				Vector2(1660, 35), Vector2(1540, 70), Vector2(1420, 35),
+				Vector2(1300, 85), Vector2(1180, 40), Vector2(1040, 75),
+				Vector2(900, 45), Vector2(780, 90), Vector2(640, 40),
+				Vector2(510, 75), Vector2(380, 45), Vector2(260, 85),
+				Vector2(140, 35), Vector2(0, 65)
+			])
+			fg_debris.color = Color(0.09, 0.07, 0.11, 0.82)
+			l4.add_child(fg_debris)
+
+			# Low battlefield ash & dust drift
+			var fog := ColorRect.new()
+			fog.color = Color(0.24, 0.17, 0.14, 0.14)
+			fog.position = Vector2(0, 520)
+			fog.size = Vector2(LAYER_WIDTH, 200)
 			l4.add_child(fog)
 		else:
 			var fog := ColorRect.new()
