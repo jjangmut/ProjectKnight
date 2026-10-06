@@ -266,6 +266,62 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 						"plinth": Rect2(mid_x - 34, 608, 68, 12),
 						"rune_center": Vector2(mid_x, lerpf(top_at.y, 620.0, 0.50))
 					})
+			elif cached_stage_num == 5:
+				# Stage 5: Void-anchored black stone pillars, hanging chain suspensions, broken Gothic royal arches
+				platform_data["void_pillars"] = []
+				platform_data["royal_arches"] = []
+				platform_data["slab_blackstone"] = Rect2(min_px, top_y + 18, p_width, 14)
+
+				if p_width > 120.0:
+					for x_pos in [min_px + 38, max_px - 38]:
+						var top_at := Vector2(x_pos, top_y + 18)
+						var pillar_rect := Rect2(top_at - Vector2(20, 0), Vector2(40, 620 - top_at.y))
+						var joints: Array[Vector2] = []
+						var j_y := top_at.y + 38.0
+						while j_y < 605.0:
+							joints.append(Vector2(x_pos - 20, j_y))
+							joints.append(Vector2(x_pos + 20, j_y))
+							j_y += 48.0
+						var corbel_poly := PackedVector2Array([
+							top_at + Vector2(-30, 0),
+							top_at + Vector2(30, 0),
+							top_at + Vector2(20, 18),
+							top_at + Vector2(-20, 18)
+						])
+						var plinth_rect := Rect2(x_pos - 24, 608, 48, 12)
+						var void_fracture := [
+							Vector2(x_pos, top_at.y + 20),
+							Vector2(x_pos - 4, lerpf(top_at.y, 620.0, 0.38)),
+							Vector2(x_pos + 5, lerpf(top_at.y, 620.0, 0.72)),
+							Vector2(x_pos, 604)
+						]
+						platform_data.void_pillars.append({
+							"rect": pillar_rect,
+							"joints": joints,
+							"corbel": corbel_poly,
+							"plinth": plinth_rect,
+							"fracture": void_fracture
+						})
+				else:
+					var mid_x := (min_px + max_px) * 0.5
+					var top_at := Vector2(mid_x, top_y + 18)
+					var arch_poly := PackedVector2Array([
+						top_at + Vector2(-28, 0),
+						top_at + Vector2(28, 0),
+						Vector2(mid_x + 14, lerpf(top_at.y, 620.0, 0.45)),
+						Vector2(mid_x + 24, 620),
+						Vector2(mid_x - 24, 620),
+						Vector2(mid_x - 14, lerpf(top_at.y, 620.0, 0.45))
+					])
+					var chain_left := [Vector2(min_px + 8, top_y + 18), Vector2(min_px + 8, top_y + 55)]
+					var chain_right := [Vector2(max_px - 8, top_y + 18), Vector2(max_px - 8, top_y + 55)]
+					platform_data.royal_arches.append({
+						"arch": arch_poly,
+						"chain_l": chain_left,
+						"chain_r": chain_right,
+						"plinth": Rect2(mid_x - 28, 608, 56, 12),
+						"core_gem": Vector2(mid_x, lerpf(top_at.y, 620.0, 0.48))
+					})
 			else:
 				var shade := Color(0.63, 0.66, 0.65, 0.88)
 				var width := 30.0
@@ -581,6 +637,99 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 				[Vector2(10720, 616), Vector2(11060, 616)]
 			]
 		})
+	elif cached_stage_num == 5:
+		# Landmark 1: 침묵의 왕문 (Silent Royal Gate, x ≈ 400)
+		cached_landmarks.append({
+			"type": "silent_royal_gate",
+			"left_pillar": Rect2(320, 210, 56, 410),
+			"right_pillar": Rect2(440, 210, 56, 410),
+			"joints": [
+				[Vector2(320, 310), Vector2(376, 310)],
+				[Vector2(320, 420), Vector2(376, 420)],
+				[Vector2(320, 520), Vector2(376, 520)],
+				[Vector2(440, 310), Vector2(496, 310)],
+				[Vector2(440, 420), Vector2(496, 420)],
+				[Vector2(440, 520), Vector2(496, 520)]
+			],
+			"lintel": Rect2(296, 175, 224, 38),
+			"cornice": Rect2(284, 168, 248, 10),
+			"broken_crest": [
+				Vector2(408, 150), Vector2(424, 182), Vector2(408, 196), Vector2(392, 182)
+			],
+			"crest_eye": Vector2(408, 180),
+			"chains": [
+				[Vector2(348, 212), Vector2(348, 380)],
+				[Vector2(468, 212), Vector2(468, 380)]
+			],
+			"fissures": [
+				[Vector2(348, 260), Vector2(344, 340), Vector2(352, 430), Vector2(348, 560)],
+				[Vector2(468, 250), Vector2(472, 350), Vector2(464, 440), Vector2(468, 550)]
+			],
+			"rubble": [
+				Rect2(285, 580, 38, 40),
+				Rect2(494, 586, 34, 34)
+			]
+		})
+
+		# Landmark 2: 심연에 잠긴 왕좌 회랑 (Abyssal Submerged Throne Gallery, x ≈ 5600)
+		cached_landmarks.append({
+			"type": "submerged_throne_gallery",
+			"throne_dais": Rect2(5510, 490, 180, 130),
+			"throne_back": PackedVector2Array([
+				Vector2(5540, 490), Vector2(5555, 310), Vector2(5645, 310), Vector2(5660, 490)
+			]),
+			"pinnacles": [
+				Vector2(5555, 310), Vector2(5575, 250), Vector2(5600, 310),
+				Vector2(5625, 250), Vector2(5645, 310)
+			],
+			"void_crest_eye": Vector2(5600, 370),
+			"fallen_statue": PackedVector2Array([
+				Vector2(5410, 620), Vector2(5450, 520), Vector2(5485, 535), Vector2(5450, 620)
+			]),
+			"tattered_banners": [
+				PackedVector2Array([Vector2(5530, 370), Vector2(5545, 375), Vector2(5540, 470), Vector2(5525, 450)]),
+				PackedVector2Array([Vector2(5655, 370), Vector2(5670, 375), Vector2(5665, 470), Vector2(5650, 450)])
+			],
+			"floating_shards": [
+				Rect2(5460, 390, 28, 36),
+				Rect2(5690, 370, 32, 42),
+				Rect2(5585, 230, 24, 26)
+			],
+			"braziers": [Vector2(5500, 570), Vector2(5700, 570)]
+		})
+
+		# Landmark 3 & Boss Arena: Abyssal Arbiter 최종 심판실 (Final Judgment Hall, x ≈ 10800..12200)
+		cached_landmarks.append({
+			"type": "arbiter_judgment_hall",
+			"throne_dais": Rect2(11360, 450, 280, 170),
+			"throne_back": PackedVector2Array([
+				Vector2(11410, 450), Vector2(11430, 200), Vector2(11570, 200), Vector2(11590, 450)
+			]),
+			"throne_pinnacles": [
+				Vector2(11430, 200), Vector2(11500, 130), Vector2(11570, 200)
+			],
+			"void_portal_center": Vector2(11500, 310),
+			"obelisks": [
+				Rect2(10920, 300, 46, 320),
+				Rect2(11100, 330, 46, 290),
+				Rect2(11280, 360, 46, 260),
+				Rect2(11720, 360, 46, 260),
+				Rect2(11900, 330, 46, 290),
+				Rect2(12080, 300, 46, 320)
+			],
+			"obelisk_caps": [
+				Vector2(10943, 275), Vector2(11123, 305), Vector2(11303, 335),
+				Vector2(11743, 335), Vector2(11923, 305), Vector2(12103, 275)
+			],
+			"crimson_fissures": [
+				[Vector2(10900, 616), Vector2(11350, 616)],
+				[Vector2(11650, 616), Vector2(12100, 616)]
+			],
+			"hanging_arena_chains": [
+				[Vector2(11050, 220), Vector2(11050, 480)],
+				[Vector2(11950, 220), Vector2(11950, 480)]
+			]
+		})
 
 	# 4. Precompute route choice plaques
 	cached_route_signs.clear()
@@ -803,6 +952,84 @@ func _draw() -> void:
 				draw_rect(pil, Color(0.34, 0.31, 0.38, 0.80), false, 1.5)
 			for fr in lm.floor_runes:
 				draw_line(fr[0], fr[1], Color(0.3, 1.8, 2.2, 0.50), 2.0)
+		elif lm.type == "silent_royal_gate":
+			draw_rect(lm.left_pillar, Color(0.12, 0.09, 0.15, 0.96))
+			draw_rect(lm.left_pillar, Color(0.24, 0.18, 0.28, 0.85), false, 2.0)
+			draw_rect(lm.right_pillar, Color(0.12, 0.09, 0.15, 0.96))
+			draw_rect(lm.right_pillar, Color(0.24, 0.18, 0.28, 0.85), false, 2.0)
+			for j in lm.joints:
+				draw_line(j[0], j[1], Color(0.06, 0.04, 0.08, 0.85), 2.0)
+			draw_rect(lm.lintel, Color(0.14, 0.10, 0.18, 0.96))
+			draw_rect(lm.lintel, Color(0.26, 0.20, 0.30, 0.85), false, 2.0)
+			draw_rect(lm.cornice, Color(0.16, 0.12, 0.20, 0.96))
+			draw_rect(lm.cornice, Color(0.28, 0.22, 0.32, 0.80), false, 1.5)
+			draw_colored_polygon(lm.broken_crest, Color(0.20, 0.14, 0.24, 0.98))
+			draw_polyline(lm.broken_crest, Color(0.42, 0.28, 0.48, 0.85), 1.5, true)
+			draw_circle(lm.crest_eye, 5.0, Color(2.6, 0.35, 0.55, 0.95))
+			draw_circle(lm.crest_eye, 2.0, Color(3.5, 1.8, 2.2, 0.98))
+			for ch in lm.chains:
+				draw_line(ch[0], ch[1], Color(0.20, 0.16, 0.24, 0.90), 3.0)
+				var y_cur: float = ch[0].y + 16.0
+				while y_cur < ch[1].y:
+					draw_rect(Rect2(ch[0].x - 3, y_cur, 6, 8), Color(0.28, 0.22, 0.32, 0.95))
+					y_cur += 16.0
+			for f in lm.fissures:
+				for f_idx in range(f.size() - 1):
+					draw_line(f[f_idx], f[f_idx + 1], Color(1.8, 0.35, 2.2, 0.55), 2.0)
+			for rub in lm.rubble:
+				draw_rect(rub, Color(0.11, 0.08, 0.14, 0.92))
+				draw_rect(rub, Color(0.22, 0.16, 0.26, 0.75), false, 1.5)
+
+		elif lm.type == "submerged_throne_gallery":
+			draw_rect(lm.throne_dais, Color(0.13, 0.10, 0.16, 0.96))
+			draw_rect(lm.throne_dais, Color(0.25, 0.20, 0.30, 0.85), false, 2.0)
+			draw_colored_polygon(lm.throne_back, Color(0.15, 0.11, 0.18, 0.96))
+			draw_polyline(lm.throne_back, Color(0.28, 0.22, 0.32, 0.85), 2.0, true)
+			for pin_idx in range(0, lm.pinnacles.size() - 2, 2):
+				draw_line(lm.pinnacles[pin_idx], lm.pinnacles[pin_idx + 1], Color(0.35, 0.26, 0.40, 0.90), 2.5)
+				draw_line(lm.pinnacles[pin_idx + 1], lm.pinnacles[pin_idx + 2], Color(0.35, 0.26, 0.40, 0.90), 2.5)
+			draw_circle(lm.void_crest_eye, 6.0, Color(2.4, 0.35, 0.85, 0.85))
+			draw_circle(lm.void_crest_eye, 2.5, Color(3.5, 2.0, 3.2, 0.98))
+			draw_colored_polygon(lm.fallen_statue, Color(0.11, 0.08, 0.14, 0.95))
+			draw_polyline(lm.fallen_statue, Color(0.22, 0.17, 0.26, 0.80), 1.5, true)
+			for bnr in lm.tattered_banners:
+				draw_colored_polygon(bnr, Color(0.38, 0.08, 0.18, 0.85))
+				draw_polyline(bnr, Color(0.65, 0.15, 0.30, 0.75), 1.2, true)
+			for sh in lm.floating_shards:
+				draw_rect(sh, Color(0.14, 0.10, 0.18, 0.92))
+				draw_rect(sh, Color(0.28, 0.20, 0.34, 0.75), false, 1.2)
+			for bz in lm.braziers:
+				draw_rect(Rect2(bz.x - 8, bz.y, 16, 32), Color(0.12, 0.09, 0.15, 0.95))
+				draw_circle(bz + Vector2(0, -4), 7.0, Color(2.4, 0.30, 0.55, 0.85))
+				draw_circle(bz + Vector2(0, -4), 3.0, Color(3.5, 1.8, 2.2, 0.98))
+
+		elif lm.type == "arbiter_judgment_hall":
+			draw_rect(lm.throne_dais, Color(0.12, 0.09, 0.16, 0.96))
+			draw_rect(lm.throne_dais, Color(0.25, 0.19, 0.30, 0.85), false, 2.0)
+			draw_colored_polygon(lm.throne_back, Color(0.14, 0.10, 0.18, 0.96))
+			draw_polyline(lm.throne_back, Color(0.30, 0.22, 0.35, 0.85), 2.5, true)
+			draw_circle(lm.void_portal_center, 38.0, Color(0.015, 0.008, 0.025, 0.95))
+			draw_arc(lm.void_portal_center, 38.0, 0, TAU, 32, Color(2.6, 0.35, 0.65, 0.85), 2.5, true)
+			draw_arc(lm.void_portal_center, 22.0, 0, TAU, 24, Color(3.2, 0.45, 0.80, 0.75), 1.8, true)
+			draw_circle(lm.void_portal_center, 8.0, Color(3.5, 0.6, 1.2, 0.95))
+			for ob in lm.obelisks:
+				draw_rect(ob, Color(0.10, 0.08, 0.14, 0.95))
+				draw_rect(ob, Color(0.24, 0.18, 0.30, 0.85), false, 1.5)
+			for i in range(lm.obelisks.size()):
+				var ob_rect: Rect2 = lm.obelisks[i]
+				var cap_pt: Vector2 = lm.obelisk_caps[i]
+				var pyr := PackedVector2Array([
+					ob_rect.position,
+					cap_pt,
+					ob_rect.position + Vector2(ob_rect.size.x, 0)
+				])
+				draw_colored_polygon(pyr, Color(0.14, 0.11, 0.18, 0.98))
+				draw_polyline(pyr, Color(0.32, 0.24, 0.38, 0.85), 1.5, true)
+				draw_circle(cap_pt, 2.5, Color(2.8, 0.4, 0.7, 0.80))
+			for cf in lm.crimson_fissures:
+				draw_line(cf[0], cf[1], Color(2.6, 0.30, 0.50, 0.75), 2.5)
+			for hc in lm.hanging_arena_chains:
+				draw_line(hc[0], hc[1], Color(0.16, 0.12, 0.20, 0.90), 3.5)
 
 	# 3. Platforms, slab shadows, corbels/roots, polylines from cache
 	for p in cached_platforms:
@@ -868,6 +1095,36 @@ func _draw() -> void:
 						draw_rect(pyl.plinth, Color(0.30, 0.27, 0.34, 0.85), false, 1.5)
 						if pyl.has("rune_center"):
 							draw_circle(pyl.rune_center, 4.0, Color(0.3, 1.8, 2.2, 0.60))
+			elif cached_stage_num == 5:
+				if p.has("slab_blackstone"):
+					draw_rect(p.slab_blackstone, Color(0.11, 0.08, 0.14, 0.96))
+					draw_line(Vector2(p.slab_blackstone.position.x, p.slab_blackstone.position.y), Vector2(p.slab_blackstone.position.x + p.slab_blackstone.size.x, p.slab_blackstone.position.y), Color(0.48, 0.40, 0.56, 0.88), 1.5)
+				if p.has("void_pillars"):
+					for pil in p.void_pillars:
+						draw_rect(pil.rect, Color(0.13, 0.10, 0.17, 0.95))
+						draw_rect(pil.rect, Color(0.26, 0.20, 0.32, 0.85), false, 1.5)
+						for j_idx in range(0, pil.joints.size(), 2):
+							if j_idx + 1 < pil.joints.size():
+								draw_line(pil.joints[j_idx], pil.joints[j_idx + 1], Color(0.06, 0.04, 0.08, 0.85), 2.0)
+						draw_colored_polygon(pil.corbel, Color(0.15, 0.11, 0.18, 0.95))
+						draw_polyline(pil.corbel, Color(0.28, 0.22, 0.34, 0.80), 1.5, true)
+						draw_rect(pil.plinth, Color(0.12, 0.09, 0.15, 0.98))
+						draw_rect(pil.plinth, Color(0.24, 0.18, 0.28, 0.85), false, 1.5)
+						if pil.has("fracture") and pil.fracture.size() >= 2:
+							for f_i in range(pil.fracture.size() - 1):
+								draw_line(pil.fracture[f_i], pil.fracture[f_i + 1], Color(1.8, 0.35, 0.65, 0.60), 1.8)
+				if p.has("royal_arches"):
+					for arch_data in p.royal_arches:
+						draw_colored_polygon(arch_data.arch, Color(0.13, 0.10, 0.16, 0.95))
+						draw_polyline(arch_data.arch, Color(0.26, 0.20, 0.32, 0.85), 1.5, true)
+						draw_rect(arch_data.plinth, Color(0.11, 0.08, 0.14, 0.98))
+						draw_rect(arch_data.plinth, Color(0.22, 0.16, 0.28, 0.85), false, 1.5)
+						if arch_data.has("chain_l"):
+							draw_line(arch_data.chain_l[0], arch_data.chain_l[1], Color(0.20, 0.16, 0.24, 0.90), 2.5)
+						if arch_data.has("chain_r"):
+							draw_line(arch_data.chain_r[0], arch_data.chain_r[1], Color(0.20, 0.16, 0.24, 0.90), 2.5)
+						if arch_data.has("core_gem"):
+							draw_circle(arch_data.core_gem, 3.5, Color(2.4, 0.4, 0.7, 0.75))
 			else:
 				for s in p.supports:
 					draw_texture_rect_region(ground_texture, s.rect, s.source, s.shade)
@@ -899,6 +1156,9 @@ func _draw() -> void:
 			elif cached_stage_num == 4:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 고대 성소 상층 회랑 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 거석 의식 통로로 전진", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
+			elif cached_stage_num == 5:
+				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 심연의 공중 회랑 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
+				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 침묵의 성채 통로로 전진", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
 			else:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))

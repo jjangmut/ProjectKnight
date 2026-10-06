@@ -127,23 +127,47 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				s_poly.color = Color(0.65, 1.15, 1.25, sc[4])
 				shafts.add_child(s_poly)
 			l1.add_child(shafts)
+		elif stage_num == 5:
+			# Stage 5: Fractured Abyssal Sky & Void Astral Fissures
+			var fissures := Node2D.new()
+			fissures.name = "AbyssalVoidFissures"
+			var fissure_configs := [
+				[Vector2(200, 0), Vector2(340, 180), Vector2(420, 320), Color(0.8, 0.2, 0.5, 0.20)],
+				[Vector2(750, 0), Vector2(860, 240), Vector2(980, 400), Color(0.6, 0.15, 0.7, 0.24)],
+				[Vector2(1250, 0), Vector2(1380, 160), Vector2(1520, 340), Color(0.9, 0.25, 0.45, 0.22)],
+				[Vector2(1650, 0), Vector2(1760, 220), Vector2(1880, 380), Color(0.7, 0.18, 0.6, 0.20)]
+			]
+			for fc in fissure_configs:
+				var f_line := Line2D.new()
+				f_line.width = 3.5
+				f_line.default_color = fc[3]
+				f_line.points = PackedVector2Array([fc[0], fc[1], fc[2]])
+				fissures.add_child(f_line)
+				var f_core := Line2D.new()
+				f_core.width = 1.2
+				f_core.default_color = Color(2.4, 0.6, 1.2, 0.45)
+				f_core.points = PackedVector2Array([fc[0], fc[1], fc[2]])
+				fissures.add_child(f_core)
+			l1.add_child(fissures)
 
-		# Celestial Body: Soft atmospheric sun / moon with diffuse corona
+		# Celestial Body: Soft atmospheric sun / moon / Black Eclipse with diffuse corona
 		var celestial := Node2D.new()
 		celestial.name = "CelestialBody"
-		var center := Vector2(1480.0, 200.0) if stage_num == 3 else (Vector2(1440.0, 160.0) if stage_num == 4 else Vector2(1400.0, 150.0))
+		var is_eclipse: bool = (stage_num == 5)
+		var center := Vector2(1480.0, 200.0) if stage_num == 3 else (Vector2(1440.0, 160.0) if stage_num == 4 else (Vector2(1420.0, 180.0) if stage_num == 5 else Vector2(1400.0, 150.0)))
 
 		# Outer diffuse corona
 		var corona := Polygon2D.new()
 		var corona_pts := PackedVector2Array()
+		var c_radius := 64.0 if is_eclipse else 54.0
 		for i in range(24):
 			var rad := float(i) * TAU / 24.0
-			corona_pts.append(center + Vector2(cos(rad), sin(rad)) * 54.0)
+			corona_pts.append(center + Vector2(cos(rad), sin(rad)) * c_radius)
 		corona.polygon = corona_pts
-		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.8, 0.7, 0.25, 0.20) if stage_num == 3 else (Color(0.40, 1.60, 1.90, 0.22) if stage_num == 4 else (Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15))))
+		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.8, 0.7, 0.25, 0.20) if stage_num == 3 else (Color(0.40, 1.60, 1.90, 0.22) if stage_num == 4 else (Color(1.8, 0.25, 0.35, 0.26) if stage_num == 5 else Color(1.0, 0.95, 0.85, 0.12))))
 		celestial.add_child(corona)
 
-		# Core luminous body
+		# Core luminous body (or Black Void Eclipse core)
 		var moon := Polygon2D.new()
 		var points := PackedVector2Array()
 		var radius := 36.0
@@ -151,8 +175,18 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			var rad := float(i) * TAU / 24.0
 			points.append(center + Vector2(cos(rad), sin(rad)) * radius)
 		moon.polygon = points
-		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(2.2, 1.15, 0.45, 0.80) if stage_num == 3 else (Color(1.10, 1.35, 1.45, 0.85) if stage_num == 4 else (Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85)))))
+		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(2.2, 1.15, 0.45, 0.80) if stage_num == 3 else (Color(1.10, 1.35, 1.45, 0.85) if stage_num == 4 else (Color(0.015, 0.008, 0.025, 0.98) if stage_num == 5 else Color(1.0, 0.96, 0.88, 0.38))))
 		celestial.add_child(moon)
+
+		if is_eclipse:
+			# Blistering Crimson Photonic Rim around the Black Moon Core
+			var rim := Line2D.new()
+			rim.width = 2.2
+			rim.default_color = Color(3.2, 0.45, 0.65, 0.95)
+			var closed_points := points.duplicate()
+			closed_points.append(points[0])
+			rim.points = closed_points
+			celestial.add_child(rim)
 		l1.add_child(celestial)
 
 	var l2 := get_node_or_null("LayerDistantPeaks") as ParallaxLayer
@@ -273,6 +307,62 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				rune_mark.color = Color(0.3, 1.8, 2.2, 0.45)
 				sanctuary.add_child(rune_mark)
 			l2.add_child(sanctuary)
+		elif stage_num == 5:
+			# Stage 5: Distant Impossible Citadel Spires & Floating Ruined Towers
+			var citadel := Node2D.new()
+			citadel.name = "DistantCitadelSpires"
+			var ridge_pts := PackedVector2Array([
+				Vector2(0, LAYER_HEIGHT),
+				Vector2(0, 480),
+				Vector2(70, 480), Vector2(100, 280), Vector2(130, 180), Vector2(150, 280), Vector2(190, 480),
+				Vector2(290, 480), Vector2(330, 240), Vector2(370, 150), Vector2(400, 250), Vector2(440, 490),
+				Vector2(560, 490), Vector2(600, 290), Vector2(630, 200), Vector2(660, 290), Vector2(700, 480),
+				Vector2(810, 480), Vector2(850, 210), Vector2(880, 140), Vector2(920, 230), Vector2(960, 490),
+				Vector2(1070, 490), Vector2(1110, 280), Vector2(1140, 190), Vector2(1180, 290), Vector2(1220, 480),
+				Vector2(1320, 480), Vector2(1360, 230), Vector2(1400, 160), Vector2(1430, 240), Vector2(1480, 490),
+				Vector2(1580, 490), Vector2(1620, 270), Vector2(1650, 180), Vector2(1690, 280), Vector2(1730, 480),
+				Vector2(1810, 480), Vector2(1850, 220), Vector2(1880, 150), Vector2(1900, 240), Vector2(1920, 480),
+				Vector2(LAYER_WIDTH, 480),
+				Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+			])
+			var ridge_poly := Polygon2D.new()
+			ridge_poly.polygon = ridge_pts
+			ridge_poly.color = Color(0.06, 0.04, 0.09, 0.94)
+			citadel.add_child(ridge_poly)
+
+			# Floating Ruined Citadel Masonry Blocks drifting in zero-g
+			for f_rect in [
+				Rect2(220, 190, 45, 60),
+				Rect2(480, 160, 50, 75),
+				Rect2(730, 180, 40, 55),
+				Rect2(1000, 150, 48, 70),
+				Rect2(1250, 170, 42, 58),
+				Rect2(1510, 160, 52, 72),
+				Rect2(1750, 180, 38, 52)
+			]:
+				var f_poly := Polygon2D.new()
+				f_poly.polygon = PackedVector2Array([
+					f_rect.position + Vector2(-6, 0),
+					f_rect.position + Vector2(f_rect.size.x + 8, 4),
+					f_rect.position + f_rect.size + Vector2(4, 6),
+					f_rect.position + Vector2(-4, f_rect.size.y)
+				])
+				f_poly.color = Color(0.08, 0.05, 0.12, 0.95)
+				citadel.add_child(f_poly)
+
+			# Bleeding Abyssal Energy Fissures on distant spire crevices
+			for fissure_pos in [Vector2(130, 210), Vector2(370, 180), Vector2(630, 230), Vector2(880, 170), Vector2(1140, 220), Vector2(1400, 190), Vector2(1650, 210), Vector2(1880, 180)]:
+				var crevice := Line2D.new()
+				crevice.width = 1.8
+				crevice.default_color = Color(2.4, 0.35, 0.65, 0.65)
+				crevice.points = PackedVector2Array([
+					fissure_pos - Vector2(0, 18),
+					fissure_pos + Vector2(3, 0),
+					fissure_pos + Vector2(-2, 16),
+					fissure_pos + Vector2(0, 32)
+				])
+				citadel.add_child(crevice)
+			l2.add_child(citadel)
 		elif base_texture == null:
 			# Fallback geometric peak silhouettes for stages without dedicated textures
 			var peaks := Polygon2D.new()
@@ -303,7 +393,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			tex_rect.size = Vector2(LAYER_WIDTH, LAYER_HEIGHT)
 			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else (Color(0.68, 0.52, 0.64, 0.95) if stage_num == 3 else (Color(1.02, 0.96, 0.88, 0.95) if stage_num == 4 else Color(1, 1, 1, 0.95)))
+			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else (Color(0.68, 0.52, 0.64, 0.95) if stage_num == 3 else (Color(1.02, 0.96, 0.88, 0.95) if stage_num == 4 else (Color(0.72, 0.60, 0.88, 0.95) if stage_num == 5 else Color(1, 1, 1, 0.95))))
 			l3.add_child(tex_rect)
 			if stage_num == 3:
 				var mid_fracture := Polygon2D.new()
@@ -329,6 +419,31 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				])
 				mid_sanctuary.color = Color(0.18, 0.15, 0.20, 0.65)
 				l3.add_child(mid_sanctuary)
+			elif stage_num == 5:
+				var mid_citadel := Polygon2D.new()
+				mid_citadel.polygon = PackedVector2Array([
+					Vector2(0, LAYER_HEIGHT), Vector2(0, 520),
+					Vector2(160, 520), Vector2(210, 440), Vector2(340, 440), Vector2(390, 525),
+					Vector2(620, 530), Vector2(670, 430), Vector2(800, 430), Vector2(850, 530),
+					Vector2(1080, 525), Vector2(1130, 440), Vector2(1260, 440), Vector2(1310, 530),
+					Vector2(1540, 535), Vector2(1590, 435), Vector2(1720, 435), Vector2(1770, 525),
+					Vector2(LAYER_WIDTH, 520), Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+				])
+				mid_citadel.color = Color(0.09, 0.06, 0.13, 0.75)
+				l3.add_child(mid_citadel)
+
+				# Broken hanging arches over the abyss
+				for arch_x in [275.0, 735.0, 1195.0, 1655.0]:
+					var arch_beam := Rect2(arch_x - 65, 428, 130, 16)
+					var a_poly := Polygon2D.new()
+					a_poly.polygon = PackedVector2Array([
+						arch_beam.position,
+						arch_beam.position + Vector2(arch_beam.size.x, 0),
+						arch_beam.position + arch_beam.size + Vector2(-15, 0),
+						arch_beam.position + Vector2(15, arch_beam.size.y)
+					])
+					a_poly.color = Color(0.12, 0.08, 0.16, 0.88)
+					l3.add_child(a_poly)
 		else:
 			# Fallback procedural ruins silhouette for stages without dedicated textures
 			var ruins := Polygon2D.new()
@@ -420,6 +535,50 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			fog.color = Color(0.10, 0.24, 0.26, 0.10)
 			fog.position = Vector2(0, 510)
 			fog.size = Vector2(LAYER_WIDTH, 210)
+			l4.add_child(fog)
+		elif stage_num == 5:
+			# Stage 5: Top black stone cornice beams & hanging heavy void chains
+			var fg_cornice := Polygon2D.new()
+			fg_cornice.polygon = PackedVector2Array([
+				Vector2(0, 0), Vector2(LAYER_WIDTH, 0),
+				Vector2(LAYER_WIDTH, 48), Vector2(1820, 38), Vector2(1740, 72),
+				Vector2(1620, 38), Vector2(1500, 68), Vector2(1380, 38),
+				Vector2(1250, 76), Vector2(1130, 38), Vector2(990, 72),
+				Vector2(860, 38), Vector2(740, 76), Vector2(610, 38),
+				Vector2(470, 68), Vector2(340, 38), Vector2(210, 76),
+				Vector2(90, 38), Vector2(0, 56)
+			])
+			fg_cornice.color = Color(0.04, 0.03, 0.06, 0.92)
+			l4.add_child(fg_cornice)
+
+			# Hanging heavy void chains
+			var chain_xs := [150.0, 420.0, 680.0, 930.0, 1190.0, 1440.0, 1680.0, 1860.0]
+			for cx in chain_xs:
+				var chain_len := 65.0 + float(int(cx * 7) % 55)
+				var chain_line := Line2D.new()
+				chain_line.width = 3.0
+				chain_line.default_color = Color(0.12, 0.09, 0.15, 0.88)
+				chain_line.points = PackedVector2Array([
+					Vector2(cx, 35),
+					Vector2(cx, 35 + chain_len)
+				])
+				l4.add_child(chain_line)
+				var link_y := 45.0
+				while link_y < 35.0 + chain_len:
+					var link := Polygon2D.new()
+					link.polygon = PackedVector2Array([
+						Vector2(cx - 3, link_y), Vector2(cx + 3, link_y),
+						Vector2(cx + 3, link_y + 6), Vector2(cx - 3, link_y + 6)
+					])
+					link.color = Color(0.18, 0.14, 0.22, 0.95)
+					l4.add_child(link)
+					link_y += 12.0
+
+			# Subtle drifting abyssal void haze
+			var fog := ColorRect.new()
+			fog.color = Color(0.12, 0.06, 0.16, 0.12)
+			fog.position = Vector2(0, 500)
+			fog.size = Vector2(LAYER_WIDTH, 220)
 			l4.add_child(fog)
 		else:
 			var fog := ColorRect.new()

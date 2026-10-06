@@ -316,6 +316,10 @@ func _process(delta: float) -> void:
 			var in_boss_now: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
 			var target_color := Color(0.9, 1.8, 2.0, 0.45) if in_boss_now else Color(0.7, 1.4, 1.5, 0.35)
 			motes.color = motes.color.lerp(target_color, 3.0 * delta)
+		elif stage.stage_number == 5:
+			var in_boss_now: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
+			var target_color := Color(1.8, 0.25, 0.45, 0.45) if in_boss_now else Color(1.1, 0.65, 1.4, 0.35)
+			motes.color = motes.color.lerp(target_color, 3.0 * delta)
 	if stage.player.guard_block_count > previous_guard_blocks:
 		guard_audio.play()
 	previous_guard_blocks = stage.player.guard_block_count

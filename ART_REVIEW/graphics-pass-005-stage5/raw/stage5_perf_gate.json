@@ -1,0 +1,54 @@
+{
+	"boss_combat": {
+		"active_nodes": 455,
+		"avg_draw_calls": 1337.9,
+		"avg_fps": 241.82354297285,
+		"avg_frame_ms": 4.13524666666667,
+		"frames": 600,
+		"low_1pct_fps": 185.459940652819,
+		"max_frame_ms": 15.771,
+		"min_frame_ms": 3.502,
+		"p95_frame_ms": 5.032,
+		"p99_frame_ms": 5.392,
+		"sector_pass": true
+	},
+	"entry": {
+		"active_nodes": 465,
+		"avg_draw_calls": 1358.51,
+		"avg_fps": 230.143770813627,
+		"avg_frame_ms": 4.34511,
+		"frames": 600,
+		"low_1pct_fps": 157.48031496063,
+		"max_frame_ms": 35.975,
+		"min_frame_ms": 3.559,
+		"p95_frame_ms": 5.254,
+		"p99_frame_ms": 6.35,
+		"sector_pass": true
+	},
+	"late_citadel": {
+		"active_nodes": 467,
+		"avg_draw_calls": 1383.74833333333,
+		"avg_fps": 210.136862138311,
+		"avg_frame_ms": 4.75880333333333,
+		"frames": 600,
+		"low_1pct_fps": 114.207400639561,
+		"max_frame_ms": 16.66,
+		"min_frame_ms": 3.705,
+		"p95_frame_ms": 6.605,
+		"p99_frame_ms": 8.756,
+		"sector_pass": true
+	},
+	"mixed_combat": {
+		"active_nodes": 470,
+		"avg_draw_calls": 1355.41666666667,
+		"avg_fps": 229.103472292226,
+		"avg_frame_ms": 4.36483999999999,
+		"frames": 600,
+		"low_1pct_fps": 180.799132164166,
+		"max_frame_ms": 8.286,
+		"min_frame_ms": 3.573,
+		"p95_frame_ms": 5.233,
+		"p99_frame_ms": 5.531,
+		"sector_pass": true
+	}
+}

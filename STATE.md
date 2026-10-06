@@ -211,7 +211,7 @@ Project Knight
   - `ART_REVIEW/graphics-pass-003-stage3/FINAL_REVIEW.md`
 
 ### Stage 4 Graphics Pass 004 (돌의 성소)
-- 상태: **`INDEPENDENT REVIEW REQUESTED`**
+- 상태: **`APPROVED`** (TASK-AR-018 독립 검수 통과에 따른 정식 승인)
 - 10대 자체 품질 평가: **9.35 / 10** (기준 ≥ 8.0 통과)
 - PC 60 FPS Gate: **4개 전 구간 압도적 PASS** (Entry: 291.3 FPS, First Golem: 273.3 FPS, Mid Sanctuary: 258.2 FPS, Boss Combat: 292.6 FPS)
 - 4계층 패럴랙스 (천창 광선, 원경 거석 기둥군, 성소 벽면 부조, 전경 거석 천장 보 및 신성한 안개) 및 3대 거석 랜드마크 (거대한 룬 석문, 쓰러진 거상, 고대 성소) + 보스 아레나(3단 제단, 6개 열주, 화로) 구축
@@ -236,22 +236,42 @@ Project Knight
 - idle per-frame redraw regression prevented
 - performance gate PASS (Entry: 263.7 FPS, First Golem: 244.1 FPS, Mid Sanctuary: 218.0 FPS, Boss: 265.8 FPS)
 - regression PASS (총 17개 테스트 스위트 100% PASS)
-- 상태: **`INDEPENDENT REVIEW REQUESTED`**
+- 상태: **`APPROVED`**
 - 모바일 상태: **`ANDROID PERFORMANCE NOT VERIFIED`**
 - 산출물:
   - `ART_REVIEW/graphics-pass-004-stage4-r1/01_ground_slam_windup.png`
   - `ART_REVIEW/graphics-pass-004-stage4-r1/02_ground_slam_active.png`
   - `ART_REVIEW/graphics-pass-004-stage4-r1/BLOCKER_FIX_REPORT.md`
 
+### Stage 5 Graphics Pass 005 (침묵의 성채)
+- 상태: **`STAGE 5 GRAPHICS PASS 005 — INDEPENDENT REVIEW REQUESTED`** (작업 브랜치: `antigravity/graphics-quality-pass-005-stage5`)
+- 영문 컨셉: **Silent Citadel / Abyssal Citadel**
+- 목표: Project Knight의 최종 스테이지답게 앞선 4개 지역을 압도하는 최종장 비주얼 정체성 확립, 검은 일식(Eclipse)/심연의 균열, 비현실적 불가능한 건축(Impossible Architecture), 심연의 3대 랜드마크 및 Abyssal Arbiter 최종 심판실 구축.
+- 모바일 상태: **`ANDROID PERFORMANCE NOT VERIFIED`** 유지.
+- 산출물:
+  - `ART_REVIEW/graphics-pass-005-stage5/before/` (7종 캡처)
+  - `ART_REVIEW/graphics-pass-005-stage5/cycle_a/` (7종 캡처)
+  - `ART_REVIEW/graphics-pass-005-stage5/after/` (7종 캡처)
+  - `ART_REVIEW/graphics-pass-005-stage5/profiler/` (4종 캡처)
+  - `ART_REVIEW/graphics-pass-005-stage5/raw/stage5_perf_gate.json`
+  - `ART_REVIEW/graphics-pass-005-stage5/BASELINE_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/CYCLE_A_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/CYCLE_B_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/VISUAL_COMPARISON.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/PERFORMANCE.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/FINAL_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-005-stage5/CAMPAIGN_VISUAL_REVIEW.md`
+  - `WORK/TASK-AR-019.md`
+
 ## QA 상태
 
-최신 확인 가능한 게임 품질 회귀 기록 (총 17개 테스트 스위트 전원 PASS / 신규 3개 + 기존 회귀 14개):
-- **신규 Stage 4 R1 테스트**:
-  - `stage4_ground_slam_redraw_smoke.gd`: **17/17 PASS**
-- **Stage 4 테스트**:
+최신 확인 가능한 게임 품질 회귀 기록 (총 18개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 16개):
+- **신규 Stage 5 테스트**:
+  - `stage5_graphics_pass_smoke.gd`: **27/27 PASS**
+  - `stage5_render_performance_gate.gd`: **4/4 Sectors PASS**
+- **기존 회귀 테스트 (16개, Stage 1~4 및 전역 시스템 제로 회귀 입증)**:
   - `stage4_graphics_pass_smoke.gd`: **25/25 PASS**
-  - `stage4_render_performance_gate.gd`: **4/4 Sectors PASS**
-- **기존 회귀 테스트 (14개, Stage 1 / Stage 2 / Stage 3 무회귀 입증)**:
+  - `stage4_ground_slam_redraw_smoke.gd`: **17/17 PASS**
   - `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
   - `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
   - `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
@@ -282,12 +302,9 @@ Project Knight
 
 ## 다음 우선 작업
 
-1. Stage 2 Graphics Pass 002 독립 검수 피드백 대응
-2. Stage 3 Graphics Pass 003 독립 검수 피드백 대응
-3. Stage 4 Graphics Pass 004 및 TASK-AR-018 독립 검수 피드백 대응
-4. Stage 5 Graphics Pass 005 착수 준비
-5. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-6. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
+1. Stage 2, Stage 3, Stage 5 독립 검수 피드백 대응
+2. Stage 1→5 전체 캠페인 실기 플레이 완주 QA 및 보스 난이도 밸런스 점검
+3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
 
@@ -298,7 +315,8 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-06**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / TASK-AR-018 Stage 4 Ground Slam Redraw Blocker Fix 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / TASK-AR-019 Stage 5 침묵의 성채 Graphics Pass 005 완료 및 독립 검수 요청 (`STAGE 5 GRAPHICS PASS 005 — INDEPENDENT REVIEW REQUESTED`)
+
 
 
 
