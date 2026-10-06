@@ -212,23 +212,25 @@ Project Knight
 
 ## QA 상태
 
-최신 확인 가능한 게임 품질 회귀 기록:
-- `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
-- `stage3_render_performance_gate.gd`: **4/4 Sectors PASS**
-- `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
-- `stage2_render_performance_gate.gd`: **4/4 Sectors PASS**
-- `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
-- `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
-- `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
-- `boss1_visual_polish_smoke.gd`: **17/17 PASS**
-- `campaign_transition_test.gd`: **PASS**
-- `stage_art_smoke.gd`: **37/37 PASS**
-- `stage_smoke.gd`: **37/37 PASS**
-- `combat_deepening_smoke.gd`: **10/10 PASS**
-- `guard_core_smoke.gd`: **21/21 PASS**
-- `sprint4_smoke.gd`: **23/23 PASS**
-- `enemy_motion_smoke.gd`: **130/130 PASS**
-- `data_driven_smoke.gd`: **38/38 PASS**
+최신 확인 가능한 게임 품질 회귀 기록 (총 15개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 13개):
+- **신규 Stage 3 테스트 (2개)**:
+  - `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
+  - `stage3_render_performance_gate.gd`: **4/4 Sectors PASS**
+- **기존 회귀 테스트 (13개, Stage 1 / Stage 2 무회귀 입증)**:
+  - `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
+  - `stage2_render_performance_gate.gd`: **4/4 Sectors PASS**
+  - `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
+  - `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
+  - `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
+  - `boss1_visual_polish_smoke.gd`: **17/17 PASS**
+  - `campaign_transition_test.gd`: **PASS**
+  - `stage_art_smoke.gd`: **37/37 PASS**
+  - `stage_smoke.gd`: **37/37 PASS**
+  - `combat_deepening_smoke.gd`: **10/10 PASS**
+  - `guard_core_smoke.gd`: **21/21 PASS**
+  - `sprint4_smoke.gd`: **23/23 PASS**
+  - `enemy_motion_smoke.gd`: **130/130 PASS**
+  - `data_driven_smoke.gd`: **38/38 PASS**
 
 ## 빌드 / 배포 상태
 

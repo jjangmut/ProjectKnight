@@ -16,7 +16,7 @@ TASK-AR-016 지침에 따라 **Stage 3 (무너진 성벽, Collapsed Fortress / R
 2. 대표 6개 장면 Before / Cycle A / After 캡처 완료 (`ART_REVIEW/graphics-pass-003-stage3/after/`)
 3. 10대 그래픽 품질 평가 산정 (**9.25 / 10** 달성, 기준 ≥ 8.0 대폭 초과)
 4. 4개 구간 PC 60 FPS Gate 통과 (**213.5 ~ 349.3 FPS** 달성, 기준 ≥ 60 FPS)
-5. 신규 및 기존 13개 자동화 회귀 테스트 스위트 전원 PASS (100%, Stage 1/Stage 2 제로 회귀 검증)
+5. 총 15개 자동화 회귀 테스트 스위트 전원 PASS (신규 2개 + 기존 13개, 100%, Stage 1/Stage 2 제로 회귀 검증)
 를 모두 완료하여 **독립 검수(Independent Review)를 공식 요청**합니다.
 
 ---
@@ -86,13 +86,17 @@ TASK-AR-016 지침에 따라 **Stage 3 (무너진 성벽, Collapsed Fortress / R
 
 ---
 
-## 5. 자동화 회귀 테스트 결과 (100% PASS)
+## 5. 자동화 회귀 테스트 결과 (총 15개 스위트 100% PASS)
 
-### 신규 테스트:
+- **신규 Stage 3 테스트**: 2개
+- **기존 회귀 테스트**: 13개
+- **총 실행 테스트**: 15개 (전원 PASS)
+
+### 1) 신규 테스트 (2개):
 1. `tests/stage3_graphics_pass_smoke.gd`: **PASS** (25/25 checks passed)
 2. `tests/stage3_render_performance_gate.gd`: **PASS** (4/4 sectors passed)
 
-### 기존 12개 회귀 테스트 (Stage 1 / Stage 2 제로 회귀 보증):
+### 2) 기존 회귀 테스트 (13개, Stage 1 / Stage 2 제로 회귀 보증):
 1. `tests/stage1_r2_blocker_fixes_smoke.gd`: **PASS** (27/27 checks passed)
 2. `tests/stage2_graphics_pass_smoke.gd`: **PASS** (24/24 checks passed)
 3. `tests/game_and_graphic_quality_smoke.gd`: **PASS** (60/60 checks passed)
