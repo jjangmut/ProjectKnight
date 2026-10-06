@@ -1,0 +1,68 @@
+{
+	"bosses_defeated": [
+		"Stage 1 Boss",
+		"Stage 2 Boss",
+		"Stage 3 Boss",
+		"Stage 4 Boss",
+		"Stage 5 Boss"
+	],
+	"captures": [
+		"stage2_beast_combat_gameplay.png",
+		"stage3_ranged_combat_gameplay.png",
+		"stage5_entry_gameplay.png",
+		"stage5_mixed_combat_gameplay.png",
+		"stage5_arbiter_gameplay.png"
+	],
+	"node_counts": [
+		{
+			"nodes_before": 272,
+			"stage": 1
+		},
+		{
+			"nodes_before": 283,
+			"stage": 2
+		},
+		{
+			"nodes_before": 354,
+			"stage": 3
+		},
+		{
+			"nodes_before": 370,
+			"stage": 4
+		},
+		{
+			"nodes_before": 449,
+			"stage": 5
+		}
+	],
+	"stages": [
+		{
+			"cleared": true,
+			"encounters": 6,
+			"stage_number": 1
+		},
+		{
+			"cleared": true,
+			"encounters": 6,
+			"stage_number": 2
+		},
+		{
+			"cleared": true,
+			"encounters": 8,
+			"stage_number": 3
+		},
+		{
+			"cleared": true,
+			"encounters": 8,
+			"stage_number": 4
+		},
+		{
+			"cleared": true,
+			"encounters": 8,
+			"stage_number": 5
+		}
+	],
+	"start_time_msec": 254,
+	"total_encounters_cleared": 31,
+	"total_time_sec": 24.483
+}

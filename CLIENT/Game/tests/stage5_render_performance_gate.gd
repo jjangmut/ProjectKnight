@@ -103,7 +103,8 @@ func _measure_sector(frames: int, action: Callable) -> Dictionary:
 		action.call(f)
 		await process_frame
 		ts_proc = Time.get_ticks_usec()
-		await RenderingServer.frame_post_draw
+		if DisplayServer.get_name() != "headless":
+			await RenderingServer.frame_post_draw
 		ts_post = Time.get_ticks_usec()
 
 		var f_time := float(ts_post - ts_pre) / 1000.0
@@ -198,12 +199,13 @@ func _create_profiler_panel(title: String, data: Dictionary) -> CanvasLayer:
 func _capture_screenshot(filename: String) -> void:
 	await process_frame
 	await process_frame
-	await RenderingServer.frame_post_draw
-	var img := root.get_texture().get_image()
-	if img != null:
-		var target := output_dir.path_join("profiler").path_join(filename)
-		img.save_png(target)
-		print("SAVED PROFILER CAPTURE: ", target)
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		var img := root.get_texture().get_image()
+		if img != null:
+			var target := output_dir.path_join("profiler").path_join(filename)
+			img.save_png(target)
+			print("SAVED PROFILER CAPTURE: ", target)
 
 func _run_gate() -> void:
 	print("\n=======================================================")

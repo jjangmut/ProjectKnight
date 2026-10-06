@@ -265,11 +265,16 @@ Project Knight
 
 ## QA 상태
 
-최신 확인 가능한 게임 품질 회귀 기록 (총 18개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 16개):
-- **신규 Stage 5 테스트**:
+최신 확인 가능한 게임 품질 회귀 기록 (총 23개 테스트 스위트 전원 PASS / 신규 Full Campaign QA 5개 + 기존 회귀 18개):
+- **신규 Full Campaign QA 테스트 (5개)**:
+  - `full_campaign_playthrough_qa.gd`: **225/225 PASS (100%)** (Stage 1→5 관통 및 31개 인카운터/5대 보스 격파)
+  - `full_campaign_transition_qa.gd`: **85/85 PASS (100%)** (씬 언로드/로드, 노드 누수 방지, 유물/트레이트 계승)
+  - `full_campaign_checkpoint_qa.gd`: **20/20 PASS (100%)** (체크포인트 저장 및 사망 리스폰 동기화)
+  - `full_campaign_reward_qa.gd`: **26/26 PASS (100%)** (보스 보상, 5종 유물 패시브 스탯 연동, SaveManager 라운드트립)
+  - `full_campaign_combat_readability_qa.gd`: **21/21 PASS (100%)** (텔레그래프 가시성, 패링, 히트스탑, 공중 버퍼링)
+- **기존 회귀 테스트 (18개, Stage 1~5 및 전역 시스템 제로 회귀 입증)**:
   - `stage5_graphics_pass_smoke.gd`: **27/27 PASS**
   - `stage5_render_performance_gate.gd`: **4/4 Sectors PASS**
-- **기존 회귀 테스트 (16개, Stage 1~4 및 전역 시스템 제로 회귀 입증)**:
   - `stage4_graphics_pass_smoke.gd`: **25/25 PASS**
   - `stage4_ground_slam_redraw_smoke.gd`: **17/17 PASS**
   - `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
@@ -291,19 +296,19 @@ Project Knight
 
 - `.gitignore`에 `CLIENT/Game/builds/`, `*.apk`, `*.aab` 제외
 - `export_presets.cfg`: v1.1.5 / versionCode 6 / `com.junypapa.projectknight`
-- Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요
+- Debug keystore 경로가 `C:/Users/jjang/.android/debug.keystore`로 로컬 고정되어 있어 향후 CI 분리가 필요 (P2 이슈 등록)
 - 본 패스 Android 검증 상태: **`ANDROID PERFORMANCE NOT VERIFIED`** (PC 데스크톱 환경 및 헤드리스 엔진 기반 실측)
 
 ## 알려진 관리 이슈
 
 1. GitHub 저장소의 default branch는 아직 기존 `task/art-stage-batch-001`일 수 있다. 표준 통합 기준은 `integration`으로 전환했다.
 2. 오래된 TASK/설계 문서의 상태 표현이 최신 코드와 충돌할 수 있으므로 코드/최근 커밋 우선.
-3. Android 서명/빌드 설정의 로컬 경로 의존성 정리 필요.
+3. Android 서명/빌드 설정의 로컬 경로 의존성 정리 필요 (P2).
 
 ## 다음 우선 작업
 
 1. Stage 2, Stage 3, Stage 5 독립 검수 피드백 대응
-2. Stage 1→5 전체 캠페인 실기 플레이 완주 QA 및 보스 난이도 밸런스 점검
+2. Stage 1→5 전체 캠페인 실기 플레이 완주 QA 및 보스 난이도 밸런스 점검 (TASK-QA-020 검증 완료, 독립 검수 대기)
 3. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
@@ -315,7 +320,7 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-06**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / TASK-AR-019 Stage 5 침묵의 성채 Graphics Pass 005 완료 및 독립 검수 요청 (`STAGE 5 GRAPHICS PASS 005 — INDEPENDENT REVIEW REQUESTED`)
+- 갱신자: JPStudio QA Lead + Client Lead (Antigravity) / TASK-QA-020 Stage 1→5 Full Campaign Playthrough QA 완료 및 독립 검수 요청 (`STAGE 1→5 FULL CAMPAIGN QA — INDEPENDENT REVIEW REQUESTED`)
 
 
 
