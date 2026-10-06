@@ -308,6 +308,10 @@ func _process(delta: float) -> void:
 			var in_boss_now: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
 			var target_color := Color(1.8, 1.1, 0.35, 0.45) if in_boss_now else Color(0.8, 1.5, 0.9, 0.35)
 			motes.color = motes.color.lerp(target_color, 3.0 * delta)
+		elif stage.stage_number == 4:
+			var in_boss_now: bool = (stage.encounter_index >= stage.required_count - 1 and stage.encounter_active) if ("encounter_index" in stage and "required_count" in stage and "encounter_active" in stage) else false
+			var target_color := Color(0.9, 1.8, 2.0, 0.45) if in_boss_now else Color(0.7, 1.4, 1.5, 0.35)
+			motes.color = motes.color.lerp(target_color, 3.0 * delta)
 	if stage.player.guard_block_count > previous_guard_blocks:
 		guard_audio.play()
 	previous_guard_blocks = stage.player.guard_block_count
@@ -771,10 +775,24 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 			var warning_at := to_local(warning_shape.global_position)
 			var warning_y := warning_at.y + warning_bounds.size.y * 0.5
 			var half_width := warning_bounds.size.x * 0.5
-			draw_line(Vector2(warning_at.x - half_width, warning_y), Vector2(warning_at.x + half_width, warning_y), Color(1.0, 0.76, 0.28, 0.65), 3.0, true)
+			var windup_phase := _phase(actor._phase_time_remaining, actor.attack_windup) if "attack_windup" in actor and actor.attack_windup > 0.0 else 0.5
+			# 1. Broad underglow amber field
+			draw_line(Vector2(warning_at.x - half_width, warning_y), Vector2(warning_at.x + half_width, warning_y), Color(2.2, 0.9, 0.2, 0.40 * (0.6 + 0.4 * windup_phase)), 9.0, true)
+			# 2. High-contrast amber/orange ground crack rim
+			draw_line(Vector2(warning_at.x - half_width, warning_y), Vector2(warning_at.x + half_width, warning_y), Color(2.6, 1.2, 0.35, 0.90), 3.5, true)
+			# 3. Bright core line
+			draw_line(Vector2(warning_at.x - half_width + 8.0, warning_y), Vector2(warning_at.x + half_width - 8.0, warning_y), Color(3.2, 1.8, 0.5, 0.95), 1.5, true)
+			# 4. Corner bracket teeth & rising rune sparks
 			for side in [-1.0, 1.0]:
 				var edge := Vector2(warning_at.x + side * half_width, warning_y)
-				draw_line(edge, edge + Vector2(0, -7), Color(1.0, 0.86, 0.49, 0.85), 2.0, true)
+				draw_line(edge, edge + Vector2(0, -12), Color(2.8, 1.4, 0.4, 0.95), 2.5, true)
+				draw_line(edge, edge + Vector2(-side * 10, 0), Color(2.8, 1.4, 0.4, 0.95), 2.5, true)
+			# 5. Pulsing rune ticks along the warning zone
+			for seg in range(1, 6):
+				var sx := warning_at.x - half_width + float(seg) * (warning_bounds.size.x / 6.0)
+				var tick_h := 5.0 + sin(windup_phase * TAU + seg) * 2.0
+				draw_line(Vector2(sx, warning_y), Vector2(sx, warning_y - tick_h), Color(2.6, 1.3, 0.35, 0.85), 1.8, true)
+				draw_circle(Vector2(sx, warning_y - tick_h - 2.0), 1.5, Color(3.5, 2.2, 0.8, 0.90))
 	if actor.state != 2 or not actor.is_attack_active:
 		return
 	var phase := _phase(actor._phase_time_remaining, actor.attack_active)
@@ -796,23 +814,33 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 		var ground_at := Vector2(center.x, at.y + 29.0)
 		var radius := bounds.size.x * 0.5
 		var ripple := PackedVector2Array()
+		var inner_ripple := PackedVector2Array()
 		for index in range(17):
 			var angle := float(index) / 16.0 * PI
-			ripple.append(ground_at + Vector2(cos(angle) * maxf(0.0, radius - 4.0), -sin(angle) * 12.0))
-		draw_polyline(ripple, Color(0.30, 0.21, 0.12, opacity * 0.55), 8.0, true)
-		draw_polyline(ripple, Color(1.0, 0.71, 0.31, opacity * 0.8), 5.0, true)
-		draw_polyline(ripple, Color(1.0, 0.96, 0.75, opacity), 2.5, true)
-		for index in range(5):
-			var spread := float(index - 2) * radius * 0.38
-			var shard := ground_at + Vector2(spread, -sin(phase * PI) * (8.0 + (index % 2) * 7.0))
-			draw_circle(shard + Vector2(0, 3), 6.0, Color(0.57, 0.43, 0.28, opacity * 0.20))
-			draw_line(shard, shard + Vector2(spread * 0.10, -5.0), Color(0.30, 0.28, 0.22, opacity), 5.0, true)
-			draw_line(shard, shard + Vector2(spread * 0.10, -5.0), Color(0.97, 0.88, 0.65, opacity), 2.5, true)
+			var r := maxf(0.0, radius - 4.0)
+			ripple.append(ground_at + Vector2(cos(angle) * r, -sin(angle) * 14.0))
+			inner_ripple.append(ground_at + Vector2(cos(angle) * (r * 0.65), -sin(angle) * 9.0))
+		# Broad shockwave base glow
+		draw_polyline(ripple, Color(0.40, 0.18, 0.08, opacity * 0.60), 10.0, true)
+		# Outer shockwave ring (amber/orange)
+		draw_polyline(ripple, Color(2.6, 1.1, 0.25, opacity * 0.88), 5.0, true)
+		# Inner bright shockwave core
+		draw_polyline(inner_ripple, Color(3.2, 1.6, 0.45, opacity * 0.95), 3.0, true)
+		draw_polyline(inner_ripple, Color(3.5, 2.4, 1.0, opacity), 1.5, true)
+		# Stone debris shards
+		for index in range(7):
+			var spread := float(index - 3) * radius * 0.28
+			var shard := ground_at + Vector2(spread, -sin(phase * PI) * (10.0 + (index % 3) * 6.0))
+			draw_circle(shard + Vector2(0, 3), 7.0, Color(0.35, 0.22, 0.14, opacity * 0.35))
+			draw_line(shard, shard + Vector2(spread * 0.12, -7.0), Color(0.24, 0.22, 0.20, opacity), 6.0, true)
+			draw_line(shard, shard + Vector2(spread * 0.12, -7.0), Color(2.4, 1.2, 0.35, opacity * 0.9), 2.5, true)
+			draw_circle(shard + Vector2(spread * 0.12, -7.0), 2.0, Color(3.2, 2.0, 0.8, opacity))
 		if phase < 0.65:
 			var burst_at := ground_at + Vector2(direction * minf(35.0, radius * 0.35), -6)
-			for index in range(5):
-				var unit := Vector2.from_angle(-PI + index * PI / 4.0)
-				draw_line(burst_at + unit * 4, burst_at + unit * (12.0 - phase * 5), Color(1.0, 0.95, 0.75, opacity), 2.5, true)
+			for index in range(7):
+				var unit := Vector2.from_angle(-PI + index * PI / 6.0)
+				draw_line(burst_at + unit * 5, burst_at + unit * (16.0 - phase * 7), Color(3.0, 1.8, 0.5, opacity), 3.0, true)
+				draw_line(burst_at + unit * 5, burst_at + unit * (14.0 - phase * 6), Color(3.5, 2.5, 1.0, opacity), 1.5, true)
 	else:
 		# Tapered axe sweep stays inside the existing attack rectangle.
 		var outer := PackedVector2Array()

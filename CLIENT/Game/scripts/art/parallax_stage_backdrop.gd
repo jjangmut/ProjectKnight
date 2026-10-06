@@ -111,11 +111,27 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				s_poly.color = Color(0.18, 0.12, 0.19, col[4])
 				smoke_group.add_child(s_poly)
 			l1.add_child(smoke_group)
+		elif stage_num == 4:
+			# Stage 4: Sacred Skylight Shafts & Cavern Void Light entering from sanctuary ceiling
+			var shafts := Node2D.new()
+			shafts.name = "SanctuaryLightShafts"
+			var shaft_configs := [
+				[Vector2(260, 0), Vector2(380, 0), Vector2(200, 720), Vector2(80, 720), 0.040],
+				[Vector2(680, 0), Vector2(840, 0), Vector2(580, 720), Vector2(420, 720), 0.055],
+				[Vector2(1160, 0), Vector2(1320, 0), Vector2(1060, 720), Vector2(900, 720), 0.065],
+				[Vector2(1580, 0), Vector2(1730, 0), Vector2(1480, 720), Vector2(1330, 720), 0.045]
+			]
+			for sc in shaft_configs:
+				var s_poly := Polygon2D.new()
+				s_poly.polygon = PackedVector2Array([sc[0], sc[1], sc[2], sc[3]])
+				s_poly.color = Color(0.65, 1.15, 1.25, sc[4])
+				shafts.add_child(s_poly)
+			l1.add_child(shafts)
 
 		# Celestial Body: Soft atmospheric sun / moon with diffuse corona
 		var celestial := Node2D.new()
 		celestial.name = "CelestialBody"
-		var center := Vector2(1480.0, 200.0) if stage_num == 3 else Vector2(1400.0, 150.0)
+		var center := Vector2(1480.0, 200.0) if stage_num == 3 else (Vector2(1440.0, 160.0) if stage_num == 4 else Vector2(1400.0, 150.0))
 
 		# Outer diffuse corona
 		var corona := Polygon2D.new()
@@ -124,7 +140,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			var rad := float(i) * TAU / 24.0
 			corona_pts.append(center + Vector2(cos(rad), sin(rad)) * 54.0)
 		corona.polygon = corona_pts
-		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.8, 0.7, 0.25, 0.20) if stage_num == 3 else (Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15)))
+		corona.color = Color(0.85, 1.20, 0.75, 0.16) if stage_num == 2 else (Color(1.8, 0.7, 0.25, 0.20) if stage_num == 3 else (Color(0.40, 1.60, 1.90, 0.22) if stage_num == 4 else (Color(1.0, 0.95, 0.85, 0.12) if stage_num != 5 else Color(1.0, 0.25, 0.20, 0.15))))
 		celestial.add_child(corona)
 
 		# Core luminous body
@@ -135,7 +151,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			var rad := float(i) * TAU / 24.0
 			points.append(center + Vector2(cos(rad), sin(rad)) * radius)
 		moon.polygon = points
-		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(2.2, 1.15, 0.45, 0.80) if stage_num == 3 else (Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85))))
+		moon.color = Color(0.92, 1.0, 0.80, 0.65) if stage_num == 2 else (Color(2.2, 1.15, 0.45, 0.80) if stage_num == 3 else (Color(1.10, 1.35, 1.45, 0.85) if stage_num == 4 else (Color(1.0, 0.96, 0.88, 0.38) if stage_num == 1 else (Color(0.95, 0.85, 0.65, 0.75) if stage_num != 5 else Color(0.95, 0.3, 0.25, 0.85)))))
 		celestial.add_child(moon)
 		l1.add_child(celestial)
 
@@ -206,6 +222,57 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				ember.color = Color(1.8, 0.65, 0.25, 0.70)
 				fortress.add_child(ember)
 			l2.add_child(fortress)
+		elif stage_num == 4:
+			# Stage 4: Distant Megalithic Monolith Pillars & Cyclopean Temple Columns
+			var sanctuary := Node2D.new()
+			sanctuary.name = "DistantSanctuaryMegaliths"
+			var ridge_pts := PackedVector2Array([
+				Vector2(0, LAYER_HEIGHT),
+				Vector2(0, 460),
+				Vector2(60, 460), Vector2(80, 310), Vector2(160, 310), Vector2(180, 460),
+				Vector2(270, 460), Vector2(300, 240), Vector2(380, 240), Vector2(410, 460),
+				Vector2(530, 470), Vector2(560, 330), Vector2(640, 330), Vector2(670, 470),
+				Vector2(790, 460), Vector2(820, 220), Vector2(900, 220), Vector2(930, 460),
+				Vector2(1040, 470), Vector2(1070, 320), Vector2(1150, 320), Vector2(1180, 470),
+				Vector2(1290, 460), Vector2(1320, 250), Vector2(1400, 250), Vector2(1430, 460),
+				Vector2(1540, 470), Vector2(1570, 300), Vector2(1650, 300), Vector2(1680, 470),
+				Vector2(1780, 460), Vector2(1810, 230), Vector2(1890, 230), Vector2(1910, 460),
+				Vector2(LAYER_WIDTH, 460),
+				Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+			])
+			var ridge_poly := Polygon2D.new()
+			ridge_poly.polygon = ridge_pts
+			ridge_poly.color = Color(0.13, 0.11, 0.15, 0.92)
+			sanctuary.add_child(ridge_poly)
+
+			# Horizontal massive stone lintels spanning pillar pairs
+			for lintel_rect in [
+				Rect2(65, 290, 110, 20),
+				Rect2(285, 220, 110, 20),
+				Rect2(805, 200, 110, 20),
+				Rect2(1305, 230, 110, 20),
+				Rect2(1795, 210, 110, 20)
+			]:
+				var l_poly := Polygon2D.new()
+				l_poly.polygon = PackedVector2Array([
+					lintel_rect.position,
+					lintel_rect.position + Vector2(lintel_rect.size.x, 0),
+					lintel_rect.position + lintel_rect.size,
+					lintel_rect.position + Vector2(0, lintel_rect.size.y)
+				])
+				l_poly.color = Color(0.16, 0.13, 0.18, 0.95)
+				sanctuary.add_child(l_poly)
+
+			# Ancient dormant cyan rune symbols glowing on distant monolith faces
+			for rune_pos in [Vector2(120, 360), Vector2(340, 290), Vector2(860, 270), Vector2(1360, 300), Vector2(1850, 280)]:
+				var rune_mark := Polygon2D.new()
+				rune_mark.polygon = PackedVector2Array([
+					rune_pos + Vector2(0, -9), rune_pos + Vector2(6, 0),
+					rune_pos + Vector2(0, 9), rune_pos + Vector2(-6, 0)
+				])
+				rune_mark.color = Color(0.3, 1.8, 2.2, 0.45)
+				sanctuary.add_child(rune_mark)
+			l2.add_child(sanctuary)
 		elif base_texture == null:
 			# Fallback geometric peak silhouettes for stages without dedicated textures
 			var peaks := Polygon2D.new()
@@ -236,7 +303,7 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			tex_rect.size = Vector2(LAYER_WIDTH, LAYER_HEIGHT)
 			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else (Color(0.68, 0.52, 0.64, 0.95) if stage_num == 3 else Color(1, 1, 1, 0.95))
+			tex_rect.modulate = Color(0.94, 1.04, 0.96, 0.95) if stage_num == 2 else (Color(0.68, 0.52, 0.64, 0.95) if stage_num == 3 else (Color(1.02, 0.96, 0.88, 0.95) if stage_num == 4 else Color(1, 1, 1, 0.95)))
 			l3.add_child(tex_rect)
 			if stage_num == 3:
 				var mid_fracture := Polygon2D.new()
@@ -250,6 +317,18 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 				])
 				mid_fracture.color = Color(0.16, 0.12, 0.18, 0.70)
 				l3.add_child(mid_fracture)
+			elif stage_num == 4:
+				var mid_sanctuary := Polygon2D.new()
+				mid_sanctuary.polygon = PackedVector2Array([
+					Vector2(0, LAYER_HEIGHT), Vector2(0, 530),
+					Vector2(180, 530), Vector2(230, 460), Vector2(350, 460), Vector2(400, 535),
+					Vector2(650, 540), Vector2(700, 450), Vector2(820, 450), Vector2(870, 535),
+					Vector2(1120, 535), Vector2(1170, 460), Vector2(1290, 460), Vector2(1340, 540),
+					Vector2(1580, 540), Vector2(1630, 450), Vector2(1750, 450), Vector2(1800, 535),
+					Vector2(LAYER_WIDTH, 530), Vector2(LAYER_WIDTH, LAYER_HEIGHT)
+				])
+				mid_sanctuary.color = Color(0.18, 0.15, 0.20, 0.65)
+				l3.add_child(mid_sanctuary)
 		else:
 			# Fallback procedural ruins silhouette for stages without dedicated textures
 			var ruins := Polygon2D.new()
@@ -320,6 +399,27 @@ func setup_parallax(stage_num: int, base_texture: Texture2D = null) -> void:
 			fog.color = Color(0.24, 0.17, 0.14, 0.14)
 			fog.position = Vector2(0, 520)
 			fog.size = Vector2(LAYER_WIDTH, 200)
+			l4.add_child(fog)
+		elif stage_num == 4:
+			# Stage 4: Top cyclopean stone ceiling beams & carved cornice framing
+			var fg_beams := Polygon2D.new()
+			fg_beams.polygon = PackedVector2Array([
+				Vector2(0, 0), Vector2(LAYER_WIDTH, 0),
+				Vector2(LAYER_WIDTH, 55), Vector2(1850, 45), Vector2(1760, 75),
+				Vector2(1640, 40), Vector2(1520, 70), Vector2(1400, 45),
+				Vector2(1260, 80), Vector2(1140, 45), Vector2(1000, 75),
+				Vector2(880, 40), Vector2(750, 80), Vector2(620, 45),
+				Vector2(480, 70), Vector2(360, 45), Vector2(220, 80),
+				Vector2(100, 40), Vector2(0, 60)
+			])
+			fg_beams.color = Color(0.08, 0.07, 0.10, 0.85)
+			l4.add_child(fg_beams)
+
+			# Low sacred sanctuary dust & cyan-tinted haze
+			var fog := ColorRect.new()
+			fog.color = Color(0.10, 0.24, 0.26, 0.10)
+			fog.position = Vector2(0, 510)
+			fog.size = Vector2(LAYER_WIDTH, 210)
 			l4.add_child(fog)
 		else:
 			var fog := ColorRect.new()

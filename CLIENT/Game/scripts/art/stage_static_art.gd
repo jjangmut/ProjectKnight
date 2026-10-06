@@ -212,6 +212,60 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 						"right": strut_right,
 						"cross": crossbeam
 					})
+			elif cached_stage_num == 4:
+				# Stage 4: Megalithic Stone Pillars & Monolithic Sanctuary Plinths
+				platform_data["monolith_pillars"] = []
+				platform_data["pylon_supports"] = []
+				platform_data["slab_stone"] = Rect2(min_px, top_y + 18, p_width, 14)
+
+				if p_width > 120.0:
+					for x_pos in [min_px + 38, max_px - 38]:
+						var top_at := Vector2(x_pos, top_y + 18)
+						var pillar_rect := Rect2(top_at - Vector2(22, 0), Vector2(44, 620 - top_at.y))
+						var joints: Array[Vector2] = []
+						var j_y := top_at.y + 40.0
+						while j_y < 605.0:
+							joints.append(Vector2(x_pos - 22, j_y))
+							joints.append(Vector2(x_pos + 22, j_y))
+							j_y += 50.0
+						var corbel_poly := PackedVector2Array([
+							top_at + Vector2(-32, 0),
+							top_at + Vector2(32, 0),
+							top_at + Vector2(24, 18),
+							top_at + Vector2(-24, 18)
+						])
+						var plinth_rect := Rect2(x_pos - 26, 606, 52, 14)
+						var rune_channel := [Vector2(x_pos, top_at.y + 24), Vector2(x_pos, 600)]
+						platform_data.monolith_pillars.append({
+							"rect": pillar_rect,
+							"joints": joints,
+							"corbel": corbel_poly,
+							"plinth": plinth_rect,
+							"rune_line": rune_channel
+						})
+				else:
+					var mid_x := (min_px + max_px) * 0.5
+					var top_at := Vector2(mid_x, top_y + 18)
+					var pylon_poly := PackedVector2Array([
+						top_at + Vector2(-24, 0),
+						top_at + Vector2(24, 0),
+						Vector2(mid_x + 16, lerpf(top_at.y, 620.0, 0.40)),
+						Vector2(mid_x + 30, 620),
+						Vector2(mid_x - 30, 620),
+						Vector2(mid_x - 16, lerpf(top_at.y, 620.0, 0.40))
+					])
+					var pylon_corbel := PackedVector2Array([
+						top_at + Vector2(-30, 0),
+						top_at + Vector2(30, 0),
+						top_at + Vector2(20, 16),
+						top_at + Vector2(-20, 16)
+					])
+					platform_data.pylon_supports.append({
+						"pylon": pylon_poly,
+						"corbel": pylon_corbel,
+						"plinth": Rect2(mid_x - 34, 608, 68, 12),
+						"rune_center": Vector2(mid_x, lerpf(top_at.y, 620.0, 0.50))
+					})
 			else:
 				var shade := Color(0.63, 0.66, 0.65, 0.88)
 				var width := 30.0
@@ -439,6 +493,94 @@ func build_cache(p_stage: Node2D, p_ground: Texture2D, p_edge: Color, p_font: Fo
 				Rect2(10600, 615, 160, 5)
 			]
 		})
+	elif cached_stage_num == 4:
+		# Landmark 1: Great Rune Monolith Gate (거대한 룬 석문, x ≈ 400)
+		# Lintel top at y=230 to keep 70px buffer below top HUD
+		cached_landmarks.append({
+			"type": "rune_monolith_gate",
+			"left_monolith": Rect2(310, 260, 60, 360),
+			"right_monolith": Rect2(450, 260, 60, 360),
+			"lintel": Rect2(285, 220, 250, 42),
+			"cornice": Rect2(270, 210, 280, 12),
+			"keystone": Vector2(410, 241),
+			"rune_line": [Vector2(315, 241), Vector2(505, 241)],
+			"joints": [
+				[Vector2(310, 360), Vector2(370, 360)],
+				[Vector2(310, 480), Vector2(370, 480)],
+				[Vector2(450, 360), Vector2(510, 360)],
+				[Vector2(450, 480), Vector2(510, 480)]
+			],
+			"rubble": [
+				Rect2(265, 585, 42, 35),
+				Rect2(515, 590, 38, 30)
+			]
+		})
+
+		# Landmark 2: Fallen Ancient Guardian Colossus (쓰러진 수호자 석상, x ≈ 5400)
+		cached_landmarks.append({
+			"type": "guardian_colossus",
+			"head_poly": PackedVector2Array([
+				Vector2(5310, 620), Vector2(5325, 510), Vector2(5370, 460), Vector2(5435, 460),
+				Vector2(5475, 515), Vector2(5470, 620)
+			]),
+			"eye_socket": Rect2(5375, 505, 26, 15),
+			"fissure_rune": [
+				Vector2(5400, 465), Vector2(5390, 520), Vector2(5415, 565), Vector2(5390, 620)
+			],
+			"broken_arm": PackedVector2Array([
+				Vector2(5475, 620), Vector2(5490, 535), Vector2(5545, 515),
+				Vector2(5565, 545), Vector2(5550, 620)
+			]),
+			"shield_fragment": PackedVector2Array([
+				Vector2(5560, 620), Vector2(5575, 485), Vector2(5635, 485),
+				Vector2(5655, 565), Vector2(5640, 620)
+			]),
+			"rubble_blocks": [
+				Rect2(5265, 595, 40, 25),
+				Rect2(5645, 600, 38, 20)
+			]
+		})
+
+		# Landmark 3: Ancient Guardian Sanctuary Gate & Statues (x ≈ 10000)
+		cached_landmarks.append({
+			"type": "guardian_sanctuary_gate",
+			"portal_frame": Rect2(9920, 270, 220, 350),
+			"portal_jamb_top": Rect2(9890, 250, 280, 25),
+			"portal_inner": Rect2(9950, 305, 160, 315),
+			"rune_circle_center": Vector2(10030, 430),
+			"left_sentinel": PackedVector2Array([
+				Vector2(9830, 620), Vector2(9840, 460), Vector2(9860, 330), Vector2(9900, 320),
+				Vector2(9910, 470), Vector2(9900, 620)
+			]),
+			"right_sentinel": PackedVector2Array([
+				Vector2(10150, 620), Vector2(10140, 470), Vector2(10150, 320), Vector2(10190, 330),
+				Vector2(10210, 460), Vector2(10220, 620)
+			]),
+			"braziers": [Vector2(9850, 490), Vector2(10200, 490)]
+		})
+
+		# Boss Arena Architecture (x ≈ 10000..11200)
+		cached_landmarks.append({
+			"type": "sanctuary_boss_arena",
+			"altar_steps": [
+				Rect2(10300, 600, 340, 20),
+				Rect2(10340, 578, 260, 22),
+				Rect2(10390, 554, 160, 24)
+			],
+			"altar_rune_center": Vector2(10470, 566),
+			"pillars": [
+				Rect2(10280, 360, 46, 260),
+				Rect2(10420, 360, 46, 260),
+				Rect2(10560, 360, 46, 260),
+				Rect2(10700, 360, 46, 260),
+				Rect2(10840, 360, 46, 260),
+				Rect2(10980, 360, 46, 260)
+			],
+			"floor_runes": [
+				[Vector2(10300, 616), Vector2(10640, 616)],
+				[Vector2(10720, 616), Vector2(11060, 616)]
+			]
+		})
 
 	# 4. Precompute route choice plaques
 	cached_route_signs.clear()
@@ -602,6 +744,65 @@ func _draw() -> void:
 				draw_line(stk[0], stk[1], Color(0.14, 0.11, 0.09, 0.95), 3.5)
 			for sc in lm.scorch_rects:
 				draw_rect(sc, Color(0.08, 0.06, 0.08, 0.85))
+		elif lm.type == "rune_monolith_gate":
+			draw_rect(lm.left_monolith, Color(0.24, 0.22, 0.26, 0.95))
+			draw_rect(lm.left_monolith, Color(0.36, 0.34, 0.38, 0.85), false, 1.5)
+			draw_rect(lm.right_monolith, Color(0.24, 0.22, 0.26, 0.95))
+			draw_rect(lm.right_monolith, Color(0.36, 0.34, 0.38, 0.85), false, 1.5)
+			for j in lm.joints:
+				draw_line(j[0], j[1], Color(0.12, 0.11, 0.14, 0.85), 2.0)
+			draw_rect(lm.lintel, Color(0.26, 0.24, 0.28, 0.95))
+			draw_rect(lm.lintel, Color(0.38, 0.36, 0.40, 0.85), false, 1.5)
+			draw_rect(lm.cornice, Color(0.28, 0.26, 0.30, 0.95))
+			draw_rect(lm.cornice, Color(0.40, 0.38, 0.42, 0.80), false, 1.5)
+			draw_line(lm.rune_line[0], lm.rune_line[1], Color(0.3, 1.8, 2.2, 0.65), 2.5)
+			draw_circle(lm.keystone, 8.0, Color(0.3, 1.8, 2.2, 0.75))
+			draw_circle(lm.keystone, 4.0, Color(1.1, 2.2, 2.5, 0.95))
+			for rub in lm.rubble:
+				draw_rect(rub, Color(0.22, 0.20, 0.24, 0.92))
+				draw_rect(rub, Color(0.32, 0.30, 0.34, 0.75), false, 1.5)
+		elif lm.type == "guardian_colossus":
+			draw_colored_polygon(lm.head_poly, Color(0.22, 0.21, 0.25, 0.95))
+			draw_polyline(lm.head_poly, Color(0.35, 0.33, 0.38, 0.85), 2.0, true)
+			draw_rect(lm.eye_socket, Color(0.10, 0.09, 0.12, 0.98))
+			draw_circle(lm.eye_socket.position + lm.eye_socket.size * 0.5, 3.5, Color(0.3, 1.8, 2.2, 0.55))
+			for i in range(lm.fissure_rune.size() - 1):
+				draw_line(lm.fissure_rune[i], lm.fissure_rune[i + 1], Color(0.3, 1.8, 2.2, 0.60), 2.0)
+			draw_colored_polygon(lm.broken_arm, Color(0.20, 0.19, 0.23, 0.95))
+			draw_polyline(lm.broken_arm, Color(0.32, 0.30, 0.35, 0.80), 1.5, true)
+			draw_colored_polygon(lm.shield_fragment, Color(0.23, 0.22, 0.26, 0.95))
+			draw_polyline(lm.shield_fragment, Color(0.36, 0.34, 0.40, 0.80), 1.5, true)
+			for blk in lm.rubble_blocks:
+				draw_rect(blk, Color(0.21, 0.20, 0.24, 0.92))
+				draw_rect(blk, Color(0.33, 0.31, 0.36, 0.75), false, 1.5)
+		elif lm.type == "guardian_sanctuary_gate":
+			draw_rect(lm.portal_frame, Color(0.22, 0.20, 0.25, 0.95))
+			draw_rect(lm.portal_frame, Color(0.35, 0.33, 0.38, 0.85), false, 2.0)
+			draw_rect(lm.portal_jamb_top, Color(0.25, 0.23, 0.28, 0.95))
+			draw_rect(lm.portal_jamb_top, Color(0.38, 0.36, 0.42, 0.85), false, 1.5)
+			draw_rect(lm.portal_inner, Color(0.08, 0.07, 0.10, 0.98))
+			draw_circle(lm.rune_circle_center, 42.0, Color(0.3, 1.8, 2.2, 0.40))
+			draw_arc(lm.rune_circle_center, 42.0, 0, TAU, 32, Color(0.4, 2.0, 2.4, 0.75), 2.0, true)
+			draw_arc(lm.rune_circle_center, 24.0, 0, TAU, 24, Color(0.4, 2.0, 2.4, 0.65), 1.5, true)
+			draw_colored_polygon(lm.left_sentinel, Color(0.24, 0.22, 0.27, 0.95))
+			draw_polyline(lm.left_sentinel, Color(0.38, 0.35, 0.42, 0.85), 2.0, true)
+			draw_colored_polygon(lm.right_sentinel, Color(0.24, 0.22, 0.27, 0.95))
+			draw_polyline(lm.right_sentinel, Color(0.38, 0.35, 0.42, 0.85), 2.0, true)
+			for bz in lm.braziers:
+				draw_rect(Rect2(bz.x - 8, bz.y, 16, 32), Color(0.18, 0.16, 0.20, 0.95))
+				draw_circle(bz + Vector2(0, -4), 8.0, Color(2.6, 1.2, 0.3, 0.85))
+				draw_circle(bz + Vector2(0, -4), 4.0, Color(3.5, 2.5, 1.1, 0.98))
+		elif lm.type == "sanctuary_boss_arena":
+			for st in lm.altar_steps:
+				draw_rect(st, Color(0.23, 0.21, 0.26, 0.95))
+				draw_rect(st, Color(0.36, 0.33, 0.40, 0.85), false, 1.5)
+			draw_circle(lm.altar_rune_center, 12.0, Color(0.3, 1.8, 2.2, 0.65))
+			draw_circle(lm.altar_rune_center, 5.0, Color(1.1, 2.2, 2.5, 0.95))
+			for pil in lm.pillars:
+				draw_rect(pil, Color(0.21, 0.19, 0.24, 0.92))
+				draw_rect(pil, Color(0.34, 0.31, 0.38, 0.80), false, 1.5)
+			for fr in lm.floor_runes:
+				draw_line(fr[0], fr[1], Color(0.3, 1.8, 2.2, 0.50), 2.0)
 
 	# 3. Platforms, slab shadows, corbels/roots, polylines from cache
 	for p in cached_platforms:
@@ -640,6 +841,33 @@ func _draw() -> void:
 						draw_polyline(st.right, Color(0.30, 0.23, 0.17, 0.80), 1.5, true)
 						draw_rect(st.cross, Color(0.22, 0.17, 0.13, 0.95))
 						draw_rect(st.cross, Color(0.34, 0.26, 0.19, 0.85), false, 1.5)
+			elif cached_stage_num == 4:
+				if p.has("slab_stone"):
+					draw_rect(p.slab_stone, Color(0.18, 0.16, 0.20, 0.95))
+					draw_line(Vector2(p.slab_stone.position.x, p.slab_stone.position.y), Vector2(p.slab_stone.position.x + p.slab_stone.size.x, p.slab_stone.position.y), Color(0.44, 0.42, 0.48, 0.90), 1.5)
+				if p.has("monolith_pillars"):
+					for pil in p.monolith_pillars:
+						draw_rect(pil.rect, Color(0.22, 0.20, 0.25, 0.95))
+						draw_rect(pil.rect, Color(0.35, 0.32, 0.38, 0.85), false, 1.5)
+						for j_idx in range(0, pil.joints.size(), 2):
+							if j_idx + 1 < pil.joints.size():
+								draw_line(pil.joints[j_idx], pil.joints[j_idx + 1], Color(0.12, 0.10, 0.14, 0.85), 2.0)
+						draw_colored_polygon(pil.corbel, Color(0.20, 0.18, 0.23, 0.95))
+						draw_polyline(pil.corbel, Color(0.36, 0.32, 0.40, 0.80), 1.5, true)
+						draw_rect(pil.plinth, Color(0.19, 0.17, 0.22, 0.98))
+						draw_rect(pil.plinth, Color(0.32, 0.29, 0.36, 0.85), false, 1.5)
+						if pil.has("rune_line") and pil.rune_line.size() >= 2:
+							draw_line(pil.rune_line[0], pil.rune_line[1], Color(0.3, 1.8, 2.2, 0.55), 2.0)
+				if p.has("pylon_supports"):
+					for pyl in p.pylon_supports:
+						draw_colored_polygon(pyl.pylon, Color(0.21, 0.19, 0.24, 0.95))
+						draw_polyline(pyl.pylon, Color(0.34, 0.31, 0.38, 0.85), 1.5, true)
+						draw_colored_polygon(pyl.corbel, Color(0.20, 0.18, 0.22, 0.95))
+						draw_polyline(pyl.corbel, Color(0.36, 0.32, 0.40, 0.80), 1.5, true)
+						draw_rect(pyl.plinth, Color(0.18, 0.16, 0.21, 0.98))
+						draw_rect(pyl.plinth, Color(0.30, 0.27, 0.34, 0.85), false, 1.5)
+						if pyl.has("rune_center"):
+							draw_circle(pyl.rune_center, 4.0, Color(0.3, 1.8, 2.2, 0.60))
 			else:
 				for s in p.supports:
 					draw_texture_rect_region(ground_texture, s.rect, s.source, s.shade)
@@ -668,6 +896,9 @@ func _draw() -> void:
 			elif cached_stage_num == 3:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 성벽 흉벽 상부 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 무너진 성벽 다리로 전진", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
+			elif cached_stage_num == 4:
+				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 고대 성소 상층 회랑 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
+				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 거석 의식 통로로 전진", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))
 			else:
 				draw_string(font, sign_info.at + Vector2(6, 0), "↑ 상층: 선택 전투 · 회복 +1", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f4dfb5"))
 				draw_string(font, sign_info.at + Vector2(6, 22), "→ 아래 길: 필수 전투로 합류", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("d5e2e2"))

@@ -210,15 +210,34 @@ Project Knight
   - `ART_REVIEW/graphics-pass-003-stage3/PERFORMANCE.md`
   - `ART_REVIEW/graphics-pass-003-stage3/FINAL_REVIEW.md`
 
+### Stage 4 Graphics Pass 004 (돌의 성소)
+- 상태: **`INDEPENDENT REVIEW REQUESTED`**
+- 10대 자체 품질 평가: **9.35 / 10** (기준 ≥ 8.0 통과)
+- PC 60 FPS Gate: **4개 전 구간 압도적 PASS** (Entry: 291.3 FPS, First Golem: 273.3 FPS, Mid Sanctuary: 258.2 FPS, Boss Combat: 292.6 FPS)
+- 4계층 패럴랙스 (천창 광선, 원경 거석 기둥군, 성소 벽면 부조, 전경 거석 천장 보 및 신성한 안개) 및 3대 거석 랜드마크 (거대한 룬 석문, 쓰러진 거상, 고대 성소) + 보스 아레나(3단 제단, 6개 열주, 화로) 구축
+- Castle Support 에셋 오용 완전 제거 및 폭 44px 거석 원주(`monolith_pillars`), 파일런(`pylon_supports`), 좌대(Plinth), 룬 채널 홈으로 전면 개편
+- GroundSlamGolem 지면 강타 5단계 전조 (호박색 균열 림, 코너 브래킷, 룬 틱, 충격파 링) 및 장식용 쿨 시안 룬과의 절대적 색상 분리
+- 산출물:
+  - `ART_REVIEW/graphics-pass-004-stage4/before/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-004-stage4/cycle_a/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-004-stage4/after/` (6종 캡처)
+  - `ART_REVIEW/graphics-pass-004-stage4/profiler/` (4종 캡처)
+  - `ART_REVIEW/graphics-pass-004-stage4/BASELINE_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-004-stage4/CYCLE_A_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-004-stage4/CYCLE_B_REVIEW.md`
+  - `ART_REVIEW/graphics-pass-004-stage4/VISUAL_COMPARISON.md`
+  - `ART_REVIEW/graphics-pass-004-stage4/PERFORMANCE.md`
+  - `ART_REVIEW/graphics-pass-004-stage4/FINAL_REVIEW.md`
+
 ## QA 상태
 
-최신 확인 가능한 게임 품질 회귀 기록 (총 15개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 13개):
-- **신규 Stage 3 테스트 (2개)**:
+최신 확인 가능한 게임 품질 회귀 기록 (총 16개 테스트 스위트 전원 PASS / 신규 2개 + 기존 회귀 14개):
+- **신규 Stage 4 테스트 (2개)**:
+  - `stage4_graphics_pass_smoke.gd`: **25/25 PASS**
+  - `stage4_render_performance_gate.gd`: **4/4 Sectors PASS**
+- **기존 회귀 테스트 (14개, Stage 1 / Stage 2 / Stage 3 무회귀 입증)**:
   - `stage3_graphics_pass_smoke.gd`: **25/25 PASS**
-  - `stage3_render_performance_gate.gd`: **4/4 Sectors PASS**
-- **기존 회귀 테스트 (13개, Stage 1 / Stage 2 무회귀 입증)**:
   - `stage2_graphics_pass_smoke.gd`: **24/24 PASS**
-  - `stage2_render_performance_gate.gd`: **4/4 Sectors PASS**
   - `stage1_r2_blocker_fixes_smoke.gd`: **27/27 PASS**
   - `game_and_graphic_quality_smoke.gd`: **60/60 PASS**
   - `stage_reward_and_equipment_smoke.gd`: **23/23 PASS**
@@ -249,9 +268,10 @@ Project Knight
 
 1. Stage 2 Graphics Pass 002 독립 검수 피드백 대응
 2. Stage 3 Graphics Pass 003 독립 검수 피드백 대응
-3. Stage 4 Graphics Pass 004 착수 준비
-4. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
-5. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
+3. Stage 4 Graphics Pass 004 독립 검수 피드백 대응
+4. Stage 5 Graphics Pass 005 착수 준비
+5. Stage 1→5 실제 플레이 완주 QA 및 난이도/보스 밸런스 점검
+6. Android 실기에서 멀티터치, UI 크기, 프레임, 히트 피드백 검증
 
 ## 인계 규칙
 
@@ -262,7 +282,7 @@ ChatGPT Chat은 GitHub에 push된 내용만 볼 수 있으므로, Codex/Antigrav
 ## 마지막 갱신
 
 - 날짜: **2026-10-06**
-- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 3 Graphics Pass 003 (무너진 성벽) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
+- 갱신자: JPStudio Graphics Quality Director (Antigravity) / Stage 4 Graphics Pass 004 (돌의 성소) 완료 및 독립 검수 요청 (`INDEPENDENT REVIEW REQUESTED`)
 
 
 
