@@ -88,14 +88,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Ancient Titan Magma Rim Aura (Transparent fill with glowing rim line to eliminate opaque plate artifact)
+	# Ancient Titan Magma Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
 		Vector2(-120, -175), Vector2(120, -175), Vector2(145, 10),
 		Vector2(110, 105), Vector2(-110, 105), Vector2(-145, 10)
 	])
 	aura_poly.color = Color(1.6, 0.75, 0.25, 0.0) # Transparent plate
-	aura_poly.visible = true
+	aura_poly.visible = false
 	var aura_rim := Line2D.new()
 	aura_rim.width = 2.8
 	aura_rim.default_color = Color(3.5, 1.8, 0.5, 0.9)
@@ -138,87 +138,102 @@ func _build_visuals() -> void:
 	head_poly.visible = false
 	visual.add_child(head_poly)
 
-	# Magma Rune Core in Chest (HDR Glowing Radiant Core, scaled to titan stature)
+	# Magma Rune Core in Chest
 	core_poly = Polygon2D.new()
 	core_poly.polygon = PackedVector2Array([
 		Vector2(0, -65), Vector2(40, -25), Vector2(0, 20), Vector2(-40, -25)
 	])
 	core_poly.color = Color(3.5, 2.0, 0.4, 0.95)
-	core_poly.visible = true
+	core_poly.visible = false
 	core_poly.z_index = 2
 	visual.add_child(core_poly)
 
 	_build_boss_sprite()
 
 
+func _load_texture_safe(path: String) -> Texture2D:
+	if ResourceLoader.exists(path):
+		var res := load(path) as Texture2D
+		if res != null:
+			return res
+	var global_path := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(global_path):
+		var img := Image.load_from_file(global_path)
+		if img != null:
+			return ImageTexture.create_from_image(img)
+	return null
+
+
 func _build_boss_sprite() -> void:
-	var dedicated_path := "res://assets/enemy_frames/golem_guardian_v1.png"
-	var file_path := dedicated_path if ResourceLoader.exists(dedicated_path) else "res://assets/enemy_frames/golem_v1.png"
-	if ResourceLoader.exists(file_path):
-		var sheet := load(file_path) as Texture2D
-		if sheet != null:
-			var is_dedicated := (file_path == dedicated_path)
-			var regions: Array[Rect2] = []
-			var pivots: Array[Vector2] = []
-			if is_dedicated:
-				regions = [
-					Rect2(0, 0, 421, 424),
-					Rect2(421, 0, 421, 424),
-					Rect2(842, 0, 422, 424),
-					Rect2(0, 424, 421, 424),
-					Rect2(421, 424, 421, 424),
-					Rect2(842, 424, 422, 424)
-				]
-				for i in range(6):
-					pivots.append(Vector2(210, 410))
-			else:
-				regions = [
-					Rect2(0, 0, 550, 495),
-					Rect2(550, 0, 510, 495),
-					Rect2(1060, 0, 476, 495),
-					Rect2(0, 495, 535, 529),
-					Rect2(535, 495, 585, 529),
-					Rect2(1120, 495, 416, 529)
-				]
-				pivots = [
-					Vector2(275, 481),
-					Vector2(245, 491),
-					Vector2(235, 492),
-					Vector2(260, 502),
-					Vector2(250, 500),
-					Vector2(225, 502)
-				]
-			for i in range(6):
-				var frame := AtlasTexture.new()
-				frame.atlas = sheet
-				frame.region = regions[i]
-				_sprite_frames.append(frame)
-				_sprite_pivots.append(pivots[i])
+	var path_combat := "res://assets/enemy_frames/golem_guardian_v2.png"
+	var path_skills := "res://assets/enemy_frames/golem_guardian_v2_skills.png"
+
+	# 1. Combat Sprite Sheet (12 frames: Idle 0-3, Stomp Run 4-7, Quake Slam 8-11)
+	var sheet := _load_texture_safe(path_combat)
+	if sheet != null:
+		var regions: Array[Rect2] = [
+			Rect2(25, 31, 251, 258), Rect2(323, 31, 250, 258), Rect2(624, 31, 250, 258), Rect2(921, 31, 251, 258),
+			Rect2(24, 314, 254, 282), Rect2(324, 314, 248, 282), Rect2(616, 313, 265, 264), Rect2(918, 314, 260, 259),
+			Rect2(24, 596, 258, 298), Rect2(322, 596, 263, 297), Rect2(603, 657, 296, 237), Rect2(902, 656, 292, 238)
+		]
+		var pivots: Array[Vector2] = [
+			Vector2(125, 253), Vector2(124, 253), Vector2(124, 253), Vector2(125, 253),
+			Vector2(126, 281), Vector2(123, 281), Vector2(132, 259), Vector2(129, 254),
+			Vector2(128, 294), Vector2(131, 292), Vector2(147, 233), Vector2(145, 237)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet
+			frame.region = regions[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots[i])
+
+	# 2. Skills Sprite Sheet (12 frames: Summon Boulders 12-15, Rolling Charge 16-19, Defeat Shatter 20-23)
+	var sheet_s := _load_texture_safe(path_skills)
+	if sheet_s != null:
+		var regions_s: Array[Rect2] = [
+			Rect2(21, 30, 255, 259), Rect2(308, 12, 291, 279), Rect2(621, 4, 253, 285), Rect2(913, 2, 281, 287),
+			Rect2(19, 318, 259, 278), Rect2(327, 325, 247, 252), Rect2(619, 326, 262, 250), Rect2(920, 321, 259, 256),
+			Rect2(20, 596, 264, 298), Rect2(308, 628, 284, 266), Rect2(615, 657, 277, 236), Rect2(900, 700, 296, 194)
+		]
+		var pivots_s: Array[Vector2] = [
+			Vector2(127, 254), Vector2(145, 274), Vector2(126, 280), Vector2(140, 282),
+			Vector2(129, 277), Vector2(123, 247), Vector2(130, 245), Vector2(129, 251),
+			Vector2(131, 294), Vector2(141, 261), Vector2(138, 231), Vector2(147, 193)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet_s
+			frame.region = regions_s[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots_s[i])
 
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Grand Ancient Titan Stature: 0.70 (~300px tall, ~3.2x larger)
-	boss_sprite.scale = Vector2.ONE * 0.70
+	# Imposing Chibi Golem Stature: 0.44 (~115px tall, 2.5-head Chibi titan proportion)
+	boss_sprite.scale = Vector2.ONE * 0.44
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 105)
+	boss_sprite.position = Vector2.ZERO
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
 		boss_sprite.offset = -_sprite_pivots[0]
+		print(">>> [GOLEM GUARDIAN] BossSprite initialized with %d frames! First frame size: %s" % [_sprite_frames.size(), _sprite_frames[0].get_size()])
 
 	visual.add_child(boss_sprite)
 
 
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
-	var shape := RectangleShape2D.new()
-	shape.size = Vector2(210, 270)
+	var shape := CapsuleShape2D.new()
+	shape.radius = 38.0
+	shape.height = 110.0
 	body_col.shape = shape
-	body_col.position = Vector2(0, -35)
+	body_col.position = Vector2(0, -55.0)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Grand Ancient Golem head (~170px)
+	# Dynamic Top Platform: allows player to stand and ride on top of Chibi Ancient Golem head (~106px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -226,9 +241,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(190.0, 22.0)
+	top_rect.size = Vector2(80.0, 16.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -170.0)
+	top_shape.position = Vector2(0.0, -106.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -238,16 +253,24 @@ func _build_collisions() -> void:
 	var hurt_area := Area2D.new()
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
-	var hurt_shape := RectangleShape2D.new()
-	hurt_shape.size = Vector2(220, 280)
+	var hurt_shape := CapsuleShape2D.new()
+	hurt_shape.radius = 42.0
+	hurt_shape.height = 115.0
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -35)
+	hurt_col.position = Vector2(0, -55.0)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		velocity.x = 0.0
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		move_and_slide()
+		if state == State.DEAD:
+			_phase_timer = maxf(0.0, _phase_timer - delta)
+			_update_boss_sprite(delta)
 		return
 
 	if not is_on_floor():
@@ -294,36 +317,62 @@ func _update_boss_sprite(delta: float) -> void:
 		var frame_idx := 0
 		match state:
 			State.IDLE:
-				frame_idx = 0
+				_walk_anim_timer += delta * 4.0
+				frame_idx = int(_walk_anim_timer) % 4 # frames 0..3 (Idle breathing)
 			State.CHASE:
 				if absf(velocity.x) > 5.0:
-					_walk_anim_timer += delta * 5.0
-					frame_idx = 1 if int(_walk_anim_timer) % 2 == 0 else 2
+					_walk_anim_timer += delta * 6.0
+					frame_idx = 4 + (int(_walk_anim_timer) % 4) # frames 4..7 (Stomp advance)
 				else:
 					frame_idx = 0
 			State.QUAKE_SLAM:
-				frame_idx = 4 if _phase_timer < 0.2 else 3
+				if _phase_timer > 0.40:
+					frame_idx = 8 # Windup raise fists
+				elif _phase_timer > 0.20:
+					frame_idx = 9 # Full overhead extension
+				elif _phase_timer > 0.08:
+					frame_idx = 10 # Downward impact smash
+				else:
+					frame_idx = 11 # Quake ground burst
 			State.SUMMON_BOULDERS:
-				frame_idx = 3
+				if _phase_timer > 0.45:
+					frame_idx = 12 # Hands to sky
+				elif _phase_timer > 0.30:
+					frame_idx = 13 # Roaring chest glow
+				elif _phase_timer > 0.15:
+					frame_idx = 14 # Boulders forming
+				else:
+					frame_idx = 15 # Cascade release
 			State.ROLLING_CHARGE:
-				frame_idx = 4
+				_walk_anim_timer += delta * 12.0
+				frame_idx = 16 + (int(_walk_anim_timer) % 4) # frames 16..19 (Rolling ball rotation)
 			State.PHASE_TRANSITION:
-				frame_idx = 3
+				var t_frame := int(floor(_phase_timer * 8.0)) % 2
+				frame_idx = 12 if t_frame == 0 else 13
 			State.DEAD:
-				frame_idx = 5
+				if _phase_timer > 0.75:
+					frame_idx = 20 # Hurt stun
+				elif _phase_timer > 0.50:
+					frame_idx = 21 # Cracking fissures
+				elif _phase_timer > 0.25:
+					frame_idx = 22 # Crumbling stagger
+				else:
+					frame_idx = 23 # Shattered stone pile on ground
 
 		if frame_idx < _sprite_frames.size():
 			boss_sprite.texture = _sprite_frames[frame_idx]
 			if frame_idx < _sprite_pivots.size():
 				boss_sprite.offset = -_sprite_pivots[frame_idx]
 
-	if _hit_flash_timer > 0.0:
-		boss_sprite.modulate = Color(2.0, 2.0, 2.0, 1.0)
+	if state == State.DEAD:
+		boss_sprite.modulate = Color(0.75, 0.75, 0.8, 0.95)
+	elif _hit_flash_timer > 0.0:
+		boss_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
 	elif current_phase == 2:
 		var pulse := (sin(Time.get_ticks_msec() * 0.01) + 1.0) * 0.5
-		boss_sprite.modulate = Color(1.0, 0.5, 0.2).lerp(Color(1.4, 0.25, 0.05), pulse)
+		boss_sprite.modulate = Color(1.3, 0.65, 0.3).lerp(Color(1.6, 0.3, 0.1), pulse)
 	else:
-		boss_sprite.modulate = Color.WHITE
+		boss_sprite.modulate = Color(1.15, 1.15, 1.15, 1.0) # High-contrast radiant ancient stone finish
 
 
 func _process_chase(delta: float) -> void:
@@ -367,7 +416,7 @@ func _process_quake_slam(delta: float) -> void:
 		_emit_shockwaves()
 		_spawn_quake_vfx()
 		GameFeelManager.shake(0.60)
-		GameFeelManager.trigger_hit_stop(0.08, 0.0)
+		GameFeelManager.trigger_hit_stop(0.08, 0.08)
 		AudioManager.play("counter_hit", global_position)
 		body_poly.color = Color(0.35, 0.36, 0.40, 1.0)
 		state = State.CHASE
@@ -494,7 +543,7 @@ func _trigger_phase_two() -> void:
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.60)
-	GameFeelManager.trigger_hit_stop(0.12, 0.0)
+	GameFeelManager.trigger_hit_stop(0.12, 0.08)
 	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -60), "CORE OVERLOAD!", Color(1.0, 0.3, 0.1), true)
 
 
@@ -513,6 +562,7 @@ func _process_phase_transition(delta: float) -> void:
 func _die() -> void:
 	is_dead = true
 	state = State.DEAD
+	_phase_timer = 1.0 # Progress through defeat animation frames (20 -> 21 -> 22 -> 23)
 	var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
 	if top_plat != null and top_plat.get_child_count() > 0:
 		var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D
@@ -521,7 +571,7 @@ func _die() -> void:
 	aura_poly.visible = false
 	body_poly.color = Color(0.2, 0.2, 0.2, 0.8)
 	if is_instance_valid(boss_sprite):
-		boss_sprite.modulate = Color(0.4, 0.4, 0.4, 0.8)
+		boss_sprite.modulate = Color(0.75, 0.75, 0.8, 0.95)
 
 	GameFeelManager.trigger_hit_stop(0.65, 0.15)
 	GameFeelManager.shake(0.75)
@@ -532,7 +582,7 @@ func _die() -> void:
 	boss_defeated.emit()
 
 	var tween := create_tween()
-	tween.tween_property(visual, "modulate:a", 0.0, 1.5).set_delay(0.5)
+	tween.tween_property(visual, "modulate:a", 0.0, 1.2).set_delay(1.2)
 	tween.tween_callback(queue_free)
 
 

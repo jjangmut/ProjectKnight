@@ -94,14 +94,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Abyssal Climax Champion Rim Aura (Transparent fill with glowing rim line to eliminate opaque plate artifact)
+	# Abyssal Climax Champion Rim Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
 		Vector2(-95, -160), Vector2(95, -160), Vector2(120, 15),
 		Vector2(90, 95), Vector2(-90, 95), Vector2(-120, 15)
 	])
 	aura_poly.color = Color(1.3, 0.35, 2.2, 0.0) # Transparent plate
-	aura_poly.visible = true
+	aura_poly.visible = false
 	var aura_rim := Line2D.new()
 	aura_rim.width = 2.6
 	aura_rim.default_color = Color(2.6, 0.8, 3.5, 0.9)
@@ -111,14 +111,14 @@ func _build_visuals() -> void:
 	aura_poly.add_child(aura_rim)
 	visual.add_child(aura_poly)
 
-	# Black Wings (Revealed in Phase 3) with Radiant Violet Neon Edge (scaled 2.8x)
+	# Black Wings (Revealed in Phase 3)
 	wing_left = Polygon2D.new()
 	wing_left.polygon = PackedVector2Array([Vector2(-10, -20), Vector2(-60, -65), Vector2(-45, -10), Vector2(-20, 0)])
-	wing_left.scale = Vector2.ONE * 2.8
+	wing_left.scale = Vector2.ONE * 1.5
 	wing_left.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_left.visible = false
 	var wing_left_edge := Line2D.new()
-	wing_left_edge.width = 2.8
+	wing_left_edge.width = 2.2
 	wing_left_edge.default_color = Color(2.8, 0.8, 3.6, 0.95)
 	wing_left_edge.points = wing_left.polygon
 	wing_left.add_child(wing_left_edge)
@@ -126,11 +126,11 @@ func _build_visuals() -> void:
 
 	wing_right = Polygon2D.new()
 	wing_right.polygon = PackedVector2Array([Vector2(10, -20), Vector2(60, -65), Vector2(45, -10), Vector2(20, 0)])
-	wing_right.scale = Vector2.ONE * 2.8
+	wing_right.scale = Vector2.ONE * 1.5
 	wing_right.color = Color(0.12, 0.05, 0.2, 0.95)
 	wing_right.visible = false
 	var wing_right_edge := Line2D.new()
-	wing_right_edge.width = 2.8
+	wing_right_edge.width = 2.2
 	wing_right_edge.default_color = Color(2.8, 0.8, 3.6, 0.95)
 	wing_right_edge.points = wing_right.polygon
 	wing_right.add_child(wing_right_edge)
@@ -175,81 +175,96 @@ func _build_visuals() -> void:
 
 	_build_boss_sprite()
 
-	# Melee Slash Area (scaled to grand stature)
+	# Melee Slash Area
 	slash_area = Area2D.new()
 	slash_area.name = "SlashArea"
 	slash_collision = CollisionShape2D.new()
 	var s_shape := RectangleShape2D.new()
-	s_shape.size = Vector2(180, 110)
+	s_shape.size = Vector2(105, 75)
 	slash_collision.shape = s_shape
-	slash_collision.position = Vector2(85, -20)
+	slash_collision.position = Vector2(50, -35)
 	slash_collision.disabled = true
 	slash_area.add_child(slash_collision)
 	slash_area.area_entered.connect(_on_slash_area_entered)
 	visual.add_child(slash_area)
 
 	slash_visual = Polygon2D.new()
-	slash_visual.polygon = PackedVector2Array([Vector2(20, -70), Vector2(180, -25), Vector2(160, 50), Vector2(30, 25)])
+	slash_visual.polygon = PackedVector2Array([Vector2(20, -50), Vector2(100, -20), Vector2(90, 35), Vector2(25, 15)])
 	slash_visual.color = Color(0.8, 0.2, 1.0, 0.0)
+	slash_visual.visible = false
 	visual.add_child(slash_visual)
 
 
+func _load_texture_safe(path: String) -> Texture2D:
+	if ResourceLoader.exists(path):
+		var res := load(path) as Texture2D
+		if res != null:
+			return res
+	var global_path := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(global_path):
+		var img := Image.load_from_file(global_path)
+		if img != null:
+			return ImageTexture.create_from_image(img)
+	return null
+
+
 func _build_boss_sprite() -> void:
-	var dedicated_path := "res://assets/enemy_frames/arbiter_v1.png"
-	var file_path := dedicated_path if ResourceLoader.exists(dedicated_path) else "res://assets/enemy_frames/melee_v1.png"
-	if ResourceLoader.exists(file_path):
-		var sheet := load(file_path) as Texture2D
-		if sheet != null:
-			var is_dedicated := (file_path == dedicated_path)
-			var regions: Array[Rect2] = []
-			var pivots: Array[Vector2] = []
-			if is_dedicated:
-				regions = [
-					Rect2(0, 0, 421, 424),
-					Rect2(421, 0, 421, 424),
-					Rect2(842, 0, 422, 424),
-					Rect2(0, 424, 421, 424),
-					Rect2(421, 424, 421, 424),
-					Rect2(842, 424, 422, 424)
-				]
-				for i in range(6):
-					pivots.append(Vector2(210, 410))
-			else:
-				regions = [
-					Rect2(0, 0, 512, 500),
-					Rect2(512, 0, 550, 500),
-					Rect2(1062, 0, 474, 500),
-					Rect2(0, 500, 512, 524),
-					Rect2(512, 500, 585, 524),
-					Rect2(1097, 500, 439, 524)
-				]
-				pivots = [
-					Vector2(225, 484),
-					Vector2(250, 486),
-					Vector2(240, 486),
-					Vector2(240, 483),
-					Vector2(240, 480),
-					Vector2(210, 480)
-				]
-			for i in range(6):
-				var frame := AtlasTexture.new()
-				frame.atlas = sheet
-				frame.region = regions[i]
-				_sprite_frames.append(frame)
-				_sprite_pivots.append(pivots[i])
+	var path_combat := "res://assets/enemy_frames/abyssal_arbiter_v2.png"
+	var path_skills := "res://assets/enemy_frames/abyssal_arbiter_v2_skills.png"
+
+	# 1. Combat Sprite Sheet (12 frames: Idle 0-3, Shadow Sprint 4-7, Void Greatsword Slash 8-11)
+	var sheet := _load_texture_safe(path_combat)
+	if sheet != null:
+		var regions: Array[Rect2] = [
+			Rect2(40, 62, 213, 229), Rect2(329, 62, 222, 230), Rect2(618, 62, 232, 230), Rect2(931, 61, 218, 231),
+			Rect2(22, 370, 226, 215), Rect2(309, 370, 251, 216), Rect2(613, 370, 240, 216), Rect2(923, 370, 224, 216),
+			Rect2(2, 606, 241, 279), Rect2(310, 607, 288, 280), Rect2(600, 670, 300, 215), Rect2(917, 617, 242, 268)
+		]
+		var pivots: Array[Vector2] = [
+			Vector2(106, 224), Vector2(110, 225), Vector2(115, 225), Vector2(108, 226),
+			Vector2(112, 210), Vector2(125, 211), Vector2(119, 211), Vector2(111, 211),
+			Vector2(120, 274), Vector2(143, 275), Vector2(150, 210), Vector2(120, 263)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet
+			frame.region = regions[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots[i])
+
+	# 2. Skills Sprite Sheet (12 frames: Shadow Blink 12-15, Blade Ring 16-19, Defeat Vanish 20-23)
+	var sheet_s := _load_texture_safe(path_skills)
+	if sheet_s != null:
+		var regions_s: Array[Rect2] = [
+			Rect2(39, 61, 214, 231), Rect2(321, 61, 224, 231), Rect2(658, 84, 168, 208), Rect2(908, 60, 259, 232),
+			Rect2(27, 323, 238, 265), Rect2(316, 336, 273, 252), Rect2(605, 355, 292, 233), Rect2(900, 356, 298, 232),
+			Rect2(0, 652, 258, 233), Rect2(307, 676, 228, 218), Rect2(620, 675, 277, 219), Rect2(900, 727, 288, 167)
+		]
+		var pivots_s: Array[Vector2] = [
+			Vector2(106, 226), Vector2(111, 226), Vector2(83, 203), Vector2(129, 227),
+			Vector2(118, 260), Vector2(136, 247), Vector2(145, 228), Vector2(148, 227),
+			Vector2(128, 228), Vector2(113, 215), Vector2(138, 216), Vector2(143, 166)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet_s
+			frame.region = regions_s[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots_s[i])
 
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Grand Climax Boss Stature: 0.62 (~270px tall, ~3.1x larger)
-	boss_sprite.scale = Vector2.ONE * 0.62
+	# Imposing Chibi Void Champion Stature: 0.44 (~105px tall, 2.5-head Chibi dark knight proportion)
+	boss_sprite.scale = Vector2.ONE * 0.44
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 95)
-	boss_sprite.modulate = Color(0.85, 0.75, 1.0)
+	boss_sprite.position = Vector2.ZERO
+	boss_sprite.modulate = Color.WHITE
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
 		boss_sprite.offset = -_sprite_pivots[0]
+		print(">>> [ABYSSAL ARBITER] BossSprite initialized with %d frames! First frame size: %s" % [_sprite_frames.size(), _sprite_frames[0].get_size()])
 
 	visual.add_child(boss_sprite)
 
@@ -257,13 +272,13 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var col := CollisionShape2D.new()
 	var shape := CapsuleShape2D.new()
-	shape.radius = 55.0
-	shape.height = 230.0
+	shape.radius = 35.0
+	shape.height = 100.0
 	col.shape = shape
-	col.position = Vector2(0, -20)
+	col.position = Vector2(0, -50.0)
 	add_child(col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Grand Abyssal Arbiter head (~145px)
+	# Dynamic Top Platform: allows player to stand and ride on top of Chibi Abyssal Arbiter head (~96px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -271,9 +286,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(140.0, 20.0)
+	top_rect.size = Vector2(80.0, 16.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -145.0)
+	top_shape.position = Vector2(0.0, -96.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -284,16 +299,23 @@ func _build_collisions() -> void:
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := CapsuleShape2D.new()
-	hurt_shape.radius = 60.0
-	hurt_shape.height = 240.0
+	hurt_shape.radius = 38.0
+	hurt_shape.height = 105.0
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -20)
+	hurt_col.position = Vector2(0, -50.0)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		velocity.x = 0.0
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		move_and_slide()
+		if state == State.DEAD:
+			_phase_timer = maxf(0.0, _phase_timer - delta)
+			_update_boss_sprite(delta)
 		return
 
 	if not is_on_floor():
@@ -346,33 +368,73 @@ func _update_boss_sprite(delta: float) -> void:
 		var frame_idx := 0
 		match state:
 			State.IDLE:
-				frame_idx = 0
+				_walk_anim_timer += delta * 4.0
+				frame_idx = int(_walk_anim_timer) % 4
 			State.CHASE:
 				if absf(velocity.x) > 5.0:
-					_walk_anim_timer += delta * 6.5
-					frame_idx = 1 if int(_walk_anim_timer) % 2 == 0 else 2
+					_walk_anim_timer += delta * 7.5
+					frame_idx = 4 + (int(_walk_anim_timer) % 4)
 				else:
-					frame_idx = 0
+					_walk_anim_timer += delta * 3.0
+					frame_idx = int(_walk_anim_timer) % 4
 			State.VOID_SLASH:
-				frame_idx = 4
+				if _phase_timer > 0.25:
+					frame_idx = 8
+				elif _phase_timer > 0.14:
+					frame_idx = 9
+				elif _phase_timer > 0.06:
+					frame_idx = 10
+				else:
+					frame_idx = 11
 			State.SHADOW_BLINK:
-				frame_idx = 3
+				if _phase_timer > 0.20:
+					frame_idx = 12
+				elif _phase_timer > 0.10:
+					frame_idx = 13
+				elif _phase_timer > 0.04:
+					frame_idx = 14
+				else:
+					frame_idx = 15
 			State.BLADE_RING:
-				frame_idx = 3
+				if _phase_timer > 0.30:
+					frame_idx = 16
+				elif _phase_timer > 0.20:
+					frame_idx = 17
+				elif _phase_timer > 0.10:
+					frame_idx = 18
+				else:
+					frame_idx = 19
 			State.FINAL_JUDGMENT:
-				frame_idx = 4
+				if _phase_timer > 0.45:
+					frame_idx = 16
+				elif _phase_timer > 0.30:
+					frame_idx = 17
+				elif _phase_timer > 0.15:
+					frame_idx = 18
+				else:
+					frame_idx = 19
 			State.PHASE_TRANSITION:
-				frame_idx = 3
+				var t_frame := int(floor(_phase_timer * 8.0)) % 2
+				frame_idx = 12 if t_frame == 0 else 14
 			State.DEAD:
-				frame_idx = 5
+				if _phase_timer > 0.75:
+					frame_idx = 20
+				elif _phase_timer > 0.50:
+					frame_idx = 21
+				elif _phase_timer > 0.25:
+					frame_idx = 22
+				else:
+					frame_idx = 23
 
 		if frame_idx < _sprite_frames.size():
 			boss_sprite.texture = _sprite_frames[frame_idx]
 			if frame_idx < _sprite_pivots.size():
 				boss_sprite.offset = -_sprite_pivots[frame_idx]
 
-	if _hit_flash_timer > 0.0:
-		boss_sprite.modulate = Color(2.0, 2.0, 2.0, 1.0)
+	if state == State.DEAD:
+		boss_sprite.modulate = Color(0.65, 0.45, 0.75, 0.9)
+	elif _hit_flash_timer > 0.0:
+		boss_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
 	elif current_phase == 3:
 		var pulse := (sin(Time.get_ticks_msec() * 0.012) + 1.0) * 0.5
 		boss_sprite.modulate = Color(1.2, 0.25, 0.35).lerp(Color(1.5, 0.1, 0.1), pulse)
@@ -380,7 +442,7 @@ func _update_boss_sprite(delta: float) -> void:
 		var pulse := (sin(Time.get_ticks_msec() * 0.01) + 1.0) * 0.5
 		boss_sprite.modulate = Color(0.7, 0.35, 1.1).lerp(Color(1.0, 0.2, 0.7), pulse)
 	else:
-		boss_sprite.modulate = Color(0.85, 0.75, 1.0)
+		boss_sprite.modulate = Color.WHITE
 
 
 func _process_chase(delta: float) -> void:
@@ -419,7 +481,7 @@ func _start_void_slash() -> void:
 	state = State.VOID_SLASH
 	_phase_timer = 0.35 if current_phase == 1 else 0.22
 	velocity.x = 0.0
-	slash_visual.color = Color(0.8, 0.2, 1.0, 0.7)
+	slash_visual.visible = false
 	sword_poly.color = Color(1.0, 0.8, 0.2, 1.0)
 	AudioManager.play("slash_2", global_position)
 
@@ -585,7 +647,7 @@ func _trigger_phase_two() -> void:
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.55)
-	GameFeelManager.trigger_hit_stop(0.12, 0.0)
+	GameFeelManager.trigger_hit_stop(0.12, 0.08)
 	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -50), "VOID RIFT OPENED!", Color(0.7, 0.2, 1.0), true)
 
 
@@ -596,8 +658,8 @@ func _trigger_phase_three() -> void:
 	state = State.PHASE_TRANSITION
 	_phase_timer = 0.7
 	is_invulnerable = true
-	wing_left.visible = true
-	wing_right.visible = true
+	wing_left.visible = false
+	wing_right.visible = false
 	eye_poly.color = Color(1.0, 0.1, 0.1, 1.0)
 	body_poly.color = Color(0.45, 0.10, 0.25, 1.0)
 	aura_poly.visible = false
@@ -606,7 +668,7 @@ func _trigger_phase_three() -> void:
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.75)
-	GameFeelManager.trigger_hit_stop(0.18, 0.0)
+	GameFeelManager.trigger_hit_stop(0.18, 0.08)
 	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -60), "FINAL JUDGMENT!", Color(1.0, 0.1, 0.2), true)
 
 
@@ -626,6 +688,7 @@ func _process_phase_transition(delta: float) -> void:
 func _die() -> void:
 	is_dead = true
 	state = State.DEAD
+	_phase_timer = 1.0
 	var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
 	if top_plat != null and top_plat.get_child_count() > 0:
 		var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D

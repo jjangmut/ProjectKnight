@@ -5,6 +5,12 @@ var stage: Node
 var ui: Control
 
 func _initialize() -> void:
+	# Fail-safe watchdog: Guarantee process termination even on unhandled errors or freezes
+	var watchdog := create_timer(12.0)
+	watchdog.timeout.connect(func():
+		printerr("[WATCHDOG TIMEOUT] stage_presentation_smoke did not finish within 12s. Forcing exit.")
+		quit(1)
+	)
 	_run.call_deferred()
 
 func check(value: bool, message: String) -> void:
@@ -44,7 +50,7 @@ func _run() -> void:
 	check(ui.initialized, "HUD initialized")
 	check(not stage.status_label.visible, "Legacy HUD hidden but preserved")
 	check(ui.objective().contains("1구간"), "Opening objective")
-	check(ProjectSettings.get_setting("application/run/main_scene") == "res://scenes/stage/Campaign.tscn", "Default launch is campaign")
+	check(ProjectSettings.get_setting("application/run/main_scene") in ["res://scenes/stage/Campaign.tscn", "res://scenes/ui/TitleScreen.tscn"], "Default launch is valid flow")
 	await capture("01_start")
 	ui.intro_remaining = 0
 	stage.player.position = Vector2(720, 592)

@@ -1,6 +1,12 @@
 extends Control
 ## Stage presentation: observes campaign and combat state, never chooses outcomes.
 const SaveManagerClass = preload("res://scripts/system/save_manager.gd")
+const TexAvatarFrame = preload("res://assets/ui/hud_player_avatar_frame.png")
+const TexSoulGemFull = preload("res://assets/ui/hud_soul_gem_full.png")
+const TexSoulGemEmpty = preload("res://assets/ui/hud_soul_gem_empty.png")
+const TexBannerScroll = preload("res://assets/ui/hud_banner_scroll.png")
+const TexComboFrame = preload("res://assets/ui/combo_banner_frame.png")
+const TexParryBanner = preload("res://assets/ui/parry_burst_banner.png")
 const INK := Color("101b26")
 const GOLD := Color("ddc18a")
 const CYAN := Color("69d5dc")
@@ -55,6 +61,14 @@ var _had_intro := false
 var _had_toast := false
 var _had_hit := false
 
+# Third Blade Dynamic Combo & Just Parry System
+var combo_count: int = 0
+var combo_timer: float = 0.0
+const COMBO_TIMEOUT: float = 2.4
+var combo_scale: float = 1.0
+var parry_banner_timer: float = 0.0
+var parry_banner_scale: float = 1.0
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -78,7 +92,29 @@ func _setup() -> void:
 	previous_hp = stage.player.current_hp
 	previous_completed = stage.encounter_index
 	previous_checkpoint = stage.checkpoint_index
+	_connect_player_signals()
 	initialized = true
+	queue_redraw()
+
+func _connect_player_signals() -> void:
+	if not is_instance_valid(stage) or not is_instance_valid(stage.player):
+		return
+	if stage.player.has_signal("enemy_hit_registered") and not stage.player.enemy_hit_registered.is_connected(_on_enemy_hit):
+		stage.player.enemy_hit_registered.connect(_on_enemy_hit)
+	if stage.player.has_signal("perfect_parry_performed") and not stage.player.perfect_parry_performed.is_connected(_on_perfect_parry):
+		stage.player.perfect_parry_performed.connect(_on_perfect_parry)
+
+func _on_enemy_hit(_target: Node, _is_crit: bool, _dmg: int) -> void:
+	combo_count += 1
+	combo_timer = COMBO_TIMEOUT
+	combo_scale = 1.35
+	queue_redraw()
+
+func _on_perfect_parry() -> void:
+	parry_banner_timer = 1.4
+	parry_banner_scale = 1.4
+	combo_count += 2
+	combo_timer = COMBO_TIMEOUT
 	queue_redraw()
 
 func _process(delta: float) -> void:
@@ -247,13 +283,8 @@ func _text(at: Vector2, message: String, height: int = 18, color: Color = WHITE)
 	draw_string(font, at, message, HORIZONTAL_ALIGNMENT_LEFT, -1, height, color)
 
 func _pill(rect: Rect2) -> void:
-	if _cached_pill_style == null:
-		_cached_pill_style = StyleBoxFlat.new()
-		_cached_pill_style.bg_color = Color(0.035, 0.07, 0.10, 0.82)
-		_cached_pill_style.set_corner_radius_all(20)
-		_cached_pill_style.set_border_width_all(1)
-		_cached_pill_style.border_color = Color(0.3, 0.5, 0.6, 0.5)
-	draw_style_box(_cached_pill_style, rect)
+	# High-Resolution Gothic Parchment Scroll Ribbon Texture
+	draw_texture_rect(TexBannerScroll, rect, false, Color(1.0, 1.0, 1.0, 0.95))
 
 func _center(at: Vector2, message: String, height: int, color: Color = WHITE) -> void:
 	_text(at - Vector2(font.get_string_size(message, HORIZONTAL_ALIGNMENT_LEFT, -1, height).x * 0.5, 0), message, height, color)
@@ -261,14 +292,111 @@ func _center(at: Vector2, message: String, height: int, color: Color = WHITE) ->
 func _diamond(at: Vector2, radius: float, color: Color) -> void:
 	draw_colored_polygon(PackedVector2Array([at + Vector2(0, -radius), at + Vector2(radius, 0), at + Vector2(0, radius), at + Vector2(-radius, 0)]), color)
 
+func _draw_knight_avatar(at: Vector2) -> void:
+	# High-Resolution Gothic Crest Shield & Knight Helmet Texture
+	var avatar_size := Vector2(64, 64)
+	var avatar_rect := Rect2(at - avatar_size * 0.5, avatar_size)
+	var is_low_hp: bool = is_instance_valid(stage) and is_instance_valid(stage.player) and stage.player.current_hp <= 1
+	var avatar_modulate := Color(1.3, 0.7, 0.7, 1.0) if is_low_hp else Color(1.0, 1.0, 1.0, 1.0)
+	draw_texture_rect(TexAvatarFrame, avatar_rect, false, avatar_modulate)
+
+	# Dynamic Visor Slit Soul Flare
+	var visor_col := Color(1.8, 0.3, 0.2, 0.95) if is_low_hp else Color(0.4, 1.2, 1.5, 0.95)
+	draw_line(at + Vector2(-9, -1), at + Vector2(9, -1), visor_col, 2.6, true)
+
+
+func _draw_life_crystal(at: Vector2, full: bool) -> void:
+	# High-Resolution 3D Faceted Ruby Soul Gem Texture (Full) or Fractured Obsidian (Empty)
+	var gem_tex: Texture2D = TexSoulGemFull if full else TexSoulGemEmpty
+	var gem_size := Vector2(38, 38)
+	var gem_rect := Rect2(at - gem_size * 0.5, gem_size)
+	draw_texture_rect(gem_tex, gem_rect, false)
+
+
 func _heart(at: Vector2, full: bool) -> void:
-	var color := Color("ed9c99") if full else Color("48545b")
-	# Scaled 2x for crisp mobile readability: radius 16, tapered bottom 32px
-	draw_circle(at + Vector2(-12, -6), 16, color)
-	draw_circle(at + Vector2(12, -6), 16, color)
-	draw_colored_polygon(PackedVector2Array([at + Vector2(-26, 0), at + Vector2(26, 0), at + Vector2(0, 32)]), color)
-	if full:
-		draw_arc(at + Vector2(-12, -6), 8.0, PI, PI * 1.65, 12, Color("ffe0cc"), 3.5, true)
+	_draw_life_crystal(at, full)
+
+
+func _draw_combo_hud() -> void:
+	if combo_count < 2 or combo_timer <= 0.0:
+		return
+
+	var pos := Vector2(1040, 160)
+	var alpha := clampf(combo_timer / 0.4, 0.0, 1.0)
+	var scale_factor := combo_scale
+
+	# Rank configuration based on hits
+	var rank_text := "NICE COMBO!"
+	var rank_col := Color(0.35, 0.90, 1.0, alpha)
+	var num_col := Color(1.0, 0.95, 0.60, alpha)
+	if combo_count >= 15:
+		rank_text = "⚡ LEGENDARY CHAMPION! ⚡"
+		rank_col = Color(1.4, 0.6, 1.5, alpha)
+		num_col = Color(1.4, 0.8, 1.0, alpha)
+	elif combo_count >= 10:
+		rank_text = "🔥 BERSERK KNIGHT! 🔥"
+		rank_col = Color(1.2, 0.35, 0.15, alpha)
+		num_col = Color(1.2, 0.6, 0.2, alpha)
+	elif combo_count >= 5:
+		rank_text = "★ GREAT COMBO! ★"
+		rank_col = Color(1.0, 0.85, 0.25, alpha)
+		num_col = Color(1.0, 0.85, 0.35, alpha)
+
+	# 1. High-Resolution Third Blade Metallic Slash Frame Texture
+	var frame_size := Vector2(220, 80)
+	var frame_rect := Rect2(pos - frame_size * 0.5, frame_size)
+	draw_texture_rect(TexComboFrame, frame_rect, false, Color(1.1, 1.05, 1.0, alpha))
+
+	# 2. Combo Number & Text with Punch Scale
+	var num_str := "%d" % combo_count
+	var font_sz := int(38 * scale_factor)
+	var num_sz := font.get_string_size(num_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz)
+	var text_y := pos.y + 4.0
+
+	# Shadow
+	draw_string(font, Vector2(pos.x - 30 - num_sz.x * 0.5 + 2, text_y + 2), num_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz, Color(0, 0, 0, 0.85 * alpha))
+	draw_string(font, Vector2(pos.x - 30 - num_sz.x * 0.5, text_y), num_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz, num_col)
+
+	# "HITS!"
+	draw_string(font, Vector2(pos.x + 10, text_y - 2), "HITS!", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1.0, 1.0, 1.0, 0.95 * alpha))
+
+	# Rank Subtitle
+	draw_string(font, Vector2(pos.x - font.get_string_size(rank_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 14).x * 0.5, pos.y + 24), rank_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 14, rank_col)
+
+	# 3. Combo Duration Progress Bar
+	var bar_w := 170.0
+	var bar_x := pos.x - bar_w * 0.5
+	var bar_y := pos.y + 28.0
+	var ratio := clampf(combo_timer / COMBO_TIMEOUT, 0.0, 1.0)
+	draw_line(Vector2(bar_x, bar_y), Vector2(bar_x + bar_w, bar_y), Color(0.2, 0.25, 0.3, 0.5 * alpha), 3.0)
+	draw_line(Vector2(bar_x, bar_y), Vector2(bar_x + bar_w * ratio, bar_y), Color(rank_col.r, rank_col.g, rank_col.b, 0.95 * alpha), 3.0)
+
+
+func _draw_parry_banner() -> void:
+	if parry_banner_timer <= 0.0:
+		return
+
+	var center := Vector2(640, 230)
+	var alpha := clampf(parry_banner_timer / 0.5, 0.0, 1.0)
+	var anim_t := 1.4 - parry_banner_timer
+
+	# Expanding Shockwave Ring
+	var wave_rad := 40.0 + anim_t * 90.0
+	draw_arc(center, wave_rad, 0, TAU, 36, Color(1.0, 0.85, 0.2, 0.75 * alpha), 2.5, true)
+
+	# High-Resolution Just Parry Golden Ribbon Banner Texture
+	var banner_w := 420.0 * parry_banner_scale
+	var banner_h := 80.0 * parry_banner_scale
+	var banner_rect := Rect2(center.x - banner_w * 0.5, center.y - banner_h * 0.5, banner_w, banner_h)
+	draw_texture_rect(TexParryBanner, banner_rect, false, Color(1.2, 1.15, 0.95, alpha))
+
+	# Golden Emblem Text
+	var parry_text := "⚡ PERFECT PARRY BREAK! ⚡"
+	var font_sz := int(22 * parry_banner_scale)
+	var str_sz := font.get_string_size(parry_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz)
+	draw_string(font, center + Vector2(-str_sz.x * 0.5 + 2, str_sz.y * 0.35 + 2), parry_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz, Color(0, 0, 0, 0.85 * alpha))
+	draw_string(font, center + Vector2(-str_sz.x * 0.5, str_sz.y * 0.35), parry_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_sz, Color(1.2, 1.0, 0.4, alpha))
+
 
 func _draw() -> void:
 	if not initialized or not is_instance_valid(stage):
@@ -282,16 +410,17 @@ func _draw() -> void:
 
 		var has_boss_bar := (stage.get_node_or_null("HUD/BossHealthBar") != null)
 
-		# 1. Left Zone: Title, Hearts, Soul Shards, Checkpoint, Traits
+		# 1. Left Zone: Title, Avatar, Life Crystals, Soul Shards, Checkpoint, Traits
 		if not has_boss_bar:
-			_text(Vector2(38, 36), "기사의 여정 · " + stage_label(), 24, GOLD)
+			_draw_knight_avatar(Vector2(52, 54))
+			_text(Vector2(92, 38), "기사의 여정 · " + stage_label(), 22, GOLD)
 			for index in range(3):
 				var full: bool = stage.player.current_hp > index
-				_heart(Vector2(50 + index * 48, 68), full)
+				_heart(Vector2(110 + index * 42, 68), full)
 			var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
-			_diamond(Vector2(204, 68), 12, Color(0.2, 0.9, 1.0))
-			_text(Vector2(224, 76), "%d" % shards, 24, Color(0.35, 0.95, 1.0))
-			_draw_relic_bar(Vector2(85, 100))
+			_diamond(Vector2(250, 68), 12, Color(0.2, 0.9, 1.0))
+			_text(Vector2(270, 76), "%d" % shards, 24, Color(0.35, 0.95, 1.0))
+			_draw_relic_bar(Vector2(102, 100))
 			if stage.checkpoint_active:
 				_diamond(Vector2(42, 128), 8, CYAN)
 				_text(Vector2(58, 134), "휴식처 CP%d 저장됨" % (stage.checkpoint_index + 1), 18, CYAN)
@@ -299,13 +428,14 @@ func _draw() -> void:
 			_text(Vector2(38, 168), chapter_label(), 16, GOLD)
 		else:
 			# Compact left zone during boss battle
+			_draw_knight_avatar(Vector2(44, 46))
 			for index in range(3):
 				var full: bool = stage.player.current_hp > index
-				_heart(Vector2(36 + index * 42, 48), full)
+				_heart(Vector2(96 + index * 40, 48), full)
 			var shards: int = stage.player.soul_shards if "soul_shards" in stage.player else 0
-			_diamond(Vector2(174, 48), 11, Color(0.2, 0.9, 1.0))
-			_text(Vector2(192, 55), "%d" % shards, 22, Color(0.35, 0.95, 1.0))
-			_draw_relic_bar(Vector2(85, 80))
+			_diamond(Vector2(230, 48), 11, Color(0.2, 0.9, 1.0))
+			_text(Vector2(248, 55), "%d" % shards, 22, Color(0.35, 0.95, 1.0))
+			_draw_relic_bar(Vector2(102, 80))
 
 		# 2. Center Zone: Encounter Track (Y: 30) & Objective (Y: 74)
 		if not has_boss_bar:
@@ -352,6 +482,15 @@ func _draw() -> void:
 			var toast_w := font.get_string_size(toast, HORIZONTAL_ALIGNMENT_CENTER, -1, 22).x + 44.0
 			_pill(Rect2(640.0 - toast_w * 0.5, next_y + 6.0, toast_w, 36.0))
 			_center(Vector2(640, next_y + 30.0), toast, 22, GOLD)
+
+		# 3. Third Blade Dynamic Combo & Just Parry Display
+		_draw_combo_hud()
+		_draw_parry_banner()
+
+		if touch_visible:
+			_draw_touch()
+		elif not _has_dedicated_mobile_controls():
+			_center(Vector2(640, 693), "A/D 이동    Space 점프    J 누르고 연속 공격    K 누르고 막기    H 도움말", 20, MUTED)
 
 		if touch_visible:
 			_draw_touch()

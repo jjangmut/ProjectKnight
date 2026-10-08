@@ -8,6 +8,7 @@ extends Area2D
 @export var max_distance: float = 320.0
 @export var damage: int = 1
 @export var max_pierce: int = 3
+@export var is_crystal_beam: bool = false
 
 var _start_x: float = 0.0
 var _hit_targets: Dictionary = {}
@@ -31,15 +32,15 @@ func _ready() -> void:
 	col.shape = rect
 	add_child(col)
 
-	# Visuals: Glowing Golden Crescent with HDR Overdrive for 2D Bloom Glow
+	# Visuals: Glowing Golden or Crystal Crescent with HDR Overdrive for 2D Bloom Glow
 	_visual = Node2D.new()
 	_visual.name = "BladeVisual"
 	add_child(_visual)
 
-	# 1. Outer Golden Aura Arc (HDR Overdrive)
+	# 1. Outer Aura Arc (HDR Overdrive)
 	_blade_arc = Line2D.new()
 	_blade_arc.width = 8.0
-	_blade_arc.default_color = Color(1.8, 1.4, 0.45, 0.98)
+	_blade_arc.default_color = Color(0.3, 1.8, 2.4, 0.98) if is_crystal_beam else Color(1.8, 1.4, 0.45, 0.98)
 	var pts := PackedVector2Array()
 	var radius := 26.0
 	for i in range(7):
@@ -51,7 +52,7 @@ func _ready() -> void:
 	# 2. Inner Radiant Core (Blinding White-Hot Core)
 	_core_arc = Line2D.new()
 	_core_arc.width = 3.5
-	_core_arc.default_color = Color(2.0, 2.0, 1.8, 1.0)
+	_core_arc.default_color = Color(1.8, 2.2, 2.5, 1.0) if is_crystal_beam else Color(2.0, 2.0, 1.8, 1.0)
 	var core_pts := PackedVector2Array()
 	for i in range(5):
 		var ang := -PI * 0.35 + (float(i) / 4.0) * PI * 0.7

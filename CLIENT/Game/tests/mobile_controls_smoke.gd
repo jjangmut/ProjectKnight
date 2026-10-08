@@ -12,6 +12,12 @@ var failures := 0
 
 
 func _initialize() -> void:
+	# Fail-safe watchdog: Guarantee process termination even on unhandled errors or freezes
+	var watchdog := create_timer(12.0)
+	watchdog.timeout.connect(func():
+		printerr("[WATCHDOG TIMEOUT] mobile_controls_smoke did not finish within 12s. Forcing exit.")
+		quit(1)
+	)
 	_run.call_deferred()
 
 

@@ -91,14 +91,14 @@ func _build_visuals() -> void:
 	visual.name = "Visuals"
 	add_child(visual)
 
-	# Enrage Aura (Transparent fill with sharp outline rim to eliminate opaque plate artifact)
+	# Enrage Aura
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
 		Vector2(-70, -140), Vector2(70, -140), Vector2(90, 0),
 		Vector2(70, 90), Vector2(-70, 90), Vector2(-90, 0)
 	])
 	aura_poly.color = Color(0.4, 0.9, 1.8, 0.0) # Transparent plate
-	aura_poly.visible = true
+	aura_poly.visible = false
 	var aura_rim := Line2D.new()
 	aura_rim.width = 2.2
 	aura_rim.default_color = Color(1.2, 2.2, 3.2, 0.85)
@@ -157,61 +157,75 @@ func _build_visuals() -> void:
 	_build_boss_sprite()
 
 
+func _load_texture_safe(path: String) -> Texture2D:
+	if ResourceLoader.exists(path):
+		var res := load(path) as Texture2D
+		if res != null:
+			return res
+	var global_path := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(global_path):
+		var img := Image.load_from_file(global_path)
+		if img != null:
+			return ImageTexture.create_from_image(img)
+	return null
+
+
 func _build_boss_sprite() -> void:
-	var dedicated_path := "res://assets/enemy_frames/crossbow_cmd_v1.png"
-	var file_path := dedicated_path if ResourceLoader.exists(dedicated_path) else "res://assets/enemy_frames/ranged_v1.png"
-	if ResourceLoader.exists(file_path):
-		var sheet := load(file_path) as Texture2D
-		if sheet != null:
-			var is_dedicated := (file_path == dedicated_path)
-			var regions: Array[Rect2] = []
-			var pivots: Array[Vector2] = []
-			if is_dedicated:
-				regions = [
-					Rect2(0, 0, 421, 424),
-					Rect2(421, 0, 421, 424),
-					Rect2(842, 0, 422, 424),
-					Rect2(0, 424, 421, 424),
-					Rect2(421, 424, 421, 424),
-					Rect2(842, 424, 422, 424)
-				]
-				for i in range(6):
-					pivots.append(Vector2(210, 410))
-			else:
-				regions = [
-					Rect2(0, 0, 535, 500),
-					Rect2(535, 0, 520, 500),
-					Rect2(1055, 0, 481, 500),
-					Rect2(0, 500, 510, 524),
-					Rect2(510, 500, 585, 524),
-					Rect2(1095, 500, 441, 524)
-				]
-				pivots = [
-					Vector2(250, 480),
-					Vector2(255, 480),
-					Vector2(240, 482),
-					Vector2(260, 461),
-					Vector2(225, 455),
-					Vector2(220, 453)
-				]
-			for i in range(6):
-				var frame := AtlasTexture.new()
-				frame.atlas = sheet
-				frame.region = regions[i]
-				_sprite_frames.append(frame)
-				_sprite_pivots.append(pivots[i])
+	var path_combat := "res://assets/enemy_frames/crossbow_cmd_v2.png"
+	var path_skills := "res://assets/enemy_frames/crossbow_cmd_v2_skills.png"
+
+	# 1. Combat Sprite Sheet (12 frames: Idle 0-3, Move/Run 4-7, Snipe/Fire 8-11)
+	var sheet := _load_texture_safe(path_combat)
+	if sheet != null:
+		var regions: Array[Rect2] = [
+			Rect2(47, 35, 238, 250), Rect2(346, 35, 238, 250), Rect2(645, 35, 238, 250), Rect2(944, 35, 238, 250),
+			Rect2(41, 328, 252, 252), Rect2(319, 327, 276, 253), Rect2(621, 327, 273, 253), Rect2(919, 327, 272, 253),
+			Rect2(11, 622, 288, 255), Rect2(308, 622, 292, 255), Rect2(600, 622, 294, 255), Rect2(933, 622, 254, 255)
+		]
+		var pivots: Array[Vector2] = [
+			Vector2(118, 249), Vector2(118, 249), Vector2(118, 249), Vector2(118, 249),
+			Vector2(125, 251), Vector2(137, 252), Vector2(136, 252), Vector2(135, 252),
+			Vector2(143, 254), Vector2(145, 254), Vector2(146, 254), Vector2(126, 254)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet
+			frame.region = regions[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots[i])
+
+	# 2. Skills Sprite Sheet (12 frames: Sky Volley 12-15, Backstep/Caltrops 16-19, Hurt/Defeat 20-23)
+	var sheet_s := _load_texture_safe(path_skills)
+	if sheet_s != null:
+		var regions_s: Array[Rect2] = [
+			Rect2(42, 41, 243, 242), Rect2(345, 25, 255, 262), Rect2(600, 22, 284, 263), Rect2(944, 35, 238, 252),
+			Rect2(41, 328, 253, 253), Rect2(318, 327, 281, 256), Rect2(622, 327, 272, 253), Rect2(937, 350, 242, 233),
+			Rect2(39, 608, 258, 271), Rect2(308, 633, 292, 244), Rect2(619, 727, 277, 152), Rect2(927, 764, 265, 115)
+		]
+		var pivots_s: Array[Vector2] = [
+			Vector2(121, 241), Vector2(127, 261), Vector2(141, 262), Vector2(118, 251),
+			Vector2(126, 252), Vector2(140, 255), Vector2(135, 252), Vector2(120, 232),
+			Vector2(128, 270), Vector2(145, 243), Vector2(138, 151), Vector2(132, 114)
+		]
+		for i in range(12):
+			var frame := AtlasTexture.new()
+			frame.atlas = sheet_s
+			frame.region = regions_s[i]
+			_sprite_frames.append(frame)
+			_sprite_pivots.append(pivots_s[i])
 
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Imposing Grand Boss Stature: 0.56 (~230px tall, ~3x larger)
-	boss_sprite.scale = Vector2.ONE * 0.56
+	# Imposing Chibi Boss Stature: 0.42 (~105px tall, 2.5-head Chibi knight proportion)
+	boss_sprite.scale = Vector2.ONE * 0.42
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 95)
+	boss_sprite.position = Vector2.ZERO
 
 	if not _sprite_frames.is_empty():
 		boss_sprite.texture = _sprite_frames[0]
 		boss_sprite.offset = -_sprite_pivots[0]
+		print(">>> [CROSSBOW COMMANDER] BossSprite initialized with %d frames! First frame size: %s" % [_sprite_frames.size(), _sprite_frames[0].get_size()])
 
 	visual.add_child(boss_sprite)
 
@@ -219,13 +233,13 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
 	var shape := CapsuleShape2D.new()
-	shape.radius = 48.0
-	shape.height = 190.0
+	shape.radius = 35.0
+	shape.height = 100.0
 	body_col.shape = shape
-	body_col.position = Vector2(0, -10)
+	body_col.position = Vector2(0, -50.0)
 	add_child(body_col)
 
-	# Dynamic Top Platform: elevated to grand boss head level (~120px)
+	# Dynamic Top Platform: elevated to grand boss head level (~96px)
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -233,9 +247,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(130.0, 18.0)
+	top_rect.size = Vector2(70.0, 14.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -118.0)
+	top_shape.position = Vector2(0.0, -96.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -246,16 +260,23 @@ func _build_collisions() -> void:
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := CapsuleShape2D.new()
-	hurt_shape.radius = 54.0
-	hurt_shape.height = 200.0
+	hurt_shape.radius = 38.0
+	hurt_shape.height = 105.0
 	hurt_col.shape = hurt_shape
-	hurt_col.position = Vector2(0, -10)
+	hurt_col.position = Vector2(0, -50.0)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		velocity.x = 0.0
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		move_and_slide()
+		if state == State.DEAD:
+			_phase_timer = maxf(0.0, _phase_timer - delta)
+			_update_boss_sprite(delta)
 		return
 
 	if not is_on_floor():
@@ -310,38 +331,73 @@ func _update_boss_sprite(delta: float) -> void:
 		var frame_idx := 0
 		match state:
 			State.IDLE:
-				frame_idx = 0
+				_walk_anim_timer += delta * 4.0
+				frame_idx = int(_walk_anim_timer) % 4 # frames 0..3 (Idle breathing)
 			State.CHASE:
 				if absf(velocity.x) > 5.0:
-					_walk_anim_timer += delta * 6.5
-					frame_idx = 1 if int(_walk_anim_timer) % 2 == 0 else 2
+					_walk_anim_timer += delta * 7.5
+					frame_idx = 4 + (int(_walk_anim_timer) % 4) # frames 4..7 (Tactical Run)
 				else:
 					frame_idx = 0
-			State.AIM_BOLT, State.AIM_VOLLEY:
-				frame_idx = 3
-			State.FIRE_BOLT, State.FIRE_VOLLEY:
-				frame_idx = 4
+			State.AIM_BOLT:
+				frame_idx = 8 # Aiming tension
+			State.FIRE_BOLT:
+				if _phase_timer > 0.16:
+					frame_idx = 9 # Muzzle spark
+				elif _phase_timer > 0.08:
+					frame_idx = 10 # Recoil
+				else:
+					frame_idx = 11 # Reload
+			State.AIM_VOLLEY:
+				frame_idx = 12 # Aim up to sky
+			State.FIRE_VOLLEY:
+				if _phase_timer > 0.22:
+					frame_idx = 13 # Volley arrows into sky
+				elif _phase_timer > 0.11:
+					frame_idx = 14 # Watching arrows
+				else:
+					frame_idx = 15 # Reload
 			State.BACKSTEP:
-				frame_idx = 3
+				if _phase_timer > 0.24:
+					frame_idx = 16 # Scatter caltrops
+				elif _phase_timer > 0.14:
+					frame_idx = 17 # Leap away
+				elif _phase_timer > 0.06:
+					frame_idx = 18 # Airborne backstep
+				else:
+					frame_idx = 19 # Landing
 			State.DAGGER_SLASH:
-				frame_idx = 4
+				if _phase_timer > 0.15:
+					frame_idx = 9
+				else:
+					frame_idx = 10
 			State.PHASE_TRANSITION:
-				frame_idx = 3
+				var t_frame := int(floor(_phase_timer * 8.0)) % 2
+				frame_idx = 12 if t_frame == 0 else 13
 			State.DEAD:
-				frame_idx = 5
+				if _phase_timer > 0.75:
+					frame_idx = 20 # Hurt stun
+				elif _phase_timer > 0.50:
+					frame_idx = 21 # Falling
+				elif _phase_timer > 0.25:
+					frame_idx = 22 # Collapsing
+				else:
+					frame_idx = 23 # Defeated collapse on ground
 
 		if frame_idx < _sprite_frames.size():
 			boss_sprite.texture = _sprite_frames[frame_idx]
 			if frame_idx < _sprite_pivots.size():
 				boss_sprite.offset = -_sprite_pivots[frame_idx]
 
-	if _hit_flash_timer > 0.0:
-		boss_sprite.modulate = Color(2.0, 2.0, 2.0, 1.0)
+	if state == State.DEAD:
+		boss_sprite.modulate = Color(0.75, 0.75, 0.8, 0.95)
+	elif _hit_flash_timer > 0.0:
+		boss_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
 	elif current_phase == 2:
 		var pulse := (sin(Time.get_ticks_msec() * 0.01) + 1.0) * 0.5
-		boss_sprite.modulate = Color(0.9, 0.4, 1.1).lerp(Color(1.3, 0.2, 0.3), pulse)
+		boss_sprite.modulate = Color(1.2, 0.7, 0.4).lerp(Color(1.5, 0.3, 0.3), pulse)
 	else:
-		boss_sprite.modulate = Color.WHITE
+		boss_sprite.modulate = Color(1.15, 1.15, 1.15, 1.0) # High-contrast radiant finish
 
 
 func _process_idle(delta: float) -> void:
@@ -602,7 +658,7 @@ func _trigger_phase_two() -> void:
 
 	AudioManager.play("counter_hit", global_position)
 	GameFeelManager.shake(0.55)
-	GameFeelManager.trigger_hit_stop(0.12, 0.0)
+	GameFeelManager.trigger_hit_stop(0.12, 0.08)
 	GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(0, -50), "DEAD-EYE ENRAGE!", Color(1.0, 0.2, 0.2), true)
 
 
@@ -621,6 +677,7 @@ func _process_phase_transition(delta: float) -> void:
 func _die() -> void:
 	is_dead = true
 	state = State.DEAD
+	_phase_timer = 1.0 # Progress through defeat animation frames (20 -> 21 -> 22 -> 23)
 	var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
 	if top_plat != null and top_plat.get_child_count() > 0:
 		var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D
@@ -629,7 +686,7 @@ func _die() -> void:
 	aura_poly.visible = false
 	body_poly.color = Color(0.2, 0.2, 0.2, 0.8)
 	if is_instance_valid(boss_sprite):
-		boss_sprite.modulate = Color(0.4, 0.4, 0.4, 0.8)
+		boss_sprite.modulate = Color(0.75, 0.75, 0.8, 0.95)
 
 	GameFeelManager.trigger_hit_stop(0.65, 0.15)
 	GameFeelManager.shake(0.70)
@@ -640,7 +697,7 @@ func _die() -> void:
 	boss_defeated.emit()
 
 	var tween := create_tween()
-	tween.tween_property(visual, "modulate:a", 0.0, 1.5).set_delay(0.5)
+	tween.tween_property(visual, "modulate:a", 0.0, 1.2).set_delay(1.2)
 	tween.tween_callback(queue_free)
 
 

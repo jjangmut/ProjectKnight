@@ -1,5 +1,5 @@
 extends Sprite2D
-## Visual-only adapter. The existing controller retains all gameplay ownership.
+## Visual adapter supporting both baseline frame animations and full-character texture evolution morphing.
 
 @onready var actor: CharacterBody2D = get_parent()
 @onready var fallback: Polygon2D = get_parent().get_node("Visual")
@@ -19,6 +19,21 @@ var was_dead := false
 var previous_position := Vector2.ZERO
 const ATTACK_PIVOTS := [Vector2(255, 599), Vector2(210, 599), Vector2(250, 569), Vector2(212, 568)]
 
+# Full Character Texture Evolution System (Stages 1-5)
+const EVOLUTION_TEXTURES := {
+	0: preload("res://assets/player/knight_idle_v1.png"),
+	1: preload("res://assets/player/knight_stage1_paladin.png"),
+	2: preload("res://assets/player/knight_stage2_windrunner.png"),
+	3: preload("res://assets/player/knight_stage3_arcane.png"),
+	4: preload("res://assets/player/knight_stage4_titan.png"),
+	5: preload("res://assets/player/knight_stage5_abyssal.png")
+}
+
+var current_evolution_stage: int = 0
+var base_character_scale: Vector2 = Vector2(0.057866, 0.057866)
+var base_character_offset: Vector2 = Vector2(-627, -1163)
+
+
 func _ready() -> void:
 	if texture == null:
 		set_process(false)
@@ -27,6 +42,8 @@ func _ready() -> void:
 	idle_texture = texture
 	idle_offset = offset
 	idle_scale = scale
+	base_character_scale = scale
+	base_character_offset = offset
 	idle_centered = centered
 	previous_position = actor.global_position
 	var sheet: Texture2D = preload("res://assets/player_frames/attack_v1.png")
@@ -41,11 +58,25 @@ func _ready() -> void:
 	actor.get_node("FacingMark").visible = false
 	_update_visual()
 
+
+func set_evolution_stage(stage_num: int) -> void:
+	current_evolution_stage = clampi(stage_num, 0, 5)
+	if EVOLUTION_TEXTURES.has(current_evolution_stage):
+		idle_texture = EVOLUTION_TEXTURES[current_evolution_stage]
+		if current_evolution_stage > 0:
+			texture = idle_texture
+			offset = base_character_offset
+			scale = base_character_scale
+	print(">>> [PLAYER ART] Evolved character sprite to Stage %d (%s)" % [current_evolution_stage, idle_texture.resource_path])
+
+
 func _process(delta: float) -> void:
 	update_motion(delta)
 
+
 func _update_visual() -> void:
 	update_motion(0.0)
+
 
 func _load_motion_manifest() -> void:
 	var path := "res://assets/player_frames/motion_manifest.json"
@@ -87,6 +118,7 @@ func _load_motion_manifest() -> void:
 		if key == "attack":
 			attack_frames = frames
 
+
 func update_motion(delta: float) -> bool:
 	if actor == null or not is_instance_valid(actor) or not "is_guarding" in actor:
 		return false
@@ -97,7 +129,6 @@ func update_motion(delta: float) -> bool:
 	if elapsed > 0.0:
 		idle_time += elapsed
 		var displacement := absf(actor.global_position.x - previous_position.x)
-		# Ignore checkpoint/teleport jumps; only ground travel advances the gait.
 		if actor.is_on_floor() and not actor.is_guarding and displacement < 100.0:
 			run_distance += displacement
 		previous_position = actor.global_position
@@ -128,13 +159,67 @@ func update_motion(delta: float) -> bool:
 		return _apply_motion("run", fposmod(run_distance / 96.0, 1.0))
 	return _apply_motion("idle", fposmod(idle_time / 0.8, 1.0))
 
+
 func _phase(remaining: float, duration: float) -> float:
 	return clampf(1.0 - remaining / maxf(duration, 0.001), 0.0, 0.99999)
+
 
 func _apply_motion(key: String, phase: float) -> bool:
 	attack_frame_index = -1
 	motion_name = key
 	motion_frame_index = -1
+
+	# If Character Texture Evolution is active (Stage 1-5), preserve the evolved character image!
+	if current_evolution_stage > 0:
+		texture = EVOLUTION_TEXTURES[current_evolution_stage]
+		centered = false
+		offset = base_character_offset
+		scale = base_character_scale
+		rotation = 0.0
+
+		match key:
+			"idle":
+				# Natural breathing bounce
+				var breath := sin(idle_time * 4.0) * 0.02
+				scale.y = base_character_scale.y * (1.0 + breath)
+				scale.x = base_character_scale.x * (1.0 - breath * 0.5)
+			"run":
+				# Forward athletic sprint lean & footstep bounce
+				var run_bounce := absf(sin(run_distance / 16.0)) * 0.04
+				rotation = (-0.08 if flip_h else 0.08)
+				scale.y = base_character_scale.y * (1.0 - run_bounce)
+			"attack":
+				# Dynamic swing slash arc
+				var swing := (phase - 0.5) * 0.6
+				rotation = (-swing if flip_h else swing)
+				scale = base_character_scale * 1.08
+				attack_frame_index = int(phase * 4.0)
+			"guard":
+				# Defensive solid brace posture
+				scale.y = base_character_scale.y * 0.94
+				scale.x = base_character_scale.x * 1.04
+				rotation = (0.04 if flip_h else -0.04)
+			"dodge":
+				# Aerodynamic speed dash stretch
+				scale.x = base_character_scale.x * 1.15
+				scale.y = base_character_scale.y * 0.88
+				rotation = (-0.12 if flip_h else 0.12)
+			"jump":
+				# Aerial jump suspension
+				scale.y = base_character_scale.y * 1.06
+				scale.x = base_character_scale.x * 0.95
+			"hurt":
+				# Heavy hit recoil tilt
+				rotation = (0.18 if flip_h else -0.18)
+				scale = base_character_scale * 0.95
+			"death":
+				# Collapse to ground
+				rotation = (PI * 0.5 if flip_h else -PI * 0.5)
+				offset.y = base_character_offset.y * 0.5
+
+		return true
+
+	# Stage 0: Baseline atlas motion playback
 	if not motions.has(key):
 		texture = idle_texture
 		offset = idle_offset
@@ -152,6 +237,7 @@ func _apply_motion(key: String, phase: float) -> bool:
 	if key == "attack":
 		attack_frame_index = motion_frame_index
 	return true
+
 
 func apply_attack_frame() -> bool:
 	if actor.is_attacking and not actor.is_dead and actor._hurt_flash_remaining <= 0 and not actor.is_guarding:

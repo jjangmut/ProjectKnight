@@ -78,6 +78,7 @@ var is_air_attacking: bool = false
 var _air_hang_timer: float = 0.0
 const SwordBeamScene = preload("res://scripts/player/sword_beam.gd")
 signal perfect_parry_performed
+signal enemy_hit_registered(target: Node, is_crit: bool, damage: int)
 
 # Relic Gameplay Passive Buffs (v1.1.3 Quality Polish)
 var relic_shield_active: bool = false   # Stage 1: Guard recovery -30% & knockback resistance
@@ -137,6 +138,15 @@ func _ready() -> void:
 func refresh_equipment() -> void:
 	if equipment_visuals != null and is_instance_valid(equipment_visuals):
 		equipment_visuals.refresh_equipment()
+	var char_art = get_node_or_null("CharacterArt")
+	if char_art != null and char_art.has_method("set_evolution_stage"):
+		var cleared: Array[bool] = SaveManagerClass.get_cleared_stages()
+		var highest := 0
+		for i in range(cleared.size() - 1, -1, -1):
+			if cleared[i]:
+				highest = i + 1
+				break
+		char_art.set_evolution_stage(highest)
 	refresh_relic_buffs()
 
 
@@ -345,6 +355,7 @@ func _spawn_sword_beam() -> void:
 	if relic_quiver_active:
 		beam.max_distance = 420.0
 		beam.max_pierce = 4
+		beam.is_crystal_beam = true
 	parent_node.add_child(beam)
 
 
@@ -389,6 +400,10 @@ func _start_counter_attack() -> void:
 	_cooldown_time_remaining = 0.22 / attack_speed_multiplier
 	if is_perfect_parry:
 		current_attack_damage = 4 if relic_crown_active else 3
+		# Stage 5 Abyssal Crown: Dimension Void Rift Slash VFX
+		if relic_crown_active and get_parent() is Node2D:
+			GameFeelManager.slash_spark(get_parent() as Node2D, global_position + Vector2(facing_direction * 30.0, -6.0), facing_direction, true)
+			GameFeelManager.damage_popup(get_parent() as Node2D, global_position + Vector2(facing_direction * 32.0, -48.0), "ABYSS CRIT 4!", Color(0.9, 0.35, 1.0), true)
 	else:
 		current_attack_damage = 2
 	is_perfect_parry = false
@@ -530,6 +545,7 @@ func _on_attack_area_entered(area: Area2D) -> void:
 	_hit_targets[target_id] = true
 
 	var is_crit := is_counter_attacking or combo_step == 3
+	enemy_hit_registered.emit(target, is_crit, current_attack_damage)
 	var hit_pos: Vector2 = (global_position + target.global_position) * 0.5
 
 	# 1. Auditory Feedback: Heavy physical hit impact SFX on target contact

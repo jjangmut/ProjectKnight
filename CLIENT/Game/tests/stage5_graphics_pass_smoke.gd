@@ -123,6 +123,10 @@ func _run_tests() -> void:
 		_check(boss is AbyssalArbiter, "Encounter 7 spawned AbyssalArbiter (심연의 심판관)")
 		var boss_bar = stage.get_node_or_null("HUD/BossHealthBar")
 		_check(boss_bar != null, "BossHealthBar attached to HUD")
+		var boss_sp = boss.get_node_or_null("Visuals/BossSprite")
+		_check(boss_sp != null, "Abyssal Arbiter BossSprite node exists")
+		_check(boss.get("_sprite_frames") != null and boss.get("_sprite_frames").size() == 24, "Abyssal Arbiter has 24 high-res Chibi action/skill frames loaded")
+		_check(boss.has_node("TopPlatform"), "Abyssal Arbiter TopPlatform rideable collision exists")
 
 	# -------------------------------------------------------------------------
 	# Test 5: Gameplay Logic & Stat Invariants

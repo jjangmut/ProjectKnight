@@ -183,6 +183,13 @@ func _on_toggle_pressed() -> void:
 	btn_toggle.modulate = Color(1.0, 1.0, 1.0, 0.8 if is_mobile_active else 0.4)
 
 
+const TexJoypadBase = preload("res://assets/ui/joypad_base.png")
+const TexJoypadKnob = preload("res://assets/ui/joypad_knob.png")
+const TexBtnAttack = preload("res://assets/ui/btn_attack.png")
+const TexBtnDash = preload("res://assets/ui/btn_dash.png")
+const TexBtnGuard = preload("res://assets/ui/btn_guard.png")
+
+
 func _create_touch_button(action_name: String, label_text: String, pos: Vector2, btn_size: Vector2, theme_color: Color) -> Control:
 	var btn := VirtualButton.new()
 	btn.name = "Btn_" + action_name
@@ -192,6 +199,13 @@ func _create_touch_button(action_name: String, label_text: String, pos: Vector2,
 	btn.custom_minimum_size = btn_size
 	btn.size = btn_size
 	btn.theme_color = theme_color
+	match action_name:
+		"attack":
+			btn.button_texture = TexBtnAttack
+		"dash":
+			btn.button_texture = TexBtnDash
+		"guard":
+			btn.button_texture = TexBtnGuard
 	btn.action_triggered.connect(func(act: String, prs: bool): mobile_action_triggered.emit(act, prs))
 	return btn
 
@@ -375,60 +389,37 @@ class MobileJoypad:
 	func _draw() -> void:
 		var center := size * 0.5
 
-		# 1. Outer Dark Base Disk with depth
-		draw_circle(center + Vector2(0, 3), base_radius, Color(0.0, 0.0, 0.0, 0.35))
-		draw_circle(center, base_radius, Color(0.05, 0.09, 0.15, 0.65))
+		# 1. High-Resolution Textured Joypad Base (Forged Brass & Obsidian Rune Disk)
+		var base_size := Vector2(base_radius * 2.3, base_radius * 2.3)
+		var base_rect := Rect2(center - base_size * 0.5, base_size)
+		var base_modulate := Color(1.15, 1.1, 1.0, 1.0) if is_touch_down else Color(0.9, 0.95, 1.0, 0.85)
+		draw_texture_rect(TexJoypadBase, base_rect, false, base_modulate)
 
-		# 2. Concentric Target Rings
-		draw_arc(center, base_radius * 0.60, 0, TAU, 36, Color(0.25, 0.45, 0.70, 0.25), 1.5, true)
-		var base_ring_color := Color(0.28, 0.70, 1.0, 0.85) if is_touch_down else Color(0.22, 0.50, 0.75, 0.55)
-		draw_arc(center, base_radius, 0, TAU, 48, base_ring_color, 3.0, true)
-		draw_arc(center, base_radius - 1.0, -PI * 0.85, -PI * 0.15, 24, Color(1.0, 1.0, 1.0, 0.35), 1.5, true)
-
-		# 3. 8-Direction Rune Tick Marks
+		# 2. Dynamic 8-Direction Active Sector Gold Glow
 		for i in range(8):
 			var angle := i * (TAU / 8.0)
 			var dir_vec := Vector2(cos(angle), sin(angle))
-			var p1 := center + dir_vec * (base_radius - 10.0)
-			var p2 := center + dir_vec * (base_radius - 2.0)
-
 			var is_sector_active := false
 			if is_touch_down and current_direction != Vector2.ZERO:
-				if current_direction.dot(dir_vec) > 0.75:
+				if current_direction.dot(dir_vec) > 0.72:
 					is_sector_active = true
 
-			var tick_col := Color(1.0, 0.85, 0.30, 0.95) if is_sector_active else Color(0.35, 0.55, 0.75, 0.45)
-			var line_width := 3.5 if is_sector_active else 1.8
-			draw_line(p1, p2, tick_col, line_width, true)
+			if is_sector_active:
+				var p1 := center + dir_vec * (base_radius - 12.0)
+				var p2 := center + dir_vec * (base_radius + 4.0)
+				draw_line(p1, p2, Color(1.5, 1.3, 0.6, 0.95), 4.2, true)
 
-		# 4. Guide Direction Labels (Jump Up ▲, Drop Down ▼, ◀, ▶)
-		var font := ThemeDB.fallback_font
-		var jump_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["jump"] else Color(0.7, 0.88, 1.0, 0.70)
-		var drop_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_down"] else Color(0.7, 0.88, 1.0, 0.70)
-		var left_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_left"] else Color(0.7, 0.88, 1.0, 0.70)
-		var right_col := Color(1.0, 0.88, 0.35, 0.95) if active_actions["move_right"] else Color(0.7, 0.88, 1.0, 0.70)
-
-		draw_string(font, center + Vector2(-16, -base_radius + 24), "▲점프", HORIZONTAL_ALIGNMENT_CENTER, -1, 13, jump_col)
-		draw_string(font, center + Vector2(-16, base_radius - 12), "▼하강", HORIZONTAL_ALIGNMENT_CENTER, -1, 13, drop_col)
-		draw_string(font, center + Vector2(-base_radius + 10, 6), "◀", HORIZONTAL_ALIGNMENT_CENTER, -1, 16, left_col)
-		draw_string(font, center + Vector2(base_radius - 24, 6), "▶", HORIZONTAL_ALIGNMENT_CENTER, -1, 16, right_col)
-
-		# 5. Connected Vector Line while dragging
+		# 3. Smooth Neon Link Trajectory Line while dragging
 		if is_touch_down and knob_offset.length() > deadzone:
-			var link_color := Color(0.35, 0.85, 1.0, 0.45)
-			draw_line(center, center + knob_offset, link_color, 3.0, true)
+			var link_color := Color(0.40, 0.95, 1.0, 0.65)
+			draw_line(center, center + knob_offset, link_color, 2.8, true)
 
-		# 6. Knob (Thumb Thumbstick)
+		# 4. High-Resolution 3D Sapphire Knob Texture with Specular Sheen
 		var knob_pos := center + knob_offset
-		var knob_bg_color := Color(0.12, 0.22, 0.36, 0.90) if is_touch_down else Color(0.10, 0.16, 0.25, 0.75)
-		draw_circle(knob_pos, knob_radius, knob_bg_color)
-
-		var knob_ring_col := Color(0.40, 0.95, 1.0, 0.95) if is_touch_down else Color(0.50, 0.75, 0.95, 0.70)
-		draw_arc(knob_pos, knob_radius, 0, TAU, 32, knob_ring_col, 3.5, true)
-
-		# Knob center core
-		var core_col := Color(1.0, 0.9, 0.4, 0.90) if is_touch_down else Color(0.3, 0.6, 0.9, 0.5)
-		draw_circle(knob_pos, 8.0, core_col)
+		var knob_dim := Vector2(knob_radius * 2.6, knob_radius * 2.6)
+		var knob_rect := Rect2(knob_pos - knob_dim * 0.5, knob_dim)
+		var knob_tint := Color(1.4, 1.3, 1.1, 1.0) if is_touch_down else Color(1.0, 1.0, 1.0, 0.92)
+		draw_texture_rect(TexJoypadKnob, knob_rect, false, knob_tint)
 
 
 ## Ergonomic Virtual Button for Action Cluster
@@ -438,6 +429,7 @@ class VirtualButton:
 	var action_name: String = ""
 	var label_text: String = ""
 	var theme_color: Color = Color(0.3, 0.5, 0.8, 0.6)
+	var button_texture: Texture2D = null
 	var is_pressed: bool = false
 	var active_touch_index: int = -1
 
@@ -506,44 +498,25 @@ class VirtualButton:
 		var radius := minf(size.x, size.y) * 0.5
 		var draw_radius := radius * (0.92 if is_pressed else 1.0)
 
-		# 1. Outer subtle drop shadow
-		draw_circle(center + Vector2(0, 3), draw_radius, Color(0.0, 0.0, 0.0, 0.35))
-
-		# 2. Dark glass tinted plate
-		var plate_color := Color(0.04, 0.07, 0.11, 0.75 if is_pressed else 0.60)
-		draw_circle(center, draw_radius - 2.0, plate_color)
-
-		# 3. Inner theme colored glow fill
-		var inner_glow := Color(theme_color.r, theme_color.g, theme_color.b, 0.42 if is_pressed else 0.18)
-		draw_circle(center, draw_radius - 4.0, inner_glow)
-
-		# 4. Beveled outer ring with top rim highlight
-		var ring_color := theme_color
-		ring_color.a = 0.95 if is_pressed else 0.70
-		draw_arc(center, draw_radius, 0, TAU, 36, ring_color, 3.5, true)
-		# Top arc gloss highlight
-		draw_arc(center, draw_radius - 1.0, -PI * 0.85, -PI * 0.15, 20, Color(1.0, 1.0, 1.0, 0.45), 2.0, true)
-
-		# 5. Inner fine tactile ring
-		var inner_ring_col := Color(theme_color.r * 1.2, theme_color.g * 1.2, theme_color.b * 1.2, 0.35 if not is_pressed else 0.70)
-		draw_arc(center, draw_radius * 0.82, 0, TAU, 28, inner_ring_col, 1.5, true)
-
-		# 6. Inner active burst when pressed
-		if is_pressed:
-			var burst_color := Color(1.0, 1.0, 1.0, 0.35)
-			draw_circle(center, draw_radius * 0.65, burst_color)
-
-		# Center text / icon label (2x Scale)
-		var font := ThemeDB.fallback_font
-		if "\n" in label_text:
-			var parts := label_text.split("\n")
-			var top_text := parts[0]
-			var bot_text := parts[1]
-			var top_size := font.get_string_size(top_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 38)
-			var bot_size := font.get_string_size(bot_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 26)
-			draw_string(font, center + Vector2(-top_size.x * 0.5, -6), top_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 38, Color.WHITE)
-			draw_string(font, center + Vector2(-bot_size.x * 0.5, 26), bot_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 26, Color(0.95, 0.95, 0.95, 0.95))
+		# 1. High-Resolution Fantasy Action Button Texture
+		if button_texture != null:
+			var b_dim := Vector2(draw_radius * 2.0, draw_radius * 2.0)
+			var b_rect := Rect2(center - b_dim * 0.5, b_dim)
+			var b_tint := Color(1.35, 1.25, 1.1, 1.0) if is_pressed else Color(1.0, 1.0, 1.0, 0.95)
+			draw_texture_rect(button_texture, b_rect, false, b_tint)
 		else:
-			var string_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 34)
-			draw_string(font, center + Vector2(-string_size.x * 0.5, string_size.y * 0.35), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 34, Color.WHITE)
+			# Fallback Plate
+			draw_circle(center, draw_radius, theme_color)
+
+		# 2. Active Touch Radiant Burst
+		if is_pressed:
+			draw_circle(center, draw_radius * 0.72, Color(1.0, 0.95, 0.75, 0.35))
+			draw_arc(center, draw_radius, 0, TAU, 32, Color(1.5, 1.3, 0.6, 0.95), 3.2, true)
+
+		# 3. Subtitle Label Text with Gold/Black Shadow
+		var font := ThemeDB.fallback_font
+		var str_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22)
+		var text_pos := center + Vector2(-str_size.x * 0.5, draw_radius * 0.42)
+		draw_string(font, text_pos + Vector2(1, 1), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22, Color(0, 0, 0, 0.95))
+		draw_string(font, text_pos, label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22, Color(1.0, 0.94, 0.82, 0.95))
 

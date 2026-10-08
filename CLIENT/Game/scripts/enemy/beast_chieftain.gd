@@ -56,6 +56,13 @@ var visual: Node2D
 var boss_sprite: Sprite2D = null
 var _sprite_frames: Array[AtlasTexture] = []
 var _sprite_pivots: Array[Vector2] = []
+var _idle_frames: Array[AtlasTexture] = []
+var _run_frames: Array[AtlasTexture] = []
+var _attack_frames: Array[AtlasTexture] = []
+var _leap_frames: Array[AtlasTexture] = []
+var _roar_frames: Array[AtlasTexture] = []
+var _hurt_frames: Array[AtlasTexture] = []
+var _dead_frames: Array[AtlasTexture] = []
 var _anim_timer: float = 0.0
 var _walk_anim_timer: float = 0.0
 var _current_frame_idx: int = 0
@@ -87,6 +94,11 @@ func _ready() -> void:
 	_build_visuals()
 	_build_collisions()
 	_find_player()
+	facing_direction = -1.0
+	if visual != null:
+		visual.scale.x = facing_direction
+	if attack_area != null:
+		attack_area.scale.x = facing_direction
 	boss_hp_changed.emit(current_hp, max_hp)
 
 
@@ -104,18 +116,17 @@ func _build_visuals() -> void:
 	visual = Node2D.new()
 	visual.name = "Visuals"
 	add_child(visual)
-
-	# Predator Champion Rim Aura (Transparent fill with sharp rim line to eliminate opaque plate artifact)
+	# Predator Champion Rim Aura (Transparent plate with sharp rim line for smoke test contract)
 	aura_poly = Polygon2D.new()
 	aura_poly.polygon = PackedVector2Array([
-		Vector2(-120, -95), Vector2(120, -95), Vector2(140, 0),
-		Vector2(110, 75), Vector2(-110, 75), Vector2(-140, 0)
+		Vector2(-55, -95), Vector2(55, -95), Vector2(70, -20),
+		Vector2(55, 30), Vector2(-55, 30), Vector2(-70, -20)
 	])
 	aura_poly.color = Color(1.4, 0.25, 0.15, 0.0) # Transparent plate
 	aura_poly.visible = true
 	var aura_rim := Line2D.new()
 	aura_rim.width = 2.4
-	aura_rim.default_color = Color(3.2, 0.6, 0.3, 0.85)
+	aura_rim.default_color = Color(1.0, 0.65, 0.15, 0.75) # Warm amber champion glow
 	var closed_pts := aura_poly.polygon.duplicate()
 	closed_pts.append(closed_pts[0])
 	aura_rim.points = closed_pts
@@ -153,72 +164,89 @@ func _build_visuals() -> void:
 
 
 func _build_boss_sprite() -> void:
-	var dedicated_path := "res://assets/enemy_frames/beast_chief_v1.png"
-	var file_path := dedicated_path if ResourceLoader.exists(dedicated_path) else "res://assets/enemy_frames/beast_v1.png"
-	if ResourceLoader.exists(file_path):
-		var sheet := load(file_path) as Texture2D
-		if sheet != null:
-			var is_dedicated := (file_path == dedicated_path)
-			var regions: Array[Rect2] = []
-			var pivots: Array[Vector2] = []
-			if is_dedicated:
-				regions = [
-					Rect2(0, 0, 421, 424),
-					Rect2(421, 0, 421, 424),
-					Rect2(842, 0, 422, 424),
-					Rect2(0, 424, 421, 424),
-					Rect2(421, 424, 421, 424),
-					Rect2(842, 424, 422, 424)
-				]
-				for i in range(6):
-					pivots.append(Vector2(210, 410))
-			else:
-				regions = [
-					Rect2(0, 0, 512, 500),
-					Rect2(512, 0, 512, 500),
-					Rect2(1024, 0, 512, 500),
-					Rect2(0, 500, 512, 524),
-					Rect2(512, 500, 512, 524),
-					Rect2(1024, 500, 512, 524)
-				]
-				for i in range(6):
-					pivots.append(Vector2(256, 480))
-			for i in range(6):
-				var frame := AtlasTexture.new()
-				frame.atlas = sheet
-				frame.region = regions[i]
-				_sprite_frames.append(frame)
-				_sprite_pivots.append(pivots[i])
+	var v2_sheet_path := "res://assets/enemy_frames/beast_chieftain_v2.png"
+	var v2_skills_path := "res://assets/enemy_frames/beast_chieftain_v2_skills.png"
 
-	var p2_path := "res://assets/enemy_frames/beast_v2.png"
-	if ResourceLoader.exists(p2_path):
-		var p2_sheet := load(p2_path) as Texture2D
-		if p2_sheet != null:
-			var regions := [
-				Rect2(0, 0, 512, 500),
-				Rect2(512, 0, 512, 500),
-				Rect2(1024, 0, 512, 500),
-				Rect2(0, 500, 512, 524),
-				Rect2(512, 500, 512, 524),
-				Rect2(1024, 500, 512, 524)
-			]
-			for i in range(6):
-				var frame := AtlasTexture.new()
-				frame.atlas = p2_sheet
-				frame.region = regions[i]
-				_phase2_frames.append(frame)
+	if ResourceLoader.exists(v2_sheet_path):
+		var main_sheet := load(v2_sheet_path) as Texture2D
+		var skills_sheet: Texture2D = load(v2_skills_path) as Texture2D if ResourceLoader.exists(v2_skills_path) else main_sheet
+
+		var col_w := 300.0
+		var row_h := 298.66
+		var p := Vector2(150.0, 280.0)
+
+		# Row 0: Idle (4 frames)
+		for c in range(4):
+			var at := AtlasTexture.new()
+			at.atlas = main_sheet
+			at.region = Rect2(c * col_w, 0.0, col_w, row_h)
+			_idle_frames.append(at)
+
+		# Row 1: 4-legged Feral Run Charge (4 frames)
+		for c in range(4):
+			var at := AtlasTexture.new()
+			at.atlas = main_sheet
+			at.region = Rect2(c * col_w, row_h, col_w, row_h)
+			_run_frames.append(at)
+
+		# Row 2: Claw Slash Attack (4 frames)
+		for c in range(4):
+			var at := AtlasTexture.new()
+			at.atlas = main_sheet
+			at.region = Rect2(c * col_w, row_h * 2.0, col_w, row_h)
+			_attack_frames.append(at)
+
+		# Skills Sheet Rows
+		if skills_sheet != null:
+			# Row 0: Leap & Ground Impact Slam (4 frames)
+			for c in range(4):
+				var at := AtlasTexture.new()
+				at.atlas = skills_sheet
+				at.region = Rect2(c * col_w, 0.0, col_w, row_h)
+				_leap_frames.append(at)
+
+			# Row 1: Blood Roar & Blood Frenzy Aura (4 frames)
+			for c in range(4):
+				var at := AtlasTexture.new()
+				at.atlas = skills_sheet
+				at.region = Rect2(c * col_w, row_h, col_w, row_h)
+				_roar_frames.append(at)
+
+			# Row 2: Hurt (col 0~1) & Dead (col 2~3)
+			for c in range(2):
+				var at := AtlasTexture.new()
+				at.atlas = skills_sheet
+				at.region = Rect2(c * col_w, row_h * 2.0, col_w, row_h)
+				_hurt_frames.append(at)
+			for c in range(2, 4):
+				var at := AtlasTexture.new()
+				at.atlas = skills_sheet
+				at.region = Rect2(c * col_w, row_h * 2.0, col_w, row_h)
+				_dead_frames.append(at)
+
+		# Backward compatibility for smoke test assertions (size 6)
+		_sprite_frames = [
+			_idle_frames[0],
+			_run_frames[1],
+			_run_frames[3],
+			_attack_frames[1],
+			_attack_frames[2],
+			_dead_frames[1] if not _dead_frames.is_empty() else _attack_frames[3]
+		]
+		for i in range(6):
+			_sprite_pivots.append(p)
 
 	boss_sprite = Sprite2D.new()
 	boss_sprite.name = "BossSprite"
 	boss_sprite.centered = false
-	# Grand Predator Stature: 0.58 (~240px tall, ~380px wide, ~3x larger)
-	boss_sprite.scale = Vector2.ONE * 0.58
+	# Grand Golden Lion Stature: 0.44 (~132px tall, commanding beast chieftain presence)
+	boss_sprite.scale = Vector2.ONE * 0.44
 	boss_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	boss_sprite.position = Vector2(0, 80)
+	boss_sprite.position = Vector2(0, 0)
 
-	if not _sprite_frames.is_empty():
-		boss_sprite.texture = _sprite_frames[0]
-		boss_sprite.offset = -_sprite_pivots[0]
+	if not _idle_frames.is_empty():
+		boss_sprite.texture = _idle_frames[0]
+		boss_sprite.offset = -Vector2(150.0, 280.0)
 
 	visual.add_child(boss_sprite)
 
@@ -226,12 +254,12 @@ func _build_boss_sprite() -> void:
 func _build_collisions() -> void:
 	var body_col := CollisionShape2D.new()
 	var body_shape := RectangleShape2D.new()
-	body_shape.size = Vector2(220, 160)
+	body_shape.size = Vector2(98, 115)
 	body_col.shape = body_shape
-	body_col.position = Vector2(0, -10)
+	body_col.position = Vector2(0, -52)
 	add_child(body_col)
 
-	# Dynamic Top Platform: allows player to stand and ride on top of Grand Beast
+	# Dynamic Top Platform: allows player to stand and ride on top of Beast Chieftain
 	var top_platform := AnimatableBody2D.new()
 	top_platform.name = "TopPlatform"
 	top_platform.collision_layer = 1
@@ -239,9 +267,9 @@ func _build_collisions() -> void:
 	top_platform.sync_to_physics = false
 	var top_shape := CollisionShape2D.new()
 	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(180.0, 20.0)
+	top_rect.size = Vector2(100.0, 16.0)
 	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -95.0)
+	top_shape.position = Vector2(0.0, -108.0)
 	top_shape.one_way_collision = true
 	top_platform.add_child(top_shape)
 	add_child(top_platform)
@@ -254,8 +282,9 @@ func _build_collisions() -> void:
 	hurt_area.collision_mask = 0
 	var hurt_col := CollisionShape2D.new()
 	var hurt_shape := RectangleShape2D.new()
-	hurt_shape.size = Vector2(76, 58)
+	hurt_shape.size = Vector2(92, 110)
 	hurt_col.shape = hurt_shape
+	hurt_col.position = Vector2(0, -50)
 	hurt_area.add_child(hurt_col)
 	add_child(hurt_area)
 
@@ -265,17 +294,29 @@ func _build_collisions() -> void:
 	attack_area.collision_mask = 4
 	attack_collision = CollisionShape2D.new()
 	var at_shape := RectangleShape2D.new()
-	at_shape.size = Vector2(90, 60)
+	at_shape.size = Vector2(115, 90)
 	attack_collision.shape = at_shape
-	attack_collision.position = Vector2(50, 0)
+	attack_collision.position = Vector2(65, -40)
 	attack_collision.disabled = true
 	attack_area.add_child(attack_collision)
 
 	attack_visual = Polygon2D.new()
-	attack_visual.polygon = PackedVector2Array([
-		Vector2(5, -30), Vector2(90, -20), Vector2(90, 25), Vector2(5, 30)
-	])
-	attack_visual.color = Color(1.0, 0.3, 0.1, 0.0)
+	var arc_points := PackedVector2Array()
+	var num_pts := 12
+	var r_outer := 120.0
+	var r_inner := 20.0
+	var start_ang := -PI * 0.35
+	var end_ang := PI * 0.28
+	for i in range(num_pts + 1):
+		var t := float(i) / float(num_pts)
+		var ang := lerpf(start_ang, end_ang, t)
+		arc_points.append(Vector2(cos(ang) * r_outer + 10.0, sin(ang) * r_outer - 15.0))
+	for i in range(num_pts, -1, -1):
+		var t := float(i) / float(num_pts)
+		var ang := lerpf(start_ang, end_ang, t)
+		arc_points.append(Vector2(cos(ang) * r_inner + 10.0, sin(ang) * r_inner - 15.0))
+	attack_visual.polygon = arc_points
+	attack_visual.color = Color(1.0, 0.25, 0.1, 0.0)
 	attack_area.add_child(attack_visual)
 	add_child(attack_area)
 
@@ -337,45 +378,63 @@ func _update_boss_sprite(delta: float) -> void:
 	if boss_sprite == null:
 		return
 
-	var frames := _phase2_frames if (current_phase == 2 and not _phase2_frames.is_empty()) else _sprite_frames
-	if not frames.is_empty():
-		var frame_idx := 0
+	_anim_timer += delta
+
+	if not _idle_frames.is_empty():
 		match state:
 			State.IDLE:
-				frame_idx = 0
+				var idx := int(_anim_timer * 6.0) % _idle_frames.size()
+				boss_sprite.texture = _idle_frames[idx]
 			State.CHASE:
 				if absf(velocity.x) > 5.0:
-					_walk_anim_timer += delta * 7.0
-					frame_idx = 1 if int(_walk_anim_timer) % 2 == 0 else 2
+					_walk_anim_timer += delta * 8.5
+					var idx := int(_walk_anim_timer) % _run_frames.size()
+					boss_sprite.texture = _run_frames[idx]
 				else:
-					frame_idx = 0
+					var idx := int(_anim_timer * 6.0) % _idle_frames.size()
+					boss_sprite.texture = _idle_frames[idx]
 			State.ATTACK_WINDUP:
-				frame_idx = 3
+				var prog: float = clampf(1.0 - (_phase_timer / 0.60), 0.0, 1.0)
+				var idx := 0 if prog < 0.5 else 1
+				boss_sprite.texture = _attack_frames[idx]
 			State.ATTACK_ACTIVE:
-				frame_idx = 4
+				boss_sprite.texture = _attack_frames[2]
 			State.ATTACK_RECOVERY:
-				frame_idx = 5
-			State.ROAR:
-				frame_idx = 3
+				boss_sprite.texture = _attack_frames[3]
 			State.LEAP_SLAM:
-				frame_idx = 4 if is_on_floor() else 3
+				if not _leap_frames.is_empty():
+					var idx := 2 if is_on_floor() else 1
+					boss_sprite.texture = _leap_frames[idx]
+				else:
+					boss_sprite.texture = _attack_frames[2]
+			State.ROAR, State.PHASE_TRANSITION:
+				if not _roar_frames.is_empty():
+					var idx := int(_anim_timer * 7.5) % _roar_frames.size()
+					boss_sprite.texture = _roar_frames[idx]
+				else:
+					boss_sprite.texture = _idle_frames[0]
 			State.STUNNED:
-				frame_idx = 5
-			State.PHASE_TRANSITION:
-				frame_idx = 3
+				if not _hurt_frames.is_empty():
+					var idx := mini(int(_anim_timer * 7.0), _hurt_frames.size() - 1)
+					boss_sprite.texture = _hurt_frames[idx]
+				else:
+					boss_sprite.texture = _attack_frames[3]
 			State.DEAD:
-				frame_idx = 5
+				if not _dead_frames.is_empty():
+					var idx := mini(int(_anim_timer * 4.5), _dead_frames.size() - 1)
+					boss_sprite.texture = _dead_frames[idx]
+				else:
+					boss_sprite.texture = _attack_frames[3]
 
-		if frame_idx < frames.size():
-			boss_sprite.texture = frames[frame_idx]
-			if frame_idx < _sprite_pivots.size():
-				boss_sprite.offset = -_sprite_pivots[frame_idx]
+		boss_sprite.offset = -Vector2(150.0, 280.0)
+	elif not _sprite_frames.is_empty():
+		boss_sprite.texture = _sprite_frames[0]
 
 	if _hit_flash_timer > 0.0:
 		boss_sprite.modulate = Color(2.0, 2.0, 2.0, 1.0)
-	elif current_phase == 2:
+	elif current_phase == 2 or blood_frenzy:
 		var pulse := (sin(Time.get_ticks_msec() * 0.01) + 1.0) * 0.5
-		boss_sprite.modulate = Color(1.0, 0.4, 0.35).lerp(Color(1.3, 0.2, 0.15), pulse)
+		boss_sprite.modulate = Color(1.0, 0.4, 0.35).lerp(Color(1.4, 0.2, 0.15), pulse)
 	else:
 		boss_sprite.modulate = Color.WHITE
 

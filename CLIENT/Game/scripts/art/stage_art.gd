@@ -301,6 +301,11 @@ func _attach(actor: Node) -> void:
 	actors.append({"actor": actor, "sprite": sprite, "visual": visual, "label": label, "hp_bar": hp_bar, "key": key, "height": height, "variant": variant, "charging": is_charging, "ground_slam": is_ground_slam, "last_x": actor.global_position.x, "distance": 0.0, "frame_index": -1})
 	_update_actor(actors.back())
 
+func _physics_process(_delta: float) -> void:
+	if not installed:
+		return
+	_update_ground_shadows()
+
 func _process(delta: float) -> void:
 	if not installed:
 		return
@@ -324,6 +329,7 @@ func _process(delta: float) -> void:
 		guard_audio.play()
 	previous_guard_blocks = stage.player.guard_block_count
 	_update_player_pose(delta)
+	_update_ground_shadows()
 	var viewport_size := get_viewport_rect().size
 	background.size = Vector2(viewport_size.y * 2.25, viewport_size.y)
 	background.position.x = -clampf(stage.player.position.x / stage.WORLD_WIDTH, 0, 1) * maxf(0, background.size.x - viewport_size.x)
@@ -530,29 +536,12 @@ func _draw_combat_feedback() -> void:
 	var origin := to_local(player.global_position)
 	var facing: float = player.facing_direction
 
-	# 0. Contact Shadows & Hero Ambiance: Grounding ambient shadows for player and enemies
+	# Combat feedback overlays (hero aura and attack/hazard telegraphs)
 	if not player.is_dead:
-		var floor_contact := origin + Vector2(0, 2.0)
-		draw_set_transform(floor_contact, 0, Vector2(1.0, 0.32))
-		draw_circle(Vector2.ZERO, 22.0, Color(0.02, 0.03, 0.06, 0.50))
-		draw_set_transform(Vector2.ZERO)
-
 		# Soft hero ambient light
 		var hero_center := origin + Vector2(0, -26)
 		draw_circle(hero_center, 28.0, Color(0.9, 0.96, 1.2, 0.06))
 		draw_circle(hero_center, 18.0, Color(1.1, 1.3, 1.8, 0.08))
-
-	# Dynamic grounding shadows under active enemies
-	if "enemies" in stage and stage.enemies != null:
-		for e in stage.enemies:
-			if is_instance_valid(e) and not e.is_queued_for_deletion():
-				var is_dead_enemy: bool = e.get("is_dead") if "is_dead" in e else false
-				if not is_dead_enemy:
-					var e_pos: Vector2 = to_local(e.global_position)
-					var rad: float = 65.0 if e.is_in_group("boss") else 18.0
-					draw_set_transform(e_pos + Vector2(0, 2.0), 0, Vector2(1.0, 0.30))
-					draw_circle(Vector2.ZERO, rad, Color(0.02, 0.03, 0.06, 0.45))
-					draw_set_transform(Vector2.ZERO)
 
 	if player.is_attacking and not player.attack_collision.disabled and not player.is_dead:
 		var shape: RectangleShape2D = player.attack_collision.shape
@@ -879,22 +868,126 @@ func _draw_enemy_effect(entry: Dictionary) -> void:
 		draw_colored_polygon(ribbon, Color(1.0, 0.69, 0.32, opacity * 0.72))
 		draw_polyline(outer, Color(1.0, 0.97, 0.80, opacity), 3.5, true)
 
+func _create_shadow_node(rad_x: float, rad_y: float, outer_a: float = 0.36, inner_a: float = 0.26) -> Polygon2D:
+	var shadow := Polygon2D.new()
+	var outer_pts := PackedVector2Array()
+	for i in range(24):
+		var a := TAU * float(i) / 24.0
+		outer_pts.append(Vector2(cos(a) * rad_x, sin(a) * rad_y))
+	shadow.polygon = outer_pts
+	shadow.color = Color(0.02, 0.03, 0.05, outer_a)
+	shadow.set_meta("base_rad_x", rad_x)
+	shadow.set_meta("base_rad_y", rad_y)
+	shadow.set_meta("outer_a", outer_a)
+	shadow.set_meta("inner_a", inner_a)
+
+	var core := Polygon2D.new()
+	core.name = "Core"
+	var inner_pts := PackedVector2Array()
+	for i in range(24):
+		var a := TAU * float(i) / 24.0
+		inner_pts.append(Vector2(cos(a) * (rad_x * 0.55), sin(a) * (rad_y * 0.55)))
+	core.polygon = inner_pts
+	core.color = Color(0.01, 0.02, 0.03, inner_a)
+	shadow.add_child(core)
+	return shadow
+
+func _get_actor_foot_offset(actor: Node) -> float:
+	var col: CollisionShape2D = null
+	for child in actor.get_children():
+		if child is CollisionShape2D and child.shape != null:
+			col = child
+			break
+	if col != null and col.shape != null:
+		if col.shape is RectangleShape2D:
+			return col.position.y + (col.shape.size.y * 0.5)
+		elif col.shape is CapsuleShape2D:
+			return col.position.y + (col.shape.height * 0.5)
+		elif col.shape is CircleShape2D:
+			return col.position.y + col.shape.radius
+	return 28.0
+
+func _get_actor_ground_y(actor: CharacterBody2D, foot_y: float) -> float:
+	var space_state := get_world_2d().direct_space_state
+	if space_state != null:
+		var query := PhysicsRayQueryParameters2D.create(
+			Vector2(actor.global_position.x, foot_y - 4.0),
+			Vector2(actor.global_position.x, foot_y + 800.0),
+			1
+		)
+		query.exclude = [actor.get_rid()]
+		for child in actor.get_children():
+			if child is CollisionObject2D:
+				query.exclude.append(child.get_rid())
+		var res := space_state.intersect_ray(query)
+		if not res.is_empty():
+			return res.position.y
+	return foot_y if actor.is_on_floor() else 620.0
+
+func _update_actor_shadow(actor: CharacterBody2D, shadow: Polygon2D) -> void:
+	if not is_instance_valid(actor) or not is_instance_valid(shadow):
+		return
+	var is_dead_actor: bool = false
+	if actor == stage.player:
+		is_dead_actor = actor.is_dead
+	elif "is_dead" in actor:
+		is_dead_actor = bool(actor.get("is_dead"))
+
+	if is_dead_actor or not actor.visible:
+		shadow.visible = false
+		return
+	shadow.visible = true
+
+	var foot_offset := _get_actor_foot_offset(actor)
+	var foot_y := actor.global_position.y + foot_offset
+	var ground_y := _get_actor_ground_y(actor, foot_y)
+	var altitude := maxf(0.0, ground_y - foot_y)
+	if altitude < 1.5 or (actor.is_on_floor() and altitude < 6.0):
+		altitude = 0.0
+		ground_y = foot_y
+
+	shadow.position.x = 0.0
+	shadow.position.y = ground_y - actor.global_position.y
+	shadow.rotation = -actor.rotation
+
+	var height_ratio := clampf(altitude / 260.0, 0.0, 1.0)
+	var scale_factor := lerpf(1.0, 0.42, height_ratio)
+	var alpha_factor := lerpf(1.0, 0.20, height_ratio)
+
+	var parent_scale_x: float = signf(actor.scale.x) if not is_zero_approx(actor.scale.x) else 1.0
+	shadow.scale = Vector2(scale_factor * parent_scale_x, scale_factor)
+
+	var outer_a: float = float(shadow.get_meta("outer_a", 0.36))
+	var inner_a: float = float(shadow.get_meta("inner_a", 0.26))
+	shadow.color.a = outer_a * alpha_factor
+	var core: Polygon2D = shadow.get_node_or_null("Core") as Polygon2D
+	if core != null:
+		core.color.a = inner_a * alpha_factor
+
+func _update_ground_shadows() -> void:
+	if is_instance_valid(stage.player):
+		var hero_shadow: Polygon2D = stage.player.get_node_or_null("HeroShadow") as Polygon2D
+		if hero_shadow != null:
+			_update_actor_shadow(stage.player, hero_shadow)
+
+	if "enemies" in stage and stage.enemies != null:
+		for e in stage.enemies:
+			if is_instance_valid(e) and not e.is_queued_for_deletion():
+				var enemy_shadow: Polygon2D = _ensure_enemy_shadow(e)
+				if enemy_shadow != null:
+					_update_actor_shadow(e, enemy_shadow)
+
 func _build_persistent_hero_shadows() -> void:
 	if not is_instance_valid(stage.player):
 		return
 	if stage.player.get_node_or_null("HeroShadow") == null:
-		var shadow := Polygon2D.new()
+		var shadow := _create_shadow_node(24.0, 7.5, 0.38, 0.28)
 		shadow.name = "HeroShadow"
-		var pts := PackedVector2Array()
-		for i in range(16):
-			var a := TAU * float(i) / 16.0
-			pts.append(Vector2(cos(a) * 22.0, sin(a) * 7.0))
-		shadow.polygon = pts
-		shadow.color = Color(0.02, 0.03, 0.06, 0.50)
-		shadow.position = Vector2(0, 2.0)
-		shadow.z_index = -1
+		shadow.z_as_relative = false
+		shadow.z_index = 1
 		stage.player.add_child(shadow)
 
+	if stage.player.get_node_or_null("HeroAura") == null:
 		var aura := Polygon2D.new()
 		aura.name = "HeroAura"
 		var a_pts := PackedVector2Array()
@@ -907,20 +1000,30 @@ func _build_persistent_hero_shadows() -> void:
 		aura.z_index = -1
 		stage.player.add_child(aura)
 
-func _build_persistent_enemy_shadow_and_bar(actor: Node, height: float, key: String) -> Node2D:
-	if actor.get_node_or_null("EnemyShadow") == null:
-		var rad: float = 65.0 if actor.is_in_group("boss") else 18.0
-		var shadow := Polygon2D.new()
+func _ensure_enemy_shadow(actor: Node) -> Polygon2D:
+	if not (actor is CharacterBody2D):
+		return null
+	var shadow: Polygon2D = actor.get_node_or_null("EnemyShadow") as Polygon2D
+	if shadow == null:
+		var is_boss: bool = actor.is_in_group("boss")
+		var key: String = actor.get_meta("art_variant", "")
+		var act_name := str(actor.name).to_lower()
+		var rad_x: float = 56.0 if is_boss else 22.0
+		if not is_boss:
+			if key == "golem" or "golem" in act_name:
+				rad_x = 44.0
+			elif key == "beast" or "beast" in act_name:
+				rad_x = 35.0
+		var rad_y: float = rad_x * 0.30
+		shadow = _create_shadow_node(rad_x, rad_y, 0.36 if is_boss else 0.32, 0.28 if is_boss else 0.24)
 		shadow.name = "EnemyShadow"
-		var pts := PackedVector2Array()
-		for i in range(16):
-			var a := TAU * float(i) / 16.0
-			pts.append(Vector2(cos(a) * rad, sin(a) * (rad * 0.30)))
-		shadow.polygon = pts
-		shadow.color = Color(0.02, 0.03, 0.06, 0.45)
-		shadow.position = Vector2(0, 2.0)
-		shadow.z_index = -1
+		shadow.z_as_relative = false
+		shadow.z_index = 1
 		actor.add_child(shadow)
+	return shadow
+
+func _build_persistent_enemy_shadow_and_bar(actor: Node, height: float, key: String) -> Node2D:
+	_ensure_enemy_shadow(actor)
 
 	if key == "projectile":
 		return null
