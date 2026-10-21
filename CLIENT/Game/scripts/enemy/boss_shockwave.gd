@@ -4,7 +4,11 @@ extends Area2D
 ## Features multi-layered blazing crescent blade, razor core, trailing energy, and ground embers.
 
 @export var speed: float = 400.0
-@export var direction: float = 1.0
+@export var direction: float = 1.0:
+	set(val):
+		direction = val
+		if is_instance_valid(_visual_root):
+			_visual_root.scale.x = 1.0 if direction >= 0.0 else -1.0
 @export var max_travel_distance: float = 460.0
 @export var damage: int = 1
 
@@ -42,66 +46,66 @@ func _ready() -> void:
 func _build_visuals() -> void:
 	_visual_root = Node2D.new()
 	_visual_root.name = "VisualRoot"
-	# Flip visual in flight direction
+	# Flip visual in flight direction: rightward is > (forward tip at +X), leftward is <
 	_visual_root.scale.x = 1.0 if direction >= 0.0 else -1.0
 	add_child(_visual_root)
 
-	# 1. Filled crescent energy body
+	# 1. Filled crescent energy body (Convex forward tip at (16, -28), swept-back tails at (-15))
 	_core_poly = Polygon2D.new()
 	_core_poly.polygon = PackedVector2Array([
-		Vector2(14.0, -56.0),
-		Vector2(6.0, -42.0),
-		Vector2(-4.0, -28.0),
-		Vector2(4.0, -14.0),
-		Vector2(16.0, 0.0),
-		Vector2(6.0, -2.0),
-		Vector2(-12.0, -28.0),
-		Vector2(4.0, -52.0)
+		Vector2(-15.0, -56.0),
+		Vector2(2.0, -42.0),
+		Vector2(16.0, -28.0),
+		Vector2(2.0, -14.0),
+		Vector2(-15.0, 0.0),
+		Vector2(-7.0, -8.0),
+		Vector2(5.0, -28.0),
+		Vector2(-7.0, -48.0)
 	])
 	_core_poly.color = Color(1.0, 0.35, 0.1, 0.90)
 	_visual_root.add_child(_core_poly)
 
-	# 2. Outer glowing flaming blade arc
+	# 2. Outer glowing flaming blade arc (> shaped leading edge)
 	_outer_arc = Line2D.new()
 	_outer_arc.width = 16.0
 	_outer_arc.default_color = Color(1.0, 0.18, 0.08, 0.95)
 	_outer_arc.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	_outer_arc.end_cap_mode = Line2D.LINE_CAP_ROUND
 	_outer_arc.points = PackedVector2Array([
-		Vector2(15.0, -56.0),
-		Vector2(5.0, -42.0),
-		Vector2(-6.0, -28.0),
-		Vector2(5.0, -14.0),
-		Vector2(17.0, 0.0)
+		Vector2(-15.0, -56.0),
+		Vector2(2.0, -42.0),
+		Vector2(16.0, -28.0),
+		Vector2(2.0, -14.0),
+		Vector2(-15.0, 0.0)
 	])
 	_visual_root.add_child(_outer_arc)
 
-	# 3. Inner razor-sharp white hot core
+	# 3. Inner razor-sharp white hot core (> shaped inner edge)
 	_inner_arc = Line2D.new()
 	_inner_arc.width = 5.0
 	_inner_arc.default_color = Color(1.0, 0.96, 0.88, 1.0)
 	_inner_arc.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	_inner_arc.end_cap_mode = Line2D.LINE_CAP_ROUND
 	_inner_arc.points = PackedVector2Array([
-		Vector2(13.0, -52.0),
-		Vector2(3.0, -40.0),
-		Vector2(-4.0, -28.0),
+		Vector2(-12.0, -52.0),
+		Vector2(4.0, -40.0),
+		Vector2(14.0, -28.0),
 		Vector2(4.0, -14.0),
-		Vector2(14.0, -3.0)
+		Vector2(-12.0, -3.0)
 	])
 	_visual_root.add_child(_inner_arc)
 
-	# 4. Trailing energy tail streamers
+	# 4. Trailing energy tail streamers (flying backward behind the blade tips)
 	var trail_top := Line2D.new()
 	trail_top.width = 4.0
 	trail_top.default_color = Color(1.0, 0.45, 0.1, 0.7)
-	trail_top.points = PackedVector2Array([Vector2(14.0, -56.0), Vector2(-16.0, -50.0)])
+	trail_top.points = PackedVector2Array([Vector2(-15.0, -56.0), Vector2(-42.0, -50.0)])
 	_visual_root.add_child(trail_top)
 
 	var trail_bot := Line2D.new()
 	trail_bot.width = 4.0
 	trail_bot.default_color = Color(1.0, 0.45, 0.1, 0.7)
-	trail_bot.points = PackedVector2Array([Vector2(16.0, 0.0), Vector2(-18.0, 4.0)])
+	trail_bot.points = PackedVector2Array([Vector2(-15.0, 0.0), Vector2(-44.0, 4.0)])
 	_visual_root.add_child(trail_bot)
 
 

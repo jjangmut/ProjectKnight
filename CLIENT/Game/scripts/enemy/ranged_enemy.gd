@@ -35,11 +35,11 @@ var _phase_time_remaining: float = 0.0
 var _base_color := Color(0.55, 0.3, 0.92, 1)
 var _hit_flash_remaining: float = 0.0
 
-
 var _drop_down_timer: float = 0.0
 var _jump_cooldown: float = 1.0
 var _attack_cooldown_remaining: float = 0.0
 var _stuck_timer: float = 0.0
+var is_jump_attacking: bool = false
 
 # High-resolution motion sprite setup
 var enemy_sprite: Sprite2D = null
@@ -51,30 +51,13 @@ var _base_scale: float = 0.135
 
 
 func _ready() -> void:
-	collision_layer = 16
-	collision_mask = 1
+	collision_layer = 16 # Enemy body layer
+	collision_mask = 1  # Environment only (No solid body collision with player, no riding)
 	current_hp = max_hp
 	_origin_x = position.x
 	_player = get_tree().get_first_node_in_group("player") as CharacterBody2D
 	visual.color = _base_color
 	visual.visible = false
-
-	# Dynamic Top Platform: allows player to stand and ride on top of ranged enemy
-	var top_platform := AnimatableBody2D.new()
-	top_platform.name = "TopPlatform"
-	top_platform.collision_layer = 1
-	top_platform.collision_mask = 0
-	top_platform.sync_to_physics = false
-	var top_shape := CollisionShape2D.new()
-	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(36.0, 10.0)
-	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -28.0)
-	top_shape.one_way_collision = true
-	top_platform.add_child(top_shape)
-	add_child(top_platform)
-	add_collision_exception_with(top_platform)
-	top_platform.add_collision_exception_with(self)
 
 	_build_enemy_sprite()
 
@@ -125,7 +108,6 @@ func _physics_process(delta: float) -> void:
 		velocity.y += gravity * delta
 	_update_hit_flash(delta)
 
-	# Drop-down cooldown timer handling
 	if _drop_down_timer > 0.0:
 		_drop_down_timer -= delta
 
@@ -148,13 +130,16 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		move_and_slide()
 		return
+
 	match state:
 		State.PATROL:
 			_update_patrol()
 		State.RANGED_ATTACK:
 			_update_attack(delta)
+
 	move_and_slide()
 	_update_enemy_sprite(delta)
+
 	if state == State.PATROL and is_on_wall():
 		_patrol_direction *= -1.0
 
@@ -163,7 +148,7 @@ func _update_enemy_sprite(delta: float) -> void:
 	if enemy_sprite == null:
 		return
 
-	if state == State.RANGED_ATTACK and is_instance_valid(_player):
+	if is_instance_valid(_player):
 		_facing_right = (_player.global_position.x > global_position.x)
 	elif velocity.x > 5.0:
 		_facing_right = true
@@ -240,19 +225,29 @@ func _perform_drop_down() -> void:
 func _update_patrol() -> void:
 	var horizontal_distance := _player.position.x - position.x
 	var vertical_distance := _player.position.y - position.y
+	var player_in_range := absf(horizontal_distance) <= detection_range
+	var player_is_upper_floor := vertical_distance < -50.0
+	var player_is_jumping := not _player.is_on_floor() and not player_is_upper_floor
 
-	# Upper platform descent: if player is on lower floor/ground, descend to pursue
+	# 1. Upper platform descent: if player is on lower floor/ground, descend to pursue
 	if is_on_floor() and vertical_distance > 50.0 and position.y < 560.0 and absf(horizontal_distance) < 420.0:
 		_perform_drop_down()
 
-	# Evasive retreat jump when player closes in
-	if is_on_floor() and _jump_cooldown <= 0.0 and absf(horizontal_distance) < 95.0:
+	# 2. Multi-tier Platform Ascent: If player is on upper platform/tier, jump up to reach their floor!
+	if (is_on_floor() or position.y >= 450.0) and player_is_upper_floor and player_in_range and _jump_cooldown <= 0.0:
+		velocity.y = -520.0
+		velocity.x = signf(horizontal_distance) * (move_speed * 1.5)
+		_jump_cooldown = 1.8
+		return
+
+	# 3. Evasive retreat jump when player rushes too close horizontally
+	if is_on_floor() and _jump_cooldown <= 0.0 and absf(horizontal_distance) < 95.0 and absf(vertical_distance) < 60.0:
 		velocity.y = -460.0
 		velocity.x = -signf(horizontal_distance) * (move_speed * 1.5)
 		_jump_cooldown = 2.5
 		return
 
-	# Ledge/bumper safeguard in patrol: if blocked, reverse direction
+	# 4. Ledge/bumper safeguard in patrol: if blocked, reverse direction
 	if absf(velocity.x) < 15.0 and is_on_floor():
 		_stuck_timer += get_physics_process_delta_time()
 		if _stuck_timer > 0.3:
@@ -261,10 +256,18 @@ func _update_patrol() -> void:
 	else:
 		_stuck_timer = maxf(0.0, _stuck_timer - get_physics_process_delta_time())
 
-	# Only attack when attack cooldown is ready; allows active patrol and relocation between shots
-	if _attack_cooldown_remaining <= 0.0 and absf(horizontal_distance) <= detection_range and absf(vertical_distance) < 260.0:
-		_begin_attack()
-		return
+	# 5. Attack Execution Checks
+	if _attack_cooldown_remaining <= 0.0 and player_in_range:
+		# If player is jumping in mid-air, monster jumps to match height and fire projectile!
+		if player_is_jumping and _jump_cooldown <= 0.0:
+			_begin_attack(true)
+			return
+		# If on same tier or within horizontal line-of-sight
+		elif absf(vertical_distance) < 80.0:
+			_begin_attack(false)
+			return
+
+	# Standard ground patrol walk
 	if position.x <= _origin_x - patrol_distance:
 		_patrol_direction = 1.0
 	elif position.x >= _origin_x + patrol_distance:
@@ -272,19 +275,30 @@ func _update_patrol() -> void:
 	velocity.x = _patrol_direction * move_speed
 
 
-func _begin_attack() -> void:
+func _begin_attack(jump_attack: bool = false) -> void:
 	state = State.RANGED_ATTACK
 	attack_phase = AttackPhase.WINDUP
-	_phase_time_remaining = attack_windup
-	velocity.x = 0.0
+	is_jump_attacking = jump_attack
+
+	if jump_attack:
+		velocity.y = -490.0 # Jump into air to match player jump height!
+		_jump_cooldown = 2.0
+		_phase_time_remaining = 0.22 # Quick mid-air shot near apex
+	else:
+		velocity.x = 0.0
+		_phase_time_remaining = attack_windup
+
 	_set_color(Color(0.95, 0.75, 1.0, 1.0))
 
 
 func _update_attack(delta: float) -> void:
-	velocity.x = 0.0
+	if not is_jump_attacking:
+		velocity.x = 0.0
+
 	_phase_time_remaining -= delta
 	if _phase_time_remaining > 0.0:
 		return
+
 	if attack_phase == AttackPhase.WINDUP:
 		_fire_projectile()
 		attack_phase = AttackPhase.RECOVERY
@@ -292,6 +306,7 @@ func _update_attack(delta: float) -> void:
 		_set_color(_base_color)
 	else:
 		state = State.PATROL
+		is_jump_attacking = false
 		_attack_cooldown_remaining = randf_range(1.2, 2.0)
 
 
@@ -300,12 +315,15 @@ func _fire_projectile() -> void:
 		return
 	var projectile := projectile_scene.instantiate() as Area2D
 	var fire_direction := signf(_player.global_position.x - global_position.x)
+	if is_zero_approx(fire_direction):
+		fire_direction = 1.0 if _facing_right else -1.0
+
 	get_parent().add_child(projectile)
-	projectile.global_position = Vector2(global_position.x + fire_direction * 40.0, muzzle.global_position.y)
-	if projectile.has_method("configure_target"):
-		projectile.configure_target(_player.global_position)
-	else:
-		projectile.configure(fire_direction)
+	var muzzle_y := muzzle.global_position.y if has_node("Muzzle") else (global_position.y - 10.0)
+	projectile.global_position = Vector2(global_position.x + fire_direction * 40.0, muzzle_y)
+
+	# Fired strictly straight FORWARD (horizontal only) per user requirement #5
+	projectile.configure(fire_direction)
 	projectile_count += 1
 
 
@@ -319,15 +337,9 @@ func receive_hit() -> void:
 	current_hp -= 1
 	if current_hp <= 0:
 		_is_dying = true
-		var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
-		if top_plat != null and top_plat.get_child_count() > 0:
-			var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D
-			if shape != null:
-				shape.set_deferred("disabled", true)
 		_spawn_shards(2)
 		queue_free()
 		return
-
 
 	if has_meta("counter_stunned"):
 		var counter_dur: float = float(get_meta("counter_stunned"))
@@ -340,6 +352,7 @@ func receive_hit() -> void:
 
 	if state == State.RANGED_ATTACK:
 		state = State.PATROL
+		is_jump_attacking = false
 
 	_hit_flash_remaining = 0.12
 	visual.color = Color(0.55, 0.85, 1.0, 1.0) if is_counter_stunned else Color.WHITE
@@ -373,4 +386,3 @@ func _spawn_shards(count: int) -> void:
 		shard.init_velocity(Vector2(randf_range(-80.0, 80.0), randf_range(-180.0, -280.0)))
 		shard.ground_y = position.y + 20.0
 		parent.call_deferred("add_child", shard)
-

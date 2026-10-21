@@ -11,7 +11,7 @@ import math
 import os
 from PIL import Image, ImageDraw, ImageFilter
 
-OUTPUT_DIR = "CLIENT/Game/assets/ui"
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
@@ -292,6 +292,73 @@ def generate_action_buttons():
     draw_d.polygon(wing_pts, fill=(255, 225, 120, 255), outline=(110, 80, 25, 255))
     img_dash.save(os.path.join(OUTPUT_DIR, "btn_dash.png"))
     print("-> btn_dash.png generated")
+
+    # --- B2. JUMP BUTTON (192x192) - Emerald/Gold Bezel & Ascending Valkyrie Leap Rune ---
+    img_jump = Image.new("RGBA", size_sub, (0, 0, 0, 0))
+    draw_j = ImageDraw.Draw(img_jump)
+
+    # Shadow
+    for r in range(94, 86, -1):
+        draw_j.ellipse([dcx - r, dcy - r, dcx + r, dcy + r], fill=(0, 0, 0, int(45 * (94 - r) / 8.0)))
+
+    # Emerald & Sun-Gold Bezel
+    jump_bezel = create_radial_gradient(size_sub, (220, 255, 190, 255), (35, 115, 65, 255), (dcx - 10, dcy - 15), 88)
+    img_jump.paste(jump_bezel, (0, 0), b_mask)
+    draw_j.ellipse([dcx - 85, dcy - 85, dcx + 85, dcy + 85], outline=(240, 255, 220, 255), width=2)
+    draw_j.ellipse([dcx - 71, dcy - 71, dcx + 71, dcy + 71], outline=(15, 60, 35, 255), width=2)
+
+    # Core Plate: Dark Viridian Obsidian
+    core_j = create_radial_gradient(size_sub, (25, 120, 75, 240), (10, 42, 28, 250), (dcx, dcy), 70)
+    img_jump.paste(core_j, (0, 0), c_mask)
+
+    # Ascending Light Up-Draft Streaks
+    draw_j.line([(dcx - 14, dcy + 42), (dcx - 14, dcy + 22)], fill=(180, 255, 210, 190), width=2)
+    draw_j.line([(dcx, dcy + 48), (dcx, dcy + 20)], fill=(230, 255, 230, 240), width=3)
+    draw_j.line([(dcx + 14, dcy + 42), (dcx + 14, dcy + 22)], fill=(180, 255, 210, 190), width=2)
+
+    # Left Valkyrie Wing
+    l_wing = [
+        (dcx - 4, dcy + 12),
+        (dcx - 22, dcy + 10),
+        (dcx - 44, dcy - 12),
+        (dcx - 28, dcy - 10),
+        (dcx - 48, dcy - 28),
+        (dcx - 24, dcy - 22),
+        (dcx - 38, dcy - 42),
+        (dcx - 12, dcy - 26),
+        (dcx - 4, dcy - 14)
+    ]
+    draw_j.polygon(l_wing, fill=(255, 230, 130, 255), outline=(130, 95, 30, 255))
+
+    # Right Valkyrie Wing
+    r_wing = [
+        (dcx + 4, dcy + 12),
+        (dcx + 22, dcy + 10),
+        (dcx + 44, dcy - 12),
+        (dcx + 28, dcy - 10),
+        (dcx + 48, dcy - 28),
+        (dcx + 24, dcy - 22),
+        (dcx + 38, dcy - 42),
+        (dcx + 12, dcy - 26),
+        (dcx + 4, dcy - 14)
+    ]
+    draw_j.polygon(r_wing, fill=(255, 230, 130, 255), outline=(130, 95, 30, 255))
+
+    # Central Upward Leap Chevron Spearhead (Silver-White Core with Gold Border)
+    spear_head = [
+        (dcx, dcy - 44),
+        (dcx + 15, dcy - 16),
+        (dcx + 7, dcy - 14),
+        (dcx + 7, dcy + 16),
+        (dcx - 7, dcy + 16),
+        (dcx - 7, dcy - 14),
+        (dcx - 15, dcy - 16)
+    ]
+    draw_j.polygon(spear_head, fill=(245, 255, 250, 255), outline=(180, 140, 45, 255))
+    draw_j.line([(dcx, dcy - 42), (dcx, dcy + 14)], fill=(180, 225, 205, 255), width=2)
+
+    img_jump.save(os.path.join(OUTPUT_DIR, "btn_jump.png"))
+    print("-> btn_jump.png generated")
 
     # --- C. GUARD BUTTON (192x192) - Cobalt Blue & Gold Royal Shield ---
     img_guard = Image.new("RGBA", size_sub, (0, 0, 0, 0))

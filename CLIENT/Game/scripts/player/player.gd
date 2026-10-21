@@ -97,6 +97,7 @@ signal hp_changed(new_hp: int)
 signal dash_performed(is_air_dash: bool)
 var has_shadow_dash: bool = true
 var is_dashing: bool = false
+var is_contact_knockback_airborne: bool = false
 var is_invulnerable: bool = false
 var dash_speed: float = 540.0
 const DASH_DURATION: float = 0.22
@@ -113,13 +114,20 @@ func _ready() -> void:
 	z_index = 10
 	add_to_group("player")
 	collision_layer = 8 # Player Body Layer
-	collision_mask = 1 | 16  # Environment Layer (1) + Enemy Body Layer (16) -> cannot walk through enemies
+	collision_mask = 1  # Environment Layer (1) only (No solid body collision or riding on enemies per user requirement)
 	_base_visual_color = body_visual.color
 	current_hp = max_hp
 	attack_collision.shape = attack_collision.shape.duplicate()
 	attack_area.area_entered.connect(_on_attack_area_entered)
 	_update_attack_geometry()
 	_set_attack_active(false)
+
+	# Contact Damage & Knockback Setup
+	var hurt_area: Area2D = get_node_or_null("HurtArea") as Area2D
+	if hurt_area != null:
+		hurt_area.collision_layer = 4
+		hurt_area.collision_mask = 16 # Detect Enemy Body Layer (16)
+		hurt_area.body_entered.connect(_on_hurt_area_body_entered)
 
 	var cam: Camera2D = get_node_or_null("Camera2D")
 	if cam != null:
@@ -175,16 +183,21 @@ func _physics_process(delta: float) -> void:
 	_update_combat_deepening_state(delta)
 	_update_dash_state(delta)
 
-	# Dash trigger (Shift / ui_cancel / dash)
-	var dash_pressed := (InputMap.has_action("dash") and Input.is_action_just_pressed("dash")) or Input.is_action_just_pressed("ui_cancel")
-	if dash_pressed and has_shadow_dash and _dash_cooldown_remaining <= 0.0 and not is_guarding and not is_dashing:
-		dash()
+	# Jump input via Dash key or Jump action (Dash is superseded by Jump per user instruction)
+	var jump_key_pressed := Input.is_action_just_pressed("jump") or (InputMap.has_action("dash") and Input.is_action_just_pressed("dash")) or Input.is_action_just_pressed("ui_cancel")
+	if jump_key_pressed:
+		_jump_buffer_remaining = jump_buffer
 
-	if is_dashing:
-		move_and_slide()
-		return
+	_check_monster_contact_damage()
 
-	var move_direction := Input.get_axis("move_left", "move_right")
+	if is_contact_knockback_airborne:
+		if is_on_floor() and velocity.y >= 0.0:
+			is_contact_knockback_airborne = false
+		else:
+			# Block movement input while flying backwards in mid-air until landing on the floor
+			pass
+
+	var move_direction := 0.0 if is_contact_knockback_airborne else Input.get_axis("move_left", "move_right")
 	if not is_guarding and _guard_recovery_remaining <= 0.0 and not is_zero_approx(move_direction):
 		facing_direction = signf(move_direction)
 		$FacingMark.scale.x = facing_direction
@@ -215,11 +228,7 @@ func _physics_process(delta: float) -> void:
 		_start_attack()
 
 	if not is_on_floor():
-		if _air_hang_timer > 0.0:
-			_air_hang_timer -= delta
-			velocity.y = minf(velocity.y, 40.0) # Gravity suspension during aerial slash
-		else:
-			velocity.y += gravity * delta
+		velocity.y += gravity * delta
 		if is_down_thrusting:
 			velocity.y = maxf(velocity.y, 420.0)
 	else:
@@ -234,8 +243,18 @@ func _physics_process(delta: float) -> void:
 	_coyote_remaining = coyote_time if is_on_floor() else maxf(0.0, _coyote_remaining - delta)
 	_jump_buffer_remaining = jump_buffer if Input.is_action_just_pressed("jump") else maxf(0.0, _jump_buffer_remaining - delta)
 
+	if is_contact_knockback_airborne:
+		if is_on_floor() and velocity.y >= 0.0:
+			is_contact_knockback_airborne = false
+			move_direction = Input.get_axis("move_left", "move_right")
+		else:
+			move_direction = 0.0
+
 	if is_guarding or _guard_recovery_remaining > 0.0:
 		velocity.x = 0.0
+	elif is_contact_knockback_airborne:
+		# While contact knockback is active, preserve ballistic knockback arc until landed
+		velocity.x = move_toward(velocity.x, 0.0, move_speed * 0.8 * delta)
 	elif is_on_floor():
 		velocity.x = move_direction * move_speed
 	else:
@@ -243,7 +262,7 @@ func _physics_process(delta: float) -> void:
 		var air_acceleration := move_speed * 8.0 * air_control
 		velocity.x = move_toward(velocity.x, air_target_speed, air_acceleration * delta)
 
-	if not is_guarding and _guard_recovery_remaining <= 0.0 and _jump_buffer_remaining > 0.0 and _coyote_remaining > 0.0:
+	if not is_guarding and not is_contact_knockback_airborne and _guard_recovery_remaining <= 0.0 and _jump_buffer_remaining > 0.0 and _coyote_remaining > 0.0:
 		velocity.y = jump_velocity
 		_jump_buffer_remaining = 0.0
 		_coyote_remaining = 0.0
@@ -262,6 +281,16 @@ func _physics_process(delta: float) -> void:
 		position = Vector2(500.0, 590.0)
 
 	move_and_slide()
+
+	# Immediate landing resolution: clear airborne states on the exact touchdown frame
+	if is_on_floor():
+		if is_contact_knockback_airborne and velocity.y >= 0.0:
+			is_contact_knockback_airborne = false
+			move_direction = Input.get_axis("move_left", "move_right")
+		if is_air_attacking:
+			_end_air_attack()
+		if is_down_thrusting:
+			_end_down_thrust()
 
 	# Post-physics NaN & world bounds rescue safeguard
 	if not position.is_finite():
@@ -365,8 +394,8 @@ func _start_air_attack() -> void:
 	is_air_attacking = true
 	is_attacking = true
 	attack_count += 1
-	_air_hang_timer = 0.12
-	velocity.y = minf(velocity.y, 0.0) # Aerodynamic hover / lift
+	_air_hang_timer = 0.0
+	# Natural ballistic fall trajectory preserved: zero hover/gliding
 	_attack_time_remaining = 0.20 / attack_speed_multiplier
 	_cooldown_time_remaining = 0.22 / attack_speed_multiplier
 	current_attack_damage = 1
@@ -382,6 +411,8 @@ func _end_air_attack() -> void:
 	_air_hang_timer = 0.0
 	if is_attacking and not is_down_thrusting:
 		_end_attack()
+	# Air-to-ground combo chaining: reset cooldown so landing seamlessly flows into ground combo 1
+	_cooldown_time_remaining = 0.0
 	if _attack_buffer_remaining > 0.0 and is_on_floor() and not is_guarding and _guard_recovery_remaining <= 0.0:
 		_attack_buffer_remaining = 0.0
 		_start_attack()
@@ -688,6 +719,58 @@ func receive_attack(source_position: Vector2, blockable: bool = true) -> bool:
 		return true
 	receive_hit()
 	return false
+
+
+var _contact_knockback_until_usec: int = 0
+const CONTACT_KNOCKBACK_INTERVAL_USEC: int = 250_000 # 0.25s debounce
+
+
+func _on_hurt_area_body_entered(body: Node2D) -> void:
+	if is_dead:
+		return
+	if body.is_in_group("enemy") or body.is_in_group("boss") or (body is CollisionObject2D and (body as CollisionObject2D).collision_layer & 16 != 0):
+		receive_contact_knockback(body.global_position)
+
+
+func receive_contact_knockback(source_position: Vector2) -> void:
+	if is_dead or is_invulnerable:
+		return
+	var now_usec := Time.get_ticks_usec()
+	if now_usec < _contact_knockback_until_usec:
+		return
+	_contact_knockback_until_usec = now_usec + CONTACT_KNOCKBACK_INTERVAL_USEC
+
+	# Knockback backwards away from monster contact (NO HP LOSS per user instruction)
+	var knockback_dir := signf(global_position.x - source_position.x)
+	if is_zero_approx(knockback_dir):
+		knockback_dir = -facing_direction
+	is_contact_knockback_airborne = true
+	velocity.x = knockback_dir * 320.0
+	velocity.y = -200.0
+
+	# Tactile bump feedback (pure physical bounce without taking damage)
+	_trigger_haptic(20)
+	GameFeelManager.shake(0.10)
+
+
+func receive_contact_damage(source_position: Vector2) -> void:
+	# Compatible alias routing to pure knockback bounce
+	receive_contact_knockback(source_position)
+
+
+func _check_monster_contact_damage() -> void:
+	if is_dead or is_invulnerable:
+		return
+	var now_usec := Time.get_ticks_usec()
+	if now_usec < _contact_knockback_until_usec:
+		return
+	var hurt_area: Area2D = get_node_or_null("HurtArea") as Area2D
+	if hurt_area == null:
+		return
+	for body in hurt_area.get_overlapping_bodies():
+		if body.is_in_group("enemy") or body.is_in_group("boss") or (body is CollisionObject2D and (body as CollisionObject2D).collision_layer & 16 != 0):
+			receive_contact_knockback(body.global_position)
+			break
 
 
 func receive_hit() -> void:

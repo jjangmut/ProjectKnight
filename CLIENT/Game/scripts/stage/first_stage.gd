@@ -543,9 +543,9 @@ func _spawn(scene: PackedScene, x: float, y: float = 580.0) -> void:
 				collision.position.y = 30.0 - dimensions.y * 0.5
 	enemy.position = Vector2(x, y)
 	if y < 580 and scene == RANGED:
-		# A stationary sentry stays on its reachable 80px perch; no new AI layer.
-		enemy.move_speed = 0.0
-		enemy.detection_range = 520.0
+		# User requirement #7: Remove stationary monsters perched on upper platforms
+		enemy.queue_free()
+		return
 	# Siblings preserve combat actors' existing local-position assumptions.
 	add_child(enemy)
 	var slot := enemies.size()

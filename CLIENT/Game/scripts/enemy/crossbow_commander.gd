@@ -239,23 +239,6 @@ func _build_collisions() -> void:
 	body_col.position = Vector2(0, -50.0)
 	add_child(body_col)
 
-	# Dynamic Top Platform: elevated to grand boss head level (~96px)
-	var top_platform := AnimatableBody2D.new()
-	top_platform.name = "TopPlatform"
-	top_platform.collision_layer = 1
-	top_platform.collision_mask = 0
-	top_platform.sync_to_physics = false
-	var top_shape := CollisionShape2D.new()
-	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(70.0, 14.0)
-	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -96.0)
-	top_shape.one_way_collision = true
-	top_platform.add_child(top_shape)
-	add_child(top_platform)
-	add_collision_exception_with(top_platform)
-	top_platform.add_collision_exception_with(self)
-
 	var hurt_area := Area2D.new()
 	hurt_area.name = "HurtArea"
 	var hurt_col := CollisionShape2D.new()
@@ -678,11 +661,6 @@ func _die() -> void:
 	is_dead = true
 	state = State.DEAD
 	_phase_timer = 1.0 # Progress through defeat animation frames (20 -> 21 -> 22 -> 23)
-	var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
-	if top_plat != null and top_plat.get_child_count() > 0:
-		var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D
-		if shape != null:
-			shape.set_deferred("disabled", true)
 	aura_poly.visible = false
 	body_poly.color = Color(0.2, 0.2, 0.2, 0.8)
 	if is_instance_valid(boss_sprite):

@@ -67,23 +67,6 @@ func _ready() -> void:
 	visual.color = _base_color
 	visual.visible = false
 
-	# Dynamic Top Platform: allows player to stand and ride on top of monster
-	var top_platform := AnimatableBody2D.new()
-	top_platform.name = "TopPlatform"
-	top_platform.collision_layer = 1
-	top_platform.collision_mask = 0
-	top_platform.sync_to_physics = false
-	var top_shape := CollisionShape2D.new()
-	var top_rect := RectangleShape2D.new()
-	top_rect.size = Vector2(44.0, 10.0)
-	top_shape.shape = top_rect
-	top_shape.position = Vector2(0.0, -30.0)
-	top_shape.one_way_collision = true
-	top_platform.add_child(top_shape)
-	add_child(top_platform)
-	add_collision_exception_with(top_platform)
-	top_platform.add_collision_exception_with(self)
-
 	_build_enemy_sprite()
 
 
@@ -433,11 +416,6 @@ func receive_hit() -> void:
 	current_hp -= 1
 	if current_hp <= 0:
 		_is_dying = true
-		var top_plat: AnimatableBody2D = get_node_or_null("TopPlatform") as AnimatableBody2D
-		if top_plat != null and top_plat.get_child_count() > 0:
-			var shape: CollisionShape2D = top_plat.get_child(0) as CollisionShape2D
-			if shape != null:
-				shape.set_deferred("disabled", true)
 		_spawn_shards(randi_range(1, 2))
 		queue_free()
 		return

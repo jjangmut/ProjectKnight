@@ -53,10 +53,7 @@ func _run_tests() -> void:
 		_check(rect.size.y >= 100.0, "Body collision height expanded for 106px boss (Height: %.1f)" % rect.size.y)
 
 	var top_plat: AnimatableBody2D = boss.get_node_or_null("TopPlatform") as AnimatableBody2D
-	_check(top_plat != null, "TopPlatform node exists for boss head jumping")
-	if top_plat != null and top_plat.get_child_count() > 0:
-		var top_col := top_plat.get_child(0) as CollisionShape2D
-		_check(top_col != null and top_col.position.y <= -65.0, "TopPlatform elevated to boss head level (Y: %.1f <= -65)" % top_col.position.y)
+	_check(top_plat == null, "TopPlatform node permanently removed per user requirement (no mounting)")
 
 	# [Check 3: Multi-Layered Boss Slash Arc VFX]
 	print("\n[Check 3: Multi-Layered Melee Slash Arc VFX]")

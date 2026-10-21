@@ -42,6 +42,7 @@ var boss: CharacterBody2D = null
 func _init() -> void:
 	print(">>> [RECORDER] Initializing Stage 3 Boss Battle Cinematic Recorder...")
 	SaveManagerClass.clear_save()
+	create_timer(15.0).timeout.connect(func(): quit(0))
 	call_deferred("_start_recording")
 
 
@@ -54,6 +55,9 @@ func _start_recording() -> void:
 
 	stage = stage_scene
 	player = stage.player
+	SaveManagerClass.mark_stage_cleared(1)
+	SaveManagerClass.mark_stage_cleared(2)
+	player.refresh_equipment()
 	stage.campaign_mode = true
 	stage.set_meta("boss_mode", true)
 

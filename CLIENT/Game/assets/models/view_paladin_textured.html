@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectKnight Paladin 3D Textured Model Viewer</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at center, #1b2838 0%, #0a0e17 100%);
+            color: #e6edf3;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            padding: 16px 24px;
+            background: rgba(13, 17, 23, 0.88);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        h1 { font-size: 19px; font-weight: 700; color: #f1c40f; display: flex; align-items: center; gap: 8px; }
+        .badge-group { display: flex; gap: 8px; }
+        .badge {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.4);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-blue {
+            background: rgba(56, 139, 253, 0.15);
+            color: #58a6ff;
+            border: 1px solid rgba(56, 139, 253, 0.4);
+        }
+        model-viewer {
+            width: 100%;
+            height: calc(100vh - 65px);
+            --poster-color: transparent;
+        }
+        .controls-panel {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(22, 27, 34, 0.92);
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #8b949e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+        .key { color: #f1c40f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>⚔️ ProjectKnight - Paladin (성기사) 3D Textured</h1>
+            <span style="font-size: 12px; color: #8b949e;">High-Precision Texture Projection & PBR Metallic Shading</span>
+        </div>
+        <div class="badge-group">
+            <span class="badge">1:1 Concept Match</span>
+            <span class="badge badge-blue">376,916 Vertices</span>
+            <span class="badge badge-blue">glTF 2.0 Binary (22.6MB)</span>
+        </div>
+    </header>
+
+    <model-viewer 
+        src="./ProjectKnight_Paladin_Textured.glb?t=20261019_orient_fixed"
+        alt="ProjectKnight Paladin 3D Model"
+        auto-rotate
+        auto-rotate-delay="1000"
+        rotation-per-second="25deg"
+        camera-controls
+        touch-action="pan-y"
+        shadow-intensity="1.5"
+        shadow-softness="0.8"
+        exposure="1.2"
+        camera-orbit="0deg 75deg 105%"
+        min-camera-orbit="auto auto 50%"
+        max-camera-orbit="auto auto 250%">
+    </model-viewer>
+
+    <div class="controls-panel">
+        <div><span class="key">마우스 좌클릭 드래그</span>: 360도 회전</div>
+        <div><span class="key">우클릭 드래그</span>: 위치 이동</div>
+        <div><span class="key">휠 스크롤</span>: 확대 / 축소</div>
+    </div>
+</body>
+</html>

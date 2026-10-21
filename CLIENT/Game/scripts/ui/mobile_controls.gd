@@ -1,34 +1,47 @@
 class_name MobileControls
 extends CanvasLayer
 ## Professional Mobile Virtual Controls HUD for Project Knight.
-## Features an 8-Directional Virtual Joypad (Left thumb: Move Left/Right, Jump Up, Platform Drop Down)
-## and an Ergonomic 3-Action Triangle Cluster (Right thumb: Attack, Dash, Guard).
-## Jump button has been seamlessly integrated into upward joypad direction.
+## Features:
+## 1. Fixed 4-Directional D-Pad (Left cluster: Left/Right move, Down drop-through platform, Up)
+##    - Touch & hold to move continuously, release to stop.
+## 2. Action Cluster (Right cluster: Attack, Jump [replaces Dash], Guard).
+##    - Dash has been disabled/superseded by Jump.
 
+static var user_controls_enabled: bool = true
 var is_mobile_active: bool = true
 
-# Virtual Joypad (Left thumb cluster)
-var joystick: MobileJoypad
+# Fixed 4-Direction D-Pad (Left thumb cluster)
+var dpad_container: Control
+var btn_left: Control
+var btn_right: Control
+var btn_up: Control
+var btn_down: Control
 
-# Backward compatibility / legacy references (null indicates removed/superseded by joystick)
-var btn_left: Control = null
-var btn_right: Control = null
-var btn_down: Control = null
-var btn_jump: Control = null # Explicitly removed per Director's instruction
-
-# Action buttons (Right thumb cluster: 3-Action Triangle)
+# Action buttons (Right thumb cluster)
 var btn_attack: Control
+var btn_jump: Control
 var btn_guard: Control
-var btn_dash: Control
+var btn_dash: Control = null # Explicitly removed & superseded by btn_jump per user instruction
 var btn_toggle: Button
 
+# Compatibility reference
+var joystick: Control = null
+
 signal mobile_action_triggered(action_name: String, pressed: bool)
+
+const TexJoypadBase = preload("res://assets/ui/joypad_base.png")
+const TexJoypadKnob = preload("res://assets/ui/joypad_knob.png")
+const TexBtnAttack = preload("res://assets/ui/btn_attack.png")
+const TexBtnDash = preload("res://assets/ui/btn_dash.png")
+const TexBtnJump = preload("res://assets/ui/btn_jump.png")
+const TexBtnGuard = preload("res://assets/ui/btn_guard.png")
 
 
 func _ready() -> void:
 	layer = 20 # Render above HUD and world
-	_check_environment_visibility()
+	is_mobile_active = user_controls_enabled
 	_build_ui()
+	_update_visibility_state()
 
 
 func _exit_tree() -> void:
@@ -36,34 +49,24 @@ func _exit_tree() -> void:
 
 
 func release_all_touches() -> void:
-	if joystick != null:
-		joystick.reset_joystick()
-	var actions := ["move_left", "move_right", "move_down", "attack", "jump", "dash", "guard"]
+	var actions := ["move_left", "move_right", "move_down", "move_up", "attack", "jump", "guard"]
 	for act in actions:
-		if Input.is_action_pressed(act):
+		if InputMap.has_action(act) and Input.is_action_pressed(act):
 			Input.action_release(act)
-
-
-func _input(event: InputEvent) -> void:
-	if not is_mobile_active or joystick == null or not joystick.is_touch_down:
-		return
-
-	if event is InputEventScreenDrag:
-		var drag := event as InputEventScreenDrag
-		if joystick.active_touch_index == drag.index:
-			joystick.process_touch_world(drag.position)
-	elif event is InputEventScreenTouch:
-		var touch := event as InputEventScreenTouch
-		if not touch.pressed and joystick.active_touch_index == touch.index:
-			joystick.reset_joystick()
-	elif event is InputEventMouseMotion:
-		var motion := event as InputEventMouseMotion
-		if joystick.active_touch_index == -99:
-			joystick.process_touch_world(motion.position)
-	elif event is InputEventMouseButton:
-		var mouse := event as InputEventMouseButton
-		if not mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT and joystick.active_touch_index == -99:
-			joystick.reset_joystick()
+	if btn_left is VirtualButton and (btn_left as VirtualButton).is_pressed:
+		(btn_left as VirtualButton)._set_pressed(false)
+	if btn_right is VirtualButton and (btn_right as VirtualButton).is_pressed:
+		(btn_right as VirtualButton)._set_pressed(false)
+	if btn_up is VirtualButton and (btn_up as VirtualButton).is_pressed:
+		(btn_up as VirtualButton)._set_pressed(false)
+	if btn_down is VirtualButton and (btn_down as VirtualButton).is_pressed:
+		(btn_down as VirtualButton)._set_pressed(false)
+	if btn_attack is VirtualButton and (btn_attack as VirtualButton).is_pressed:
+		(btn_attack as VirtualButton)._set_pressed(false)
+	if btn_jump is VirtualButton and (btn_jump as VirtualButton).is_pressed:
+		(btn_jump as VirtualButton)._set_pressed(false)
+	if btn_guard is VirtualButton and (btn_guard as VirtualButton).is_pressed:
+		(btn_guard as VirtualButton)._set_pressed(false)
 
 
 func _notification(what: int) -> void:
@@ -71,12 +74,21 @@ func _notification(what: int) -> void:
 		release_all_touches()
 
 
-func _check_environment_visibility() -> void:
-	# Show on mobile platforms by default, or if touch is supported, or in PC test mode
-	var has_touch := DisplayServer.is_touchscreen_available()
-	var is_mobile := OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
-	is_mobile_active = is_mobile or has_touch or true # Active by default for full mobile readiness
-	visible = is_mobile_active
+func _update_visibility_state() -> void:
+	is_mobile_active = user_controls_enabled
+	if not is_mobile_active:
+		release_all_touches()
+	var left_ctrl := get_node_or_null("Root/LeftControls") as Control
+	var right_ctrl := get_node_or_null("Root/RightControls") as Control
+	if left_ctrl:
+		left_ctrl.visible = is_mobile_active
+		left_ctrl.process_mode = Node.PROCESS_MODE_INHERIT if is_mobile_active else Node.PROCESS_MODE_DISABLED
+	if right_ctrl:
+		right_ctrl.visible = is_mobile_active
+		right_ctrl.process_mode = Node.PROCESS_MODE_INHERIT if is_mobile_active else Node.PROCESS_MODE_DISABLED
+	if btn_toggle:
+		btn_toggle.text = "📱 패드 숨기기" if is_mobile_active else "📱 패드 켜기"
+		btn_toggle.modulate = Color(1.0, 1.0, 1.0, 0.9 if is_mobile_active else 0.5)
 
 
 func _build_ui() -> void:
@@ -86,59 +98,31 @@ func _build_ui() -> void:
 	root_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root_control)
 
-	# 1. Left Floating Joypad Touch Zone (Left 65% of screen for generous thumb reach)
+	# 1. Left Fixed 4-Way D-Pad Container (Without background plate per user instruction)
 	var left_zone := Control.new()
 	left_zone.name = "LeftControls"
-	left_zone.set_anchors_preset(Control.PRESET_FULL_RECT)
-	left_zone.anchor_right = 0.65 # Expanded to 65% width to prevent boundary drop
-	left_zone.mouse_filter = Control.MOUSE_FILTER_STOP
+	left_zone.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	left_zone.position = Vector2(40, -280)
+	left_zone.size = Vector2(250, 250)
+	left_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root_control.add_child(left_zone)
+	dpad_container = left_zone
 
-	joystick = MobileJoypad.new()
-	joystick.name = "VirtualJoystick"
-	joystick.size = Vector2(240, 240)
-	joystick.custom_minimum_size = Vector2(240, 240)
-	joystick.position = Vector2(50, 430) # Default resting position
-	joystick.action_triggered.connect(func(act: String, prs: bool): mobile_action_triggered.emit(act, prs))
-	left_zone.add_child(joystick)
+	# 4 Clean Directional Buttons (Left, Right, Up, Down) in ergonomic Cross layout (76x76px)
+	var btn_sz := Vector2(76, 76)
+	btn_left = _create_dpad_button("move_left", "", Vector2(8, 87), btn_sz)
+	left_zone.add_child(btn_left)
 
-	# Connect left touch zone input to float joystick dynamically to touch position
-	left_zone.gui_input.connect(func(event: InputEvent):
-		if not is_mobile_active:
-			return
-		if event is InputEventScreenTouch:
-			var touch := event as InputEventScreenTouch
-			if touch.pressed and (joystick.active_touch_index == -1 or joystick.active_touch_index == touch.index):
-				joystick.float_to(touch.position)
-				joystick._begin_touch(touch.index, touch.position)
-				left_zone.accept_event()
-			elif not touch.pressed and joystick.active_touch_index == touch.index:
-				joystick.reset_joystick()
-				left_zone.accept_event()
-		elif event is InputEventScreenDrag:
-			var drag := event as InputEventScreenDrag
-			if joystick.active_touch_index == drag.index:
-				joystick.process_touch_world(drag.position)
-				left_zone.accept_event()
-		elif event is InputEventMouseButton:
-			var mouse := event as InputEventMouseButton
-			if mouse.button_index == MOUSE_BUTTON_LEFT:
-				if mouse.pressed and joystick.active_touch_index == -1:
-					joystick.float_to(mouse.position)
-					joystick._begin_touch(-99, mouse.position)
-					left_zone.accept_event()
-				elif not mouse.pressed and joystick.active_touch_index == -99:
-					joystick.reset_joystick()
-					left_zone.accept_event()
-		elif event is InputEventMouseMotion:
-			var motion := event as InputEventMouseMotion
-			if joystick.is_touch_down and joystick.active_touch_index == -99:
-				joystick.process_touch_world(motion.position)
-				left_zone.accept_event()
-	)
+	btn_right = _create_dpad_button("move_right", "", Vector2(166, 87), btn_sz)
+	left_zone.add_child(btn_right)
 
-	# 2. Right Action Cluster Container (Responsive Anchor Bottom-Right)
-	# Ergonomic 3-Button Triangle: Attack (Main 130px), Dash (Bottom-Left 110px), Guard (Top-Left 110px)
+	btn_up = _create_dpad_button("move_up", "", Vector2(87, 8), btn_sz)
+	left_zone.add_child(btn_up)
+
+	btn_down = _create_dpad_button("move_down", "", Vector2(87, 166), btn_sz)
+	left_zone.add_child(btn_down)
+
+	# 2. Right Action Cluster Container (Attack, Jump [replaces Dash], Guard)
 	var right_container := Control.new()
 	right_container.name = "RightControls"
 	right_container.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -147,50 +131,78 @@ func _build_ui() -> void:
 	right_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root_control.add_child(right_container)
 
-	# Attack: Main big button (Right corner, primary thumb resting zone, 128x128)
-	btn_attack = _create_touch_button("attack", "⚔\n공격", Vector2(190, 100), Vector2(128, 128), Color(1.0, 0.65, 0.15, 0.88))
+	# Attack: Main big button (Right corner, primary thumb zone, 128x128)
+	btn_attack = _create_touch_button("attack", "공격", Vector2(190, 100), Vector2(128, 128), Color(1.0, 0.65, 0.15, 0.88), TexBtnAttack)
 	right_container.add_child(btn_attack)
 
-	# Dash: Immediate thumb slide evasion (Bottom-Left of attack, 106x106)
-	btn_dash = _create_touch_button("dash", "💨\n대시", Vector2(60, 130), Vector2(106, 106), Color(0.1, 0.9, 0.9, 0.88))
-	right_container.add_child(btn_dash)
+	# Jump: Dedicated Valkyrie Winged Jump button replacing old Dash! (Bottom-Left of attack, 106x106)
+	btn_jump = _create_touch_button("jump", "점프", Vector2(60, 130), Vector2(106, 106), Color(0.2, 0.9, 0.6, 0.88), TexBtnJump)
+	right_container.add_child(btn_jump)
+	btn_dash = btn_jump # Alias for compatibility
 
-	# Guard: Upward thumb slide shield stance (Top-Left of attack, 106x106)
-	btn_guard = _create_touch_button("guard", "🛡\n방패", Vector2(115, 12), Vector2(106, 106), Color(0.3, 0.6, 1.0, 0.88))
+	# Guard: Upward thumb shield stance (Top-Left of attack, 106x106)
+	btn_guard = _create_touch_button("guard", "방어", Vector2(115, 12), Vector2(106, 106), Color(0.3, 0.6, 1.0, 0.88), TexBtnGuard)
 	right_container.add_child(btn_guard)
 
-	# 3. Top-Right Quick Toggle Button for testing (Responsive Anchor Top-Right)
+	# 3. Top-Right Quick Toggle Button (Always visible so user can toggle back anytime)
 	btn_toggle = Button.new()
 	btn_toggle.name = "MobileToggle"
-	btn_toggle.text = "📱 모바일패드"
+	btn_toggle.text = "📱 패드 숨기기" if user_controls_enabled else "📱 패드 켜기"
 	btn_toggle.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	btn_toggle.position = Vector2(-180, 24)
-	btn_toggle.size = Vector2(160, 52)
-	btn_toggle.add_theme_font_size_override("font_size", 20)
-	btn_toggle.modulate = Color(1.0, 1.0, 1.0, 0.88)
+	btn_toggle.position = Vector2(-190, 24)
+	btn_toggle.size = Vector2(170, 48)
+	btn_toggle.add_theme_font_size_override("font_size", 16)
+
+	# Gothic Translucent Glass HUD Style
+	var style_normal := StyleBoxFlat.new()
+	style_normal.bg_color = Color(0.06, 0.09, 0.14, 0.82)
+	style_normal.border_color = Color(0.85, 0.72, 0.42, 0.80)
+	style_normal.set_border_width_all(1)
+	style_normal.set_corner_radius_all(8)
+	style_normal.content_margin_left = 12
+	style_normal.content_margin_right = 12
+
+	var style_hover := StyleBoxFlat.new()
+	style_hover.bg_color = Color(0.14, 0.18, 0.24, 0.90)
+	style_hover.border_color = Color(1.2, 1.0, 0.6, 1.0)
+	style_hover.set_border_width_all(2)
+	style_hover.set_corner_radius_all(8)
+
+	var style_pressed := StyleBoxFlat.new()
+	style_pressed.bg_color = Color(0.24, 0.18, 0.08, 0.95)
+	style_pressed.border_color = Color(1.5, 1.25, 0.65, 1.0)
+	style_pressed.set_border_width_all(2)
+	style_pressed.set_corner_radius_all(8)
+
+	btn_toggle.add_theme_stylebox_override("normal", style_normal)
+	btn_toggle.add_theme_stylebox_override("hover", style_hover)
+	btn_toggle.add_theme_stylebox_override("pressed", style_pressed)
+	btn_toggle.add_theme_stylebox_override("focus", style_normal)
+	btn_toggle.add_theme_color_override("font_color", Color(0.95, 0.92, 0.85))
+	btn_toggle.add_theme_color_override("font_hover_color", Color(1.2, 1.1, 0.9))
 	btn_toggle.pressed.connect(_on_toggle_pressed)
 	root_control.add_child(btn_toggle)
 
 
 func _on_toggle_pressed() -> void:
-	is_mobile_active = not is_mobile_active
-	var root_ctrl := get_node_or_null("Root/LeftControls")
-	var right_ctrl := get_node_or_null("Root/RightControls")
-	if root_ctrl:
-		root_ctrl.visible = is_mobile_active
-	if right_ctrl:
-		right_ctrl.visible = is_mobile_active
-	btn_toggle.modulate = Color(1.0, 1.0, 1.0, 0.8 if is_mobile_active else 0.4)
+	user_controls_enabled = not user_controls_enabled
+	_update_visibility_state()
 
 
-const TexJoypadBase = preload("res://assets/ui/joypad_base.png")
-const TexJoypadKnob = preload("res://assets/ui/joypad_knob.png")
-const TexBtnAttack = preload("res://assets/ui/btn_attack.png")
-const TexBtnDash = preload("res://assets/ui/btn_dash.png")
-const TexBtnGuard = preload("res://assets/ui/btn_guard.png")
+func _create_dpad_button(action_name: String, label_text: String, pos: Vector2, btn_size: Vector2) -> Control:
+	var btn := VirtualButton.new()
+	btn.name = "Btn_" + action_name
+	btn.action_name = action_name
+	btn.label_text = label_text
+	btn.position = pos
+	btn.custom_minimum_size = btn_size
+	btn.size = btn_size
+	btn.theme_color = Color(0.18, 0.22, 0.32, 0.85)
+	btn.action_triggered.connect(func(act: String, prs: bool): mobile_action_triggered.emit(act, prs))
+	return btn
 
 
-func _create_touch_button(action_name: String, label_text: String, pos: Vector2, btn_size: Vector2, theme_color: Color) -> Control:
+func _create_touch_button(action_name: String, label_text: String, pos: Vector2, btn_size: Vector2, theme_color: Color, tex: Texture2D) -> Control:
 	var btn := VirtualButton.new()
 	btn.name = "Btn_" + action_name
 	btn.action_name = action_name
@@ -199,236 +211,18 @@ func _create_touch_button(action_name: String, label_text: String, pos: Vector2,
 	btn.custom_minimum_size = btn_size
 	btn.size = btn_size
 	btn.theme_color = theme_color
-	match action_name:
-		"attack":
-			btn.button_texture = TexBtnAttack
-		"dash":
-			btn.button_texture = TexBtnDash
-		"guard":
-			btn.button_texture = TexBtnGuard
+	btn.button_texture = tex
 	btn.action_triggered.connect(func(act: String, prs: bool): mobile_action_triggered.emit(act, prs))
 	return btn
 
 
-## 8-Directional Virtual Analog Joypad
-class MobileJoypad:
-	extends Control
-
-
-	var base_radius: float = 76.0
-	var knob_radius: float = 34.0
-	var max_drag_radius: float = 62.0
-	var deadzone: float = 16.0
-	var follow_finger: bool = true
-
-	var knob_offset: Vector2 = Vector2.ZERO
-	var active_touch_index: int = -1
-	var is_touch_down: bool = false
-
-	var current_direction: Vector2 = Vector2.ZERO
-	var active_actions: Dictionary = {
-		"move_left": false,
-		"move_right": false,
-		"jump": false,
-		"move_down": false
-	}
-
-	signal action_triggered(action_name: String, pressed: bool)
-
-
-	var default_resting_pos := Vector2(50, 430)
-
-	func float_to(touch_world_pos: Vector2) -> void:
-		var half_size := size * 0.5
-		var target := touch_world_pos - half_size
-		if get_parent() is Control:
-			var p_size: Vector2 = (get_parent() as Control).size
-			target.x = clampf(target.x, 0.0, maxf(0.0, p_size.x - size.x))
-			target.y = clampf(target.y, 0.0, maxf(0.0, p_size.y - size.y))
-		position = target
-		queue_redraw()
-
-	func _begin_touch(touch_idx: int, touch_pos: Vector2) -> void:
-		active_touch_index = touch_idx
-		is_touch_down = true
-		process_touch_world(touch_pos)
-
-	func _ready() -> void:
-		mouse_filter = Control.MOUSE_FILTER_STOP
-		custom_minimum_size = size
-
-
-	func _gui_input(event: InputEvent) -> void:
-		if event is InputEventScreenTouch:
-			var touch := event as InputEventScreenTouch
-			if touch.pressed:
-				if active_touch_index == -1 or active_touch_index == touch.index:
-					active_touch_index = touch.index
-					is_touch_down = true
-					_process_touch_pos(touch.position)
-					accept_event()
-			else:
-				if active_touch_index == touch.index:
-					reset_joystick()
-					accept_event()
-
-		elif event is InputEventScreenDrag:
-			var drag := event as InputEventScreenDrag
-			if active_touch_index == drag.index:
-				_process_touch_pos(drag.position)
-				accept_event()
-
-		elif event is InputEventMouseButton:
-			var mouse := event as InputEventMouseButton
-			if mouse.button_index == MOUSE_BUTTON_LEFT:
-				if mouse.pressed:
-					active_touch_index = -99
-					is_touch_down = true
-					_process_touch_pos(mouse.position)
-					accept_event()
-				else:
-					if active_touch_index == -99:
-						reset_joystick()
-						accept_event()
-
-		elif event is InputEventMouseMotion:
-			var motion := event as InputEventMouseMotion
-			if is_touch_down and active_touch_index == -99:
-				_process_touch_pos(motion.position)
-				accept_event()
-
-
-	func _notification(what: int) -> void:
-		if what == NOTIFICATION_MOUSE_EXIT or what == NOTIFICATION_FOCUS_EXIT:
-			if is_touch_down and active_touch_index == -99:
-				reset_joystick()
-
-
-	func _exit_tree() -> void:
-		reset_joystick()
-
-
-	func reset_joystick() -> void:
-		is_touch_down = false
-		active_touch_index = -1
-		knob_offset = Vector2.ZERO
-		current_direction = Vector2.ZERO
-		_update_actions(false, false, false, false)
-		queue_redraw()
-
-
-	## Manual simulation interface for automated tests
-	func simulate_drag(offset: Vector2) -> void:
-		is_touch_down = true
-		active_touch_index = 0
-		var center := size * 0.5
-		_process_touch_pos(center + offset)
-
-
-	func process_touch_world(world_pos: Vector2) -> void:
-		var center := position + (size * 0.5)
-		var delta := world_pos - center
-		var length := delta.length()
-
-		if length > max_drag_radius:
-			if follow_finger:
-				var excess := length - max_drag_radius
-				var move_delta := delta.normalized() * excess
-				position += move_delta
-				if get_parent() is Control:
-					var p_size: Vector2 = (get_parent() as Control).size
-					position.x = clampf(position.x, 0.0, maxf(0.0, p_size.x - size.x))
-					position.y = clampf(position.y, 0.0, maxf(0.0, p_size.y - size.y))
-				center = position + (size * 0.5)
-				delta = world_pos - center
-			knob_offset = delta.normalized() * max_drag_radius
-		else:
-			knob_offset = delta
-
-		var final_length := delta.length()
-		if final_length < deadzone:
-			current_direction = Vector2.ZERO
-			_update_actions(false, false, false, false)
-		else:
-			var dir := delta.normalized()
-			current_direction = dir
-			# 8-Directional discretization using 22.5-degree thresholds (cos(67.5°) ≈ 0.38)
-			var want_left := dir.x < -0.38
-			var want_right := dir.x > 0.38
-			var want_up := dir.y < -0.38    # Up = Jump (-Y in 2D)
-			var want_down := dir.y > 0.38  # Down = Drop down / Move down (+Y in 2D)
-			_update_actions(want_left, want_right, want_up, want_down)
-
-		queue_redraw()
-
-
-	func _process_touch_pos(pos: Vector2) -> void:
-		process_touch_world(position + pos)
-
-
-	func _update_actions(want_left: bool, want_right: bool, want_up: bool, want_down: bool) -> void:
-		_set_action_state("move_left", want_left)
-		_set_action_state("move_right", want_right)
-		_set_action_state("jump", want_up)
-		_set_action_state("move_down", want_down)
-
-
-	func _set_action_state(act: String, should_press: bool) -> void:
-		if active_actions[act] == should_press:
-			return
-		active_actions[act] = should_press
-
-		if should_press:
-			Input.action_press(act)
-		else:
-			Input.action_release(act)
-
-		action_triggered.emit(act, should_press)
-
-
-	func _draw() -> void:
-		var center := size * 0.5
-
-		# 1. High-Resolution Textured Joypad Base (Forged Brass & Obsidian Rune Disk)
-		var base_size := Vector2(base_radius * 2.3, base_radius * 2.3)
-		var base_rect := Rect2(center - base_size * 0.5, base_size)
-		var base_modulate := Color(1.15, 1.1, 1.0, 1.0) if is_touch_down else Color(0.9, 0.95, 1.0, 0.85)
-		draw_texture_rect(TexJoypadBase, base_rect, false, base_modulate)
-
-		# 2. Dynamic 8-Direction Active Sector Gold Glow
-		for i in range(8):
-			var angle := i * (TAU / 8.0)
-			var dir_vec := Vector2(cos(angle), sin(angle))
-			var is_sector_active := false
-			if is_touch_down and current_direction != Vector2.ZERO:
-				if current_direction.dot(dir_vec) > 0.72:
-					is_sector_active = true
-
-			if is_sector_active:
-				var p1 := center + dir_vec * (base_radius - 12.0)
-				var p2 := center + dir_vec * (base_radius + 4.0)
-				draw_line(p1, p2, Color(1.5, 1.3, 0.6, 0.95), 4.2, true)
-
-		# 3. Smooth Neon Link Trajectory Line while dragging
-		if is_touch_down and knob_offset.length() > deadzone:
-			var link_color := Color(0.40, 0.95, 1.0, 0.65)
-			draw_line(center, center + knob_offset, link_color, 2.8, true)
-
-		# 4. High-Resolution 3D Sapphire Knob Texture with Specular Sheen
-		var knob_pos := center + knob_offset
-		var knob_dim := Vector2(knob_radius * 2.6, knob_radius * 2.6)
-		var knob_rect := Rect2(knob_pos - knob_dim * 0.5, knob_dim)
-		var knob_tint := Color(1.4, 1.3, 1.1, 1.0) if is_touch_down else Color(1.0, 1.0, 1.0, 0.92)
-		draw_texture_rect(TexJoypadKnob, knob_rect, false, knob_tint)
-
-
-## Ergonomic Virtual Button for Action Cluster
+## Ergonomic Virtual Button with Touch-and-Hold functionality
 class VirtualButton:
 	extends Control
 
 	var action_name: String = ""
 	var label_text: String = ""
-	var theme_color: Color = Color(0.3, 0.5, 0.8, 0.6)
+	var theme_color: Color = Color(0.2, 0.3, 0.45, 0.8)
 	var button_texture: Texture2D = null
 	var is_pressed: bool = false
 	var active_touch_index: int = -1
@@ -455,22 +249,36 @@ class VirtualButton:
 					_set_pressed(false)
 					accept_event()
 
+		elif event is InputEventScreenDrag:
+			var drag := event as InputEventScreenDrag
+			if active_touch_index == drag.index:
+				var local_rect := Rect2(Vector2.ZERO, size)
+				# Slid off button margin
+				if not local_rect.has_point(drag.position):
+					if is_pressed:
+						active_touch_index = -1
+						_set_pressed(false)
+				accept_event()
+
 		elif event is InputEventMouseButton:
 			var mouse := event as InputEventMouseButton
 			if mouse.button_index == MOUSE_BUTTON_LEFT:
 				if mouse.pressed:
 					if not is_pressed:
+						active_touch_index = -99
 						_set_pressed(true)
 						accept_event()
 				else:
-					if is_pressed:
+					if is_pressed and active_touch_index == -99:
+						active_touch_index = -1
 						_set_pressed(false)
 						accept_event()
 
 
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_MOUSE_EXIT or what == NOTIFICATION_FOCUS_EXIT:
-			if is_pressed and active_touch_index == -1:
+			if is_pressed and active_touch_index == -99:
+				active_touch_index = -1
 				_set_pressed(false)
 
 
@@ -485,10 +293,13 @@ class VirtualButton:
 		is_pressed = pressed
 		queue_redraw()
 
-		if pressed:
-			Input.action_press(action_name)
-		else:
-			Input.action_release(action_name)
+		if not action_name.is_empty():
+			if not InputMap.has_action(action_name):
+				InputMap.add_action(action_name)
+			if pressed:
+				Input.action_press(action_name)
+			else:
+				Input.action_release(action_name)
 
 		action_triggered.emit(action_name, pressed)
 
@@ -498,25 +309,88 @@ class VirtualButton:
 		var radius := minf(size.x, size.y) * 0.5
 		var draw_radius := radius * (0.92 if is_pressed else 1.0)
 
-		# 1. High-Resolution Fantasy Action Button Texture
+		# 1. Custom Button Texture or Forged Plate
 		if button_texture != null:
 			var b_dim := Vector2(draw_radius * 2.0, draw_radius * 2.0)
 			var b_rect := Rect2(center - b_dim * 0.5, b_dim)
 			var b_tint := Color(1.35, 1.25, 1.1, 1.0) if is_pressed else Color(1.0, 1.0, 1.0, 0.95)
 			draw_texture_rect(button_texture, b_rect, false, b_tint)
 		else:
-			# Fallback Plate
-			draw_circle(center, draw_radius, theme_color)
+			# Premium Dark Gothic Knight Rune D-Pad Button Plate
+			var pad_inset := 2.5 if is_pressed else 0.0
+			var btn_rect := Rect2(Vector2(pad_inset, pad_inset), size - Vector2(pad_inset * 2.0, pad_inset * 2.0))
 
-		# 2. Active Touch Radiant Burst
-		if is_pressed:
-			draw_circle(center, draw_radius * 0.72, Color(1.0, 0.95, 0.75, 0.35))
-			draw_arc(center, draw_radius, 0, TAU, 32, Color(1.5, 1.3, 0.6, 0.95), 3.2, true)
+			# 1. Slate-Iron Metal Base
+			var bg_col := Color(0.08, 0.12, 0.18, 0.90) if not is_pressed else Color(0.24, 0.18, 0.08, 0.96)
+			draw_rect(btn_rect, bg_col, true)
 
-		# 3. Subtitle Label Text with Gold/Black Shadow
-		var font := ThemeDB.fallback_font
-		var str_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22)
-		var text_pos := center + Vector2(-str_size.x * 0.5, draw_radius * 0.42)
-		draw_string(font, text_pos + Vector2(1, 1), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22, Color(0, 0, 0, 0.95))
-		draw_string(font, text_pos, label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 22, Color(1.0, 0.94, 0.82, 0.95))
+			# 2. Antique Gold / HDR Sun Gold Rune Border
+			var border_col := Color(0.85, 0.72, 0.42, 0.88) if not is_pressed else Color(1.8, 1.45, 0.6, 1.0)
+			var border_width := 2.0 if not is_pressed else 3.2
+			draw_rect(btn_rect, border_col, false, border_width)
 
+			# 3. Inner Decorative Bevel Accent
+			var inner_rect := btn_rect.grow(-4.0)
+			var inner_col := Color(0.35, 0.45, 0.55, 0.35) if not is_pressed else Color(1.4, 1.1, 0.4, 0.45)
+			draw_rect(inner_rect, inner_col, false, 1.0)
+
+			# 4. Pressed Radiant Core Glow
+			if is_pressed:
+				draw_circle(center, 18.0, Color(1.6, 1.3, 0.5, 0.3))
+
+			# 5. Sharp Vector Rune Arrow Glyphs
+			var asz := 16.0
+			var arrow: PackedVector2Array = []
+			match action_name:
+				"move_up":
+					arrow = PackedVector2Array([
+						center + Vector2(0, -asz),
+						center + Vector2(asz * 0.85, asz * 0.5),
+						center + Vector2(0, asz * 0.15),
+						center + Vector2(-asz * 0.85, asz * 0.5)
+					])
+				"move_down":
+					arrow = PackedVector2Array([
+						center + Vector2(0, asz),
+						center + Vector2(asz * 0.85, -asz * 0.5),
+						center + Vector2(0, -asz * 0.15),
+						center + Vector2(-asz * 0.85, -asz * 0.5)
+					])
+				"move_left":
+					arrow = PackedVector2Array([
+						center + Vector2(-asz, 0),
+						center + Vector2(asz * 0.5, -asz * 0.85),
+						center + Vector2(asz * 0.15, 0),
+						center + Vector2(asz * 0.5, asz * 0.85)
+					])
+				"move_right":
+					arrow = PackedVector2Array([
+						center + Vector2(asz, 0),
+						center + Vector2(-asz * 0.5, -asz * 0.85),
+						center + Vector2(-asz * 0.15, 0),
+						center + Vector2(-asz * 0.5, asz * 0.85)
+					])
+
+			if not arrow.is_empty():
+				var arrow_fill := Color(0.92, 0.82, 0.58, 0.95) if not is_pressed else Color(2.4, 2.0, 1.2, 1.0)
+				draw_colored_polygon(arrow, arrow_fill)
+				var outline := PackedVector2Array([arrow[0], arrow[1], arrow[2], arrow[3], arrow[0]])
+				draw_polyline(outline, Color(1.0, 0.95, 0.8, 1.0) if is_pressed else Color(0.65, 0.52, 0.3, 0.8), 1.6, true)
+
+		# 2. Active Touch Radiant Burst Glow for textured buttons
+		if is_pressed and button_texture != null:
+			draw_circle(center, draw_radius * 0.68, Color(1.0, 0.95, 0.75, 0.35))
+			draw_arc(center, draw_radius, 0, TAU, 28, Color(1.5, 1.3, 0.6, 0.95), 3.2, true)
+
+		# 3. Clean gothic sub-caption badge for action buttons (공격, 점프, 방어)
+		if not label_text.is_empty():
+			var font := ThemeDB.fallback_font
+			var font_size := 15
+			var str_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+			var text_pos := center + Vector2(-str_size.x * 0.5, draw_radius * 0.60)
+			# Refined gothic pill panel behind caption to ensure high contrast & elegant HUD look
+			var pill_rect := Rect2(text_pos + Vector2(-10, -2), Vector2(str_size.x + 20, font_size + 4))
+			draw_rect(pill_rect, Color(0.04, 0.07, 0.12, 0.85), true)
+			draw_rect(pill_rect, Color(0.85, 0.72, 0.42, 0.75) if not is_pressed else Color(1.5, 1.25, 0.6, 1.0), false, 1.2)
+			draw_string(font, text_pos + Vector2(1, font_size - 1), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, Color(0, 0, 0, 0.95))
+			draw_string(font, text_pos + Vector2(0, font_size - 2), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, Color(1.0, 0.94, 0.82, 0.95))

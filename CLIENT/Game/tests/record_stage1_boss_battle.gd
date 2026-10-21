@@ -36,6 +36,7 @@ var boss: CharacterBody2D = null
 func _init() -> void:
 	print(">>> [RECORDER] Initializing Stage 1 Boss Battle Cinematic Recorder...")
 	SaveManagerClass.clear_save()
+	create_timer(15.0).timeout.connect(func(): quit(0))
 	call_deferred("_start_recording")
 
 
@@ -168,9 +169,11 @@ func _physics_process(delta: float) -> bool:
 				if is_instance_valid(boss):
 					boss._start_bastion_guard()
 			elif state_time < 0.45:
-				Input.action_press("dash") # Player dashes back to safety
+				Input.action_press("move_left")
+				Input.action_press("jump")
 			elif state_time < 0.65:
-				Input.action_release("dash")
+				Input.action_release("move_left")
+				Input.action_release("jump")
 			if state_time >= 1.4:
 				_set_state(State.BOSS_ENRAGE_PHASE2)
 

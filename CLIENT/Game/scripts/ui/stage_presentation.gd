@@ -35,8 +35,10 @@ var touch_visible := false:
 	set(value):
 		touch_visible = value
 		if is_instance_valid(stage) and stage.get("mobile_controls") != null:
-			stage.mobile_controls.visible = not value
-			stage.mobile_controls.process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+			var controls = stage.mobile_controls
+			var allow_vis: bool = controls.get("is_mobile_active") if "is_mobile_active" in controls else true
+			controls.visible = (not value) and allow_vis
+			controls.process_mode = Node.PROCESS_MODE_DISABLED if (value or not allow_vis) else Node.PROCESS_MODE_INHERIT
 var show_help := false
 var pause_owned := false
 var fingers: Dictionary = {}
