@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8y6qv2d3darena001"]
+
+[ext_resource type="Script" path="res://scripts/side_quarter_view/side_qv_arena.gd" id="1_arena"]
+
+[node name="SideQuarterViewArena" type="Node3D"]
+script = ExtResource("1_arena")
