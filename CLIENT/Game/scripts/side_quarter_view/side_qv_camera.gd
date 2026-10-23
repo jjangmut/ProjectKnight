@@ -6,7 +6,7 @@ class_name SideQVCamera
 
 @export var target: Node3D = null
 @export var follow_smoothness: float = 6.0
-@export var camera_offset: Vector3 = Vector3(1.2, 3.5, 9.2)
+@export var camera_offset: Vector3 = Vector3(1.0, 2.5, 6.8)
 
 var trauma: float = 0.0
 var trauma_power: float = 2.0
@@ -15,12 +15,12 @@ var max_roll: float = 2.5
 var time_counter: float = 0.0
 
 var base_pos: Vector3 = Vector3.ZERO
-var base_rot: Vector3 = Vector3(-15.0, 8.0, 0.0)
+var base_rot: Vector3 = Vector3(-14.0, 7.0, 0.0)
 
 
 func _ready() -> void:
 	current = true
-	fov = 48.0
+	fov = 46.0
 	rotation_degrees = base_rot
 
 

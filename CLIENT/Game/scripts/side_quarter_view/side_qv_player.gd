@@ -76,34 +76,34 @@ func _ready() -> void:
 
 
 func _build_components() -> void:
-	# 1. 2D Sprite in 3D Space (Sprite3D)
+	# 1. 2D Sprite in 3D Space (Sprite3D, calibrated ~1.77m height)
 	sprite_3d = Sprite3D.new()
 	sprite_3d.name = "CharacterSprite3D"
 	sprite_3d.texture = PaladinTexture
 	# Stand vertically, facing camera in isometric-side view
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.0028 # Calibrated height ~1.8m
+	sprite_3d.pixel_size = 0.0016 # 1106px * 0.0016 = 1.77m height (Human Scale)
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	sprite_3d.position.y = 0.95
+	sprite_3d.position.y = 0.88
 	add_child(sprite_3d)
 
 	# 2. 3D Collision Capsule
 	var col := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
-	cap.radius = 0.45
-	cap.height = 1.8
+	cap.radius = 0.35
+	cap.height = 1.7
 	col.shape = cap
-	col.position.y = 0.9
+	col.position.y = 0.85
 	add_child(col)
 
 	# 3. 3D Runic Shield Barrier (Just Parry visual)
 	guard_barrier_3d = MeshInstance3D.new()
 	guard_barrier_3d.name = "GuardBarrier3D"
 	var torus := TorusMesh.new()
-	torus.inner_radius = 0.75
-	torus.outer_radius = 0.95
+	torus.inner_radius = 0.6
+	torus.outer_radius = 0.8
 	guard_barrier_3d.mesh = torus
 
 	var bmat := StandardMaterial3D.new()
@@ -113,7 +113,7 @@ func _build_components() -> void:
 	bmat.emission_energy_multiplier = 4.0
 	bmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	guard_barrier_3d.material_override = bmat
-	guard_barrier_3d.position = Vector3(0.5, 0.9, 0.0)
+	guard_barrier_3d.position = Vector3(0.45, 0.85, 0.0)
 	guard_barrier_3d.rotation_degrees = Vector3(90.0, 0.0, 0.0)
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
@@ -122,8 +122,8 @@ func _build_components() -> void:
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
 	var arc_torus := TorusMesh.new()
-	arc_torus.inner_radius = 0.85
-	arc_torus.outer_radius = 1.15
+	arc_torus.inner_radius = 0.7
+	arc_torus.outer_radius = 0.95
 	slash_visual_3d.mesh = arc_torus
 
 	var smat := StandardMaterial3D.new()
@@ -132,8 +132,8 @@ func _build_components() -> void:
 	smat.emission = Color(2.5, 1.8, 0.5, 1.0)
 	smat.emission_energy_multiplier = 4.5
 	slash_visual_3d.material_override = smat
-	slash_visual_3d.scale = Vector3(1.1, 0.15, 0.7)
-	slash_visual_3d.position = Vector3(0.8, 0.9, 0.0)
+	slash_visual_3d.scale = Vector3(1.0, 0.12, 0.6)
+	slash_visual_3d.position = Vector3(0.65, 0.85, 0.0)
 	slash_visual_3d.visible = false
 	add_child(slash_visual_3d)
 
@@ -147,9 +147,9 @@ func _build_components() -> void:
 
 	var atk_shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(2.2, 1.8, 1.8)
+	box.size = Vector3(1.8, 1.6, 1.6)
 	atk_shape.shape = box
-	atk_shape.position = Vector3(1.0, 0.9, 0.0)
+	atk_shape.position = Vector3(0.8, 0.85, 0.0)
 	attack_area_3d.add_child(atk_shape)
 	add_child(attack_area_3d)
 

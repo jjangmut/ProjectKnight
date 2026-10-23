@@ -40,6 +40,10 @@ const BossTextureNormal = preload("res://assets/enemy_frames/boss_commander_v2.p
 const BossTextureDefense = preload("res://assets/enemy_frames/boss_commander_v2_defense.png")
 
 
+var anim_frame_timer: float = 0.0
+var anim_frame_idx: int = 0
+
+
 func _ready() -> void:
 	collision_layer = 2 # Enemy Layer (2)
 	collision_mask = 1 | 4 # Player (1) & World (4)
@@ -51,15 +55,18 @@ func _ready() -> void:
 
 
 func _build_components() -> void:
-	# 1. 2D Sprite in 3D Space (Scale ~2.4m height)
+	# 1. 2D Sprite in 3D Space (Sprite Sheet 4x3 frames, ~2.45m height)
 	sprite_3d = Sprite3D.new()
 	sprite_3d.name = "BossSprite3D"
 	sprite_3d.texture = BossTextureNormal
+	sprite_3d.hframes = 4
+	sprite_3d.vframes = 3
+	sprite_3d.frame = 0
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.0035
+	sprite_3d.pixel_size = 0.0082 # 298.66px * 0.0082 = 2.45m tall
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite_3d.position.y = 1.25
+	sprite_3d.position.y = 1.22
 	add_child(sprite_3d)
 
 	# 2. Crimson Aura Ring (Phase 2 Enrage)
@@ -119,6 +126,7 @@ func _physics_process(delta: float) -> void:
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 		move_and_slide()
+		_update_boss_animation(delta)
 		return
 
 	if target_player == null or not is_instance_valid(target_player):
@@ -126,6 +134,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
+		_update_boss_animation(delta)
 		return
 
 	var diff := target_player.global_position - global_position
@@ -168,6 +177,46 @@ func _physics_process(delta: float) -> void:
 				pattern_timer = 1.2
 
 	move_and_slide()
+	_update_boss_animation(delta)
+
+
+func _update_boss_animation(delta: float) -> void:
+	anim_frame_timer += delta
+	var fps := 8.0
+	var start_frame := 0
+	var frame_count := 4
+
+	match current_pattern:
+		Pattern.IDLE:
+			sprite_3d.texture = BossTextureNormal
+			start_frame = 0 # Row 0
+			fps = 6.0
+		Pattern.CHASE:
+			sprite_3d.texture = BossTextureNormal
+			start_frame = 4 # Row 1 Walk
+			fps = 8.0
+		Pattern.SHIELD_CHARGE:
+			sprite_3d.texture = BossTextureDefense
+			start_frame = 0 # Row 0 Guard
+			fps = 10.0
+		Pattern.TRIPLE_CLEAVE:
+			sprite_3d.texture = BossTextureNormal
+			start_frame = 8 # Row 2 Attack
+			fps = 12.0
+		Pattern.STUNNED:
+			sprite_3d.texture = BossTextureDefense
+			start_frame = 4 # Row 1 Hurt
+			fps = 5.0
+		Pattern.QUAKE_RING:
+			sprite_3d.texture = BossTextureDefense
+			start_frame = 8 # Row 2 Slam/Defense
+			fps = 8.0
+
+	if anim_frame_timer >= (1.0 / fps):
+		anim_frame_timer = 0.0
+		anim_frame_idx = (anim_frame_idx + 1) % frame_count
+
+	sprite_3d.frame = start_frame + anim_frame_idx
 
 
 func _find_player() -> void:

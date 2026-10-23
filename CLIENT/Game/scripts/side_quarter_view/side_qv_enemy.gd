@@ -23,6 +23,10 @@ var attack_area_3d: Area3D
 const MeleeTexture = preload("res://assets/enemy_frames/melee_v1.png")
 
 
+var anim_timer: float = 0.0
+var anim_frame: int = 0
+
+
 func _ready() -> void:
 	collision_layer = 2 # Enemy Layer (2)
 	collision_mask = 1 | 4 # Player (1) & World (4)
@@ -32,24 +36,27 @@ func _ready() -> void:
 
 
 func _build_components() -> void:
-	# 1. 2D Sprite in 3D Space
+	# 1. 2D Sprite in 3D Space (Sprite Sheet 3x2, ~1.55m height)
 	sprite_3d = Sprite3D.new()
 	sprite_3d.name = "EnemySprite3D"
 	sprite_3d.texture = MeleeTexture
+	sprite_3d.hframes = 3
+	sprite_3d.vframes = 2
+	sprite_3d.frame = 0
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.003
+	sprite_3d.pixel_size = 0.0031 # 500px * 0.0031 = 1.55m height
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite_3d.position.y = 0.9
+	sprite_3d.position.y = 0.78
 	add_child(sprite_3d)
 
 	# 2. Collision Capsule
 	var col := CollisionShape3D.new()
 	var cap := CapsuleShape3D.new()
-	cap.radius = 0.45
-	cap.height = 1.7
+	cap.radius = 0.4
+	cap.height = 1.55
 	col.shape = cap
-	col.position.y = 0.85
+	col.position.y = 0.78
 	add_child(col)
 
 	# 3. Attack Area 3D
@@ -82,6 +89,7 @@ func _physics_process(delta: float) -> void:
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
+		_update_enemy_animation(delta)
 		return
 
 	if current_cooldown > 0.0:
@@ -92,6 +100,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
+		_update_enemy_animation(delta)
 		return
 
 	var diff := target_player.global_position - global_position
@@ -113,6 +122,18 @@ func _physics_process(delta: float) -> void:
 			_execute_attack()
 
 	move_and_slide()
+	_update_enemy_animation(delta)
+
+
+func _update_enemy_animation(delta: float) -> void:
+	anim_timer += delta * 6.0
+	if attack_area_3d.monitoring:
+		sprite_3d.frame = 3 + (int(anim_timer * 2.0) % 3) # Row 1 Attack frames
+	else:
+		if velocity.length() > 0.5:
+			sprite_3d.frame = int(anim_timer) % 3 # Row 0 Walk frames
+		else:
+			sprite_3d.frame = 0 # Row 0 Idle frame
 
 
 func _find_player() -> void:
