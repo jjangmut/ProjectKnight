@@ -6,7 +6,7 @@ class_name SideQVCamera
 
 @export var target: Node3D = null
 @export var follow_smoothness: float = 6.0
-@export var camera_offset: Vector3 = Vector3(1.0, 2.5, 6.8)
+@export var camera_offset: Vector3 = Vector3(0.0, 5.2, 7.8)
 
 var trauma: float = 0.0
 var trauma_power: float = 2.0
@@ -15,12 +15,12 @@ var max_roll: float = 2.5
 var time_counter: float = 0.0
 
 var base_pos: Vector3 = Vector3.ZERO
-var base_rot: Vector3 = Vector3(-14.0, 7.0, 0.0)
+var base_rot: Vector3 = Vector3(-32.0, 0.0, 0.0) # Horizontal Quarter-View (Immortal Warrior Style, Yaw=0, Pitch=-32)
 
 
 func _ready() -> void:
 	current = true
-	fov = 46.0
+	fov = 42.0
 	rotation_degrees = base_rot
 
 

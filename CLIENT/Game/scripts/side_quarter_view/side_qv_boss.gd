@@ -67,6 +67,7 @@ func _build_components() -> void:
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.position.y = 1.22
+	sprite_3d.flip_h = true # Initially face Left towards the player on the left
 	add_child(sprite_3d)
 
 	# 2. Crimson Aura Ring (Phase 2 Enrage)
@@ -143,7 +144,8 @@ func _physics_process(delta: float) -> void:
 	var dir_x: float = signf(diff.x)
 	if dir_x != 0.0:
 		facing_dir_x = dir_x
-		sprite_3d.flip_h = (facing_dir_x > 0.0)
+		# Boss sprite natively faces Right; flip_h = true faces Left towards player!
+		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		attack_area_3d.position.x = 1.2 * facing_dir_x
 
 	pattern_timer -= delta

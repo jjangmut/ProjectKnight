@@ -273,6 +273,13 @@ func start_attack() -> void:
 	attack_cooldown = 0.22
 	attack_duration_remaining = 0.20
 
+	# 2D Attack Sprite Motion
+	sprite_3d.texture = AttackSheetTexture
+	sprite_3d.hframes = 2
+	sprite_3d.vframes = 2
+	sprite_3d.pixel_size = 0.0028 # 627px * 0.0028 = ~1.75m height
+	sprite_3d.frame = (combo_step - 1) % 4
+
 	slash_visual_3d.visible = true
 	slash_visual_3d.rotation.y = randf_range(-0.3, 0.3)
 	attack_area_3d.monitoring = true
@@ -316,6 +323,12 @@ func _process_attack_state(delta: float) -> void:
 		slash_visual_3d.visible = false
 		attack_area_3d.monitoring = false
 		is_attacking = false
+		# Return to Idle Paladin Texture
+		sprite_3d.texture = PaladinTexture
+		sprite_3d.hframes = 1
+		sprite_3d.vframes = 1
+		sprite_3d.frame = 0
+		sprite_3d.pixel_size = 0.0016
 		_set_state(State.IDLE)
 
 

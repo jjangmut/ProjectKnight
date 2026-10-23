@@ -48,6 +48,7 @@ func _build_components() -> void:
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.position.y = 0.78
+	sprite_3d.flip_h = true # Faces Left towards player
 	add_child(sprite_3d)
 
 	# 2. Collision Capsule

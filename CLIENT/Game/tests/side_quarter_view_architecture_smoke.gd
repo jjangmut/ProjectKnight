@@ -66,8 +66,10 @@ func _run_verification() -> void:
 	var camera = stage.camera
 	check(is_instance_valid(player), "2D Paladin Player active in 3D Arena")
 	check(is_instance_valid(camera), "Side Quarter-View Tracking Camera active")
-	check(camera.rotation_degrees.x <= -12.0 and camera.rotation_degrees.x >= -18.0, 
-		"Camera has side quarter-view pitch (-15 deg): %.1f" % camera.rotation_degrees.x)
+	check(camera.rotation_degrees.x <= -28.0 and camera.rotation_degrees.x >= -36.0, 
+		"Camera has horizontal quarter-view pitch (-32 deg): %.1f" % camera.rotation_degrees.x)
+	check(is_zero_approx(camera.rotation_degrees.y),
+		"Camera Yaw is strictly horizontal (0.0 deg): %.2f" % camera.rotation_degrees.y)
 
 	# -------------------------------------------------------------
 	# Check 1: 2D Sprite in 3D Space (Sprite3D & Shadows)
