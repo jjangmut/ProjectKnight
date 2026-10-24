@@ -61,14 +61,14 @@ var guard_barrier_3d: MeshInstance3D
 var slash_visual_3d: MeshInstance3D
 var attack_area_3d: Area3D
 
-# Multi-frame Spritesheets for Detailed Character Actions
-const TexIdle = preload("res://assets/player_frames/idle_v1.png")     # 2x2 = 4 frames
-const TexRun = preload("res://assets/player_frames/run_v2.png")       # 3x2 = 6 frames
-const TexAttack = preload("res://assets/player_frames/attack_v1.png") # 2x2 = 4 frames
-const TexJump = preload("res://assets/player_frames/jump_v1.png")     # 3x1 = 3 frames
-const TexGuard = preload("res://assets/player_frames/guard_v1.png")   # 3x1 = 3 frames
-const TexDodge = preload("res://assets/player_frames/dodge_v1.png")   # 2x2 = 4 frames
-const TexHurt = preload("res://assets/player_frames/hurt_v1.png")     # 3x1 = 3 frames
+# Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned)
+const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
+const TexRun = preload("res://assets/player_frames/run_v2.png")              # 3x2 = 6 frames
+const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")# 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
+const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames
+const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
+const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames
+const TexHurt = preload("res://assets/player_frames/hurt_v1.png")            # 3x1 = 3 frames
 
 # Backward compatibility aliases
 const PaladinTexture = TexIdle
@@ -95,11 +95,11 @@ func _build_components() -> void:
 	sprite_3d.frame = 0
 	# Stand vertically, facing camera in isometric-side view
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.00282 # 627px * 0.00282 = ~1.77m height
+	sprite_3d.pixel_size = 0.00282 # 780x780 cells with 600px body = ~1.77m height
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	sprite_3d.position.y = 0.88
+	sprite_3d.position = Vector3(0.0, 0.874, 0.0) # Ground foot alignment at Y=0.0
 	add_child(sprite_3d)
 
 	# 2. 3D Collision Capsule
@@ -131,22 +131,23 @@ func _build_components() -> void:
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
 
-	# 4. 3D Melee Slash Arc VFX
+	# 4. 3D Melee Slash Arc VFX (Vertical / Diagonal Crescent Blade Slash)
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
 	var arc_torus := TorusMesh.new()
-	arc_torus.inner_radius = 0.7
-	arc_torus.outer_radius = 0.95
+	arc_torus.inner_radius = 0.75
+	arc_torus.outer_radius = 1.05
 	slash_visual_3d.mesh = arc_torus
 
 	var smat := StandardMaterial3D.new()
-	smat.albedo_color = Color(2.5, 1.8, 0.5, 1.0) # Golden Holy Flash
+	smat.albedo_color = Color(2.8, 2.0, 0.6, 1.0) # Golden Holy Flash
 	smat.emission_enabled = true
-	smat.emission = Color(2.5, 1.8, 0.5, 1.0)
+	smat.emission = Color(2.8, 2.0, 0.6, 1.0)
 	smat.emission_energy_multiplier = 4.5
 	slash_visual_3d.material_override = smat
-	slash_visual_3d.scale = Vector3(1.0, 0.12, 0.6)
-	slash_visual_3d.position = Vector3(0.65, 0.85, 0.0)
+	slash_visual_3d.scale = Vector3(1.1, 0.16, 0.8)
+	slash_visual_3d.position = Vector3(0.75, 1.0, 0.0)
+	slash_visual_3d.rotation_degrees = Vector3(25.0, 0.0, -35.0)
 	slash_visual_3d.visible = false
 	add_child(slash_visual_3d)
 
@@ -306,7 +307,7 @@ func start_attack() -> void:
 	attack_cooldown = 0.22
 	attack_duration_remaining = 0.20
 
-	# Detailed 2D Attack Animation
+	# Symmetric Aligned 2D Attack Animation
 	sprite_3d.texture = TexAttack
 	sprite_3d.hframes = 2
 	sprite_3d.vframes = 2
@@ -314,14 +315,18 @@ func start_attack() -> void:
 	sprite_3d.frame = (combo_step - 1) % 4
 
 	slash_visual_3d.visible = true
-	slash_visual_3d.rotation.y = randf_range(-0.3, 0.3)
+	slash_visual_3d.rotation_degrees = Vector3(
+		25.0,
+		0.0,
+		(-35.0 if combo_step != 2 else 35.0) * facing_dir_x
+	)
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
 	# Responsive melee hit check
 	_check_melee_hit()
 
-	# Combo 3 Finisher: Fire glowing 3D sword beam in side-quarter direction!
+	# Combo 3 Finisher: Fire glowing 3D vertical crescent sword wave!
 	if combo_step == 3:
 		_fire_sword_beam()
 
@@ -343,7 +348,7 @@ func _fire_sword_beam() -> void:
 	beam.name = "SideQVSwordBeam_Finisher"
 	get_parent().add_child(beam)
 	var shoot_dir := Vector3(facing_dir_x, 0, 0)
-	beam.initialize(global_position + Vector3(facing_dir_x * 0.9, 0.9, 0.0), shoot_dir, 2 if counter_attack_buff else 0)
+	beam.initialize(global_position + Vector3(facing_dir_x * 0.9, 1.1, 0.0), shoot_dir, 2 if counter_attack_buff else 0)
 	sword_beam_fired.emit(beam)
 
 
@@ -467,7 +472,7 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.texture = TexGuard
 			sprite_3d.hframes = 3
 			sprite_3d.vframes = 1
-			sprite_3d.pixel_size = 0.00244
+			sprite_3d.pixel_size = 0.00282
 		if counter_attack_buff:
 			sprite_3d.frame = 2 # Parry counter spark
 		elif guard_elapsed_time < 0.06:
