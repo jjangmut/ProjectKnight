@@ -21,6 +21,7 @@ enum Pattern {
 @export var current_hp: int = 24
 @export var move_speed: float = 3.8
 @export var charge_speed: float = 12.0
+@export var charge_damage: int = 2
 
 var current_phase: int = 1
 var current_pattern: Pattern = Pattern.IDLE
@@ -156,11 +157,20 @@ func _physics_process(delta: float) -> void:
 				_pick_next_pattern(dist)
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
-				velocity.x = facing_dir_x * spd
-				velocity.z = diff.normalized().z * (spd * 0.7)
+				var boss_combat_distance := 1.85 # Reach of heavy boss blade; halt to avoid pushing
+				if dist > boss_combat_distance:
+					velocity.x = facing_dir_x * spd
+					velocity.z = diff.normalized().z * (spd * 0.7)
+					_prevent_player_pushing()
+				else:
+					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
+					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 		Pattern.SHIELD_CHARGE:
 			velocity.x = facing_dir_x * charge_speed
 			velocity.z = 0.0
+			# Stop charge upon contact with player
+			if dist <= 0.60 + 0.35 + 0.15:
+				_execute_charge_impact()
 			if pattern_timer <= 0.0:
 				sprite_3d.texture = BossTextureNormal
 				current_pattern = Pattern.CHASE
@@ -180,6 +190,26 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_update_boss_animation(delta)
+
+
+func _prevent_player_pushing() -> void:
+	if target_player != null and is_instance_valid(target_player):
+		var diff := target_player.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
+		var min_dist: float = 0.60 + 0.35 + 0.10
+		if dist < min_dist and dist > 0.001:
+			var dir := diff / dist
+			var forward_speed := velocity.dot(dir)
+			if forward_speed > 0.0:
+				velocity -= dir * forward_speed
+
+
+func _execute_charge_impact() -> void:
+	velocity = Vector3.ZERO
+	if target_player != null and is_instance_valid(target_player):
+		if target_player.has_method("receive_incoming_attack"):
+			target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
 
 
 func _update_boss_animation(delta: float) -> void:
@@ -301,16 +331,16 @@ func _on_attack_body_entered(body: Node3D) -> void:
 func apply_parry_stun(duration: float = 2.0) -> void:
 	current_pattern = Pattern.STUNNED
 	stun_timer = duration
-	velocity.x = -facing_dir_x * 5.0
+	velocity = Vector3.ZERO # Firm stop on clash; no slide or bounce
 	attack_area_3d.monitoring = false
-	sprite_3d.texture = BossTextureNormal
+	sprite_3d.texture = BossTextureDefense
 
 
-func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO) -> void:
+func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	current_hp -= amount
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
-	velocity = hit_dir * 3.0
+	velocity = Vector3.ZERO # Stand firm like a boss; no knockback slide
 
 	var tween := create_tween()
 	if tween:

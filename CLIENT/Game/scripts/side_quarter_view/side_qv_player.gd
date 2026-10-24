@@ -61,14 +61,24 @@ var guard_barrier_3d: MeshInstance3D
 var slash_visual_3d: MeshInstance3D
 var attack_area_3d: Area3D
 
-const PaladinTexture = preload("res://assets/player/knight_stage1_paladin.png")
-const AttackSheetTexture = preload("res://assets/player_frames/attack_v1.png")
+# Multi-frame Spritesheets for Detailed Character Actions
+const TexIdle = preload("res://assets/player_frames/idle_v1.png")     # 2x2 = 4 frames
+const TexRun = preload("res://assets/player_frames/run_v2.png")       # 3x2 = 6 frames
+const TexAttack = preload("res://assets/player_frames/attack_v1.png") # 2x2 = 4 frames
+const TexJump = preload("res://assets/player_frames/jump_v1.png")     # 3x1 = 3 frames
+const TexGuard = preload("res://assets/player_frames/guard_v1.png")   # 3x1 = 3 frames
+const TexDodge = preload("res://assets/player_frames/dodge_v1.png")   # 2x2 = 4 frames
+const TexHurt = preload("res://assets/player_frames/hurt_v1.png")     # 3x1 = 3 frames
+
+# Backward compatibility aliases
+const PaladinTexture = TexIdle
+const AttackSheetTexture = TexAttack
 const SwordBeamScene = preload("res://scripts/side_quarter_view/side_qv_sword_beam.gd")
 
 
 func _ready() -> void:
 	collision_layer = 1 # Player Layer (1)
-	collision_mask = 4  # World Layer (4)
+	collision_mask = 2 | 4 # Enemy Layer (2) & World Layer (4)
 	add_to_group("player")
 
 	_build_components()
@@ -76,13 +86,16 @@ func _ready() -> void:
 
 
 func _build_components() -> void:
-	# 1. 2D Sprite in 3D Space (Sprite3D, calibrated ~1.77m height)
+	# 1. 2D Sprite in 3D Space (Sprite3D, calibrated ~1.77m human scale)
 	sprite_3d = Sprite3D.new()
 	sprite_3d.name = "CharacterSprite3D"
-	sprite_3d.texture = PaladinTexture
+	sprite_3d.texture = TexIdle
+	sprite_3d.hframes = 2
+	sprite_3d.vframes = 2
+	sprite_3d.frame = 0
 	# Stand vertically, facing camera in isometric-side view
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.0016 # 1106px * 0.0016 = 1.77m height (Human Scale)
+	sprite_3d.pixel_size = 0.00282 # 627px * 0.00282 = ~1.77m height
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -176,13 +189,34 @@ func _physics_process(delta: float) -> void:
 		State.HURT:
 			_process_hurt_state(delta)
 
+	# Prevent pushing into monsters: firm stop upon body contact without bouncing
+	_prevent_enemy_pushing()
 	move_and_slide()
-	_update_procedural_animations(delta)
+	_update_character_animation(delta)
 
 	# Ground clamp safety
 	if global_position.y < 0.0 and is_on_floor():
 		global_position.y = 0.0
 		velocity.y = 0.0
+
+
+func _prevent_enemy_pushing() -> void:
+	# Avoid sliding into or pushing monsters; halt clean on contact boundary
+	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
+			continue
+		var enemy_3d := enemy as Node3D
+		var diff: Vector3 = enemy_3d.global_position - global_position
+		diff.y = 0.0
+		var dist: float = diff.length()
+		var enemy_radius: float = 0.60 if enemy_3d.is_in_group("bosses") else 0.40
+		var min_dist: float = 0.35 + enemy_radius + 0.06
+		if dist < min_dist and dist > 0.001:
+			var dir: Vector3 = diff / dist
+			var vel_towards: float = velocity.dot(dir)
+			if vel_towards > 0.0:
+				velocity -= dir * vel_towards
 
 
 func _update_timers(delta: float) -> void:
@@ -217,7 +251,6 @@ func _process_movement(delta: float) -> void:
 	# Side Quarter-View Movement
 	if input_vec.x != 0.0:
 		facing_dir_x = signf(input_vec.x)
-		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		# Flip attack and guard offsets
 		attack_area_3d.position.x = 1.0 * facing_dir_x
 		guard_barrier_3d.position.x = 0.6 * facing_dir_x
@@ -273,11 +306,11 @@ func start_attack() -> void:
 	attack_cooldown = 0.22
 	attack_duration_remaining = 0.20
 
-	# 2D Attack Sprite Motion
-	sprite_3d.texture = AttackSheetTexture
+	# Detailed 2D Attack Animation
+	sprite_3d.texture = TexAttack
 	sprite_3d.hframes = 2
 	sprite_3d.vframes = 2
-	sprite_3d.pixel_size = 0.0028 # 627px * 0.0028 = ~1.75m height
+	sprite_3d.pixel_size = 0.00282
 	sprite_3d.frame = (combo_step - 1) % 4
 
 	slash_visual_3d.visible = true
@@ -315,20 +348,14 @@ func _fire_sword_beam() -> void:
 
 
 func _process_attack_state(delta: float) -> void:
-	velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-	velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+	velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+	velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 	attack_duration_remaining -= delta
 
 	if attack_duration_remaining <= 0.0:
 		slash_visual_3d.visible = false
 		attack_area_3d.monitoring = false
 		is_attacking = false
-		# Return to Idle Paladin Texture
-		sprite_3d.texture = PaladinTexture
-		sprite_3d.hframes = 1
-		sprite_3d.vframes = 1
-		sprite_3d.frame = 0
-		sprite_3d.pixel_size = 0.0016
 		_set_state(State.IDLE)
 
 
@@ -372,16 +399,16 @@ func receive_incoming_attack(amount: int, attacker: Node, attack_dir: Vector3) -
 			_trigger_parry_flash()
 			return false
 		else:
-			# Normal Guard: 50% damage reduction
+			# Normal Guard: 50% damage reduction, solid halt
 			current_hp -= maxi(1, int(amount * 0.5))
 			emit_signal("hp_changed", current_hp, max_hp)
-			velocity = attack_dir * 3.0
+			velocity = Vector3.ZERO
 			return true
 
-	# Direct Hit
+	# Direct Hit: Damage taken, firm stop without launch bounce
 	current_hp -= amount
 	emit_signal("hp_changed", current_hp, max_hp)
-	velocity = attack_dir * 5.0
+	velocity = Vector3.ZERO
 	_set_state(State.HURT)
 
 	if current_hp <= 0:
@@ -403,25 +430,90 @@ func _process_hurt_state(delta: float) -> void:
 		_set_state(State.IDLE)
 
 
-func _update_procedural_animations(delta: float) -> void:
-	anim_timer += delta * 12.0
+func _update_character_animation(delta: float) -> void:
+	anim_timer += delta
 
-	# 2D Sprite procedural bobbing and breathing in 3D world
-	if current_state == State.MOVE:
-		# Dynamic running bounce & lean
-		sprite_3d.position.y = 0.95 + abs(sin(anim_timer)) * 0.08
-		sprite_3d.rotation.z = -facing_dir_x * 0.06
-	elif current_state == State.IDLE:
-		# Idle breathing
-		sprite_3d.position.y = 0.95 + sin(anim_timer * 0.3) * 0.02
-		sprite_3d.rotation.z = 0.0
-	elif current_state == State.ATTACK:
-		# Slash forward surge
-		sprite_3d.rotation.z = facing_dir_x * 0.12
-	elif current_state == State.GUARD:
-		# Firm braced stance
-		sprite_3d.position.y = 0.92
-		sprite_3d.rotation.z = -facing_dir_x * 0.08
+	# Head-on mutual facing alignment
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
+
+	# 1. Airborne Jump Action
+	if not is_on_floor() and not is_attacking:
+		if sprite_3d.texture != TexJump:
+			sprite_3d.texture = TexJump
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 1
+			sprite_3d.pixel_size = 0.00212
+		if velocity.y > 1.2:
+			sprite_3d.frame = 0 # Ascent
+		elif absf(velocity.y) <= 1.2:
+			sprite_3d.frame = 1 # Apex float
+		else:
+			sprite_3d.frame = 2 # Descent
+		return
+
+	# 2. Attack Action
+	if is_attacking:
+		if sprite_3d.texture != TexAttack:
+			sprite_3d.texture = TexAttack
+			sprite_3d.hframes = 2
+			sprite_3d.vframes = 2
+			sprite_3d.pixel_size = 0.00282
+		sprite_3d.frame = (combo_step - 1) % 4
+		return
+
+	# 3. Guard / Parry Stance Action
+	if is_guarding:
+		if sprite_3d.texture != TexGuard:
+			sprite_3d.texture = TexGuard
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 1
+			sprite_3d.pixel_size = 0.00244
+		if counter_attack_buff:
+			sprite_3d.frame = 2 # Parry counter spark
+		elif guard_elapsed_time < 0.06:
+			sprite_3d.frame = 0 # Shield raise
+		else:
+			sprite_3d.frame = 1 # Fortified fortress brace
+		return
+
+	# 4. Dodge Dash Action
+	if current_state == State.DASH:
+		if sprite_3d.texture != TexDodge:
+			sprite_3d.texture = TexDodge
+			sprite_3d.hframes = 2
+			sprite_3d.vframes = 2
+			sprite_3d.pixel_size = 0.00282
+		var dash_progress := 1.0 - (dash_time_remaining / DASH_DURATION)
+		sprite_3d.frame = clampi(int(dash_progress * 4.0), 0, 3)
+		return
+
+	# 5. Hurt Action
+	if current_state == State.HURT:
+		if sprite_3d.texture != TexHurt:
+			sprite_3d.texture = TexHurt
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 1
+			sprite_3d.pixel_size = 0.00244
+		sprite_3d.frame = 1
+		return
+
+	# 6. Run / Sprint Action (6-frame detailed loop)
+	if current_state == State.MOVE and is_on_floor():
+		if sprite_3d.texture != TexRun:
+			sprite_3d.texture = TexRun
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 2
+			sprite_3d.pixel_size = 0.00346
+		sprite_3d.frame = int(anim_timer * 10.0) % 6
+		return
+
+	# 7. Idle Stance (4-frame detailed breathing loop)
+	if sprite_3d.texture != TexIdle:
+		sprite_3d.texture = TexIdle
+		sprite_3d.hframes = 2
+		sprite_3d.vframes = 2
+		sprite_3d.pixel_size = 0.00282
+	sprite_3d.frame = int(anim_timer * 4.0) % 4
 
 
 func _set_state(new_state: State) -> void:

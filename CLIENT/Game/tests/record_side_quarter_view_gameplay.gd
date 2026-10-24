@@ -52,6 +52,14 @@ func _start_recording() -> void:
 		InputMap.add_action("move_left")
 	if not InputMap.has_action("move_right"):
 		InputMap.add_action("move_right")
+	if not InputMap.has_action("jump"):
+		InputMap.add_action("jump")
+	if not InputMap.has_action("attack"):
+		InputMap.add_action("attack")
+	if not InputMap.has_action("guard"):
+		InputMap.add_action("guard")
+	if not InputMap.has_action("dash"):
+		InputMap.add_action("dash")
 
 	stage = ArenaScene.instantiate() as Node3D
 	root.add_child(stage)
@@ -145,9 +153,11 @@ func _physics_process(delta: float) -> bool:
 					boss._execute_shield_charge()
 			elif phase_time >= 0.38 and not player.is_guarding:
 				# Player raises 3D runic shield right into parry window!
+				Input.action_press("guard")
 				player.start_guard()
 			elif phase_time >= 0.52 and is_instance_valid(boss) and boss.current_pattern == SideQVBossClass.Pattern.SHIELD_CHARGE:
 				# Clash! Just Parry triggered!
+				Input.action_release("guard")
 				boss.apply_parry_stun(2.5)
 				boss.velocity = Vector3.ZERO
 				player.release_guard()

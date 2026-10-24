@@ -79,14 +79,19 @@ func _build_components() -> void:
 	attack_area_3d.body_entered.connect(_on_attack_body_entered)
 
 
+var is_attacking: bool = false
+var attack_timer: float = 0.0
+const ATTACK_DURATION: float = 0.28
+
+
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
 	if is_stunned:
 		stun_timer -= delta
-		velocity.x = move_toward(velocity.x, 0.0, 15.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 15.0 * delta)
+		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
@@ -95,6 +100,22 @@ func _physics_process(delta: float) -> void:
 
 	if current_cooldown > 0.0:
 		current_cooldown -= delta
+
+	if is_attacking:
+		attack_timer += delta
+		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+		if attack_timer >= 0.08 and attack_timer < 0.22:
+			attack_area_3d.monitoring = true
+		else:
+			attack_area_3d.monitoring = false
+
+		if attack_timer >= ATTACK_DURATION:
+			is_attacking = false
+			attack_area_3d.monitoring = false
+		move_and_slide()
+		_update_enemy_animation(delta)
+		return
 
 	if target_player == null or not is_instance_valid(target_player):
 		_find_player()
@@ -112,13 +133,16 @@ func _physics_process(delta: float) -> void:
 	if dir.x != 0.0:
 		sprite_3d.flip_h = (dir.x < 0.0)
 
-	if dist > 1.6:
+	var combat_standoff_distance := 1.25 # Standoff distance: clean stop without pushing
+	if dist > combat_standoff_distance:
 		# Pursue player in 3D isometric plane
 		velocity.x = dir.x * move_speed
 		velocity.z = dir.z * (move_speed * 0.7)
+		_prevent_player_pushing()
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+		# Firm stop in front of player (no pushing, no bouncing)
+		velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 		if current_cooldown <= 0.0:
 			_execute_attack()
 
@@ -126,15 +150,49 @@ func _physics_process(delta: float) -> void:
 	_update_enemy_animation(delta)
 
 
+func _prevent_player_pushing() -> void:
+	if target_player != null and is_instance_valid(target_player):
+		var diff := target_player.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
+		var min_dist: float = 0.40 + 0.35 + 0.06
+		if dist < min_dist and dist > 0.001:
+			var dir := diff / dist
+			var forward_speed := velocity.dot(dir)
+			if forward_speed > 0.0:
+				velocity -= dir * forward_speed
+
+
 func _update_enemy_animation(delta: float) -> void:
-	anim_timer += delta * 6.0
-	if attack_area_3d.monitoring:
-		sprite_3d.frame = 3 + (int(anim_timer * 2.0) % 3) # Row 1 Attack frames
-	else:
-		if velocity.length() > 0.5:
-			sprite_3d.frame = int(anim_timer) % 3 # Row 0 Walk frames
+	anim_timer += delta
+
+	# Head-on mutual facing alignment
+	if target_player != null and is_instance_valid(target_player):
+		var diff_x := target_player.global_position.x - global_position.x
+		if absf(diff_x) > 0.05:
+			sprite_3d.flip_h = (diff_x < 0.0)
+
+	if is_stunned:
+		sprite_3d.frame = 3 # Staggered recoil
+		return
+
+	if is_attacking:
+		# Row 1: Attack cycle (Frame 3 windup, Frame 4 strike, Frame 5 follow-through)
+		var progress := attack_timer / ATTACK_DURATION
+		if progress < 0.30:
+			sprite_3d.frame = 3 # Windup
+		elif progress < 0.75:
+			sprite_3d.frame = 4 # Full strike
 		else:
-			sprite_3d.frame = 0 # Row 0 Idle frame
+			sprite_3d.frame = 5 # Recovery
+		return
+
+	if velocity.length() > 0.3:
+		# Row 0: Walk cycle (Frames 0, 1, 2)
+		sprite_3d.frame = int(anim_timer * 8.0) % 3
+	else:
+		# Row 0: Idle frame 0
+		sprite_3d.frame = 0
 
 
 func _find_player() -> void:
@@ -145,15 +203,10 @@ func _find_player() -> void:
 
 func _execute_attack() -> void:
 	current_cooldown = attack_cooldown
-	attack_area_3d.monitoring = true
-
-	# Visual strike lunge
-	var dir_x := 1.0 if not sprite_3d.flip_h else -1.0
-	velocity.x = dir_x * 4.0
-
-	await get_tree().create_timer(0.2).timeout
-	if is_instance_valid(self):
-		attack_area_3d.monitoring = false
+	is_attacking = true
+	attack_timer = 0.0
+	velocity.x = 0.0
+	velocity.z = 0.0
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
@@ -166,14 +219,14 @@ func _on_attack_body_entered(body: Node3D) -> void:
 func apply_parry_stun(duration: float = 2.0) -> void:
 	is_stunned = true
 	stun_timer = duration
-	var push_back := -1.0 if not sprite_3d.flip_h else 1.0
-	velocity = Vector3(push_back * 4.5, 0, 0)
+	is_attacking = false
 	attack_area_3d.monitoring = false
+	velocity = Vector3.ZERO # Firm stop on parry clash; zero slide
 
 
-func receive_hit(amount: int, hit_dir: Vector3) -> void:
+func receive_hit(amount: int, _hit_dir: Vector3) -> void:
 	current_hp -= amount
-	velocity = hit_dir * 3.5
+	velocity = Vector3.ZERO # Hold ground firmly; no bounce
 
 	# Visual flash
 	var tween := create_tween()

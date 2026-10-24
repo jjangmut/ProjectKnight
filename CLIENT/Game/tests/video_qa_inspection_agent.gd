@@ -7,8 +7,12 @@ extends SceneTree
 ## 4. Visual Scale & Single Frame Rendering (hframes/vframes split; no raw sheet exposure)
 
 const ArenaScene = preload("res://scenes/side_quarter_view/SideQuarterViewArena.tscn")
-const AttackSheetTexture = preload("res://assets/player_frames/attack_v1.png")
-const PaladinTexture = preload("res://assets/player/knight_stage1_paladin.png")
+const SideQVBossClass = preload("res://scripts/side_quarter_view/side_qv_boss.gd")
+const TexIdle = preload("res://assets/player_frames/idle_v1.png")
+const TexRun = preload("res://assets/player_frames/run_v2.png")
+const TexAttack = preload("res://assets/player_frames/attack_v1.png")
+const TexJump = preload("res://assets/player_frames/jump_v1.png")
+const TexGuard = preload("res://assets/player_frames/guard_v1.png")
 
 var checks: int = 0
 var failures: int = 0
@@ -24,6 +28,14 @@ func _initialize() -> void:
 		InputMap.add_action("move_left")
 	if not InputMap.has_action("move_right"):
 		InputMap.add_action("move_right")
+	if not InputMap.has_action("jump"):
+		InputMap.add_action("jump")
+	if not InputMap.has_action("attack"):
+		InputMap.add_action("attack")
+	if not InputMap.has_action("guard"):
+		InputMap.add_action("guard")
+	if not InputMap.has_action("dash"):
+		InputMap.add_action("dash")
 
 	# 15s Watchdog Fail-Safe Timer
 	var watchdog := create_timer(15.0)
@@ -63,6 +75,11 @@ func _run_inspection() -> void:
 	var player = stage.player
 	var camera = stage.camera
 
+	# Settle player firmly onto the 3D floor before running inspections
+	while not player.is_on_floor() or player.global_position.y > 0.05:
+		await physics_frame
+	await _advance_frames(4)
+
 	# -------------------------------------------------------------
 	# Inspection 1: Camera Alignment (Immortal Warrior Horizontal View)
 	# -------------------------------------------------------------
@@ -75,22 +92,48 @@ func _run_inspection() -> void:
 		"Camera Roll is strictly 0.0 deg (No tilt): %.2f deg" % camera.rotation_degrees.z)
 
 	# -------------------------------------------------------------
-	# Inspection 2: Player Attack Motion & Frame Transition
+	# Inspection 2: Player Multi-Frame Action Animations
 	# -------------------------------------------------------------
-	print("\n--- Inspection 2: Player Attack Motion & Frame Verification ---")
-	check(player.sprite_3d.texture == PaladinTexture, "Initial player sprite is Idle Paladin texture")
-	check(player.sprite_3d.hframes == 1 and player.sprite_3d.vframes == 1, "Idle sprite is 1x1 single frame")
+	print("\n--- Inspection 2: Player Multi-Frame Action Animations ---")
+	check(player.sprite_3d.texture == TexIdle, "Initial player sprite is 4-frame Idle spritesheet (idle_v1.png)")
+	check(player.sprite_3d.hframes == 2 and player.sprite_3d.vframes == 2, "Idle sprite configured as 2x2 sprite sheet")
 
 	# Trigger Attack
 	player.attack_cooldown = 0.0
 	player.start_attack()
-	check(player.sprite_3d.texture == AttackSheetTexture, "Player texture transitioned to AttackSheetTexture during attack")
+	check(player.sprite_3d.texture == TexAttack, "Player texture transitioned to AttackSheetTexture during attack")
 	check(player.sprite_3d.hframes == 2 and player.sprite_3d.vframes == 2, "Attack sprite configured as 2x2 sprite sheet")
 	check(player.sprite_3d.frame == 0, "Attack Frame 0 (Combo 1 slash) active")
 
 	await _advance_frames(14)
-	check(player.sprite_3d.texture == PaladinTexture, "Player returned to Idle Paladin texture after attack duration")
-	check(player.sprite_3d.hframes == 1, "Player hframes restored to 1")
+	check(player.sprite_3d.texture == TexIdle, "Player returned to Idle spritesheet after attack duration")
+	check(player.sprite_3d.hframes == 2 and player.sprite_3d.vframes == 2, "Player 2x2 idle hframes preserved")
+
+	# Test Run Animation State
+	Input.action_press("move_right")
+	await _advance_frames(6)
+	check(player.sprite_3d.texture == TexRun, "Moving player transitioned to 6-frame Run spritesheet (run_v2.png)")
+	check(player.sprite_3d.hframes == 3 and player.sprite_3d.vframes == 2, "Run sprite configured as 3x2 sprite sheet")
+	Input.action_release("move_right")
+	await _advance_frames(8)
+
+	# Test Jump Animation State
+	player.start_jump()
+	await _advance_frames(4)
+	check(player.sprite_3d.texture == TexJump, "Airborne player transitioned to 3-frame Jump spritesheet (jump_v1.png)")
+	check(player.sprite_3d.hframes == 3 and player.sprite_3d.vframes == 1, "Jump sprite configured as 3x1 sprite sheet")
+	# Wait for landing
+	while player.global_position.y > 0.15:
+		await physics_frame
+	await _advance_frames(4)
+
+	# Test Guard Animation State
+	Input.action_press("guard")
+	await _advance_frames(4)
+	check(player.sprite_3d.texture == TexGuard, "Guarding player transitioned to 3-frame Guard spritesheet (guard_v1.png)")
+	check(player.sprite_3d.hframes == 3 and player.sprite_3d.vframes == 1, "Guard sprite configured as 3x1 sprite sheet")
+	Input.action_release("guard")
+	await _advance_frames(6)
 
 	# -------------------------------------------------------------
 	# Inspection 3: Monster & Boss Facing Alignment (Always Faces Player)
@@ -147,7 +190,27 @@ func _run_inspection() -> void:
 	print("\n--- Inspection 4: Visual Scale & Single Frame Rendering ---")
 	check(boss.sprite_3d.hframes == 4 and boss.sprite_3d.vframes == 3, "Boss sprite sheet split into 4x3 frames (No raw sheet exposure)")
 	check(is_equal_approx(boss.sprite_3d.pixel_size, 0.0082), "Boss calibrated height is ~2.45m (pixelsize = %.4f)" % boss.sprite_3d.pixel_size)
-	check(is_equal_approx(player.sprite_3d.pixel_size, 0.0016), "Player calibrated height is ~1.77m (pixelsize = %.4f)" % player.sprite_3d.pixel_size)
+	check(is_equal_approx(player.sprite_3d.pixel_size, 0.00282), "Player calibrated height is ~1.77m (pixelsize = %.5f)" % player.sprite_3d.pixel_size)
+
+	# -------------------------------------------------------------
+	# Inspection 5: Mutual Collision Stop & Zero-Pushing Verification
+	# -------------------------------------------------------------
+	print("\n--- Inspection 5: Mutual Stop & Zero-Pushing Verification ---")
+	player.global_position = Vector3(-2.0, 0.1, 0.0)
+	boss.global_position = Vector3(0.0, 0.1, 0.0)
+	boss.current_pattern = SideQVBossClass.Pattern.IDLE
+	boss.pattern_timer = 999.0
+	await _advance_frames(4)
+
+	# Player walks directly right towards the boss
+	Input.action_press("move_right")
+	await _advance_frames(12)
+	Input.action_release("move_right")
+
+	var contact_dist: float = player.global_position.distance_to(boss.global_position)
+	check(contact_dist >= 0.85, "Player stops at firm contact boundary without penetrating boss (dist = %.2f m)" % contact_dist)
+	check(absf(player.velocity.x) <= 0.1, "Player forward velocity halts clean; no pushing into boss (vel.x = %.2f)" % player.velocity.x)
+	check(absf(boss.velocity.x) <= 0.1, "Boss does not get pushed across the floor (boss.vel.x = %.2f)" % boss.velocity.x)
 
 	# -------------------------------------------------------------
 	# Summary Report
