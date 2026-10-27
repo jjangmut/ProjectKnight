@@ -90,16 +90,23 @@ func _build_ui() -> void:
 	add_child(_bar_fill)
 
 
-func attach_boss(boss: CharacterBody2D) -> void:
+func attach_boss(boss: Node) -> void:
 	if not is_instance_valid(boss):
 		return
-	max_hp = boss.max_hp
-	current_hp = boss.current_hp
+	if "max_hp" in boss:
+		max_hp = boss.max_hp
+	if "current_hp" in boss:
+		current_hp = boss.current_hp
 	linger_hp = float(current_hp)
 
-	boss.boss_hp_changed.connect(_on_hp_changed)
-	boss.boss_phase_changed.connect(_on_phase_changed)
-	boss.boss_defeated.connect(_on_boss_defeated)
+	if boss.has_signal("boss_hp_changed"):
+		boss.boss_hp_changed.connect(_on_hp_changed)
+	if boss.has_signal("boss_phase_changed"):
+		boss.boss_phase_changed.connect(_on_phase_changed)
+	elif boss.has_signal("phase_changed"):
+		boss.phase_changed.connect(_on_phase_changed)
+	if boss.has_signal("boss_defeated"):
+		boss.boss_defeated.connect(_on_boss_defeated)
 
 	# Fade in smoothly
 	is_active = true
@@ -132,7 +139,7 @@ func _on_phase_changed(phase: int) -> void:
 		queue_redraw()
 
 
-func _on_boss_defeated() -> void:
+func _on_boss_defeated(_boss_node: Variant = null) -> void:
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 1.2).set_delay(0.8)
 	tween.tween_callback(queue_free)

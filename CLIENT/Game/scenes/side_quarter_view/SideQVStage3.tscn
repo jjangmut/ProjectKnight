@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8qvstage003bastion"]
+
+[ext_resource type="Script" path="res://scripts/side_quarter_view/stages/side_qv_stage_3.gd" id="1_stage3"]
+
+[node name="SideQVStage3" type="Node3D"]
+script = ExtResource("1_stage3")

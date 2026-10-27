@@ -1,0 +1,207 @@
+extends CharacterBody3D
+class_name SideQVRangedMinion
+## 사이드 쿼터뷰 원거리 석궁병 미니언 (Side Quarter-View Crossbow Minion)
+## - 2D 고해상도 석궁병 스프라이트 (ranged_v1.png 3x2)
+## - 원거리 사격 간격 유지 AI 및 주기적 단발 볼트 사격
+## - 피격 / 저스트 패링 스턴 / 상호 밀림 방지 / 정면 응시
+
+signal enemy_defeated(enemy_node: Node)
+
+@export var max_hp: int = 4
+@export var current_hp: int = 4
+@export var move_speed: float = 3.2
+@export var shoot_interval: float = 2.4
+@export var standoff_dist: float = 5.2
+
+var target_player: Node3D = null
+var shoot_timer: float = 1.0
+var is_stunned: bool = false
+var stun_timer: float = 0.0
+var is_aiming: bool = false
+var anim_timer: float = 0.0
+
+var sprite_3d: Sprite3D
+var facing_dir_x: float = -1.0
+
+const CrossbowBoltScene = preload("res://scripts/side_quarter_view/bosses/side_qv_crossbow_bolt.gd")
+const MinionTexture = preload("res://assets/enemy_frames/ranged_v1.png")
+
+
+func _ready() -> void:
+	collision_layer = 2 # Enemy Layer
+	collision_mask = 1 | 4 # Player & World
+	add_to_group("enemies")
+
+	_build_components()
+
+
+func _build_components() -> void:
+	# 1. 2D Sprite in 3D Space (Sprite Sheet 3x2, ~1.55m height)
+	sprite_3d = Sprite3D.new()
+	sprite_3d.name = "MinionSprite3D"
+	sprite_3d.texture = MinionTexture
+	sprite_3d.hframes = 3
+	sprite_3d.vframes = 2
+	sprite_3d.frame = 0
+	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	sprite_3d.pixel_size = 0.0031 # 500px * 0.0031 = 1.55m
+	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	sprite_3d.position.y = 0.78
+	sprite_3d.flip_h = true
+	add_child(sprite_3d)
+
+	# 2. Collision Capsule
+	var col := CollisionShape3D.new()
+	var cap := CapsuleShape3D.new()
+	cap.radius = 0.38
+	cap.height = 1.55
+	col.shape = cap
+	col.position.y = 0.78
+	add_child(col)
+
+
+func _physics_process(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= 18.0 * delta
+
+	if is_stunned:
+		stun_timer -= delta
+		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+		sprite_3d.frame = 4 # Hurt frame
+		if stun_timer <= 0.0:
+			is_stunned = false
+		move_and_slide()
+		return
+
+	if target_player == null or not is_instance_valid(target_player):
+		_find_player()
+		velocity.x = 0.0
+		velocity.z = 0.0
+		move_and_slide()
+		return
+
+	var diff := target_player.global_position - global_position
+	diff.y = 0.0
+	var dist := diff.length()
+	var dir_x := signf(diff.x)
+
+	if not is_aiming and dir_x != 0.0:
+		facing_dir_x = dir_x
+		sprite_3d.flip_h = (facing_dir_x < 0.0)
+
+	# 원거리 사격 사거리 조율 (너무 가까우면 후퇴, 멀면 전진)
+	if not is_aiming:
+		if dist < standoff_dist - 0.8:
+			var retreat := -diff.normalized()
+			velocity.x = retreat.x * move_speed
+			velocity.z = retreat.z * (move_speed * 0.6)
+		elif dist > standoff_dist + 1.2:
+			var advance := diff.normalized()
+			velocity.x = advance.x * move_speed
+			velocity.z = advance.z * (move_speed * 0.6)
+			_prevent_player_pushing()
+		else:
+			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
+			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+
+		shoot_timer -= delta
+		if shoot_timer <= 0.0 and dist <= 12.0:
+			_execute_shoot()
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
+
+	move_and_slide()
+	_update_animation(delta)
+
+
+func _prevent_player_pushing() -> void:
+	if target_player != null and is_instance_valid(target_player):
+		var diff := target_player.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
+		var min_dist: float = 0.38 + 0.35 + 0.10
+		if dist < min_dist and dist > 0.001:
+			var dir := diff / dist
+			var forward_speed := velocity.dot(dir)
+			if forward_speed > 0.0:
+				velocity -= dir * forward_speed
+
+
+func _execute_shoot() -> void:
+	is_aiming = true
+	shoot_timer = shoot_interval + randf_range(-0.3, 0.4)
+	sprite_3d.frame = 1 # Aim frame
+
+	await get_tree().create_timer(0.35).timeout
+	if not is_instance_valid(self) or is_stunned:
+		is_aiming = false
+		return
+
+	sprite_3d.frame = 2 # Fire frame
+	if target_player != null and is_instance_valid(target_player):
+		var aim_dir := (target_player.global_position + Vector3(0, 0.7, 0) - (global_position + Vector3(0, 0.8, 0))).normalized()
+		var bolt := CrossbowBoltScene.new()
+		get_parent().add_child(bolt)
+		bolt.launch(global_position + Vector3(facing_dir_x * 0.5, 0.8, 0.0), aim_dir, self, 15.0, 1, false)
+
+	await get_tree().create_timer(0.25).timeout
+	if is_instance_valid(self):
+		is_aiming = false
+
+
+func _update_animation(delta: float) -> void:
+	if is_aiming:
+		return
+	anim_timer += delta
+	if velocity.length() > 0.3:
+		sprite_3d.frame = int(anim_timer * 6.0) % 2
+	else:
+		sprite_3d.frame = 0
+
+
+func _find_player() -> void:
+	var players = get_tree().get_nodes_in_group("player")
+	if not players.is_empty():
+		target_player = players[0] as Node3D
+
+
+func apply_parry_stun(duration: float = 2.0) -> void:
+	is_stunned = true
+	stun_timer = duration
+	is_aiming = false
+	velocity = Vector3.ZERO
+	sprite_3d.frame = 4
+
+	var tween := create_tween()
+	if tween:
+		sprite_3d.modulate = Color(3.0, 2.5, 0.8, 1.0)
+		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.2)
+
+
+func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+	current_hp -= amount
+	velocity = Vector3.ZERO
+
+	var tween := create_tween()
+	if tween:
+		sprite_3d.modulate = Color(2.5, 0.3, 0.3, 1.0)
+		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.15)
+
+	if current_hp <= 0:
+		_die()
+
+
+func _die() -> void:
+	emit_signal("enemy_defeated", self)
+	set_physics_process(false)
+	sprite_3d.frame = 5
+
+	var tween := create_tween()
+	if tween:
+		tween.tween_property(sprite_3d, "modulate:a", 0.0, 0.3)
+		tween.tween_callback(queue_free)
+	else:
+		queue_free()

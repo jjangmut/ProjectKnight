@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8qvcampaign001"]
+
+[ext_resource type="Script" path="res://scripts/side_quarter_view/side_qv_campaign.gd" id="1_cmp"]
+
+[node name="SideQVCampaign" type="Node3D"]
+script = ExtResource("1_cmp")
