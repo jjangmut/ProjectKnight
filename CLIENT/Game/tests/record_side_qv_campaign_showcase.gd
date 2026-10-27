@@ -75,8 +75,9 @@ func _load_showcase_stage(phase: ShowcasePhase) -> void:
 	await process_frame
 
 	current_player = current_stage.player
-	if current_stage.active_boss == null and current_stage.has_method("_start_boss_wave"):
-		current_stage._start_boss_wave()
+	if phase != ShowcasePhase.STAGE_1_CITADEL:
+		if current_stage.active_boss == null and current_stage.has_method("_start_boss_wave"):
+			current_stage._start_boss_wave()
 	await process_frame
 	current_boss = current_stage.active_boss
 	print(">>> [MASTER SHOWCASE RECORDER] Loaded Stage Phase: %d <<<" % phase)
@@ -91,25 +92,36 @@ func _physics_process(delta: float) -> bool:
 
 	match current_phase:
 		ShowcasePhase.STAGE_1_CITADEL:
-			# Stage 1: Player slashes minion, fires vertical crescent sword wave, parries boss charge
-			if phase_timer < 0.8:
+			# Stage 1 Flow: Smooth Run -> Melee Minion with Overhead HP bar -> Thrust Finish Beam -> Advance Prompt -> Boss Emergence & Parry
+			if phase_timer < 0.7:
 				Input.action_press("move_right")
-			elif phase_timer < 1.4:
+			elif phase_timer < 1.2:
 				Input.action_release("move_right")
-				current_player.start_attack() # Strike 1 & 2
-			elif phase_timer < 2.0:
-				current_player.start_attack() # Strike 3 Finisher -> Vertical Crescent Wave
-			elif phase_timer < 2.6:
+				current_player.start_attack() # Linear Thrust Spear 1 & 2
+			elif phase_timer < 1.8:
+				current_player.start_attack() # Strike 3 Finisher -> Piercing Lance Beam!
+				if not current_stage.enemies.is_empty():
+					for e in current_stage.enemies:
+						if is_instance_valid(e) and e.has_method("receive_hit"):
+							e.receive_hit(10, Vector3.ZERO)
+			elif phase_timer < 2.3:
+				# Advance forward to trigger Boss
+				Input.action_press("move_right")
+				if current_stage.current_wave == 1 and current_stage.active_boss == null:
+					current_stage._start_boss_wave()
+					current_boss = current_stage.active_boss
+			elif phase_timer < 2.8:
+				Input.action_release("move_right")
 				if is_instance_valid(current_boss):
-					current_boss.global_position = current_player.global_position + Vector3(3.5, 0, 0)
+					current_boss.global_position = current_player.global_position + Vector3(3.8, 0, 0)
 					if current_boss.has_method("_execute_shield_charge"):
 						current_boss._execute_shield_charge()
-			elif phase_timer < 3.2:
+			elif phase_timer < 3.4:
 				current_player.start_guard() # Just parry
 				if is_instance_valid(current_boss) and current_boss.has_method("apply_parry_stun"):
 					current_boss.apply_parry_stun(2.0)
 					current_stage.camera.add_trauma(0.5)
-			elif phase_timer >= 3.6:
+			elif phase_timer >= 3.8:
 				current_player.release_guard()
 				_load_showcase_stage(ShowcasePhase.STAGE_2_FOREST)
 

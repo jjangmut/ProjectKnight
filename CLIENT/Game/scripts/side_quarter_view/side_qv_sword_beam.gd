@@ -125,90 +125,48 @@ func _build_vertical_crescent_visuals() -> void:
 	add_child(col)
 
 
-func _generate_crescent_mesh(r_out: float, r_in: float, thickness: float, segments: int) -> ArrayMesh:
+func _generate_crescent_mesh(r_out: float, r_in: float, thickness: float, _segments: int) -> ArrayMesh:
+	# Forward Piercing Supersonic Thrust Lance Mesh (황금빛 신성 관통창 빔)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
+	var tip := Vector3(r_out * 1.35, 0.0, 0.0)      # Sharp forward piercing point
+	var tail := Vector3(-r_in * 0.95, 0.0, 0.0)     # Streamlined rear exhaust point
 	var half_t := thickness * 0.5
-	var u_max := PI * 0.42 # ~75 degree vertical arc curve
+	var wing_h := (r_out - r_in) * 2.2               # Vertical piercing wing height
 
-	var outer_pts: Array[Vector3] = []
-	var inner_pts: Array[Vector3] = []
+	# Build a 6-sided double-ended diamond thrust lance
+	var mid_pts: Array[Vector3] = [
+		Vector3(0.0, wing_h, 0.0),           # Top fin
+		Vector3(0.0, wing_h * 0.5, half_t),  # Top-right
+		Vector3(0.0, -wing_h * 0.5, half_t), # Bottom-right
+		Vector3(0.0, -wing_h, 0.0),          # Bottom fin
+		Vector3(0.0, -wing_h * 0.5, -half_t),# Bottom-left
+		Vector3(0.0, wing_h * 0.5, -half_t)  # Top-left
+	]
+	var n_pts: int = mid_pts.size()
 
-	for i in range(segments + 1):
-		var t := float(i) / float(segments)
-		var u := lerpf(-u_max, u_max, t)
+	# Forward nose cone faces (Tip to perimeter)
+	for i in range(n_pts):
+		var p0 := mid_pts[i]
+		var p1 := mid_pts[(i + 1) % n_pts]
+		st.set_uv(Vector2(0.5, 0.0))
+		st.add_vertex(tip)
+		st.set_uv(Vector2(float(i) / n_pts, 1.0))
+		st.add_vertex(p0)
+		st.set_uv(Vector2(float(i + 1) / n_pts, 1.0))
+		st.add_vertex(p1)
 
-		# Convex leading edge (Forward blade)
-		var fx := r_out * cos(u)
-		var fy := r_out * sin(u)
-		outer_pts.append(Vector3(fx, fy, 0.0))
-
-		# Concave trailing spine
-		var bx := r_in * cos(u * 1.05) - (r_out - r_in) * 0.65
-		var by := r_in * sin(u * 1.05)
-		inner_pts.append(Vector3(bx, by, 0.0))
-
-	# Construct double-sided 3D volume
-	for i in range(segments):
-		var f0 := outer_pts[i]
-		var f1 := outer_pts[i + 1]
-		var b0 := inner_pts[i]
-		var b1 := inner_pts[i + 1]
-
-		# Taper thickness towards tips
-		var t0 := (1.0 - absf(float(i) / segments * 2.0 - 1.0)) * half_t
-		var t1 := (1.0 - absf(float(i + 1) / segments * 2.0 - 1.0)) * half_t
-
-		var b0_left := b0 + Vector3(0, 0, -t0)
-		var b0_right := b0 + Vector3(0, 0, t0)
-		var b1_left := b1 + Vector3(0, 0, -t1)
-		var b1_right := b1 + Vector3(0, 0, t1)
-
-		# Front face Right
-		st.set_uv(Vector2(float(i) / segments, 0.0))
-		st.add_vertex(f0)
-		st.set_uv(Vector2(float(i + 1) / segments, 0.0))
-		st.add_vertex(f1)
-		st.set_uv(Vector2(float(i + 1) / segments, 1.0))
-		st.add_vertex(b1_right)
-
-		st.set_uv(Vector2(float(i) / segments, 0.0))
-		st.add_vertex(f0)
-		st.set_uv(Vector2(float(i + 1) / segments, 1.0))
-		st.add_vertex(b1_right)
-		st.set_uv(Vector2(float(i) / segments, 1.0))
-		st.add_vertex(b0_right)
-
-		# Front face Left
-		st.set_uv(Vector2(float(i) / segments, 0.0))
-		st.add_vertex(f0)
-		st.set_uv(Vector2(float(i) / segments, 1.0))
-		st.add_vertex(b0_left)
-		st.set_uv(Vector2(float(i + 1) / segments, 1.0))
-		st.add_vertex(b1_left)
-
-		st.set_uv(Vector2(float(i) / segments, 0.0))
-		st.add_vertex(f0)
-		st.set_uv(Vector2(float(i + 1) / segments, 1.0))
-		st.add_vertex(b1_left)
-		st.set_uv(Vector2(float(i + 1) / segments, 0.0))
-		st.add_vertex(f1)
-
-		# Rear spine closure
-		st.set_uv(Vector2(0, 0))
-		st.add_vertex(b0_left)
-		st.set_uv(Vector2(1, 0))
-		st.add_vertex(b0_right)
-		st.set_uv(Vector2(1, 1))
-		st.add_vertex(b1_right)
-
-		st.set_uv(Vector2(0, 0))
-		st.add_vertex(b0_left)
-		st.set_uv(Vector2(1, 1))
-		st.add_vertex(b1_right)
-		st.set_uv(Vector2(0, 1))
-		st.add_vertex(b1_left)
+	# Rear tail cone faces (Perimeter to tail)
+	for i in range(n_pts):
+		var p0 := mid_pts[i]
+		var p1 := mid_pts[(i + 1) % n_pts]
+		st.set_uv(Vector2(float(i) / n_pts, 0.0))
+		st.add_vertex(p0)
+		st.set_uv(Vector2(0.5, 1.0))
+		st.add_vertex(tail)
+		st.set_uv(Vector2(float(i + 1) / n_pts, 0.0))
+		st.add_vertex(p1)
 
 	st.generate_normals()
 	return st.commit()

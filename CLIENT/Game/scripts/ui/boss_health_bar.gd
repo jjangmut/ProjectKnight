@@ -70,6 +70,7 @@ func _build_ui() -> void:
 
 	# Bar Background: Preserved for test hierarchy, transparent since rendered via custom _draw()
 	_bar_bg = ColorRect.new()
+	_bar_bg.name = "BossHealthBarBG"
 	_bar_bg.position = Vector2(0, BAR_Y)
 	_bar_bg.size = Vector2(BAR_WIDTH, BAR_HEIGHT)
 	_bar_bg.color = Color.TRANSPARENT
@@ -77,6 +78,7 @@ func _build_ui() -> void:
 
 	# Bar Linger: Preserved for test contract, transparent since rendered via custom _draw()
 	_bar_linger = ColorRect.new()
+	_bar_linger.name = "BossHealthBarLinger"
 	_bar_linger.position = Vector2(0, BAR_Y)
 	_bar_linger.size = Vector2(BAR_WIDTH, BAR_HEIGHT)
 	_bar_linger.color = Color(0.96, 0.78, 0.40, 0.0)
@@ -84,6 +86,7 @@ func _build_ui() -> void:
 
 	# Bar Fill: Preserved for test contract, transparent since rendered via custom _draw()
 	_bar_fill = ColorRect.new()
+	_bar_fill.name = "BossHealthBarFill"
 	_bar_fill.position = Vector2(0, BAR_Y)
 	_bar_fill.size = Vector2(BAR_WIDTH, BAR_HEIGHT)
 	_bar_fill.color = Color(0.85, 0.16, 0.22, 0.0)
@@ -99,13 +102,13 @@ func attach_boss(boss: Node) -> void:
 		current_hp = boss.current_hp
 	linger_hp = float(current_hp)
 
-	if boss.has_signal("boss_hp_changed"):
+	if boss.has_signal("boss_hp_changed") and not boss.boss_hp_changed.is_connected(_on_hp_changed):
 		boss.boss_hp_changed.connect(_on_hp_changed)
-	if boss.has_signal("boss_phase_changed"):
+	if boss.has_signal("boss_phase_changed") and not boss.boss_phase_changed.is_connected(_on_phase_changed):
 		boss.boss_phase_changed.connect(_on_phase_changed)
-	elif boss.has_signal("phase_changed"):
+	elif boss.has_signal("phase_changed") and not boss.phase_changed.is_connected(_on_phase_changed):
 		boss.phase_changed.connect(_on_phase_changed)
-	if boss.has_signal("boss_defeated"):
+	if boss.has_signal("boss_defeated") and not boss.boss_defeated.is_connected(_on_boss_defeated):
 		boss.boss_defeated.connect(_on_boss_defeated)
 
 	# Fade in smoothly

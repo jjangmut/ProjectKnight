@@ -21,6 +21,7 @@ var is_aiming: bool = false
 var anim_timer: float = 0.0
 
 var sprite_3d: Sprite3D
+var hp_bar_fill: MeshInstance3D = null
 var facing_dir_x: float = -1.0
 
 const CrossbowBoltScene = preload("res://scripts/side_quarter_view/bosses/side_qv_crossbow_bolt.gd")
@@ -59,6 +60,50 @@ func _build_components() -> void:
 	col.shape = cap
 	col.position.y = 0.78
 	add_child(col)
+
+	_build_overhead_hp_bar()
+
+
+func _build_overhead_hp_bar() -> void:
+	var bar_root := Node3D.new()
+	bar_root.name = "OverheadHPBar"
+	bar_root.position = Vector3(0.0, 1.85, 0.0)
+
+	var bg_mesh := QuadMesh.new()
+	bg_mesh.size = Vector2(0.85, 0.09)
+	var bg_inst := MeshInstance3D.new()
+	bg_inst.name = "HPBarBG"
+	bg_inst.mesh = bg_mesh
+	var bg_mat := StandardMaterial3D.new()
+	bg_mat.albedo_color = Color(0.12, 0.12, 0.14, 0.88)
+	bg_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	bg_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	bg_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	bg_inst.material_override = bg_mat
+	bar_root.add_child(bg_inst)
+
+	var fill_mesh := QuadMesh.new()
+	fill_mesh.size = Vector2(0.81, 0.065)
+	hp_bar_fill = MeshInstance3D.new()
+	hp_bar_fill.name = "HPBarFill"
+	hp_bar_fill.mesh = fill_mesh
+	var fill_mat := StandardMaterial3D.new()
+	fill_mat.albedo_color = Color(0.95, 0.22, 0.24, 0.95)
+	fill_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	fill_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	fill_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	hp_bar_fill.material_override = fill_mat
+	hp_bar_fill.position.z = 0.005
+	bar_root.add_child(hp_bar_fill)
+
+	add_child(bar_root)
+
+
+func _update_hp_bar() -> void:
+	if hp_bar_fill != null and is_instance_valid(hp_bar_fill):
+		var ratio: float = clampf(float(current_hp) / float(max_hp), 0.0, 1.0)
+		hp_bar_fill.scale.x = ratio
+		hp_bar_fill.position.x = (ratio - 1.0) * 0.405
 
 
 func _physics_process(delta: float) -> void:
@@ -183,6 +228,7 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 
 func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	current_hp -= amount
+	_update_hp_bar()
 	velocity = Vector3.ZERO
 
 	var tween := create_tween()
@@ -197,6 +243,9 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 func _die() -> void:
 	emit_signal("enemy_defeated", self)
 	set_physics_process(false)
+	var bar := get_node_or_null("OverheadHPBar") as Node3D
+	if bar != null:
+		bar.visible = false
 	sprite_3d.frame = 5
 
 	var tween := create_tween()

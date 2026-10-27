@@ -9,11 +9,9 @@ class_name SideQVStage2
 
 const SideQVBeastMinionClass = preload("res://scripts/side_quarter_view/enemies/side_qv_beast_minion.gd")
 const SideQVBeastChieftainClass = preload("res://scripts/side_quarter_view/bosses/side_qv_beast_chieftain.gd")
-const BossHealthBarClass = preload("res://scripts/ui/boss_health_bar.gd")
 
 const TexForest = preload("res://assets/terrain_v2/forest.png")
 
-var boss_health_bar: Control = null
 var fireflies_particles: CPUParticles3D = null
 
 

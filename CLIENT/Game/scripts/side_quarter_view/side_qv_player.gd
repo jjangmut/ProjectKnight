@@ -63,7 +63,7 @@ var attack_area_3d: Area3D
 
 # Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned)
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
-const TexRun = preload("res://assets/player_frames/run_v2.png")              # 3x2 = 6 frames
+const TexRun = preload("res://assets/player_frames/run_v2_aligned.png")      # 3x2 = 6 frames (780x780 cells, Pivot: 390,700)
 const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")# 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
 const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
@@ -131,23 +131,25 @@ func _build_components() -> void:
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
 
-	# 4. 3D Melee Slash Arc VFX (Vertical / Diagonal Crescent Blade Slash)
+	# 4. 3D Melee Thrust VFX (Sharp Linear Forward Piercing Thrust Spear)
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
-	var arc_torus := TorusMesh.new()
-	arc_torus.inner_radius = 0.75
-	arc_torus.outer_radius = 1.05
-	slash_visual_3d.mesh = arc_torus
+	var thrust_cyl := CylinderMesh.new()
+	thrust_cyl.top_radius = 0.02
+	thrust_cyl.bottom_radius = 0.18
+	thrust_cyl.height = 1.6
+	thrust_cyl.radial_segments = 12
+	slash_visual_3d.mesh = thrust_cyl
 
 	var smat := StandardMaterial3D.new()
-	smat.albedo_color = Color(2.8, 2.0, 0.6, 1.0) # Golden Holy Flash
+	smat.albedo_color = Color(3.5, 2.8, 1.2, 1.0) # Golden Radiant Holy Piercing Thrust
 	smat.emission_enabled = true
-	smat.emission = Color(2.8, 2.0, 0.6, 1.0)
-	smat.emission_energy_multiplier = 4.5
+	smat.emission = Color(3.5, 2.8, 1.2, 1.0)
+	smat.emission_energy_multiplier = 4.8
 	slash_visual_3d.material_override = smat
-	slash_visual_3d.scale = Vector3(1.1, 0.16, 0.8)
-	slash_visual_3d.position = Vector3(0.75, 1.0, 0.0)
-	slash_visual_3d.rotation_degrees = Vector3(25.0, 0.0, -35.0)
+	slash_visual_3d.scale = Vector3(1.0, 1.0, 1.0)
+	slash_visual_3d.position = Vector3(1.15, 0.95, 0.0)
+	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0)
 	slash_visual_3d.visible = false
 	add_child(slash_visual_3d)
 
@@ -315,11 +317,13 @@ func start_attack() -> void:
 	sprite_3d.frame = (combo_step - 1) % 4
 
 	slash_visual_3d.visible = true
-	slash_visual_3d.rotation_degrees = Vector3(
-		25.0,
-		0.0,
-		(-35.0 if combo_step != 2 else 35.0) * facing_dir_x
-	)
+	slash_visual_3d.position = Vector3(facing_dir_x * 1.15, 0.95, 0.0)
+	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0 * facing_dir_x)
+	slash_visual_3d.scale = Vector3(0.4, 0.3, 0.4)
+	var thrust_tween := create_tween()
+	if thrust_tween:
+		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(1.0, 1.35, 1.0), 0.07)
+		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.2, 0.6, 0.2), 0.11)
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
@@ -502,13 +506,13 @@ func _update_character_animation(delta: float) -> void:
 		sprite_3d.frame = 1
 		return
 
-	# 6. Run / Sprint Action (6-frame detailed loop)
+	# 6. Run / Sprint Action (6-frame detailed loop, Unified 780x780 Aligned)
 	if current_state == State.MOVE and is_on_floor():
 		if sprite_3d.texture != TexRun:
 			sprite_3d.texture = TexRun
 			sprite_3d.hframes = 3
 			sprite_3d.vframes = 2
-			sprite_3d.pixel_size = 0.00346
+			sprite_3d.pixel_size = 0.00282
 		sprite_3d.frame = int(anim_timer * 10.0) % 6
 		return
 

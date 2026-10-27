@@ -5,7 +5,7 @@ class_name SideQVCamera
 ## - 플레이어 스무스 추적, 타격감 트라우마 셰이크 및 히트스탑 지원
 
 @export var target: Node3D = null
-@export var follow_smoothness: float = 6.0
+@export var follow_smoothness: float = 12.0
 @export var camera_offset: Vector3 = Vector3(0.0, 5.2, 7.8)
 
 var trauma: float = 0.0
@@ -24,10 +24,10 @@ func _ready() -> void:
 	rotation_degrees = base_rot
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if target != null and is_instance_valid(target):
 		var dest := target.global_position + camera_offset
-		# Smooth follow
+		# Lockstep physics tracking without micro-stutter
 		base_pos = base_pos.lerp(dest, follow_smoothness * delta)
 	
 	global_position = base_pos

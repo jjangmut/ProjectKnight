@@ -388,6 +388,14 @@ func _spawn_stage_boss() -> void:
 
 
 func _setup_boss_ui(boss: Node3D) -> void:
+	if boss_health_bar != null:
+		boss_ui = boss_health_bar
+		boss_health_bar.boss_name = "성문 수호 기사단장"
+		boss_health_bar.attach_boss(boss)
+		boss_health_bar.is_active = true
+		boss_health_bar.modulate.a = 1.0
+		return
+
 	if mobile_controls == null:
 		return
 
