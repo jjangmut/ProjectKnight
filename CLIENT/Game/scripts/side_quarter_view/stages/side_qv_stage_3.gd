@@ -27,6 +27,7 @@ func _init() -> void:
 
 
 func _process(delta: float) -> void:
+	super._process(delta)
 	floating_time += delta
 	# 부유하는 돌 파편들의 신비로운 상하 부유 운동 (Levitation Bobbing)
 	for i in range(floating_stones.size()):
@@ -318,9 +319,12 @@ func _spawn_wave_1_enemies() -> void:
 func _spawn_stage_boss() -> void:
 	var commander := SideQVCrossbowCommanderClass.new()
 	commander.name = "SideQVCrossbowCommander"
-	commander.position = Vector3(8.0, 0.1, 0.0)
+	var p_x: float = player.global_position.x if (player != null and is_instance_valid(player)) else 0.0
+	var spawn_x: float = clampf(maxf(p_x + 5.5, 11.5), 10.0, arena_width * 0.5 - 2.5)
+	commander.position = Vector3(spawn_x, 0.1, 0.0)
 	commander.boss_defeated.connect(_on_boss_defeated)
 	add_child(commander)
 	active_boss = commander
+	enemies.append(commander)
 
 	print(">>> [STAGE 3] Wave 2 Started: SideQVCrossbowCommander Emerged! <<<")

@@ -118,7 +118,8 @@ func _build_components() -> void:
 	var box := BoxShape3D.new()
 	box.size = Vector3(3.0, 2.2, 2.4)
 	atk_shape.shape = box
-	atk_shape.position = Vector3(-1.3, 1.2, 0.0)
+	atk_shape.position = Vector3(0.0, 1.2, 0.0)
+	attack_area_3d.position = Vector3(-1.3, 0.0, 0.0)
 	attack_area_3d.add_child(atk_shape)
 	add_child(attack_area_3d)
 

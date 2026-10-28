@@ -86,11 +86,11 @@ func _build_ui() -> void:
 	action_container.add_child(btn_dash)
 	action_container.add_child(btn_jump)
 
-	# 3. Top Pad Toggle Button
+	# 3. Top-Right Pad Toggle Button (Avoid overlapping Top-Left PlayerHUD)
 	btn_toggle = Button.new()
 	btn_toggle.name = "PadToggle"
 	btn_toggle.text = "📱 쿼터뷰 패드 숨기기"
-	btn_toggle.position = Vector2(24.0, 24.0)
+	btn_toggle.position = Vector2(1086.0, 18.0)
 	btn_toggle.size = Vector2(170.0, 38.0)
 	var toggle_style := StyleBoxFlat.new()
 	toggle_style.bg_color = Color(0.04, 0.06, 0.1, 0.75)

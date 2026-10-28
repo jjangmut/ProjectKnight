@@ -6,7 +6,8 @@ extends Control
 
 const SaveManagerClass := preload("res://scripts/system/save_manager.gd")
 const CampfireShopClass := preload("res://scripts/ui/campfire_shop.gd")
-const CAMPAIGN_SCENE_PATH := "res://scenes/stage/Campaign.tscn"
+const CAMPAIGN_SCENE_PATH := "res://scenes/side_quarter_view/SideQVCampaign.tscn"
+const LEGACY_2D_CAMPAIGN_SCENE_PATH := "res://scenes/stage/Campaign.tscn"
 
 var btn_new_game: Button
 var btn_continue: Button

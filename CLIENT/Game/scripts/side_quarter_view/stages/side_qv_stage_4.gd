@@ -266,16 +266,20 @@ func _spawn_wave_1_enemies() -> void:
 func _spawn_stage_boss() -> void:
 	var boss = SideQVGolemGuardianClass.new()
 	boss.name = "SideQVGolemGuardian"
-	boss.position = Vector3(8.5, 0.1, 0.0)
+	var p_x: float = player.global_position.x if (player != null and is_instance_valid(player)) else 0.0
+	var spawn_x: float = clampf(maxf(p_x + 5.5, 11.5), 10.0, arena_width * 0.5 - 2.5)
+	boss.position = Vector3(spawn_x, 0.1, 0.0)
 	boss.boss_defeated.connect(_on_boss_defeated)
 	boss.boss_hp_changed.connect(_on_boss_hp_changed)
 	add_child(boss)
 	active_boss = boss
+	enemies.append(boss)
 
+	# 메인 BossHealthBar와 겹치지 않도록 보조 노드는 투명 상태 유지
 	if boss_name_label != null:
-		boss_name_label.visible = true
+		boss_name_label.visible = false
 	if boss_hp_bar != null:
-		boss_hp_bar.visible = true
+		boss_hp_bar.visible = false
 		boss_hp_bar.max_value = boss.max_hp
 		boss_hp_bar.value = boss.current_hp
 

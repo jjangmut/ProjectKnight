@@ -296,20 +296,17 @@ func _spawn_wave_1_enemies() -> void:
 func _spawn_stage_boss() -> void:
 	var boss := SideQVBeastChieftainClass.new()
 	boss.name = "SideQVBeastChieftain"
-	var p_x: float = player.global_position.x if player != null else 0.0
-	boss.position = Vector3(p_x + 8.5, 0.1, 0.0)
+	var p_x: float = player.global_position.x if (player != null and is_instance_valid(player)) else 0.0
+	var spawn_x: float = clampf(maxf(p_x + 5.5, 12.0), 10.5, arena_width * 0.5 - 2.5)
+	boss.position = Vector3(spawn_x, 0.1, 0.0)
 	add_child(boss)
 
 	active_boss = boss
 	enemies.append(boss)
 	boss.boss_defeated.connect(func(_b): _on_boss_defeated())
 
-	# 보스 전용 HP바 UI 생성 및 부착
-	if mobile_controls != null:
-		boss_health_bar = BossHealthBarClass.new()
-		boss_health_bar.name = "Stage2BossHealthBar"
+	# 부모 SideQVStageBase의 boss_health_bar 단일 인스턴스 재사용 (중복 생성 방지)
+	if boss_health_bar != null:
 		boss_health_bar.boss_name = "심연의 야수 우두머리 (Beast Chieftain)"
-		boss_health_bar.position = Vector2((1280.0 - BossHealthBar.BAR_WIDTH) * 0.5, 36.0)
-		mobile_controls.add_child(boss_health_bar)
 		boss_health_bar.snap_to_visible()
 		boss_health_bar.attach_boss(boss)

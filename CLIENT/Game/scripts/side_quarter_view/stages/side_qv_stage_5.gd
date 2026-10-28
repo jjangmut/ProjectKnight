@@ -31,6 +31,7 @@ func _init() -> void:
 
 
 func _process(delta: float) -> void:
+	super._process(delta)
 	if throne_rune_pulse != null and is_instance_valid(throne_rune_pulse):
 		# Subtle pulsing of the throne blood rune aura
 		var s := 1.0 + 0.08 * sin(Time.get_ticks_msec() * 0.003)
@@ -346,7 +347,9 @@ func _spawn_wave_1_enemies() -> void:
 func _spawn_stage_boss() -> void:
 	var arbiter := SideQVAbyssalArbiterClass.new()
 	arbiter.name = "SideQVAbyssalArbiter"
-	arbiter.position = Vector3(player.global_position.x + 8.5, 0.1, 0.0)
+	var p_x: float = player.global_position.x if (player != null and is_instance_valid(player)) else 0.0
+	var spawn_x: float = clampf(maxf(p_x + 5.5, 11.5), 10.0, arena_width * 0.5 - 2.5)
+	arbiter.position = Vector3(spawn_x, 0.1, 0.0)
 	add_child(arbiter)
 	active_boss = arbiter
 	enemies.append(arbiter)
@@ -371,6 +374,7 @@ func _setup_boss_health_bar(arbiter: SideQVAbyssalArbiter) -> void:
 	boss_ui_bar.name = "BossHealthBarUI"
 	boss_ui_bar.custom_minimum_size = Vector2(720, 70)
 	boss_ui_bar.position = Vector2(280, 40)
+	boss_ui_bar.modulate.a = 0.0 # 부모 BossHealthBar 단일 표시를 위해 호환 노드는 투명 유지
 	mobile_controls.add_child(boss_ui_bar)
 
 	# Boss Name Label

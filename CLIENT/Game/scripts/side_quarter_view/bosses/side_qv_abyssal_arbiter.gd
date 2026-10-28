@@ -127,7 +127,8 @@ func _build_components() -> void:
 	var box := BoxShape3D.new()
 	box.size = Vector3(3.2, 2.4, 2.4)
 	atk_shape.shape = box
-	atk_shape.position = Vector3(-1.4, 1.3, 0.0)
+	atk_shape.position = Vector3(0.0, 1.3, 0.0)
+	attack_area_3d.position = Vector3(-1.4, 0.0, 0.0)
 	attack_area_3d.add_child(atk_shape)
 	add_child(attack_area_3d)
 
@@ -411,7 +412,10 @@ func _execute_judgment_storm() -> void:
 	judgment_storm_triggered.emit()
 
 	# Blink to hall center and levitate
-	var center_pos := Vector3(0.0, 0.9, 0.0)
+	var center_x := global_position.x
+	if target_player != null and is_instance_valid(target_player):
+		center_x = clampf(target_player.global_position.x + facing_dir_x * 2.5, -14.0, 14.0)
+	var center_pos := Vector3(center_x, 0.9, 0.0)
 	var tween_pos := create_tween()
 	if tween_pos:
 		tween_pos.tween_property(self, "global_position", center_pos, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -421,8 +425,8 @@ func _execute_judgment_storm() -> void:
 		global_position.y = 0.1
 		return
 
-	# Pulse 3 consecutive void shockwave rings
-	for pulse_idx in range(3):
+	# Pulse 2 consecutive void shockwave rings
+	for pulse_idx in range(2):
 		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
 			break
 		_spawn_void_shockwave_pulse(pulse_idx + 1)

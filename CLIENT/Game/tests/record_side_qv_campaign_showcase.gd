@@ -97,11 +97,13 @@ func _physics_process(delta: float) -> bool:
 				Input.action_press("move_right")
 			elif phase_timer < 1.2:
 				Input.action_release("move_right")
-				current_player.start_attack() # Linear Thrust Spear 1 & 2
+				if current_player.attack_cooldown <= 0.0:
+					current_player.start_attack() # Linear Thrust Spear 1 & 2
 			elif phase_timer < 1.8:
-				current_player.start_attack() # Strike 3 Finisher -> Piercing Lance Beam!
-				if not current_stage.enemies.is_empty():
-					for e in current_stage.enemies:
+				if current_player.attack_cooldown <= 0.0 and current_player.combo_step < 3:
+					current_player.start_attack() # Strike 3 Finisher -> Piercing Lance Beam!
+				if phase_timer >= 1.55 and not current_stage.enemies.is_empty():
+					for e in current_stage.enemies.duplicate():
 						if is_instance_valid(e) and e.has_method("receive_hit"):
 							e.receive_hit(10, Vector3.ZERO)
 			elif phase_timer < 2.3:
@@ -159,7 +161,8 @@ func _physics_process(delta: float) -> bool:
 			elif phase_timer < 2.8:
 				current_player.release_guard()
 				current_player.start_jump() # Mid-air jump
-				current_player.start_attack() # Mid-air down thrust
+				if current_player.attack_cooldown <= 0.0:
+					current_player.start_attack() # Mid-air down thrust
 			elif phase_timer >= 3.4:
 				_load_showcase_stage(ShowcasePhase.STAGE_4_SANCTUARY)
 
@@ -177,7 +180,8 @@ func _physics_process(delta: float) -> bool:
 			elif phase_timer < 2.2:
 				current_player.start_jump() # Jump above ground slam shockwave!
 			elif phase_timer < 2.8:
-				current_player.start_attack() # Golden crescent finisher strike
+				if current_player.attack_cooldown <= 0.0:
+					current_player.start_attack() # Golden finisher strike
 			elif phase_timer >= 3.4:
 				_load_showcase_stage(ShowcasePhase.STAGE_5_ABYSS)
 
@@ -192,7 +196,8 @@ func _physics_process(delta: float) -> bool:
 					if current_boss.has_method("_execute_dark_crescent_wave"):
 						current_boss._execute_dark_crescent_wave()
 			elif phase_timer < 2.2:
-				current_player.start_attack() # Holy Crescent Sword Beam fired! Clash!
+				if current_player.attack_cooldown <= 0.0:
+					current_player.start_attack() # Holy Sword Beam fired! Clash!
 			elif phase_timer < 2.8:
 				if is_instance_valid(current_boss):
 					if current_boss.has_method("_execute_shadow_blink_strike"):
@@ -205,7 +210,8 @@ func _physics_process(delta: float) -> bool:
 					current_stage.camera.add_trauma(0.8)
 			elif phase_timer < 4.2:
 				current_player.release_guard()
-				current_player.start_attack() # Decisive 3x Counter Finisher
+				if current_player.attack_cooldown <= 0.0:
+					current_player.start_attack() # Decisive 3x Counter Finisher
 				if is_instance_valid(current_boss):
 					current_boss.current_hp = 0
 					if current_boss.has_method("_die"):

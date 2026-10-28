@@ -42,10 +42,9 @@ func initialize(start_pos: Vector3, dir: Vector3, extra_dmg: int = 0) -> void:
 
 
 func _build_vertical_crescent_visuals() -> void:
-	# 1. Procedural 3D Vertical Crescent Blade Mesh
-	# Radius Outer: 1.2m, Radius Inner: 0.85m, Thickness: 0.10m, 16 Segments
-	var crescent_mesh := _generate_crescent_mesh(1.2, 0.82, 0.10, 16)
-	var aura_mesh := _generate_crescent_mesh(1.28, 0.78, 0.16, 16)
+	# 1. Procedural 3D Piercing Lance Mesh (Compact Spear Tip & Thin Wing Streak)
+	var crescent_mesh := _generate_crescent_mesh(0.55, 0.35, 0.04, 16)
+	var aura_mesh := _generate_crescent_mesh(0.62, 0.38, 0.06, 16)
 
 	# 2. Outer Golden Aura Shell
 	aura_mesh_inst = MeshInstance3D.new()
@@ -53,10 +52,10 @@ func _build_vertical_crescent_visuals() -> void:
 	aura_mesh_inst.mesh = aura_mesh
 
 	var aura_mat := StandardMaterial3D.new()
-	aura_mat.albedo_color = Color(2.5, 1.6, 0.3, 0.75)
+	aura_mat.albedo_color = Color(1.0, 0.82, 0.25, 0.42)
 	aura_mat.emission_enabled = true
-	aura_mat.emission = Color(2.5, 1.6, 0.3, 1.0)
-	aura_mat.emission_energy_multiplier = 3.5
+	aura_mat.emission = Color(1.0, 0.82, 0.25, 1.0)
+	aura_mat.emission_energy_multiplier = 1.6
 	aura_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	aura_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	aura_mesh_inst.material_override = aura_mat
@@ -68,10 +67,11 @@ func _build_vertical_crescent_visuals() -> void:
 	core_mesh_inst.mesh = crescent_mesh
 
 	var core_mat := StandardMaterial3D.new()
-	core_mat.albedo_color = Color(3.5, 3.0, 1.8, 1.0) # Pure Radiant Core
+	core_mat.albedo_color = Color(1.2, 1.05, 0.65, 0.78) # Crisp Golden-White Core without over-blooming
 	core_mat.emission_enabled = true
-	core_mat.emission = Color(3.5, 3.0, 1.8, 1.0)
-	core_mat.emission_energy_multiplier = 4.5
+	core_mat.emission = Color(1.2, 1.05, 0.65, 1.0)
+	core_mat.emission_energy_multiplier = 2.0
+	core_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	core_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	core_mesh_inst.material_override = core_mat
 	add_child(core_mesh_inst)
@@ -133,7 +133,7 @@ func _generate_crescent_mesh(r_out: float, r_in: float, thickness: float, _segme
 	var tip := Vector3(r_out * 1.35, 0.0, 0.0)      # Sharp forward piercing point
 	var tail := Vector3(-r_in * 0.95, 0.0, 0.0)     # Streamlined rear exhaust point
 	var half_t := thickness * 0.5
-	var wing_h := (r_out - r_in) * 2.2               # Vertical piercing wing height
+	var wing_h := (r_out - r_in) * 0.55             # Narrow horizontal piercing lance fin
 
 	# Build a 6-sided double-ended diamond thrust lance
 	var mid_pts: Array[Vector3] = [

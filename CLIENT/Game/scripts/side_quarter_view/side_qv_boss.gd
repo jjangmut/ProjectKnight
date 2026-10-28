@@ -110,7 +110,8 @@ func _build_components() -> void:
 	var box := BoxShape3D.new()
 	box.size = Vector3(2.8, 2.0, 2.2)
 	atk_shape.shape = box
-	atk_shape.position = Vector3(-1.2, 1.2, 0.0)
+	atk_shape.position = Vector3(0.0, 1.2, 0.0)
+	attack_area_3d.position = Vector3(-1.2, 0.0, 0.0)
 	attack_area_3d.add_child(atk_shape)
 	add_child(attack_area_3d)
 
@@ -207,6 +208,10 @@ func _prevent_player_pushing() -> void:
 
 func _execute_charge_impact() -> void:
 	velocity = Vector3.ZERO
+	attack_area_3d.monitoring = false
+	sprite_3d.texture = BossTextureNormal
+	current_pattern = Pattern.CHASE
+	pattern_timer = 1.0
 	if target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("receive_incoming_attack"):
 			target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))

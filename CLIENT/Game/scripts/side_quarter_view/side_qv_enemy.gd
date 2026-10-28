@@ -74,6 +74,7 @@ func _build_components() -> void:
 	box.size = Vector3(1.6, 1.4, 1.4)
 	atk_col.shape = box
 	atk_col.position = Vector3(0.0, 0.8, 0.0)
+	attack_area_3d.position = Vector3(-0.6, 0.0, 0.0)
 	attack_area_3d.add_child(atk_col)
 	add_child(attack_area_3d)
 
@@ -176,6 +177,7 @@ func _physics_process(delta: float) -> void:
 
 	if dir.x != 0.0:
 		sprite_3d.flip_h = (dir.x < 0.0)
+		attack_area_3d.position.x = 0.6 * signf(dir.x)
 
 	var combat_standoff_distance := 1.25 # Standoff distance: clean stop without pushing
 	if dist > combat_standoff_distance:

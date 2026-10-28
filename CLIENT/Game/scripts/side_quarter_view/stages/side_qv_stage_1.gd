@@ -376,7 +376,8 @@ func _spawn_stage_boss() -> void:
 	boss.max_hp = 24
 	boss.current_hp = 24
 
-	var spawn_x: float = (player.global_position.x + 8.0) if (player != null and is_instance_valid(player)) else 6.0
+	var p_x: float = player.global_position.x if (player != null and is_instance_valid(player)) else 0.0
+	var spawn_x: float = clampf(maxf(p_x + 5.5, 11.5), 10.0, arena_width * 0.5 - 2.5)
 	boss.position = Vector3(spawn_x, 0.1, 0.0)
 	boss.target_player = player
 	add_child(boss)

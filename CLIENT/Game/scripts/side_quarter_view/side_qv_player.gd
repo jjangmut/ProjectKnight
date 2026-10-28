@@ -3,8 +3,9 @@ class_name SideQVPlayer
 ## 사이드 쿼터뷰 2.5D 팔라딘 기사 (Side Quarter-View 2D Character in 3D World)
 ## - 2D 고해상도 스프라이트 (Sprite3D) 탑재 & 실시간 3D 그림자 투영
 ## - 사이드 쿼터뷰 벨트스크롤 3D 이동 (X: 좌우, Z: 안팎 깊이, Y: 점프)
-## - 3단 콤보 검격 & 360도 황금빛 사이드 쿼터뷰 크레센트 검기 발출
+## - 3단 콤보 검격 & 전방 관통 성광 찌르기 이펙트 & 3단 피니셔 검기 발출
 ## - 0.14초 저스트 패링 (Just Parry) 방패 바스티온 & 3배 카운터 어택
+## - 피격 무적 시간(i-frame), 사망 상태 처리, 아레나 경계 추락 방지 완비
 
 signal hp_changed(current: int, max_hp: int)
 signal died
@@ -18,7 +19,8 @@ enum State {
 	DASH,
 	ATTACK,
 	GUARD,
-	HURT
+	HURT,
+	DEAD
 }
 
 @export var move_speed_x: float = 7.5
@@ -26,8 +28,8 @@ enum State {
 @export var dash_speed: float = 14.0
 @export var jump_velocity: float = 6.8
 @export var gravity: float = 18.0
-@export var max_hp: int = 5
-@export var current_hp: int = 5
+@export var max_hp: int = 8
+@export var current_hp: int = 8
 
 var current_state: State = State.IDLE
 var move_direction: Vector3 = Vector3.ZERO
@@ -39,6 +41,7 @@ var combo_reset_timer: float = 0.0
 var is_attacking: bool = false
 var attack_cooldown: float = 0.0
 var attack_duration_remaining: float = 0.0
+const ATTACK_TOTAL_DURATION: float = 0.20
 
 # Guard & Just Parry
 var is_guarding: bool = false
@@ -47,10 +50,21 @@ const JUST_PARRY_WINDOW: float = 0.14
 var counter_attack_buff: bool = false
 var counter_buff_timer: float = 0.0
 
-# Dash
+# Dash & Invulnerability & Death
 var dash_time_remaining: float = 0.0
 const DASH_DURATION: float = 0.22
 var is_invulnerable: bool = false
+var invuln_timer: float = 0.0
+const HIT_INVULN_DURATION: float = 0.65
+var hurt_timer: float = 0.0
+const HURT_DURATION: float = 0.16
+var is_dead: bool = false
+
+# Arena Bounds Safety
+var stage_min_x: float = -18.0
+var stage_max_x: float = 18.0
+var stage_min_z: float = -5.2
+var stage_max_z: float = 5.2
 
 # Procedural animation parameters
 var anim_timer: float = 0.0
@@ -69,6 +83,7 @@ const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames
 const TexHurt = preload("res://assets/player_frames/hurt_v1.png")            # 3x1 = 3 frames
+const TexDeath = preload("res://assets/player_frames/death_v1.png")          # 2x2 = 4 frames
 
 # Backward compatibility aliases
 const PaladinTexture = TexIdle
@@ -81,8 +96,22 @@ func _ready() -> void:
 	collision_mask = 2 | 4 # Enemy Layer (2) & World Layer (4)
 	add_to_group("player")
 
+	_sync_stage_bounds()
 	_build_components()
 	emit_signal("hp_changed", current_hp, max_hp)
+
+
+func _sync_stage_bounds() -> void:
+	var p := get_parent()
+	if p != null:
+		if "arena_width" in p:
+			var w: float = float(p.get("arena_width"))
+			stage_min_x = -w * 0.5 + 1.0
+			stage_max_x = w * 0.5 - 1.0
+		if "arena_depth" in p:
+			var d: float = float(p.get("arena_depth"))
+			stage_min_z = -d * 0.5 + 0.8
+			stage_max_z = d * 0.5 - 0.8
 
 
 func _build_components() -> void:
@@ -131,41 +160,44 @@ func _build_components() -> void:
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
 
-	# 4. 3D Melee Thrust VFX (Sharp Linear Forward Piercing Thrust Spear)
+	# 4. 3D Melee Thrust VFX (Sleek Translucent Radiant Spear Streak)
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
 	var thrust_cyl := CylinderMesh.new()
-	thrust_cyl.top_radius = 0.02
-	thrust_cyl.bottom_radius = 0.18
-	thrust_cyl.height = 1.6
-	thrust_cyl.radial_segments = 12
+	thrust_cyl.top_radius = 0.008
+	thrust_cyl.bottom_radius = 0.085
+	thrust_cyl.height = 1.75
+	thrust_cyl.radial_segments = 8
 	slash_visual_3d.mesh = thrust_cyl
 
 	var smat := StandardMaterial3D.new()
-	smat.albedo_color = Color(3.5, 2.8, 1.2, 1.0) # Golden Radiant Holy Piercing Thrust
+	smat.albedo_color = Color(3.2, 2.7, 1.4, 0.72) # Semi-transparent Golden-White Holy Thrust Streak
 	smat.emission_enabled = true
-	smat.emission = Color(3.5, 2.8, 1.2, 1.0)
-	smat.emission_energy_multiplier = 4.8
+	smat.emission = Color(3.2, 2.6, 1.2, 1.0)
+	smat.emission_energy_multiplier = 4.2
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	slash_visual_3d.material_override = smat
 	slash_visual_3d.scale = Vector3(1.0, 1.0, 1.0)
-	slash_visual_3d.position = Vector3(1.15, 0.95, 0.0)
+	slash_visual_3d.position = Vector3(1.15, 0.92, 0.0)
 	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0)
 	slash_visual_3d.visible = false
 	add_child(slash_visual_3d)
 
-	# 5. Attack Hitbox Area3D
+	# 5. Attack Hitbox Area3D (Keep monitoring active so overlaps are always fresh!)
 	attack_area_3d = Area3D.new()
 	attack_area_3d.name = "AttackArea3D"
 	attack_area_3d.collision_layer = 0
 	attack_area_3d.collision_mask = 2 # Enemy Layer (2)
-	attack_area_3d.monitoring = false
+	attack_area_3d.monitoring = true
 	attack_area_3d.monitorable = false
 
 	var atk_shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(1.8, 1.6, 1.6)
+	box.size = Vector3(2.2, 1.8, 1.8)
 	atk_shape.shape = box
-	atk_shape.position = Vector3(0.8, 0.85, 0.0)
+	atk_shape.position = Vector3(0.0, 0.85, 0.0)
+	attack_area_3d.position = Vector3(1.0, 0.0, 0.0)
 	attack_area_3d.add_child(atk_shape)
 	add_child(attack_area_3d)
 
@@ -179,6 +211,14 @@ func _physics_process(delta: float) -> void:
 	else:
 		if velocity.y < 0:
 			velocity.y = 0.0
+
+	if is_dead or current_state == State.DEAD:
+		velocity.x = move_toward(velocity.x, 0.0, 40.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 40.0 * delta)
+		move_and_slide()
+		_clamp_arena_bounds()
+		_update_character_animation(delta)
+		return
 
 	match current_state:
 		State.IDLE, State.MOVE:
@@ -195,12 +235,18 @@ func _physics_process(delta: float) -> void:
 	# Prevent pushing into monsters: firm stop upon body contact without bouncing
 	_prevent_enemy_pushing()
 	move_and_slide()
+	_clamp_arena_bounds()
 	_update_character_animation(delta)
 
-	# Ground clamp safety
-	if global_position.y < 0.0 and is_on_floor():
+
+func _clamp_arena_bounds() -> void:
+	_sync_stage_bounds()
+	global_position.x = clampf(global_position.x, stage_min_x, stage_max_x)
+	global_position.z = clampf(global_position.z, stage_min_z, stage_max_z)
+	if global_position.y < 0.0:
 		global_position.y = 0.0
-		velocity.y = 0.0
+		if velocity.y < 0.0:
+			velocity.y = 0.0
 
 
 func _prevent_enemy_pushing() -> void:
@@ -231,6 +277,17 @@ func _update_timers(delta: float) -> void:
 	if attack_cooldown > 0.0:
 		attack_cooldown -= delta
 
+	if invuln_timer > 0.0:
+		invuln_timer -= delta
+		if invuln_timer <= 0.0:
+			invuln_timer = 0.0
+			if sprite_3d != null and not is_dead:
+				sprite_3d.modulate = Color.WHITE
+		elif sprite_3d != null and not is_dead:
+			# Subtle hit i-frame flicker
+			var flash := 1.0 if int(invuln_timer * 24.0) % 2 == 0 else 0.55
+			sprite_3d.modulate = Color(1.4, 0.85, 0.85, flash)
+
 	if is_guarding:
 		guard_elapsed_time += delta
 
@@ -257,7 +314,7 @@ func _process_movement(delta: float) -> void:
 		# Flip attack and guard offsets
 		attack_area_3d.position.x = 1.0 * facing_dir_x
 		guard_barrier_3d.position.x = 0.6 * facing_dir_x
-		slash_visual_3d.position.x = 0.8 * facing_dir_x
+		slash_visual_3d.position.x = 1.15 * facing_dir_x
 
 	if input_vec != Vector3.ZERO:
 		var norm := input_vec.normalized()
@@ -283,10 +340,14 @@ func _process_movement(delta: float) -> void:
 
 
 func start_jump() -> void:
+	if is_dead:
+		return
 	velocity.y = jump_velocity
 
 
 func start_dash() -> void:
+	if is_dead:
+		return
 	dash_time_remaining = DASH_DURATION
 	is_invulnerable = true
 	var dash_dir := move_direction if move_direction != Vector3.ZERO else Vector3(facing_dir_x, 0, 0)
@@ -303,34 +364,37 @@ func _process_dash(delta: float) -> void:
 
 
 func start_attack() -> void:
+	if is_dead:
+		return
 	combo_step = (combo_step % 3) + 1
 	combo_reset_timer = 0.95
 	is_attacking = true
 	attack_cooldown = 0.22
-	attack_duration_remaining = 0.20
+	attack_duration_remaining = ATTACK_TOTAL_DURATION
 
-	# Symmetric Aligned 2D Attack Animation
+	# Symmetric Aligned 2D Attack Animation (Starts at windup frame 0)
 	sprite_3d.texture = TexAttack
 	sprite_3d.hframes = 2
 	sprite_3d.vframes = 2
 	sprite_3d.pixel_size = 0.00282
-	sprite_3d.frame = (combo_step - 1) % 4
+	sprite_3d.frame = 0
 
+	attack_area_3d.position.x = 1.0 * facing_dir_x
 	slash_visual_3d.visible = true
-	slash_visual_3d.position = Vector3(facing_dir_x * 1.15, 0.95, 0.0)
+	slash_visual_3d.position = Vector3(facing_dir_x * 1.15, 0.92, 0.0)
 	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0 * facing_dir_x)
-	slash_visual_3d.scale = Vector3(0.4, 0.3, 0.4)
+	slash_visual_3d.scale = Vector3(0.35, 0.35, 0.35)
 	var thrust_tween := create_tween()
 	if thrust_tween:
-		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(1.0, 1.35, 1.0), 0.07)
-		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.2, 0.6, 0.2), 0.11)
+		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.85, 1.25, 0.85), 0.06)
+		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.15, 0.5, 0.15), 0.12)
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
-	# Responsive melee hit check
+	# Responsive melee hit check (Direct spatial + Area3D hybrid check)
 	_check_melee_hit()
 
-	# Combo 3 Finisher: Fire glowing 3D vertical crescent sword wave!
+	# Combo 3 Finisher: Fire glowing 3D piercing sword wave!
 	if combo_step == 3:
 		_fire_sword_beam()
 
@@ -338,13 +402,39 @@ func start_attack() -> void:
 
 
 func _check_melee_hit() -> void:
-	for body in attack_area_3d.get_overlapping_bodies():
-		if body != self and body.has_method("receive_hit"):
-			var dmg := 2
-			if counter_attack_buff:
-				dmg = 6 # 3x Counter strike
-				counter_attack_buff = false
-			body.receive_hit(dmg, Vector3(facing_dir_x, 0, 0))
+	var hit_targets: Dictionary = {}
+
+	# 1. Check Area3D overlapping bodies
+	if attack_area_3d != null and attack_area_3d.monitoring:
+		for body in attack_area_3d.get_overlapping_bodies():
+			if body != null and is_instance_valid(body) and body != self and body.has_method("receive_hit"):
+				hit_targets[body.get_instance_id()] = body
+
+	# 2. Direct spatial reach check (Fixes Godot same-frame Area3D monitoring delay)
+	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
+			continue
+		if not enemy.has_method("receive_hit"):
+			continue
+		var e3d := enemy as Node3D
+		var diff: Vector3 = e3d.global_position - global_position
+		var forward_dist: float = diff.x * facing_dir_x
+		var z_dist: float = absf(diff.z)
+		var y_dist: float = absf(diff.y)
+		var extra_r: float = 0.55 if e3d.is_in_group("bosses") else 0.25
+		if forward_dist >= -0.35 and forward_dist <= (2.35 + extra_r) and z_dist <= (1.35 + extra_r * 0.5) and y_dist <= 2.2:
+			hit_targets[e3d.get_instance_id()] = e3d
+
+	var dmg := 2
+	if counter_attack_buff and not hit_targets.is_empty():
+		dmg = 6 # 3x Counter strike
+		counter_attack_buff = false
+
+	for id in hit_targets.keys():
+		var target_node: Node = hit_targets[id]
+		if is_instance_valid(target_node):
+			target_node.receive_hit(dmg, Vector3(facing_dir_x, 0, 0))
 
 
 func _fire_sword_beam() -> void:
@@ -363,13 +453,12 @@ func _process_attack_state(delta: float) -> void:
 
 	if attack_duration_remaining <= 0.0:
 		slash_visual_3d.visible = false
-		attack_area_3d.monitoring = false
 		is_attacking = false
 		_set_state(State.IDLE)
 
 
 func start_guard() -> void:
-	if is_guarding:
+	if is_guarding or is_dead:
 		return
 	is_guarding = true
 	guard_elapsed_time = 0.0
@@ -386,15 +475,17 @@ func release_guard() -> void:
 		_set_state(State.IDLE)
 
 
-func _process_guard_state(delta: float) -> void:
+func _process_guard_state(_delta: float) -> void:
 	velocity.x = 0.0
 	velocity.z = 0.0
 	if not Input.is_action_pressed("guard"):
 		release_guard()
 
 
-func receive_incoming_attack(amount: int, attacker: Node, attack_dir: Vector3) -> bool:
-	if is_invulnerable:
+func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) -> bool:
+	if is_dead or current_hp <= 0:
+		return false
+	if is_invulnerable or invuln_timer > 0.0:
 		return false
 
 	if is_guarding:
@@ -402,27 +493,55 @@ func receive_incoming_attack(amount: int, attacker: Node, attack_dir: Vector3) -
 			# Just Parry! 100% damage blocked, attacker stunned, 3x counter buff!
 			counter_attack_buff = true
 			counter_buff_timer = 3.5
+			invuln_timer = 0.35
 			emit_signal("just_parry_succeeded", attacker)
 			if attacker != null and attacker.has_method("apply_parry_stun"):
 				attacker.apply_parry_stun(2.0)
 			_trigger_parry_flash()
 			return false
 		else:
-			# Normal Guard: 50% damage reduction, solid halt
-			current_hp -= maxi(1, int(amount * 0.5))
+			# Normal Guard: 50% damage reduction, solid halt + brief i-frame
+			var reduced := maxi(1, int(amount * 0.5))
+			current_hp = maxi(0, current_hp - reduced)
+			invuln_timer = HIT_INVULN_DURATION * 0.8
 			emit_signal("hp_changed", current_hp, max_hp)
 			velocity = Vector3.ZERO
+			if current_hp <= 0:
+				_enter_death_state()
 			return true
 
-	# Direct Hit: Damage taken, firm stop without launch bounce
-	current_hp -= amount
+	# Direct Hit: Damage taken, firm stop without launch bounce, grant hit i-frame
+	current_hp = maxi(0, current_hp - amount)
+	invuln_timer = HIT_INVULN_DURATION
+	hurt_timer = HURT_DURATION
 	emit_signal("hp_changed", current_hp, max_hp)
 	velocity = Vector3.ZERO
-	_set_state(State.HURT)
 
 	if current_hp <= 0:
-		emit_signal("died")
+		_enter_death_state()
+	else:
+		_set_state(State.HURT)
 	return true
+
+
+func _enter_death_state() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	is_attacking = false
+	is_guarding = false
+	slash_visual_3d.visible = false
+	guard_barrier_3d.visible = false
+	velocity = Vector3.ZERO
+	_set_state(State.DEAD)
+	if sprite_3d != null:
+		sprite_3d.modulate = Color.WHITE
+		sprite_3d.texture = TexDeath
+		sprite_3d.hframes = 2
+		sprite_3d.vframes = 2
+		sprite_3d.pixel_size = 0.0026
+		sprite_3d.frame = 3
+	emit_signal("died")
 
 
 func _trigger_parry_flash() -> void:
@@ -433,9 +552,10 @@ func _trigger_parry_flash() -> void:
 
 
 func _process_hurt_state(delta: float) -> void:
-	velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-	velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
-	if Vector2(velocity.x, velocity.z).length() < 0.2:
+	velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
+	velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+	hurt_timer -= delta
+	if hurt_timer <= 0.0:
 		_set_state(State.IDLE)
 
 
@@ -444,6 +564,16 @@ func _update_character_animation(delta: float) -> void:
 
 	# Head-on mutual facing alignment
 	sprite_3d.flip_h = (facing_dir_x < 0.0)
+
+	# 0. Dead State
+	if is_dead or current_state == State.DEAD:
+		if sprite_3d.texture != TexDeath:
+			sprite_3d.texture = TexDeath
+			sprite_3d.hframes = 2
+			sprite_3d.vframes = 2
+			sprite_3d.pixel_size = 0.0026
+		sprite_3d.frame = 3
+		return
 
 	# 1. Airborne Jump Action
 	if not is_on_floor() and not is_attacking:
@@ -460,14 +590,15 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.frame = 2 # Descent
 		return
 
-	# 2. Attack Action
+	# 2. Attack Action (Multi-frame sequence across attack duration: 0 -> 1 -> 2 -> 3)
 	if is_attacking:
 		if sprite_3d.texture != TexAttack:
 			sprite_3d.texture = TexAttack
 			sprite_3d.hframes = 2
 			sprite_3d.vframes = 2
 			sprite_3d.pixel_size = 0.00282
-		sprite_3d.frame = (combo_step - 1) % 4
+		var progress: float = clampf(1.0 - (attack_duration_remaining / ATTACK_TOTAL_DURATION), 0.0, 0.999)
+		sprite_3d.frame = clampi(int(progress * 4.0), 0, 3)
 		return
 
 	# 3. Guard / Parry Stance Action
@@ -526,4 +657,6 @@ func _update_character_animation(delta: float) -> void:
 
 
 func _set_state(new_state: State) -> void:
+	if is_dead and new_state != State.DEAD:
+		return
 	current_state = new_state

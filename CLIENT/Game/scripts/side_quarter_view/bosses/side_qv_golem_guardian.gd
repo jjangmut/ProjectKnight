@@ -474,6 +474,12 @@ func _execute_spinning_lariat() -> void:
 
 
 func _execute_lariat_impact() -> void:
+	velocity = Vector3.ZERO
+	attack_area_3d.monitoring = false
+	lariat_dust_particles.emitting = false
+	sprite_3d.texture = GolemTextureNormal
+	current_pattern = Pattern.CHASE
+	pattern_timer = 1.0
 	if target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("receive_incoming_attack"):
 			target_player.receive_incoming_attack(lariat_damage, self, Vector3(facing_dir_x, 0, 0))
