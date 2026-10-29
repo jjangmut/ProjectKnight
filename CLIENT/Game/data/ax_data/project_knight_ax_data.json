@@ -1,0 +1,567 @@
+{
+	"meta": {
+		"ax_schema_version": "2.0.0",
+		"project_id": "PROJECT_KNIGHT_SIDE_QV",
+		"title_ko": "프로젝트 나이트: 결의의 성기사와 심연의 성채",
+		"title_en": "Project Knight: The Resolute Paladin — Side Quarter-View Edition",
+		"studio": "JUNYPAPA STUDIO",
+		"engine": "Godot 4.7.2 Stable (3D Side Quarter-View Hybrid)",
+		"last_updated": "2026-10-29",
+		"description": "Project Knight의 전체 기획 밸런스, 플레이어 액션 프레임, 스테이지 1~5 환경 및 웨이브 설계, 일반/엘리트 몬스터 5종, 보스 5종 및 17종 시그니처 패턴, 성소 제단 강화 및 전설 유물을 통합 관리하는 마스터 AX Data 레지스트리입니다."
+	},
+	"player": {
+		"id": "player_paladin",
+		"name_ko": "결의의 성기사",
+		"name_en": "Resolute Paladin",
+		"script_path": "res://scripts/side_quarter_view/side_qv_player.gd",
+		"scene_path": "res://scenes/side_quarter_view/SideQVPlayer.tscn",
+		"base_stats": {
+			"max_hp": 8,
+			"move_speed_x": 7.5,
+			"move_speed_z": 4.8,
+			"dash_speed": 14.0,
+			"dash_duration": 0.22,
+			"dash_cooldown": 0.65,
+			"jump_velocity": 6.8,
+			"gravity": 18.0,
+			"hit_invuln_duration": 0.65
+		},
+		"combat": {
+			"combo_steps": 3,
+			"base_attack_damage": 2,
+			"attack_duration": 0.20,
+			"attack_cooldown": 0.22,
+			"combo_reset_timer": 0.95,
+			"melee_reach_x": 2.9,
+			"melee_depth_z": 1.65,
+			"finisher_beam": {
+				"id": "holy_lance_beam",
+				"name_ko": "3단 피니셔: 신성 관통창 검기",
+				"script_path": "res://scripts/side_quarter_view/side_qv_sword_beam.gd",
+				"speed": 20.0,
+				"max_range": 24.0,
+				"damage": 2
+			}
+		},
+		"defense_parry": {
+			"just_parry_window": 0.14,
+			"parry_damage_reduction": 1.0,
+			"guard_damage_reduction": 0.5,
+			"parry_enemy_stun_sec": 2.0,
+			"counter_buff_duration": 3.5,
+			"counter_damage_multiplier": 3.0,
+			"counter_attack_damage": 6
+		},
+		"animations": [
+			{ "state": "IDLE", "sheet": "idle_v1_aligned.png", "grid": "2x2 (4f)", "fps": 5.0, "desc": "무게중심 정렬 대기 호흡 동작" },
+			{ "state": "RUN", "sheet": "run_v2_aligned.png", "grid": "3x2 (6f)", "fps": 11.0, "desc": "잔상 없는 선명한 전진 질주 동작" },
+			{ "state": "JUMP", "sheet": "jump_v1.png", "grid": "3x1 (3f)", "fps": 8.0, "desc": "체공 도약 및 하강 자세" },
+			{ "state": "DODGE", "sheet": "dodge_v1.png", "grid": "2x2 (4f)", "fps": 14.0, "desc": "무적 회피 대시 구르기/미끄러짐" },
+			{ "state": "ATTACK", "sheet": "attack_v1_aligned.png", "grid": "2x2 (4f)", "fps": 20.0, "desc": "0->1->2->3 순차 재생 성검 찌르기 & 3단 검기 발사" },
+			{ "state": "GUARD", "sheet": "guard_v1_aligned.png", "grid": "3x1 (3f)", "fps": 8.0, "desc": "성기사의 방패 방어 및 저스트 패링 자세" },
+			{ "state": "HURT", "sheet": "hurt_v1.png", "grid": "3x1 (3f)", "fps": 10.0, "desc": "피격 경직 및 0.65초 무적 점멸" },
+			{ "state": "DEAD", "sheet": "death_v1.png", "grid": "2x2 (4f)", "fps": 6.0, "desc": "체력 소진 시 쓰러짐 연출 및 조작 잠금" }
+		]
+	},
+	"combat_rules": {
+		"camera_spec": {
+			"mode": "Side Quarter-View 3D 벨트스크롤",
+			"pitch_deg": -32.0,
+			"yaw_deg": 0.0,
+			"fov_deg": 42.0,
+			"offset": [0.0, 5.2, 7.8],
+			"smooth_speed": 8.0
+		},
+		"progression_flow": {
+			"wave_1": "전방 탐색 및 일반/엘리트 몬스터 분대 섬멸",
+			"wave_clear_reward": "성스러운 영혼 회복 (+2 HP 즉시 회복) 및 ADVANCE ▶▶▶ 전진 인디케이터 점등",
+			"boss_trigger": "우측 보스 구역(X >= 6.5m) 진입 또는 웨이브 정리 후 보스 강림 연출",
+			"stage_clear": "보스 격파 시 전설/신화 유물 해금 및 다음 스테이지 자동 전환"
+		},
+		"collision_and_physics": {
+			"body_stop_distance_x": 0.92,
+			"body_stop_distance_z": 0.65,
+			"boundary_margin_x": 1.2,
+			"boundary_margin_z": 0.75,
+			"rule_desc": "플레이어와 몬스터 충돌 시 튕겨나가지 않고 자연스럽게 정지하며, 4면 물리 경계벽으로 장외 추락 원천 차단"
+		}
+	},
+	"stages": [
+		{
+			"stage_num": 1,
+			"id": "stage_1",
+			"name_ko": "1지역: 성문 외곽",
+			"name_en": "Citadel Terrace Gate",
+			"theme": "주간 고딕 성문 테라스 & 횃불 회랑",
+			"script_path": "res://scripts/side_quarter_view/side_qv_stage_1.gd",
+			"arena_size_m": [38.0, 12.0],
+			"ambient_color": "#9eb3d1",
+			"fog_density": 0.008,
+			"environment_props": ["고딕 성문 아치 윙 2기", "고대 룬 석주 4기", "점화 횃불 브레이저 4기", "성벽 배너"],
+			"wave_1_enemies": [
+				{ "enemy_id": "enemy_melee", "name_ko": "성채 근위 보병", "count": 2, "spawn_positions": ["(0.0, 0, -0.9)", "(2.5, 0, 0.9)"] }
+			],
+			"wave_clear_heal": 2,
+			"boss_id": "boss_commander",
+			"boss_name_ko": "성문 수호 기사단장",
+			"reward_relic_id": "bastion_shield"
+		},
+		{
+			"stage_num": 2,
+			"id": "stage_2",
+			"name_ko": "2지역: 야수숲 협곡",
+			"name_en": "Beastwood Forest Gorge",
+			"theme": "에메랄드 심연 숲 & 반딧불이 고목 협곡",
+			"script_path": "res://scripts/side_quarter_view/side_qv_stage_2.gd",
+			"arena_size_m": [40.0, 12.0],
+			"ambient_color": "#337340",
+			"fog_density": 0.018,
+			"environment_props": ["거대 고목 기둥 5기", "야수 뼈 토템 2기", "에메랄드 반딧불이 파티클 56개", "이끼 바위 군락"],
+			"wave_1_enemies": [
+				{ "enemy_id": "enemy_beast", "name_ko": "야수숲 맹수", "count": 2, "spawn_positions": ["(0.5, 0, -1.1)", "(3.2, 0, 1.1)"] }
+			],
+			"wave_clear_heal": 2,
+			"boss_id": "boss_beast_chieftain",
+			"boss_name_ko": "심연의 야수 우두머리",
+			"reward_relic_id": "shadow_cloak"
+		},
+		{
+			"stage_num": 3,
+			"id": "stage_3",
+			"name_ko": "3지역: 무너진 성벽 요새",
+			"name_en": "Ruined Crossbow Bastion",
+			"theme": "코발트 황혼 성벽 폐허 & 부유 마법 석편",
+			"script_path": "res://scripts/side_quarter_view/side_qv_stage_3.gd",
+			"arena_size_m": [38.0, 12.0],
+			"ambient_color": "#40598c",
+			"fog_density": 0.012,
+			"environment_props": ["무너진 흉벽 5구간", "부유 비전 석편 6기", "시안 룬 비전 램프 3기", "파괴된 공성 병기"],
+			"wave_1_enemies": [
+				{ "enemy_id": "enemy_ranged", "name_ko": "폐허 석궁병", "count": 2, "spawn_positions": ["(1.0, 0, -1.2)", "(3.5, 0, 1.2)"] }
+			],
+			"wave_clear_heal": 2,
+			"boss_id": "boss_crossbow_commander",
+			"boss_name_ko": "폐허의 석궁 사령관",
+			"reward_relic_id": "piercing_quiver"
+		},
+		{
+			"stage_num": 4,
+			"id": "stage_4",
+			"name_ko": "4지역: 돌의 성소",
+			"name_en": "Titan Stone Sanctuary",
+			"theme": "석양 마그마 거석 제단 & 고대 모놀리스",
+			"script_path": "res://scripts/side_quarter_view/side_qv_stage_4.gd",
+			"arena_size_m": [38.0, 12.0],
+			"ambient_color": "#8c4726",
+			"fog_density": 0.015,
+			"environment_props": ["2단 거석 제단", "고대 모놀리스 기둥 6기", "마그마 엠버 파티클 64개", "용암 균열 화로"],
+			"wave_1_enemies": [
+				{ "enemy_id": "enemy_golem", "name_ko": "거석 헤비 골렘", "count": 2, "spawn_positions": ["(1.2, 0, -1.0)", "(3.8, 0, 1.0)"] }
+			],
+			"wave_clear_heal": 2,
+			"boss_id": "boss_golem_guardian",
+			"boss_name_ko": "티탄 골렘 가디언",
+			"reward_relic_id": "golem_pauldrons"
+		},
+		{
+			"stage_num": 5,
+			"id": "stage_5",
+			"name_ko": "5지역: 침묵의 성채",
+			"name_en": "Silent Abyssal Citadel",
+			"theme": "딥 바이올렛 보이드 성채 & 심판의 왕좌",
+			"script_path": "res://scripts/side_quarter_view/side_qv_stage_5.gd",
+			"arena_size_m": [38.0, 12.0],
+			"ambient_color": "#381f61",
+			"fog_density": 0.016,
+			"environment_props": ["흑요석 대리석 회랑", "블러드 룬 왕좌 포디움", "보이드 룬 오벨리스크 6기", "심연 공허 입자"],
+			"wave_1_enemies": [
+				{ "enemy_id": "enemy_elite_knight", "name_ko": "엘리트 심연 기사", "count": 2, "spawn_positions": ["(1.0, 0, -1.1)", "(3.6, 0, 1.1)"] }
+			],
+			"wave_clear_heal": 2,
+			"boss_id": "boss_abyssal_arbiter",
+			"boss_name_ko": "심연의 심판관",
+			"reward_relic_id": "abyssal_crown"
+		}
+	],
+	"enemies": [
+		{
+			"id": "enemy_melee",
+			"name_ko": "성채 근위 보병",
+			"name_en": "Citadel Vanguard Footman",
+			"stage_num": 1,
+			"role": "근접 추격형 표준 보병",
+			"script_path": "res://scripts/side_quarter_view/side_qv_enemy.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/enemies/melee_v1.png",
+			"hp": 4,
+			"move_speed": 3.6,
+			"attack_damage": 1,
+			"attack_cooldown": 1.2,
+			"attack_range": 1.35,
+			"special_mechanic": "방패와 롱소드로 전열을 유지하며 근접 시 수평 베기 수행"
+		},
+		{
+			"id": "enemy_beast",
+			"name_ko": "야수숲 맹수",
+			"name_en": "Beastwood Pouncer",
+			"stage_num": 2,
+			"role": "고속 도약 기습형 몬스터",
+			"script_path": "res://scripts/side_quarter_view/enemies/side_qv_beast_minion.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/enemies/beast_v2.png",
+			"hp": 5,
+			"move_speed": 3.8,
+			"pounce_speed": 8.8,
+			"attack_damage": 1,
+			"attack_cooldown": 1.8,
+			"attack_range": 2.4,
+			"special_mechanic": "중거리에서 붉은 안광 예고 후 8.8 m/s 고속 덮치기(Pounce) 돌진"
+		},
+		{
+			"id": "enemy_ranged",
+			"name_ko": "폐허 석궁병",
+			"name_en": "Ruined Bastion Crossbowman",
+			"stage_num": 3,
+			"role": "원거리 카이팅 저격병",
+			"script_path": "res://scripts/side_quarter_view/enemies/side_qv_ranged_minion.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/enemies/ranged_v1.png",
+			"hp": 4,
+			"move_speed": 3.2,
+			"projectile_speed": 15.0,
+			"preferred_distance": 5.2,
+			"attack_damage": 1,
+			"attack_cooldown": 2.4,
+			"attack_range": 9.5,
+			"special_mechanic": "플레이어와 5.2m 거리를 유지하며 비전 석궁 볼트 직사 발사"
+		},
+		{
+			"id": "enemy_golem",
+			"name_ko": "거석 헤비 골렘",
+			"name_en": "Monolith Heavy Golem",
+			"stage_num": 4,
+			"role": "중장갑 고체력 브루저",
+			"script_path": "res://scripts/side_quarter_view/enemies/side_qv_golem_minion.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/enemies/golem_v1.png",
+			"hp": 8,
+			"move_speed": 2.6,
+			"attack_damage": 2,
+			"attack_cooldown": 1.6,
+			"attack_range": 1.75,
+			"special_mechanic": "2.0m 거대 체구와 높은 체력을 지니며 강력한 양손 대지 강타(피해 2) 구사"
+		},
+		{
+			"id": "enemy_elite_knight",
+			"name_ko": "엘리트 심연 기사",
+			"name_en": "Abyssal Elite Guard",
+			"stage_num": 5,
+			"role": "최종장 정예 근위 기사",
+			"script_path": "res://scripts/side_quarter_view/enemies/side_qv_elite_knight.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/enemies/melee_v1.png",
+			"hp": 6,
+			"move_speed": 4.0,
+			"attack_damage": 1,
+			"attack_cooldown": 1.0,
+			"attack_range": 1.55,
+			"special_mechanic": "보이드 퍼플 오라 링을 두르고 빠른 기동성과 짧은 공격 주기로 압박"
+		}
+	],
+	"bosses": [
+		{
+			"id": "boss_commander",
+			"stage_num": 1,
+			"name_ko": "성문 수호 기사단장",
+			"name_en": "Citadel Gate Commander",
+			"title_ko": "타락한 성문의 첫 번째 방벽",
+			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_boss_commander.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/bosses/commander_v1.png",
+			"hp": 24,
+			"phase2_threshold": 0.5,
+			"move_speed_p1": 3.8,
+			"move_speed_p2": 4.8,
+			"patterns": [
+				{
+					"id": "SHIELD_CHARGE",
+					"name_ko": "결의의 방패 돌진",
+					"name_en": "Shield Charge",
+					"damage": 2,
+					"metrics": "돌진 속도 12.0 m/s (2페이즈 14.5 m/s)",
+					"desc": "전방 일직선으로 중장갑 방패를 세우고 초고속 쇄도, 저스트 패링 가능"
+				},
+				{
+					"id": "TRIPLE_CLEAVE",
+					"name_ko": "대검 3연속 참격",
+					"name_en": "Triple Greatsword Cleave",
+					"damage": 2,
+					"metrics": "사거리 2.4m · 3연타 전진 베기",
+					"desc": "근접한 대상을 향해 묵직한 대검을 3회 연속 휘두르며 압박"
+				},
+				{
+					"id": "QUAKE_RING",
+					"name_ko": "대지 분쇄 충격파",
+					"name_en": "Quake Ring Slam",
+					"damage": 2,
+					"metrics": "반경 4.2m 360도 링 충격파",
+					"desc": "대검으로 지면을 강타하여 주변 4.2m 반경에 황금빛 파동 방출"
+				}
+			]
+		},
+		{
+			"id": "boss_beast_chieftain",
+			"stage_num": 2,
+			"name_ko": "심연의 야수 우두머리",
+			"name_en": "Abyssal Beast Chieftain",
+			"title_ko": "야수숲 협곡의 포식자 군주",
+			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_beast_chieftain.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/bosses/beast_boss_v1.png",
+			"hp": 28,
+			"phase2_threshold": 0.5,
+			"move_speed_p1": 4.2,
+			"move_speed_p2": 5.6,
+			"patterns": [
+				{
+					"id": "POUNCE_LEAP",
+					"name_ko": "포식자의 공중 도약 강습",
+					"name_en": "Predator Pounce Leap",
+					"damage": 2,
+					"metrics": "도약 속도 9.0~11.5 m/s · 착지 충격파 반경 3.6m",
+					"desc": "높이 도약하여 플레이어 위치로 급강하 후 착지 충격파 발생"
+				},
+				{
+					"id": "TRIPLE_CLAW_STRIKE",
+					"name_ko": "광란의 3연속 발톱 난무",
+					"name_en": "Feral Triple Claw",
+					"damage": 2,
+					"metrics": "사거리 2.5m · 초고속 3연격",
+					"desc": "전방으로 돌진하며 양손의 맹수 발톱으로 3회 할퀴기 공격"
+				},
+				{
+					"id": "ENRAGED_ROAR",
+					"name_ko": "야수왕의 에메랄드 포효",
+					"name_en": "Enraged Emerald Roar",
+					"damage": 2,
+					"metrics": "2페이즈 전용 · 반경 5.2m 충격파",
+					"desc": "체력 50% 이하 시 맹독 에메랄드 기운을 폭발시켜 광역 피해 및 가속"
+				}
+			]
+		},
+		{
+			"id": "boss_crossbow_commander",
+			"stage_num": 3,
+			"name_ko": "폐허의 석궁 사령관",
+			"name_en": "Ruined Crossbow Commander",
+			"title_ko": "성벽 폐허를 지배하는 비전 저격수",
+			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_crossbow_commander.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/bosses/crossbow_boss_v1.png",
+			"hp": 28,
+			"phase2_threshold": 0.5,
+			"move_speed_p1": 3.8,
+			"move_speed_p2": 4.5,
+			"patterns": [
+				{
+					"id": "FAN_VOLLEY",
+					"name_ko": "3방향 부채꼴 폭발 일제사격",
+					"name_en": "Tri-Angle Fan Volley",
+					"damage": 2,
+					"metrics": "각도 [-22°, 0°, +22°] · 탄속 17.0 m/s",
+					"desc": "전방 3갈래로 비전 폭발 석궁 볼트를 동시 발사"
+				},
+				{
+					"id": "BACKSTEP_SHOT",
+					"name_ko": "백텀블링 공중 저격",
+					"name_en": "Acrobatic Backstep Snipe",
+					"damage": 2,
+					"metrics": "후방 도약 4.5 m/s · 초고속 탄속 22.0 m/s",
+					"desc": "근접 추격을 회피하며 뒤로 도약함과 동시에 관통 저격탄 발사"
+				},
+				{
+					"id": "CALTROP_TRAP",
+					"name_ko": "강철 마름쇠 지뢰 살포",
+					"name_en": "Caltrop Mine Scatter",
+					"damage": 1,
+					"metrics": "마름쇠 4개 설치 · 2초간 이동속도 40% 둔화",
+					"desc": "전장 바닥에 4개의 강철 마름쇠 트랩을 깔아 플레이어 기동 제한"
+				},
+				{
+					"id": "RAPID_BARRAGE",
+					"name_ko": "비전 5연발 기관 점사",
+					"name_en": "Arcane Rapid Barrage",
+					"damage": 2,
+					"metrics": "2페이즈 전용 · 5연속 고속 탄막",
+					"desc": "석궁 오버드라이브를 가동하여 플레이어를 향해 5연발 고속 사격"
+				}
+			]
+		},
+		{
+			"id": "boss_golem_guardian",
+			"stage_num": 4,
+			"name_ko": "티탄 골렘 가디언",
+			"name_en": "Titan Golem Guardian",
+			"title_ko": "돌의 성소를 지키는 불멸의 거석병",
+			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_golem_guardian.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/bosses/golem_boss_v1.png",
+			"hp": 32,
+			"phase2_threshold": 0.5,
+			"move_speed_p1": 3.2,
+			"move_speed_p2": 4.2,
+			"patterns": [
+				{
+					"id": "GROUND_SLAM",
+					"name_ko": "대지 붕괴 & 7연 암석 스파이크",
+					"name_en": "Tectonic Ground Slam",
+					"damage": 3,
+					"metrics": "반경 4.5m 충격파 + 암석 기둥 7개 융기",
+					"desc": "양 주먹으로 지면을 분쇄하여 주변 4.5m 충격파와 7개의 돌기둥 소환"
+				},
+				{
+					"id": "SPINNING_LARIAT",
+					"name_ko": "티탄 암석 회전 래리어트",
+					"name_en": "Spinning Stone Lariat",
+					"damage": 2,
+					"metrics": "회전 돌진 속도 11.5 m/s · 반경 2.6m",
+					"desc": "거대한 양팔을 수평 회전시키며 전장을 가로지르는 폭풍 돌진"
+				},
+				{
+					"id": "QUAKE_FISSURE",
+					"name_ko": "마그마 지각 균열 5연 폭발",
+					"name_en": "Magma Quake Fissure",
+					"damage": 3,
+					"metrics": "2페이즈 전용 · 전방 5단계 연쇄 용암 분출",
+					"desc": "전방 일직선 지면을 갈라 5개의 마그마 화염 기둥을 순차 폭발"
+				}
+			]
+		},
+		{
+			"id": "boss_abyssal_arbiter",
+			"stage_num": 5,
+			"name_ko": "심연의 심판관",
+			"name_en": "The Abyssal Arbiter",
+			"title_ko": "침묵의 성채 최심부의 공허 지배자",
+			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_abyssal_arbiter.gd",
+			"sprite_sheet": "res://assets/side_qv/sprites/bosses/final_boss_v1.png",
+			"hp": 30,
+			"phase2_threshold": 0.5,
+			"move_speed_p1": 4.2,
+			"move_speed_p2": 5.2,
+			"patterns": [
+				{
+					"id": "DARK_CRESCENT_WAVE",
+					"name_ko": "암흑 초승달 공허 검기",
+					"name_en": "Dark Crescent Void Wave",
+					"damage": 2,
+					"metrics": "탄속 13.5 m/s · 2페이즈 피해 3 강화",
+					"desc": "심연의 대검을 휘둘러 전방을 관통하는 흑자색 초승달 검기 사출"
+				},
+				{
+					"id": "SHADOW_BLINK_STRIKE",
+					"name_ko": "그림자 배후 순간이동 급습",
+					"name_en": "Shadow Blink Backstab",
+					"damage": 3,
+					"metrics": "플레이어 후방 2.2m 즉시 전이 후 참격",
+					"desc": "공허의 틈으로 사라진 뒤 플레이어 등 뒤 2.2m에 나타나 치명적인 베기 수행"
+				},
+				{
+					"id": "MELEE_CLEAVE",
+					"name_ko": "심판의 대검 2연격",
+					"name_en": "Arbiter Twin Cleave",
+					"damage": 2,
+					"metrics": "사거리 2.6m · 광역 횡베기",
+					"desc": "보이드 에너지를 머금은 대검으로 전방을 넓게 2회 베어냄"
+				},
+				{
+					"id": "JUDGMENT_STORM",
+					"name_ko": "종말의 심판 보이드 스톰",
+					"name_en": "Abyssal Judgment Storm",
+					"damage": 2,
+					"metrics": "2페이즈 궁극기 · 반경 5.5m 다단 공허 파동",
+					"desc": "공중으로 부양하며 성채 전체에 심연의 번개와 공허 충격파를 방사"
+				}
+			]
+		}
+	],
+	"sanctuary_upgrades": {
+		"currency_name_ko": "영혼 파편",
+		"currency_name_en": "Soul Shards",
+		"shop_items": [
+			{
+				"id": "hp_boost",
+				"name_ko": "생명의 축복 (Max HP +1)",
+				"cost_shards": 25,
+				"max_level": 2,
+				"effect_desc": "성기사의 최대 체력을 영구적으로 +1 증가 (최대 +2 HP)"
+			},
+			{
+				"id": "dmg_boost",
+				"name_ko": "칼날 연마 (Attack Power +1)",
+				"cost_shards": 35,
+				"max_level": 1,
+				"effect_desc": "모든 성검 기본 공격 및 콤보 피해량을 영구적으로 +1 증가"
+			},
+			{
+				"id": "shadow_dash",
+				"name_ko": "그림자 걸음 (Shadow Dash)",
+				"cost_shards": 50,
+				"max_level": 1,
+				"effect_desc": "적의 공격과 탄막을 무적으로 통과하는 그림자 회피 대시 해금"
+			},
+			{
+				"id": "heal_full",
+				"name_ko": "영혼의 성유 (체력 완전 회복)",
+				"cost_shards": 10,
+				"max_level": 99,
+				"effect_desc": "성스러운 기름으로 즉시 최대 체력까지 100% 회복"
+			},
+			{
+				"id": "shard_boost_30",
+				"name_ko": "성소의 기도 (파편 +30개 보급)",
+				"cost_shards": 0,
+				"max_level": 99,
+				"effect_desc": "성소의 축복(또는 VIP 즉시 수령)을 통해 영혼 파편 30개 즉시 획득"
+			}
+		],
+		"stage_relics": [
+			{
+				"stage_num": 1,
+				"id": "bastion_shield",
+				"name_ko": "타락한 사령관의 수호 방패",
+				"title_ko": "성기사의 황금 대검 & 이지스",
+				"rarity": "전설 유물",
+				"color_hex": "#ffd940",
+				"effect_desc": "저스트 패링 시 3배 치명타 반격 및 가드 시 황금 이지스 결계 전개"
+			},
+			{
+				"stage_num": 2,
+				"id": "shadow_cloak",
+				"name_ko": "심연 맹수의 그림자 망토",
+				"title_ko": "윈드러너의 질주 날개",
+				"rarity": "전설 유물",
+				"color_hex": "#1fc785",
+				"effect_desc": "그림자 대시 쿨타임 -25% 감소 및 이동 속도 영구 증가"
+			},
+			{
+				"stage_num": 3,
+				"id": "piercing_quiver",
+				"name_ko": "폐허 저격수의 예기 화살깃",
+				"title_ko": "비전 룬 크리스탈 대검",
+				"rarity": "전설 유물",
+				"color_hex": "#40e0ff",
+				"effect_desc": "3단 콤보 피니셔 검기 사거리 +40% 및 탄속 +20% 증가"
+			},
+			{
+				"stage_num": 4,
+				"id": "golem_pauldrons",
+				"name_ko": "고대 수호자의 룬 견갑",
+				"title_ko": "타이탄 암석 중갑",
+				"rarity": "신화 유물",
+				"color_hex": "#f2a633",
+				"effect_desc": "최대 체력 +1 영구 증가 및 착지 시 대지 강타 충격파 발생"
+			},
+			{
+				"stage_num": 5,
+				"id": "abyssal_crown",
+				"name_ko": "심연 심판관의 공허 날개깃",
+				"title_ko": "심연 정복자의 뿔 면류관",
+				"rarity": "신화 유물",
+				"color_hex": "#d973ff",
+				"effect_desc": "저스트 패링 치명타 강화 및 기본 공격력 +1 영구 상승"
+			}
+		]
+	}
+}

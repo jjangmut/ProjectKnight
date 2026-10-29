@@ -6,12 +6,14 @@ extends Control
 
 const SaveManagerClass := preload("res://scripts/system/save_manager.gd")
 const CampfireShopClass := preload("res://scripts/ui/campfire_shop.gd")
+const AXDataViewerClass := preload("res://scripts/ui/ax_data_viewer.gd")
 const CAMPAIGN_SCENE_PATH := "res://scenes/side_quarter_view/SideQVCampaign.tscn"
 const LEGACY_2D_CAMPAIGN_SCENE_PATH := "res://scenes/stage/Campaign.tscn"
 
 var btn_new_game: Button
 var btn_continue: Button
 var btn_shop: Button
+var btn_ax_data: Button
 var btn_settings: Button
 var btn_credits: Button
 
@@ -45,7 +47,7 @@ func _build_ui() -> void:
 
 	var main_vbox := VBoxContainer.new()
 	main_vbox.custom_minimum_size = Vector2(620, 520)
-	main_vbox.add_theme_constant_override("separation", 16)
+	main_vbox.add_theme_constant_override("separation", 12)
 	center.add_child(main_vbox)
 
 	# Title Header
@@ -65,7 +67,7 @@ func _build_ui() -> void:
 
 	# Spacer
 	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
+	spacer.custom_minimum_size = Vector2(0, 12)
 	main_vbox.add_child(spacer)
 
 	# Menu Buttons
@@ -80,6 +82,9 @@ func _build_ui() -> void:
 
 	btn_shop = _create_menu_button("🔥  성소 제단 강화 (Sanctuary)", _on_shop_pressed)
 	main_vbox.add_child(btn_shop)
+
+	btn_ax_data = _create_menu_button("📊  AX 기획 데이터 뷰어 (AX Data)", _on_ax_data_pressed)
+	main_vbox.add_child(btn_ax_data)
 
 	btn_settings = _create_menu_button("⚙  게임 설정 (Settings)", _on_settings_pressed)
 	main_vbox.add_child(btn_settings)
@@ -119,8 +124,8 @@ func _update_save_summary() -> void:
 func _create_menu_button(title: String, callback: Callable) -> Button:
 	var btn := Button.new()
 	btn.text = title
-	btn.custom_minimum_size = Vector2(440, 56)
-	btn.add_theme_font_size_override("font_size", 20)
+	btn.custom_minimum_size = Vector2(440, 48)
+	btn.add_theme_font_size_override("font_size", 19)
 
 	var normal_style := StyleBoxFlat.new()
 	normal_style.bg_color = Color("1a2b35")
@@ -156,6 +161,11 @@ func _on_shop_pressed() -> void:
 	shop.name = "CampfireShop"
 	add_child(shop)
 	shop.shop_closed.connect(func(): _update_save_summary())
+
+func _on_ax_data_pressed() -> void:
+	var viewer := AXDataViewerClass.new()
+	viewer.name = "AXDataViewer"
+	add_child(viewer)
 
 func _on_settings_pressed() -> void:
 	_open_settings_modal()

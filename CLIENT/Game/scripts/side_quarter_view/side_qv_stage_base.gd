@@ -12,6 +12,8 @@ const SideQVPlayerClass = preload("res://scripts/side_quarter_view/side_qv_playe
 const SideQVCameraClass = preload("res://scripts/side_quarter_view/side_qv_camera.gd")
 const QVMobileControlsClass = preload("res://scripts/quarter_view/qv_mobile_controls.gd")
 const BossHealthBarClass = preload("res://scripts/ui/boss_health_bar.gd")
+const AXDataViewerClass = preload("res://scripts/ui/ax_data_viewer.gd")
+const AXDataRegistryClass = preload("res://scripts/data/ax_data_registry.gd")
 
 const TexAvatarFrame = preload("res://assets/ui/hud_player_avatar_frame.png")
 const TexSoulGemFull = preload("res://assets/ui/hud_soul_gem_full.png")
@@ -260,6 +262,28 @@ func _setup_mobile_ui() -> void:
 	go_lbl.add_theme_constant_override("shadow_offset_x", 2)
 	go_lbl.add_theme_constant_override("shadow_offset_y", 2)
 	advance_banner.add_child(go_lbl)
+
+	# 5. Top-Right AX Data Quick Viewer Button
+	var ax_btn := Button.new()
+	ax_btn.name = "BtnOpenAXData"
+	ax_btn.text = "📊 AX 기획"
+	ax_btn.position = Vector2(952, 18)
+	ax_btn.size = Vector2(124, 38)
+	ax_btn.add_theme_font_size_override("font_size", 14)
+	ax_btn.pressed.connect(open_ax_data_viewer)
+	mobile_controls.add_child(ax_btn)
+
+
+func open_ax_data_viewer() -> Control:
+	if mobile_controls == null:
+		return null
+	var existing := mobile_controls.get_node_or_null("AXDataViewerModal") as Control
+	if existing != null:
+		return existing
+	var viewer: Control = AXDataViewerClass.new()
+	viewer.name = "AXDataViewerModal"
+	mobile_controls.add_child(viewer)
+	return viewer
 
 
 func _on_player_hp_changed(curr: int, m_hp: int) -> void:

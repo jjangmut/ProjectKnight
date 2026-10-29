@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROJECT KNIGHT — AX 기획 데이터 마스터 뷰어 (AX Data v2.0.0)</title>
+  <style>
+    :root {
+      --bg-deep: #070b10;
+      --bg-panel: #101923;
+      --bg-card: #13202d;
+      --border-gold: #ddc18a;
+      --border-slate: #2c4254;
+      --text-main: #f0e6d2;
+      --text-sub: #9aaeb8;
+      --accent-mint: #6ee7b7;
+      --accent-blue: #60a5fa;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-purple: #c084fc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #132232 0%, var(--bg-deep) 70%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.55;
+    }
+    .container { max-width: 1360px; margin: 0 auto; }
+    header {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-gold);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+      margin-bottom: 18px;
+    }
+    .brand h1 { font-size: 24px; color: var(--text-main); letter-spacing: 0.5px; }
+    .brand p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+    .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-input {
+      background: #091017;
+      border: 1px solid var(--border-slate);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 14px;
+    }
+    .search-input:focus { outline: none; border-color: var(--border-gold); }
+    .btn {
+      background: #1b2c3b;
+      border: 1px solid var(--border-slate);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .btn:hover, .btn.active {
+      background: #294358;
+      border-color: var(--border-gold);
+      color: #fff8e7;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-slate);
+      border-top: 3px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .kpi-card .label { font-size: 13px; color: var(--text-sub); }
+    .kpi-card .val { font-size: 22px; font-weight: 700; margin: 6px 0 4px; color: var(--border-gold); }
+    .kpi-card .desc { font-size: 12px; color: #cbd5e1; }
+    .card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-slate);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+    .card h2 { font-size: 18px; color: var(--border-gold); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 14px; }
+    .stat-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; font-size: 14px; }
+    .stat-name { width: 170px; color: #cbd5e1; }
+    .stat-bar-bg { flex: 1; height: 12px; background: #091119; border-radius: 6px; overflow: hidden; }
+    .stat-bar-fill { height: 100%; border-radius: 6px; }
+    .stat-val { width: 120px; text-align: right; font-weight: 600; color: #fff; }
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #1e3346;
+      color: var(--accent-mint);
+    }
+    .pattern-box {
+      background: #0b1219;
+      border-left: 3px solid var(--accent-blue);
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .swatch { width: 20px; height: 20px; border-radius: 5px; display: inline-block; border: 1px solid rgba(255,255,255,0.35); }
+    pre.json-box {
+      background: #070b10;
+      border: 1px solid var(--accent-mint);
+      color: #a7f3d0;
+      padding: 18px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 13px;
+      max-height: 72vh;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #1e2e3d; text-align: left; }
+    th { color: var(--border-gold); background: #0c141d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>📘 PROJECT KNIGHT — AX 기획 데이터 마스터 뷰어 (v2.0.0)</h1>
+        <p>프로젝트 나이트: 결의의 성기사와 심연의 성채 | Godot 4.7.2 Side Quarter-View Hybrid | Source: <code>res://data/ax_data/project_knight_ax_data.json</code></p>
+      </div>
+      <div class="controls">
+        <input id="searchInput" class="search-input" type="text" placeholder="🔍 기획 데이터 실시간 검색 (예: 패링, 골렘, 심판관...)" oninput="render()" />
+        <button id="jsonBtn" class="btn" onclick="toggleJson()">{ } JSON 원본 보기</button>
+      </div>
+    </header>
+
+    <div class="tabs" id="tabBar"></div>
+    <main id="contentArea"></main>
+  </div>
+
+  <script>
+    const AX_DATA = {
+      meta: {
+        ax_schema_version: "2.0.0",
+        project_id: "PROJECT_KNIGHT_SIDE_QV",
+        title_ko: "프로젝트 나이트: 결의의 성기사와 심연의 성채",
+        engine: "Godot 4.7.2 Stable (3D Side Quarter-View Hybrid)",
+        description: "Project Knight의 전체 기획 밸런스, 플레이어 액션 프레임, 스테이지 1~5 환경 및 웨이브 설계, 일반/엘리트 몬스터 5종, 보스 5종 및 17종 시그니처 패턴, 성소 제단 강화 및 전설 유물을 통합 관리하는 마스터 AX Data 레지스트리입니다."
+      },
+      player: {
+        id: "player_paladin",
+        name_ko: "결의의 성기사",
+        name_en: "Resolute Paladin",
+        base_stats: { max_hp: 8, move_speed_x: 7.5, move_speed_z: 4.8, dash_speed: 14.0, dash_duration: 0.22, jump_velocity: 6.8, gravity: 18.0, hit_invuln_duration: 0.65 },
+        combat: {
+          combo_steps: 3, base_attack_damage: 2, attack_duration: 0.20, attack_cooldown: 0.22, combo_reset_timer: 0.95, melee_reach_x: 2.9, melee_depth_z: 1.65,
+          finisher_beam: { name_ko: "3단 피니셔: 신성 관통창 검기", speed: 20.0, max_range: 24.0, damage: 2 }
+        },
+        defense_parry: { just_parry_window: 0.14, parry_enemy_stun_sec: 2.0, counter_buff_duration: 3.5, counter_damage_multiplier: 3.0, counter_attack_damage: 6 },
+        animations: [
+          { state: "IDLE", sheet: "idle_v1_aligned.png", grid: "2x2 (4f)", fps: 5, desc: "무게중심 정렬 대기 호흡 동작" },
+          { state: "RUN", sheet: "run_v2_aligned.png", grid: "3x2 (6f)", fps: 11, desc: "잔상 없는 선명한 전진 질주 동작" },
+          { state: "JUMP", sheet: "jump_v1.png", grid: "3x1 (3f)", fps: 8, desc: "체공 도약 및 하강 자세" },
+          { state: "DODGE", sheet: "dodge_v1.png", grid: "2x2 (4f)", fps: 14, desc: "무적 회피 대시 구르기/미끄러짐" },
+          { state: "ATTACK", sheet: "attack_v1_aligned.png", grid: "2x2 (4f)", fps: 20, desc: "0->1->2->3 순차 재생 성검 찌르기 & 3단 검기 발사" },
+          { state: "GUARD", sheet: "guard_v1_aligned.png", grid: "3x1 (3f)", fps: 8, desc: "성기사의 방패 방어 및 저스트 패링 자세" },
+          { state: "HURT", sheet: "hurt_v1.png", grid: "3x1 (3f)", fps: 10, desc: "피격 경직 및 0.65초 무적 점멸" },
+          { state: "DEAD", sheet: "death_v1.png", grid: "2x2 (4f)", fps: 6, desc: "체력 소진 시 쓰러짐 연출 및 조작 잠금" }
+        ]
+      },
+      stages: [
+        { stage_num: 1, id: "stage_1", name_ko: "1지역: 성문 외곽", name_en: "Citadel Terrace Gate", theme: "주간 고딕 성문 테라스 & 횃불 회랑", arena: "38m × 12m", ambient: "#9eb3d1", fog: 0.008, props: "고딕 성문 아치 윙 2기, 고대 룬 석주 4기, 점화 횃불 브레이저 4기", wave1: "성채 근위 보병 × 2기", heal: 2, boss: "성문 수호 기사단장", relic: "bastion_shield" },
+        { stage_num: 2, id: "stage_2", name_ko: "2지역: 야수숲 협곡", name_en: "Beastwood Forest Gorge", theme: "에메랄드 심연 숲 & 반딧불이 고목 협곡", arena: "40m × 12m", ambient: "#337340", fog: 0.018, props: "거대 고목 기둥 5기, 야수 뼈 토템 2기, 반딧불이 파티클 56개", wave1: "야수숲 맹수 × 2기", heal: 2, boss: "심연의 야수 우두머리", relic: "shadow_cloak" },
+        { stage_num: 3, id: "stage_3", name_ko: "3지역: 무너진 성벽 요새", name_en: "Ruined Crossbow Bastion", theme: "코발트 황혼 성벽 폐허 & 부유 마법 석편", arena: "38m × 12m", ambient: "#40598c", fog: 0.012, props: "무너진 흉벽 5구간, 부유 비전 석편 6기, 시안 룬 비전 램프 3기", wave1: "폐허 석궁병 × 2기", heal: 2, boss: "폐허의 석궁 사령관", relic: "piercing_quiver" },
+        { stage_num: 4, id: "stage_4", name_ko: "4지역: 돌의 성소", name_en: "Titan Stone Sanctuary", theme: "석양 마그마 거석 제단 & 고대 모놀리스", arena: "38m × 12m", ambient: "#8c4726", fog: 0.015, props: "2단 거석 제단, 고대 모놀리스 기둥 6기, 마그마 엠버 파티클 64개", wave1: "거석 헤비 골렘 × 2기", heal: 2, boss: "티탄 골렘 가디언", relic: "golem_pauldrons" },
+        { stage_num: 5, id: "stage_5", name_ko: "5지역: 침묵의 성채", name_en: "Silent Abyssal Citadel", theme: "딥 바이올렛 보이드 성채 & 심판의 왕좌", arena: "38m × 12m", ambient: "#381f61", fog: 0.016, props: "흑요석 대리석 회랑, 블러드 룬 왕좌 포디움, 보이드 룬 오벨리스크 6기", wave1: "엘리트 심연 기사 × 2기", heal: 2, boss: "심연의 심판관", relic: "abyssal_crown" }
+      ],
+      enemies: [
+        { id: "enemy_melee", stage: 1, name_ko: "성채 근위 보병", name_en: "Citadel Vanguard Footman", role: "근접 추격형 표준 보병", hp: 4, speed: 3.6, dmg: 1, cd: 1.2, mech: "방패와 롱소드로 전열을 유지하며 근접 시 수평 베기 수행" },
+        { id: "enemy_beast", stage: 2, name_ko: "야수숲 맹수", name_en: "Beastwood Pouncer", role: "고속 도약 기습형 몬스터", hp: 5, speed: 3.8, dmg: 1, cd: 1.8, mech: "중거리에서 붉은 안광 예고 후 8.8 m/s 고속 덮치기(Pounce) 돌진" },
+        { id: "enemy_ranged", stage: 3, name_ko: "폐허 석궁병", name_en: "Ruined Bastion Crossbowman", role: "원거리 카이팅 저격병", hp: 4, speed: 3.2, dmg: 1, cd: 2.4, mech: "플레이어와 5.2m 거리를 유지하며 탄속 15.0 m/s 비전 석궁 볼트 발사" },
+        { id: "enemy_golem", stage: 4, name_ko: "거석 헤비 골렘", name_en: "Monolith Heavy Golem", role: "중장갑 고체력 브루저", hp: 8, speed: 2.6, dmg: 2, cd: 1.6, mech: "2.0m 거대 체구와 높은 체력을 지니며 강력한 양손 대지 강타(피해 2) 구사" },
+        { id: "enemy_elite_knight", stage: 5, name_ko: "엘리트 심연 기사", name_en: "Abyssal Elite Guard", role: "최종장 정예 근위 기사", hp: 6, speed: 4.0, dmg: 1, cd: 1.0, mech: "보이드 퍼플 오라 링을 두르고 빠른 기동성과 짧은 공격 주기로 압박" }
+      ],
+      bosses: [
+        {
+          stage: 1, id: "boss_commander", name_ko: "성문 수호 기사단장", title_ko: "타락한 성문의 첫 번째 방벽", hp: 24, spd1: 3.8, spd2: 4.8,
+          patterns: [
+            { id: "SHIELD_CHARGE", name_ko: "결의의 방패 돌진", dmg: 2, metrics: "돌진 속도 12.0 m/s (2페이즈 14.5 m/s)", desc: "전방 일직선으로 중장갑 방패를 세우고 초고속 쇄도, 저스트 패링 가능" },
+            { id: "TRIPLE_CLEAVE", name_ko: "대검 3연속 참격", dmg: 2, metrics: "사거리 2.4m · 3연타 전진 베기", desc: "근접한 대상을 향해 묵직한 대검을 3회 연속 휘두르며 압박" },
+            { id: "QUAKE_RING", name_ko: "대지 분쇄 충격파", dmg: 2, metrics: "반경 4.2m 360도 링 충격파", desc: "대검으로 지면을 강타하여 주변 4.2m 반경에 황금빛 파동 방출" }
+          ]
+        },
+        {
+          stage: 2, id: "boss_beast_chieftain", name_ko: "심연의 야수 우두머리", title_ko: "야수숲 협곡의 포식자 군주", hp: 28, spd1: 4.2, spd2: 5.6,
+          patterns: [
+            { id: "POUNCE_LEAP", name_ko: "포식자의 공중 도약 강습", dmg: 2, metrics: "도약 속도 9.0~11.5 m/s · 착지 충격파 반경 3.6m", desc: "높이 도약하여 플레이어 위치로 급강하 후 착지 충격파 발생" },
+            { id: "TRIPLE_CLAW_STRIKE", name_ko: "광란의 3연속 발톱 난무", dmg: 2, metrics: "사거리 2.5m · 초고속 3연격", desc: "전방으로 돌진하며 양손의 맹수 발톱으로 3회 할퀴기 공격" },
+            { id: "ENRAGED_ROAR", name_ko: "야수왕의 에메랄드 포효", dmg: 2, metrics: "2페이즈 전용 · 반경 5.2m 충격파", desc: "체력 50% 이하 시 맹독 에메랄드 기운을 폭발시켜 광역 피해 및 가속" }
+          ]
+        },
+        {
+          stage: 3, id: "boss_crossbow_commander", name_ko: "폐허의 석궁 사령관", title_ko: "성벽 폐허를 지배하는 비전 저격수", hp: 28, spd1: 3.8, spd2: 4.5,
+          patterns: [
+            { id: "FAN_VOLLEY", name_ko: "3방향 부채꼴 폭발 일제사격", dmg: 2, metrics: "각도 [-22°, 0°, +22°] · 탄속 17.0 m/s", desc: "전방 3갈래로 비전 폭발 석궁 볼트를 동시 발사" },
+            { id: "BACKSTEP_SHOT", name_ko: "백텀블링 공중 저격", dmg: 2, metrics: "후방 도약 4.5 m/s · 초고속 탄속 22.0 m/s", desc: "근접 추격을 회피하며 뒤로 도약함과 동시에 관통 저격탄 발사" },
+            { id: "CALTROP_TRAP", name_ko: "강철 마름쇠 지뢰 살포", dmg: 1, metrics: "마름쇠 4개 설치 · 2초간 이동속도 40% 둔화", desc: "전장 바닥에 4개의 강철 마름쇠 트랩을 깔아 플레이어 기동 제한" },
+            { id: "RAPID_BARRAGE", name_ko: "비전 5연발 기관 점사", dmg: 2, metrics: "2페이즈 전용 · 5연속 고속 탄막", desc: "석궁 오버드라이브를 가동하여 플레이어를 향해 5연발 고속 사격" }
+          ]
+        },
+        {
+          stage: 4, id: "boss_golem_guardian", name_ko: "티탄 골렘 가디언", title_ko: "돌의 성소를 지키는 불멸의 거석병", hp: 32, spd1: 3.2, spd2: 4.2,
+          patterns: [
+            { id: "GROUND_SLAM", name_ko: "대지 붕괴 & 7연 암석 스파이크", dmg: 3, metrics: "반경 4.5m 충격파 + 암석 기둥 7개 융기", desc: "양 주먹으로 지면을 분쇄하여 주변 4.5m 충격파와 7개의 돌기둥 소환" },
+            { id: "SPINNING_LARIAT", name_ko: "티탄 암석 회전 래리어트", dmg: 2, metrics: "회전 돌진 속도 11.5 m/s · 반경 2.6m", desc: "거대한 양팔을 수평 회전시키며 전장을 가로지르는 폭풍 돌진" },
+            { id: "QUAKE_FISSURE", name_ko: "마그마 지각 균열 5연 폭발", dmg: 3, metrics: "2페이즈 전용 · 전방 5단계 연쇄 용암 분출", desc: "전방 일직선 지면을 갈라 5개의 마그마 화염 기둥을 순차 폭발" }
+          ]
+        },
+        {
+          stage: 5, id: "boss_abyssal_arbiter", name_ko: "심연의 심판관", title_ko: "침묵의 성채 최심부의 공허 지배자", hp: 30, spd1: 4.2, spd2: 5.2,
+          patterns: [
+            { id: "DARK_CRESCENT_WAVE", name_ko: "암흑 초승달 공허 검기", dmg: 2, metrics: "탄속 13.5 m/s · 2페이즈 피해 3 강화", desc: "심연의 대검을 휘둘러 전방을 관통하는 흑자색 초승달 검기 사출" },
+            { id: "SHADOW_BLINK_STRIKE", name_ko: "그림자 배후 순간이동 급습", dmg: 3, metrics: "플레이어 후방 2.2m 즉시 전이 후 참격", desc: "공허의 틈으로 사라진 뒤 플레이어 등 뒤 2.2m에 나타나 치명적인 베기 수행" },
+            { id: "MELEE_CLEAVE", name_ko: "심판의 대검 2연격", dmg: 2, metrics: "사거리 2.6m · 광역 횡베기", desc: "보이드 에너지를 머금은 대검으로 전방을 넓게 2회 베어냄" },
+            { id: "JUDGMENT_STORM", name_ko: "종말의 심판 보이드 스톰", dmg: 2, metrics: "2페이즈 궁극기 · 반경 5.5m 다단 공허 파동", desc: "공중으로 부양하며 성채 전체에 심연의 번개와 공허 충격파를 방사" }
+          ]
+        }
+      ],
+      shop: [
+        { id: "hp_boost", name_ko: "생명의 축복 (Max HP +1)", cost: 25, max: 2, desc: "성기사의 최대 체력을 영구적으로 +1 증가 (최대 +2 HP)" },
+        { id: "dmg_boost", name_ko: "칼날 연마 (Attack Power +1)", cost: 35, max: 1, desc: "모든 성검 기본 공격 및 콤보 피해량을 영구적으로 +1 증가" },
+        { id: "shadow_dash", name_ko: "그림자 걸음 (Shadow Dash)", cost: 50, max: 1, desc: "적의 공격과 탄막을 무적으로 통과하는 그림자 회피 대시 해금" },
+        { id: "heal_full", name_ko: "영혼의 성유 (체력 완전 회복)", cost: 10, max: 99, desc: "성스러운 기름으로 즉시 최대 체력까지 100% 회복" },
+        { id: "shard_boost_30", name_ko: "성소의 기도 (파편 +30개 보급)", cost: 0, max: 99, desc: "성소의 축복(또는 VIP 즉시 수령)을 통해 영혼 파편 30개 즉시 획득" }
+      ],
+      relics: [
+        { stage: 1, id: "bastion_shield", name_ko: "타락한 사령관의 수호 방패", title_ko: "성기사의 황금 대검 & 이지스", rarity: "전설 유물", color: "#ffd940", desc: "저스트 패링 시 3배 치명타 반격 및 가드 시 황금 이지스 결계 전개" },
+        { stage: 2, id: "shadow_cloak", name_ko: "심연 맹수의 그림자 망토", title_ko: "윈드러너의 질주 날개", rarity: "전설 유물", color: "#1fc785", desc: "그림자 대시 쿨타임 -25% 감소 및 이동 속도 영구 증가" },
+        { stage: 3, id: "piercing_quiver", name_ko: "폐허 저격수의 예기 화살깃", title_ko: "비전 룬 크리스탈 대검", rarity: "전설 유물", color: "#40e0ff", desc: "3단 콤보 피니셔 검기 사거리 +40% 및 탄속 +20% 증가" },
+        { stage: 4, id: "golem_pauldrons", name_ko: "고대 수호자의 룬 견갑", title_ko: "타이탄 암석 중갑", rarity: "신화 유물", color: "#f2a633", desc: "최대 체력 +1 영구 증가 및 착지 시 대지 강타 충격파 발생" },
+        { stage: 5, id: "abyssal_crown", name_ko: "심연 심판관의 공허 날개깃", title_ko: "심연 정복자의 뿔 면류관", rarity: "신화 유물", color: "#d973ff", desc: "저스트 패링 치명타 강화 및 기본 공격력 +1 영구 상승" }
+      ]
+    };
+
+    const TABS = ["📊 전체 개요", "⚔ 플레이어 & 전투", "🏰 스테이지 1~5", "👾 몬스터 도감", "👑 보스 & 패턴", "🔥 성소 & 유물"];
+    let currentTab = 0;
+    let showJson = false;
+
+    function selectTab(idx) {
+      currentTab = idx;
+      showJson = false;
+      document.getElementById('searchInput').value = '';
+      render();
+    }
+
+    function toggleJson() {
+      showJson = !showJson;
+      render();
+    }
+
+    function statBar(name, val, max, text, color) {
+      const pct = Math.min(100, Math.max(5, (val / max) * 100));
+      return `<div class="stat-row">
+        <div class="stat-name">${name}</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+        <div class="stat-val">${text}</div>
+      </div>`;
+    }
+
+    function render() {
+      const tabBar = document.getElementById('tabBar');
+      tabBar.innerHTML = TABS.map((t, i) => `<button class="btn ${i === currentTab && !showJson ? 'active' : ''}" onclick="selectTab(${i})">${t}</button>`).join('');
+      document.getElementById('jsonBtn').textContent = showJson ? '📋 카드 뷰로 보기' : '{ } JSON 원본 보기';
+
+      const area = document.getElementById('contentArea');
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      if (showJson) {
+        area.innerHTML = `<pre class="json-box">${JSON.stringify(AX_DATA, null, 2)}</pre>`;
+        return;
+      }
+
+      if (q.length > 0) {
+        const matches = [];
+        if (JSON.stringify(AX_DATA.player).toLowerCase().includes(q)) matches.push({ cat: "플레이어", title: AX_DATA.player.name_ko, desc: "HP 8 · 이동속도 7.5 · 3단 성검 콤보 & 신성 관통창 검기 · 저스트 패링 0.14s" });
+        AX_DATA.stages.forEach(s => { if (JSON.stringify(s).toLowerCase().includes(q)) matches.push({ cat: `Stage ${s.stage_num}`, title: s.name_ko, desc: `${s.theme} | 보스: ${s.boss} | 웨이브: ${s.wave1}` }); });
+        AX_DATA.enemies.forEach(e => { if (JSON.stringify(e).toLowerCase().includes(q)) matches.push({ cat: `몬스터 (Stage ${e.stage})`, title: `${e.name_ko} (${e.role})`, desc: `HP ${e.hp} · 속도 ${e.speed} · ${e.mech}` }); });
+        AX_DATA.bosses.forEach(b => { if (JSON.stringify(b).toLowerCase().includes(q)) matches.push({ cat: `보스 (Stage ${b.stage})`, title: `${b.name_ko} — ${b.title_ko}`, desc: `HP ${b.hp} · 패턴: ${b.patterns.map(p=>p.name_ko).join(', ')}` }); });
+        AX_DATA.relics.forEach(r => { if (JSON.stringify(r).toLowerCase().includes(q)) matches.push({ cat: `유물 (Stage ${r.stage})`, title: `[${r.rarity}] ${r.name_ko}`, desc: r.desc }); });
+        area.innerHTML = `<div class="card"><h2>🔍 '${q}' 검색 결과 (${matches.length}건)</h2>${matches.map(m => `<div class="pattern-box"><span class="badge">${m.cat}</span> <strong>${m.title}</strong><p style="margin-top:4px;color:#cbd5e1;">${m.desc}</p></div>`).join('') || '<p>일치하는 항목이 없습니다.</p>'}</div>`;
+        return;
+      }
+
+      if (currentTab === 0) {
+        area.innerHTML = `
+          <div class="card">
+            <h2>🏛 ${AX_DATA.meta.title_ko}</h2>
+            <p style="color:#cbd5e1;">${AX_DATA.meta.description}</p>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="label">캠페인 스테이지</div><div class="val">5 개 지역</div><div class="desc">Stage 1 성문 외곽 ~ Stage 5 침묵의 성채</div></div>
+            <div class="kpi-card"><div class="label">보스 & 시그니처 패턴</div><div class="val">보스 5종 / 패턴 17종</div><div class="desc">전 보스 2페이즈 각성 및 전용 기믹 탑재</div></div>
+            <div class="kpi-card"><div class="label">일반/엘리트 몬스터</div><div class="val">5 종 아키타입</div><div class="desc">보병 · 도약 맹수 · 석궁병 · 거석 골렘 · 심연 기사</div></div>
+            <div class="kpi-card"><div class="label">플레이어 액션 상태</div><div class="val">8 종 애니메이션</div><div class="desc">3단 성검 찌르기 · 관통창 검기 · 저스트 패링</div></div>
+            <div class="kpi-card"><div class="label">성소 강화 & 유물</div><div class="val">강화 5종 / 유물 5종</div><div class="desc">영혼 파편 영구 성장 및 전설/신화 유물</div></div>
+            <div class="kpi-card"><div class="label">카메라 & 물리 규격</div><div class="val">Pitch -32° / FOV 42°</div><div class="desc">사이드 쿼터뷰 벨트스크롤 · 4면 경계벽</div></div>
+          </div>`;
+      } else if (currentTab === 1) {
+        const p = AX_DATA.player;
+        area.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <h2>🛡 ${p.name_ko} (${p.name_en}) 기본 스탯</h2>
+              ${statBar('최대 체력 (Max HP)', p.base_stats.max_hp, 12, p.base_stats.max_hp + ' HP', '#ef4444')}
+              ${statBar('횡이동 속도 (Speed X)', p.base_stats.move_speed_x, 15, p.base_stats.move_speed_x + ' m/s', '#38bdf8')}
+              ${statBar('종이동 속도 (Depth Z)', p.base_stats.move_speed_z, 15, p.base_stats.move_speed_z + ' m/s', '#34d399')}
+              ${statBar('회피 대시 속도 (Dash)', p.base_stats.dash_speed, 20, p.base_stats.dash_speed + ' m/s', '#a855f7')}
+              ${statBar('피격 무적 (i-Frame)', p.base_stats.hit_invuln_duration, 1.5, p.base_stats.hit_invuln_duration + ' 초', '#eab308')}
+            </div>
+            <div class="card">
+              <h2>⚔ 3단 성검 콤보 & 저스트 패링 공식</h2>
+              <p>• <strong>기본 공격력:</strong> 2 DMG (지속 0.20s / 쿨타임 0.22s / 콤보 유지 0.95s)</p>
+              <p>• <strong>하이브리드 근접 판정:</strong> 전방 X 2.9m × 깊이 Z ±1.65m (100% 적중 보장)</p>
+              <p>• <strong>3단 피니셔 검기:</strong> 탄속 20.0 m/s · 사거리 24.0m · 관통 피해 2 DMG</p>
+              <p>• <strong>저스트 패링:</strong> 0.14초 이내 가드 시 피해 100% 무효화 + 적 2.0초 스턴</p>
+              <p>• <strong>패링 카운터:</strong> 3.5초간 다음 공격 3배 피해 (6 DMG 황금 강타)</p>
+            </div>
+          </div>
+          <div class="card">
+            <h2>🎞 플레이어 상태별 스프라이트 시트 규격 (780×780 무게중심 정렬)</h2>
+            <table>
+              <thead><tr><th>상태 (State)</th><th>스프라이트 시트</th><th>그리드 (프레임)</th><th>FPS</th><th>기획 설명</th></tr></thead>
+              <tbody>${p.animations.map(a => `<tr><td><span class="badge">${a.state}</span></td><td><code>${a.sheet}</code></td><td>${a.grid}</td><td>${a.fps} FPS</td><td>${a.desc}</td></tr>`).join('')}</tbody>
+            </table>
+          </div>`;
+      } else if (currentTab === 2) {
+        area.innerHTML = AX_DATA.stages.map(s => `
+          <div class="card" style="border-left: 5px solid ${s.ambient};">
+            <h2><span class="swatch" style="background:${s.ambient};"></span> STAGE ${s.stage_num} — ${s.name_ko} (${s.name_en})</h2>
+            <p>• <strong>테마:</strong> ${s.theme} | <strong>아레나 규격:</strong> ${s.arena} | <strong>포그 밀도:</strong> ${s.fog}</p>
+            <p>• <strong>환경 프롭:</strong> ${s.props}</p>
+            <p>• <strong>진행 루프:</strong> Wave 1 (${s.wave1}) 섬멸 ➔ <strong>+${s.heal} HP 성스러운 회복</strong> ➔ 보스 조우 (<strong>👑 ${s.boss}</strong>) ➔ 클리어 유물 (<code>${s.relic}</code>)</p>
+          </div>`).join('');
+      } else if (currentTab === 3) {
+        area.innerHTML = `<div class="grid-2">${AX_DATA.enemies.map(e => `
+          <div class="card">
+            <h2>[Stage ${e.stage}] ${e.name_ko} (${e.name_en})</h2>
+            <p style="color:var(--text-sub);margin-bottom:8px;">역할군: ${e.role} | ID: <code>${e.id}</code></p>
+            ${statBar('체력 (HP)', e.hp, 10, e.hp + ' HP', '#ef4444')}
+            ${statBar('이동 속도', e.speed, 10, e.speed + ' m/s', '#38bdf8')}
+            ${statBar('공격력 / 주기', e.dmg, 4, e.dmg + ' DMG (' + e.cd + 's)', '#f59e0b')}
+            <p style="margin-top:8px;">💡 <strong>고유 기믹:</strong> ${e.mech}</p>
+          </div>`).join('')}</div>`;
+      } else if (currentTab === 4) {
+        area.innerHTML = AX_DATA.bosses.map(b => `
+          <div class="card">
+            <h2>👑 [Stage ${b.stage} 보스] ${b.name_ko} — ${b.title_ko}</h2>
+            <p style="color:#fde68a;margin-bottom:8px;">최대 체력: <strong>${b.hp} HP</strong> | 1페이즈 속도: ${b.spd1} m/s ➔ 2페이즈(HP 50% 이하) 속도: ${b.spd2} m/s</p>
+            ${b.patterns.map(pat => `
+              <div class="pattern-box">
+                <strong>⚡ [${pat.id}] ${pat.name_ko}</strong> — <span style="color:#fca5a5;">피해량: ${pat.dmg} DMG</span> | <span style="color:#93c5fd;">${pat.metrics}</span>
+                <p style="color:#cbd5e1;font-size:13px;margin-top:3px;">↳ ${pat.desc}</p>
+              </div>`).join('')}
+          </div>`).join('');
+      } else if (currentTab === 5) {
+        area.innerHTML = `
+          <div class="card">
+            <h2>🔥 화톳불의 영혼 제단 (Campfire Soul Altar) 영구 강화 테이블</h2>
+            <table>
+              <thead><tr><th>아이템 ID</th><th>강화 명칭</th><th>비용 (영혼 파편)</th><th>최대 레벨</th><th>강화 효과</th></tr></thead>
+              <tbody>${AX_DATA.shop.map(s => `<tr><td><code>${s.id}</code></td><td><strong>${s.name_ko}</strong></td><td>${s.cost} Shards</td><td>Lv.${s.max}</td><td>${s.desc}</td></tr>`).join('')}</tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h2>🏆 스테이지 보스 정복 유물 & 외형 진화 (Stage Relics)</h2>
+            <table>
+              <thead><tr><th>스테이지</th><th>등급</th><th>유물 명칭</th><th>외형 진화 타이틀</th><th>유물 패시브 효과</th></tr></thead>
+              <tbody>${AX_DATA.relics.map(r => `<tr><td>Stage ${r.stage}</td><td><span class="badge" style="color:${r.color};">${r.rarity}</span></td><td><strong>${r.name_ko}</strong></td><td>${r.title_ko}</td><td>${r.desc}</td></tr>`).join('')}</tbody>
+            </table>
+          </div>`;
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
