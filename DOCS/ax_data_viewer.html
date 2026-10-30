@@ -3,152 +3,174 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PROJECT KNIGHT — AX 기획 데이터 마스터 뷰어 (AX Data v2.0.0)</title>
+  <title>HEROES WAR : AX TACTICAL CODEX v2.0 — Project Knight</title>
   <style>
     :root {
-      --bg-deep: #070b10;
-      --bg-panel: #101923;
-      --bg-card: #13202d;
-      --border-gold: #ddc18a;
-      --border-slate: #2c4254;
-      --text-main: #f0e6d2;
-      --text-sub: #9aaeb8;
-      --accent-mint: #6ee7b7;
-      --accent-blue: #60a5fa;
-      --accent-red: #f87171;
-      --accent-amber: #fbbf24;
+      --bg-deep: #060a10;
+      --bg-panel: #0e1622;
+      --bg-card: #101b29;
+      --accent-amber: #ffb800;
+      --accent-cyan: #00e5ff;
+      --accent-crimson: #ff3b5c;
+      --accent-emerald: #34d399;
       --accent-purple: #c084fc;
+      --border-slate: #22364a;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Pretendard', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #132232 0%, var(--bg-deep) 70%);
+      background:
+        linear-gradient(180deg, rgba(255,184,0,0.06) 0%, transparent 180px),
+        radial-gradient(circle at 80% 0%, #102438 0%, var(--bg-deep) 70%);
       color: var(--text-main);
       min-height: 100vh;
-      padding: 24px;
+      padding: 20px;
       line-height: 1.55;
+      border-top: 4px solid var(--accent-amber);
     }
-    .container { max-width: 1360px; margin: 0 auto; }
+    .container { max-width: 1380px; margin: 0 auto; }
     header {
       background: var(--bg-panel);
-      border: 2px solid var(--border-gold);
-      border-radius: 12px;
-      padding: 20px 24px;
+      border: 2px solid var(--accent-cyan);
+      border-left: 8px solid var(--accent-amber);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      padding: 18px 24px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
-      margin-bottom: 18px;
+      box-shadow: 0 12px 32px rgba(0, 229, 255, 0.12);
+      margin-bottom: 16px;
     }
-    .brand h1 { font-size: 24px; color: var(--text-main); letter-spacing: 0.5px; }
-    .brand p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+    .brand-tag {
+      display: inline-block;
+      background: var(--accent-amber);
+      color: #060a10;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 3px 10px;
+      margin-bottom: 4px;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+    }
+    .brand h1 { font-size: 22px; color: var(--text-main); letter-spacing: 0.6px; }
+    .brand p { font-size: 12px; color: var(--accent-cyan); margin-top: 2px; font-weight: 600; }
     .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .search-input {
-      background: #091017;
-      border: 1px solid var(--border-slate);
+      background: #070c14;
+      border: 1px solid var(--accent-cyan);
       color: var(--text-main);
       padding: 10px 14px;
-      border-radius: 8px;
-      width: 300px;
-      font-size: 14px;
+      width: 290px;
+      font-size: 13px;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
     }
-    .search-input:focus { outline: none; border-color: var(--border-gold); }
+    .search-input:focus { outline: none; border-color: var(--accent-amber); }
     .btn {
-      background: #1b2c3b;
+      background: #0f1824;
       border: 1px solid var(--border-slate);
-      color: var(--text-main);
-      padding: 10px 16px;
-      border-radius: 8px;
+      border-left: 4px solid var(--accent-cyan);
+      color: var(--text-sub);
+      padding: 10px 14px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       transition: all 0.15s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
     }
     .btn:hover, .btn.active {
-      background: #294358;
-      border-color: var(--border-gold);
-      color: #fff8e7;
+      background: #2b200b;
+      border-color: var(--accent-amber);
+      border-left: 6px solid var(--accent-amber);
+      color: #fffbeb;
     }
     .tabs {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
     .kpi-card {
       background: var(--bg-card);
       border: 1px solid var(--border-slate);
-      border-top: 3px solid var(--border-gold);
-      border-radius: 10px;
-      padding: 16px;
+      border-left: 5px solid var(--accent-cyan);
+      padding: 14px 16px;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
     }
-    .kpi-card .label { font-size: 13px; color: var(--text-sub); }
-    .kpi-card .val { font-size: 22px; font-weight: 700; margin: 6px 0 4px; color: var(--border-gold); }
+    .kpi-card .label { font-size: 12px; color: var(--text-sub); font-weight: 700; }
+    .kpi-card .val { font-size: 20px; font-weight: 800; margin: 5px 0 3px; color: var(--accent-amber); }
     .kpi-card .desc { font-size: 12px; color: #cbd5e1; }
     .card {
       background: var(--bg-panel);
       border: 1px solid var(--border-slate);
-      border-radius: 10px;
-      padding: 18px 20px;
-      margin-bottom: 14px;
+      border-left: 6px solid var(--accent-cyan);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
     }
-    .card h2 { font-size: 18px; color: var(--border-gold); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 14px; }
-    .stat-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; font-size: 14px; }
-    .stat-name { width: 170px; color: #cbd5e1; }
-    .stat-bar-bg { flex: 1; height: 12px; background: #091119; border-radius: 6px; overflow: hidden; }
-    .stat-bar-fill { height: 100%; border-radius: 6px; }
-    .stat-val { width: 120px; text-align: right; font-weight: 600; color: #fff; }
+    .card.amber { border-left-color: var(--accent-amber); }
+    .card.crimson { border-left-color: var(--accent-crimson); }
+    .card.emerald { border-left-color: var(--accent-emerald); }
+    .card.purple { border-left-color: var(--accent-purple); }
+    .card h2 { font-size: 17px; color: var(--accent-amber); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 12px; }
+    .stat-row { display: flex; align-items: center; gap: 12px; margin: 7px 0; font-size: 13px; }
+    .stat-name { width: 165px; color: #cbd5e1; font-weight: 600; }
+    .stat-bar-bg { flex: 1; height: 11px; background: #060a10; border: 1px solid #1e293b; overflow: hidden; }
+    .stat-bar-fill { height: 100%; }
+    .stat-val { width: 125px; text-align: right; font-weight: 700; color: #fff; }
     .badge {
       display: inline-block;
-      padding: 3px 9px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      background: #1e3346;
-      color: var(--accent-mint);
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #162636;
+      color: var(--accent-cyan);
+      clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
     }
+    .badge.ssr { background: var(--accent-crimson); color: #fff; }
+    .badge.amber { background: var(--accent-amber); color: #060a10; }
     .pattern-box {
-      background: #0b1219;
-      border-left: 3px solid var(--accent-blue);
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin-top: 8px;
+      background: #080d15;
+      border: 1px solid #1e3448;
+      border-left: 4px solid var(--accent-cyan);
+      padding: 9px 14px;
+      margin-top: 7px;
     }
-    .swatch { width: 20px; height: 20px; border-radius: 5px; display: inline-block; border: 1px solid rgba(255,255,255,0.35); }
     pre.json-box {
-      background: #070b10;
-      border: 1px solid var(--accent-mint);
-      color: #a7f3d0;
+      background: #05080d;
+      border: 1px solid var(--accent-cyan);
+      border-left: 6px solid var(--accent-amber);
+      color: #6ee7b7;
       padding: 18px;
-      border-radius: 10px;
       overflow-x: auto;
-      font-size: 13px;
+      font-size: 12px;
       max-height: 72vh;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
-    th, td { padding: 10px 12px; border-bottom: 1px solid #1e2e3d; text-align: left; }
-    th { color: var(--border-gold); background: #0c141d; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+    th, td { padding: 9px 12px; border-bottom: 1px solid #1a2938; text-align: left; }
+    th { color: var(--accent-amber); background: #091019; font-weight: 800; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="brand">
-        <h1>📘 PROJECT KNIGHT — AX 기획 데이터 마스터 뷰어 (v2.0.0)</h1>
-        <p>프로젝트 나이트: 결의의 성기사와 심연의 성채 | Godot 4.7.2 Side Quarter-View Hybrid | Source: <code>res://data/ax_data/project_knight_ax_data.json</code></p>
+        <span class="brand-tag">◢ HEROES WAR TACTICAL CODEX</span>
+        <h1>PROJECT KNIGHT : COUNTERATTACK — AX TACTICAL DATA TERMINAL (v2.0.0)</h1>
+        <p>● SYSTEM ONLINE  |  GODOT 4.7.2 SIDE QUARTER-VIEW 3D  |  DB: res://data/ax_data/project_knight_ax_data.json</p>
       </div>
       <div class="controls">
-        <input id="searchInput" class="search-input" type="text" placeholder="🔍 기획 데이터 실시간 검색 (예: 패링, 골렘, 심판관...)" oninput="render()" />
-        <button id="jsonBtn" class="btn" onclick="toggleJson()">{ } JSON 원본 보기</button>
+        <input id="searchInput" class="search-input" type="text" placeholder="🔍 전술 키워드 검색 (패링, 골렘, 심판관...)" oninput="render()" />
+        <button id="jsonBtn" class="btn" onclick="toggleJson()">{ } RAW JSON</button>
       </div>
     </header>
 
@@ -161,20 +183,14 @@
       meta: {
         ax_schema_version: "2.0.0",
         project_id: "PROJECT_KNIGHT_SIDE_QV",
-        title_ko: "프로젝트 나이트: 결의의 성기사와 심연의 성채",
-        engine: "Godot 4.7.2 Stable (3D Side Quarter-View Hybrid)",
-        description: "Project Knight의 전체 기획 밸런스, 플레이어 액션 프레임, 스테이지 1~5 환경 및 웨이브 설계, 일반/엘리트 몬스터 5종, 보스 5종 및 17종 시그니처 패턴, 성소 제단 강화 및 전설 유물을 통합 관리하는 마스터 AX Data 레지스트리입니다."
+        title_ko: "프로젝트 나이트: 결의의 성기사와 심연의 성채 (Heroes War Tactical Edition)",
+        description: "Project Knight의 전체 기획 밸런스, SSR 영웅 액션 프레임, 작전 구역(OP-01~OP-05) 환경 및 웨이브 설계, 적성 개체 5종, 보스 5기 및 17종 전술 패턴, 성소 코어 강화 및 전설/신화 아티팩트를 통합 관리하는 마스터 AX Data 터미널입니다."
       },
       player: {
         id: "player_paladin",
         name_ko: "결의의 성기사",
         name_en: "Resolute Paladin",
         base_stats: { max_hp: 8, move_speed_x: 7.5, move_speed_z: 4.8, dash_speed: 14.0, dash_duration: 0.22, jump_velocity: 6.8, gravity: 18.0, hit_invuln_duration: 0.65 },
-        combat: {
-          combo_steps: 3, base_attack_damage: 2, attack_duration: 0.20, attack_cooldown: 0.22, combo_reset_timer: 0.95, melee_reach_x: 2.9, melee_depth_z: 1.65,
-          finisher_beam: { name_ko: "3단 피니셔: 신성 관통창 검기", speed: 20.0, max_range: 24.0, damage: 2 }
-        },
-        defense_parry: { just_parry_window: 0.14, parry_enemy_stun_sec: 2.0, counter_buff_duration: 3.5, counter_damage_multiplier: 3.0, counter_attack_damage: 6 },
         animations: [
           { state: "IDLE", sheet: "idle_v1_aligned.png", grid: "2x2 (4f)", fps: 5, desc: "무게중심 정렬 대기 호흡 동작" },
           { state: "RUN", sheet: "run_v2_aligned.png", grid: "3x2 (6f)", fps: 11, desc: "잔상 없는 선명한 전진 질주 동작" },
@@ -187,11 +203,11 @@
         ]
       },
       stages: [
-        { stage_num: 1, id: "stage_1", name_ko: "1지역: 성문 외곽", name_en: "Citadel Terrace Gate", theme: "주간 고딕 성문 테라스 & 횃불 회랑", arena: "38m × 12m", ambient: "#9eb3d1", fog: 0.008, props: "고딕 성문 아치 윙 2기, 고대 룬 석주 4기, 점화 횃불 브레이저 4기", wave1: "성채 근위 보병 × 2기", heal: 2, boss: "성문 수호 기사단장", relic: "bastion_shield" },
-        { stage_num: 2, id: "stage_2", name_ko: "2지역: 야수숲 협곡", name_en: "Beastwood Forest Gorge", theme: "에메랄드 심연 숲 & 반딧불이 고목 협곡", arena: "40m × 12m", ambient: "#337340", fog: 0.018, props: "거대 고목 기둥 5기, 야수 뼈 토템 2기, 반딧불이 파티클 56개", wave1: "야수숲 맹수 × 2기", heal: 2, boss: "심연의 야수 우두머리", relic: "shadow_cloak" },
-        { stage_num: 3, id: "stage_3", name_ko: "3지역: 무너진 성벽 요새", name_en: "Ruined Crossbow Bastion", theme: "코발트 황혼 성벽 폐허 & 부유 마법 석편", arena: "38m × 12m", ambient: "#40598c", fog: 0.012, props: "무너진 흉벽 5구간, 부유 비전 석편 6기, 시안 룬 비전 램프 3기", wave1: "폐허 석궁병 × 2기", heal: 2, boss: "폐허의 석궁 사령관", relic: "piercing_quiver" },
-        { stage_num: 4, id: "stage_4", name_ko: "4지역: 돌의 성소", name_en: "Titan Stone Sanctuary", theme: "석양 마그마 거석 제단 & 고대 모놀리스", arena: "38m × 12m", ambient: "#8c4726", fog: 0.015, props: "2단 거석 제단, 고대 모놀리스 기둥 6기, 마그마 엠버 파티클 64개", wave1: "거석 헤비 골렘 × 2기", heal: 2, boss: "티탄 골렘 가디언", relic: "golem_pauldrons" },
-        { stage_num: 5, id: "stage_5", name_ko: "5지역: 침묵의 성채", name_en: "Silent Abyssal Citadel", theme: "딥 바이올렛 보이드 성채 & 심판의 왕좌", arena: "38m × 12m", ambient: "#381f61", fog: 0.016, props: "흑요석 대리석 회랑, 블러드 룬 왕좌 포디움, 보이드 룬 오벨리스크 6기", wave1: "엘리트 심연 기사 × 2기", heal: 2, boss: "심연의 심판관", relic: "abyssal_crown" }
+        { stage_num: 1, id: "stage_1", name_ko: "OP-01: 성문 외곽", name_en: "Citadel Terrace Gate", theme: "주간 고딕 성문 테라스 & 횃불 회랑", arena: "38m × 12m", ambient: "#9eb3d1", fog: 0.008, props: "고딕 성문 아치 윙 2기, 고대 룬 석주 4기, 점화 횃불 브레이저 4기", wave1: "성채 근위 보병 × 2기", heal: 2, boss: "성문 수호 기사단장", relic: "bastion_shield" },
+        { stage_num: 2, id: "stage_2", name_ko: "OP-02: 야수숲 협곡", name_en: "Beastwood Forest Gorge", theme: "에메랄드 심연 숲 & 반딧불이 고목 협곡", arena: "40m × 12m", ambient: "#337340", fog: 0.018, props: "거대 고목 기둥 5기, 야수 뼈 토템 2기, 반딧불이 파티클 56개", wave1: "야수숲 맹수 × 2기", heal: 2, boss: "심연의 야수 우두머리", relic: "shadow_cloak" },
+        { stage_num: 3, id: "stage_3", name_ko: "OP-03: 무너진 성벽 요새", name_en: "Ruined Crossbow Bastion", theme: "코발트 황혼 성벽 폐허 & 부유 마법 석편", arena: "38m × 12m", ambient: "#40598c", fog: 0.012, props: "무너진 흉벽 5구간, 부유 비전 석편 6기, 시안 룬 비전 램프 3기", wave1: "폐허 석궁병 × 2기", heal: 2, boss: "폐허의 석궁 사령관", relic: "piercing_quiver" },
+        { stage_num: 4, id: "stage_4", name_ko: "OP-04: 돌의 성소", name_en: "Titan Stone Sanctuary", theme: "석양 마그마 거석 제단 & 고대 모놀리스", arena: "38m × 12m", ambient: "#8c4726", fog: 0.015, props: "2단 거석 제단, 고대 모놀리스 기둥 6기, 마그마 엠버 파티클 64개", wave1: "거석 헤비 골렘 × 2기", heal: 2, boss: "티탄 골렘 가디언", relic: "golem_pauldrons" },
+        { stage_num: 5, id: "stage_5", name_ko: "OP-05: 침묵의 성채", name_en: "Silent Abyssal Citadel", theme: "딥 바이올렛 보이드 성채 & 심판의 왕좌", arena: "38m × 12m", ambient: "#381f61", fog: 0.016, props: "흑요석 대리석 회랑, 블러드 룬 왕좌 포디움, 보이드 룬 오벨리스크 6기", wave1: "엘리트 심연 기사 × 2기", heal: 2, boss: "심연의 심판관", relic: "abyssal_crown" }
       ],
       enemies: [
         { id: "enemy_melee", stage: 1, name_ko: "성채 근위 보병", name_en: "Citadel Vanguard Footman", role: "근접 추격형 표준 보병", hp: 4, speed: 3.6, dmg: 1, cd: 1.2, mech: "방패와 롱소드로 전열을 유지하며 근접 시 수평 베기 수행" },
@@ -260,7 +276,7 @@
       ]
     };
 
-    const TABS = ["📊 전체 개요", "⚔ 플레이어 & 전투", "🏰 스테이지 1~5", "👾 몬스터 도감", "👑 보스 & 패턴", "🔥 성소 & 유물"];
+    const TABS = ["◢ 01. 작전 총람", "◢ 02. 영웅 스펙", "◢ 03. 전장 구역", "◢ 04. 적성 개체", "◢ 05. 보스 파일", "◢ 06. 웨폰/유물"];
     let currentTab = 0;
     let showJson = false;
 
@@ -288,7 +304,7 @@
     function render() {
       const tabBar = document.getElementById('tabBar');
       tabBar.innerHTML = TABS.map((t, i) => `<button class="btn ${i === currentTab && !showJson ? 'active' : ''}" onclick="selectTab(${i})">${t}</button>`).join('');
-      document.getElementById('jsonBtn').textContent = showJson ? '📋 카드 뷰로 보기' : '{ } JSON 원본 보기';
+      document.getElementById('jsonBtn').textContent = showJson ? '📋 DOSSIER VIEW' : '{ } RAW JSON';
 
       const area = document.getElementById('contentArea');
       const q = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -300,100 +316,100 @@
 
       if (q.length > 0) {
         const matches = [];
-        if (JSON.stringify(AX_DATA.player).toLowerCase().includes(q)) matches.push({ cat: "플레이어", title: AX_DATA.player.name_ko, desc: "HP 8 · 이동속도 7.5 · 3단 성검 콤보 & 신성 관통창 검기 · 저스트 패링 0.14s" });
-        AX_DATA.stages.forEach(s => { if (JSON.stringify(s).toLowerCase().includes(q)) matches.push({ cat: `Stage ${s.stage_num}`, title: s.name_ko, desc: `${s.theme} | 보스: ${s.boss} | 웨이브: ${s.wave1}` }); });
-        AX_DATA.enemies.forEach(e => { if (JSON.stringify(e).toLowerCase().includes(q)) matches.push({ cat: `몬스터 (Stage ${e.stage})`, title: `${e.name_ko} (${e.role})`, desc: `HP ${e.hp} · 속도 ${e.speed} · ${e.mech}` }); });
-        AX_DATA.bosses.forEach(b => { if (JSON.stringify(b).toLowerCase().includes(q)) matches.push({ cat: `보스 (Stage ${b.stage})`, title: `${b.name_ko} — ${b.title_ko}`, desc: `HP ${b.hp} · 패턴: ${b.patterns.map(p=>p.name_ko).join(', ')}` }); });
-        AX_DATA.relics.forEach(r => { if (JSON.stringify(r).toLowerCase().includes(q)) matches.push({ cat: `유물 (Stage ${r.stage})`, title: `[${r.rarity}] ${r.name_ko}`, desc: r.desc }); });
-        area.innerHTML = `<div class="card"><h2>🔍 '${q}' 검색 결과 (${matches.length}건)</h2>${matches.map(m => `<div class="pattern-box"><span class="badge">${m.cat}</span> <strong>${m.title}</strong><p style="margin-top:4px;color:#cbd5e1;">${m.desc}</p></div>`).join('') || '<p>일치하는 항목이 없습니다.</p>'}</div>`;
+        if (JSON.stringify(AX_DATA.player).toLowerCase().includes(q)) matches.push({ cat: "SSR HERO", title: AX_DATA.player.name_ko, desc: "HP 8 · 이동속도 7.5 · 3단 성검 콤보 & 신성 관통창 검기 · 저스트 패링 0.14s" });
+        AX_DATA.stages.forEach(s => { if (JSON.stringify(s).toLowerCase().includes(q)) matches.push({ cat: `OP-0${s.stage_num}`, title: s.name_ko, desc: `${s.theme} | 보스: ${s.boss} | 웨이브: ${s.wave1}` }); });
+        AX_DATA.enemies.forEach(e => { if (JSON.stringify(e).toLowerCase().includes(q)) matches.push({ cat: `UNIT (OP-0${e.stage})`, title: `${e.name_ko} (${e.role})`, desc: `HP ${e.hp} · 속도 ${e.speed} · ${e.mech}` }); });
+        AX_DATA.bosses.forEach(b => { if (JSON.stringify(b).toLowerCase().includes(q)) matches.push({ cat: `EX-BOSS (OP-0${b.stage})`, title: `${b.name_ko} — ${b.title_ko}`, desc: `HP ${b.hp} · 패턴: ${b.patterns.map(p=>p.name_ko).join(', ')}` }); });
+        AX_DATA.relics.forEach(r => { if (JSON.stringify(r).toLowerCase().includes(q)) matches.push({ cat: `RELIC (OP-0${r.stage})`, title: `[${r.rarity}] ${r.name_ko}`, desc: r.desc }); });
+        area.innerHTML = `<div class="card amber"><h2>🔍 TACTICAL SEARCH '${q}' (${matches.length} MATCHES)</h2>${matches.map(m => `<div class="pattern-box"><span class="badge amber">${m.cat}</span> <strong>${m.title}</strong><p style="margin-top:4px;color:#cbd5e1;">${m.desc}</p></div>`).join('') || '<p>일치하는 전술 데이터가 없습니다.</p>'}</div>`;
         return;
       }
 
       if (currentTab === 0) {
         area.innerHTML = `
-          <div class="card">
-            <h2>🏛 ${AX_DATA.meta.title_ko}</h2>
+          <div class="card amber">
+            <h2><span class="badge amber">COMMAND BRIEFING</span> ${AX_DATA.meta.title_ko}</h2>
             <p style="color:#cbd5e1;">${AX_DATA.meta.description}</p>
           </div>
           <div class="kpi-grid">
-            <div class="kpi-card"><div class="label">캠페인 스테이지</div><div class="val">5 개 지역</div><div class="desc">Stage 1 성문 외곽 ~ Stage 5 침묵의 성채</div></div>
-            <div class="kpi-card"><div class="label">보스 & 시그니처 패턴</div><div class="val">보스 5종 / 패턴 17종</div><div class="desc">전 보스 2페이즈 각성 및 전용 기믹 탑재</div></div>
-            <div class="kpi-card"><div class="label">일반/엘리트 몬스터</div><div class="val">5 종 아키타입</div><div class="desc">보병 · 도약 맹수 · 석궁병 · 거석 골렘 · 심연 기사</div></div>
-            <div class="kpi-card"><div class="label">플레이어 액션 상태</div><div class="val">8 종 애니메이션</div><div class="desc">3단 성검 찌르기 · 관통창 검기 · 저스트 패링</div></div>
-            <div class="kpi-card"><div class="label">성소 강화 & 유물</div><div class="val">강화 5종 / 유물 5종</div><div class="desc">영혼 파편 영구 성장 및 전설/신화 유물</div></div>
-            <div class="kpi-card"><div class="label">카메라 & 물리 규격</div><div class="val">Pitch -32° / FOV 42°</div><div class="desc">사이드 쿼터뷰 벨트스크롤 · 4면 경계벽</div></div>
+            <div class="kpi-card"><div class="label">◢ OP-ZONES (캠페인 전장)</div><div class="val">5 OPERATIONS</div><div class="desc">OP-01 성문 외곽 ~ OP-05 침묵의 성채</div></div>
+            <div class="kpi-card"><div class="label">◢ BOSS THREATS (보스전)</div><div class="val">5 BOSS / 17 PATTERNS</div><div class="desc">HP 50% 이하 2페이즈 오버드라이브 각성</div></div>
+            <div class="kpi-card"><div class="label">◢ HOSTILE UNITS (적성 개체)</div><div class="val">5 ARCHETYPES</div><div class="desc">보병 · 도약 맹수 · 저격수 · 거석 골렘 · 심연 기사</div></div>
+            <div class="kpi-card"><div class="label">◢ SSR HERO SPEC (영웅 기동)</div><div class="val">8 ACTION STATES</div><div class="desc">3단 성검 찌르기 · 관통창 검기 · 0.14s 패링</div></div>
+            <div class="kpi-card"><div class="label">◢ SANCTUARY LAB (연구소)</div><div class="val">5 UPGRADES / 5 RELICS</div><div class="desc">영혼 파편 영구 성장 및 전설/신화 아티팩트</div></div>
+            <div class="kpi-card"><div class="label">◢ CAMERA & PHYSICS</div><div class="val">PITCH -32° / FOV 42°</div><div class="desc">사이드 쿼터뷰 벨트스크롤 · 4면 방벽</div></div>
           </div>`;
       } else if (currentTab === 1) {
         const p = AX_DATA.player;
         area.innerHTML = `
           <div class="grid-2">
-            <div class="card">
-              <h2>🛡 ${p.name_ko} (${p.name_en}) 기본 스탯</h2>
-              ${statBar('최대 체력 (Max HP)', p.base_stats.max_hp, 12, p.base_stats.max_hp + ' HP', '#ef4444')}
-              ${statBar('횡이동 속도 (Speed X)', p.base_stats.move_speed_x, 15, p.base_stats.move_speed_x + ' m/s', '#38bdf8')}
-              ${statBar('종이동 속도 (Depth Z)', p.base_stats.move_speed_z, 15, p.base_stats.move_speed_z + ' m/s', '#34d399')}
-              ${statBar('회피 대시 속도 (Dash)', p.base_stats.dash_speed, 20, p.base_stats.dash_speed + ' m/s', '#a855f7')}
-              ${statBar('피격 무적 (i-Frame)', p.base_stats.hit_invuln_duration, 1.5, p.base_stats.hit_invuln_duration + ' 초', '#eab308')}
+            <div class="card amber">
+              <h2><span class="badge ssr">SSR · VANGUARD</span> ${p.name_ko} (${p.name_en})</h2>
+              ${statBar('최대 체력 (Max HP)', p.base_stats.max_hp, 12, p.base_stats.max_hp + ' HP', '#ff3b5c')}
+              ${statBar('횡기동 속도 (Speed X)', p.base_stats.move_speed_x, 15, p.base_stats.move_speed_x + ' m/s', '#00e5ff')}
+              ${statBar('종기동 속도 (Depth Z)', p.base_stats.move_speed_z, 15, p.base_stats.move_speed_z + ' m/s', '#34d399')}
+              ${statBar('택티컬 대시 (Dash)', p.base_stats.dash_speed, 20, p.base_stats.dash_speed + ' m/s', '#c084fc')}
+              ${statBar('피격 무적 (i-Frame)', p.base_stats.hit_invuln_duration, 1.5, p.base_stats.hit_invuln_duration + ' sec', '#ffb800')}
             </div>
             <div class="card">
-              <h2>⚔ 3단 성검 콤보 & 저스트 패링 공식</h2>
-              <p>• <strong>기본 공격력:</strong> 2 DMG (지속 0.20s / 쿨타임 0.22s / 콤보 유지 0.95s)</p>
-              <p>• <strong>하이브리드 근접 판정:</strong> 전방 X 2.9m × 깊이 Z ±1.65m (100% 적중 보장)</p>
-              <p>• <strong>3단 피니셔 검기:</strong> 탄속 20.0 m/s · 사거리 24.0m · 관통 피해 2 DMG</p>
-              <p>• <strong>저스트 패링:</strong> 0.14초 이내 가드 시 피해 100% 무효화 + 적 2.0초 스턴</p>
-              <p>• <strong>패링 카운터:</strong> 3.5초간 다음 공격 3배 피해 (6 DMG 황금 강타)</p>
+              <h2>◢ TACTICAL SKILL DECK & PARRY FORMULA</h2>
+              <p>▸ <strong>[SKILL 1 : 3-COMBO THRUST]</strong> 기본 피해 2 DMG (지속 0.20s / 쿨타임 0.22s / 콤보유지 0.95s)</p>
+              <p>▸ <strong>[HYBRID HITBOX]</strong> 전방 X 2.9m × 깊이 Z ±1.65m 전술 영역 100% 적중 보장</p>
+              <p>▸ <strong>[FINISHER : HOLY LANCE BEAM]</strong> 탄속 20.0 m/s · 사거리 24.0m · 관통 피해 2 DMG</p>
+              <p>▸ <strong>[SKILL 2 : AEGIS JUST PARRY]</strong> 0.14초 이내 가드 시 피해 100% 무효화 + 적 2.0초 스턴</p>
+              <p>▸ <strong>[COUNTER OVERDRIVE]</strong> 3.5초간 다음 공격 3배 피해 (6 DMG 황금 일격)</p>
             </div>
           </div>
           <div class="card">
-            <h2>🎞 플레이어 상태별 스프라이트 시트 규격 (780×780 무게중심 정렬)</h2>
+            <h2>◢ MOTION CAPTURE & SPRITE SHEET MATRIX (780×780 무게중심 정렬)</h2>
             <table>
-              <thead><tr><th>상태 (State)</th><th>스프라이트 시트</th><th>그리드 (프레임)</th><th>FPS</th><th>기획 설명</th></tr></thead>
+              <thead><tr><th>STATE</th><th>SPRITE SHEET</th><th>GRID</th><th>FPS</th><th>TACTICAL DESCRIPTION</th></tr></thead>
               <tbody>${p.animations.map(a => `<tr><td><span class="badge">${a.state}</span></td><td><code>${a.sheet}</code></td><td>${a.grid}</td><td>${a.fps} FPS</td><td>${a.desc}</td></tr>`).join('')}</tbody>
             </table>
           </div>`;
       } else if (currentTab === 2) {
         area.innerHTML = AX_DATA.stages.map(s => `
-          <div class="card" style="border-left: 5px solid ${s.ambient};">
-            <h2><span class="swatch" style="background:${s.ambient};"></span> STAGE ${s.stage_num} — ${s.name_ko} (${s.name_en})</h2>
-            <p>• <strong>테마:</strong> ${s.theme} | <strong>아레나 규격:</strong> ${s.arena} | <strong>포그 밀도:</strong> ${s.fog}</p>
-            <p>• <strong>환경 프롭:</strong> ${s.props}</p>
-            <p>• <strong>진행 루프:</strong> Wave 1 (${s.wave1}) 섬멸 ➔ <strong>+${s.heal} HP 성스러운 회복</strong> ➔ 보스 조우 (<strong>👑 ${s.boss}</strong>) ➔ 클리어 유물 (<code>${s.relic}</code>)</p>
+          <div class="card" style="border-left-color: ${s.ambient};">
+            <h2><span class="badge amber">OP-0${s.stage_num}</span> ${s.name_ko} (${s.name_en})</h2>
+            <p>▸ <strong>전장 테마:</strong> ${s.theme} | <strong>작전 반경:</strong> ${s.arena} | <strong>포그 밀도:</strong> ${s.fog}</p>
+            <p>▸ <strong>전술 구조물:</strong> ${s.props}</p>
+            <p>▸ <strong>교전 시퀀스:</strong> WAVE 1 (${s.wave1}) 섬멸 ➔ <strong>+${s.heal} HP 영혼 보급</strong> ➔ 보스 결전 (<strong>👑 ${s.boss}</strong>) ➔ 전리품 유물 (<code>${s.relic}</code>)</p>
           </div>`).join('');
       } else if (currentTab === 3) {
         area.innerHTML = `<div class="grid-2">${AX_DATA.enemies.map(e => `
-          <div class="card">
-            <h2>[Stage ${e.stage}] ${e.name_ko} (${e.name_en})</h2>
-            <p style="color:var(--text-sub);margin-bottom:8px;">역할군: ${e.role} | ID: <code>${e.id}</code></p>
-            ${statBar('체력 (HP)', e.hp, 10, e.hp + ' HP', '#ef4444')}
-            ${statBar('이동 속도', e.speed, 10, e.speed + ' m/s', '#38bdf8')}
-            ${statBar('공격력 / 주기', e.dmg, 4, e.dmg + ' DMG (' + e.cd + 's)', '#f59e0b')}
-            <p style="margin-top:8px;">💡 <strong>고유 기믹:</strong> ${e.mech}</p>
+          <div class="card emerald">
+            <h2><span class="badge">STG-${e.stage}</span> ${e.name_ko} (${e.name_en})</h2>
+            <p style="color:var(--text-sub);margin-bottom:8px;">전술 분류: ${e.role} | CODE: <code>${e.id}</code></p>
+            ${statBar('내구도 (HP)', e.hp, 10, e.hp + ' HP', '#ff3b5c')}
+            ${statBar('기동력 (SPD)', e.speed, 10, e.speed + ' m/s', '#00e5ff')}
+            ${statBar('화력 / 주기', e.dmg, 4, e.dmg + ' DMG (' + e.cd + 's)', '#ffb800')}
+            <p style="margin-top:8px;">⚡ <strong>전술 기믹:</strong> ${e.mech}</p>
           </div>`).join('')}</div>`;
       } else if (currentTab === 4) {
         area.innerHTML = AX_DATA.bosses.map(b => `
-          <div class="card">
-            <h2>👑 [Stage ${b.stage} 보스] ${b.name_ko} — ${b.title_ko}</h2>
-            <p style="color:#fde68a;margin-bottom:8px;">최대 체력: <strong>${b.hp} HP</strong> | 1페이즈 속도: ${b.spd1} m/s ➔ 2페이즈(HP 50% 이하) 속도: ${b.spd2} m/s</p>
+          <div class="card crimson">
+            <h2><span class="badge ssr">EX-BOSS · OP-0${b.stage}</span> ${b.name_ko} — ${b.title_ko}</h2>
+            <p style="color:#ffb800;margin-bottom:8px;">● MAX HP: <strong>${b.hp} HP</strong> | PHASE 1 SPD: ${b.spd1} m/s ➔ PHASE 2 (HP 50%↓) SPD: ${b.spd2} m/s</p>
             ${b.patterns.map(pat => `
               <div class="pattern-box">
-                <strong>⚡ [${pat.id}] ${pat.name_ko}</strong> — <span style="color:#fca5a5;">피해량: ${pat.dmg} DMG</span> | <span style="color:#93c5fd;">${pat.metrics}</span>
-                <p style="color:#cbd5e1;font-size:13px;margin-top:3px;">↳ ${pat.desc}</p>
+                <strong>◢ [${pat.id}] ${pat.name_ko}</strong> — <span style="color:#ff3b5c;font-weight:700;">DAMAGE: ${pat.dmg}</span> | <span style="color:#00e5ff;">${pat.metrics}</span>
+                <p style="color:#cbd5e1;font-size:12px;margin-top:3px;">↳ ${pat.desc}</p>
               </div>`).join('')}
           </div>`).join('');
       } else if (currentTab === 5) {
         area.innerHTML = `
-          <div class="card">
-            <h2>🔥 화톳불의 영혼 제단 (Campfire Soul Altar) 영구 강화 테이블</h2>
+          <div class="card amber">
+            <h2>◢ 🔥 SANCTUARY CORE UPGRADE LAB (화톳불 영혼 제단 영구 강화 모듈)</h2>
             <table>
-              <thead><tr><th>아이템 ID</th><th>강화 명칭</th><th>비용 (영혼 파편)</th><th>최대 레벨</th><th>강화 효과</th></tr></thead>
-              <tbody>${AX_DATA.shop.map(s => `<tr><td><code>${s.id}</code></td><td><strong>${s.name_ko}</strong></td><td>${s.cost} Shards</td><td>Lv.${s.max}</td><td>${s.desc}</td></tr>`).join('')}</tbody>
+              <thead><tr><th>MODULE ID</th><th>UPGRADE NAME</th><th>COST</th><th>MAX LV</th><th>TACTICAL EFFECT</th></tr></thead>
+              <tbody>${AX_DATA.shop.map(s => `<tr><td><code>${s.id}</code></td><td><strong>${s.name_ko}</strong></td><td style="color:#ffb800;font-weight:700;">💎 ${s.cost} Shards</td><td><span class="badge">Lv.${s.max}</span></td><td>${s.desc}</td></tr>`).join('')}</tbody>
             </table>
           </div>
-          <div class="card">
-            <h2>🏆 스테이지 보스 정복 유물 & 외형 진화 (Stage Relics)</h2>
+          <div class="card purple">
+            <h2>◢ 🏆 TACTICAL RELIC & GEAR EVOLUTION (보스 정복 전설/신화 아티팩트)</h2>
             <table>
-              <thead><tr><th>스테이지</th><th>등급</th><th>유물 명칭</th><th>외형 진화 타이틀</th><th>유물 패시브 효과</th></tr></thead>
-              <tbody>${AX_DATA.relics.map(r => `<tr><td>Stage ${r.stage}</td><td><span class="badge" style="color:${r.color};">${r.rarity}</span></td><td><strong>${r.name_ko}</strong></td><td>${r.title_ko}</td><td>${r.desc}</td></tr>`).join('')}</tbody>
+              <thead><tr><th>OPERATION</th><th>RARITY</th><th>RELIC NAME</th><th>GEAR EVOLUTION</th><th>PASSIVE EFFECT</th></tr></thead>
+              <tbody>${AX_DATA.relics.map(r => `<tr><td>OP-0${r.stage}</td><td><span class="badge" style="color:${r.color};">${r.rarity}</span></td><td><strong>${r.name_ko}</strong></td><td>${r.title_ko}</td><td>${r.desc}</td></tr>`).join('')}</tbody>
             </table>
           </div>`;
       }

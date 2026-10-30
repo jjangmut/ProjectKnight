@@ -150,12 +150,25 @@ func _setup_mobile_ui() -> void:
 	mobile_controls.name = "SideQVMobileUI"
 	add_child(mobile_controls)
 
-	# 1. Top-Left Player HUD (Avatar, Stage Title, Soul Gem Crystals, HP text)
+	# 1. Top-Left Heroes War Tactical Unit HUD (Plate, Avatar, SSR Rank, Stage Title, Soul Gems, HP text)
 	player_hud = Control.new()
 	player_hud.name = "PlayerHUD"
-	player_hud.position = Vector2(16, 14)
-	player_hud.custom_minimum_size = Vector2(320, 68)
+	player_hud.position = Vector2(14, 12)
+	player_hud.custom_minimum_size = Vector2(336, 72)
 	mobile_controls.add_child(player_hud)
+
+	var hud_plate := Panel.new()
+	hud_plate.name = "TacticalUnitPlate"
+	hud_plate.size = Vector2(332, 66)
+	var plate_style := StyleBoxFlat.new()
+	plate_style.bg_color = Color(0.05, 0.09, 0.14, 0.88)
+	plate_style.border_color = Color("00e5ff")
+	plate_style.set_border_width_all(1)
+	plate_style.border_width_left = 6
+	plate_style.corner_radius_top_right = 10
+	plate_style.corner_radius_bottom_left = 10
+	hud_plate.add_theme_stylebox_override("panel", plate_style)
+	player_hud.add_child(hud_plate)
 
 	player_avatar_rect = TextureRect.new()
 	player_avatar_rect.name = "PlayerAvatar"
@@ -163,15 +176,22 @@ func _setup_mobile_ui() -> void:
 	player_avatar_rect.custom_minimum_size = Vector2(54, 54)
 	player_avatar_rect.size = Vector2(54, 54)
 	player_avatar_rect.scale = Vector2(0.24, 0.24)
-	player_avatar_rect.position = Vector2(0, 2)
+	player_avatar_rect.position = Vector2(10, 6)
 	player_hud.add_child(player_avatar_rect)
+
+	var rank_lbl := Label.new()
+	rank_lbl.text = "SSR"
+	rank_lbl.position = Vector2(12, 46)
+	rank_lbl.add_theme_font_size_override("font_size", 10)
+	rank_lbl.add_theme_color_override("font_color", Color("ffb800"))
+	player_hud.add_child(rank_lbl)
 
 	var title_lbl := Label.new()
 	title_lbl.name = "StageTitleLabel"
-	title_lbl.text = "STAGE %d: %s" % [stage_index, stage_title]
-	title_lbl.position = Vector2(68, 2)
-	title_lbl.add_theme_font_size_override("font_size", 17)
-	title_lbl.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
+	title_lbl.text = "◢ OP-0%d : %s" % [stage_index, stage_title]
+	title_lbl.position = Vector2(72, 6)
+	title_lbl.add_theme_font_size_override("font_size", 15)
+	title_lbl.add_theme_color_override("font_color", Color("ffb800"))
 	title_lbl.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 	title_lbl.add_theme_constant_override("shadow_offset_x", 1)
 	title_lbl.add_theme_constant_override("shadow_offset_y", 1)
@@ -179,7 +199,7 @@ func _setup_mobile_ui() -> void:
 
 	var gems_box := HBoxContainer.new()
 	gems_box.name = "SoulGemsContainer"
-	gems_box.position = Vector2(68, 28)
+	gems_box.position = Vector2(72, 32)
 	gems_box.add_theme_constant_override("separation", 3)
 	player_hud.add_child(gems_box)
 
@@ -198,41 +218,41 @@ func _setup_mobile_ui() -> void:
 	player_hp_label = Label.new()
 	player_hp_label.name = "PlayerHPLabel"
 	player_hp_label.text = "8 / 8 HP"
-	player_hp_label.position = Vector2(228, 29)
-	player_hp_label.add_theme_font_size_override("font_size", 14)
-	player_hp_label.add_theme_color_override("font_color", Color(0.96, 0.88, 0.75))
+	player_hp_label.position = Vector2(236, 33)
+	player_hp_label.add_theme_font_size_override("font_size", 13)
+	player_hp_label.add_theme_color_override("font_color", Color("00e5ff"))
 	player_hud.add_child(player_hp_label)
 
-	# 2. Top-Center Stage Progress Bar
+	# 2. Top-Center Stage Progress Bar (Heroes War Tactical Radar Gauge)
 	var prog_root := Control.new()
 	prog_root.name = "StageProgressBarRoot"
-	prog_root.position = Vector2(450, 14)
+	prog_root.position = Vector2(416, 16)
 	mobile_controls.add_child(prog_root)
 
 	var prog_bg := ColorRect.new()
 	prog_bg.name = "ProgressBarBG"
-	prog_bg.size = Vector2(440, 7)
-	prog_bg.color = Color(0.10, 0.10, 0.14, 0.85)
+	prog_bg.size = Vector2(430, 8)
+	prog_bg.color = Color("0a111a")
 	prog_root.add_child(prog_bg)
 
 	progress_bar_fill = ColorRect.new()
 	progress_bar_fill.name = "ProgressBarFill"
-	progress_bar_fill.size = Vector2(0, 7)
-	progress_bar_fill.color = Color(1.0, 0.82, 0.28, 0.95)
+	progress_bar_fill.size = Vector2(0, 8)
+	progress_bar_fill.color = Color("ffb800")
 	prog_root.add_child(progress_bar_fill)
 
 	var start_lbl := Label.new()
 	start_lbl.text = "START"
 	start_lbl.position = Vector2(-42, -5)
 	start_lbl.add_theme_font_size_override("font_size", 11)
-	start_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+	start_lbl.add_theme_color_override("font_color", Color("00e5ff"))
 	prog_root.add_child(start_lbl)
 
 	var boss_lbl := Label.new()
 	boss_lbl.text = "BOSS"
-	boss_lbl.position = Vector2(448, -5)
+	boss_lbl.position = Vector2(438, -5)
 	boss_lbl.add_theme_font_size_override("font_size", 11)
-	boss_lbl.add_theme_color_override("font_color", Color(1.0, 0.4, 0.3))
+	boss_lbl.add_theme_color_override("font_color", Color("ff3b5c"))
 	prog_root.add_child(boss_lbl)
 
 	# 3. Gothic Winged Boss Health Bar (Shifted right so left wing never overlaps PlayerHUD)
@@ -263,13 +283,21 @@ func _setup_mobile_ui() -> void:
 	go_lbl.add_theme_constant_override("shadow_offset_y", 2)
 	advance_banner.add_child(go_lbl)
 
-	# 5. Top-Right AX Data Quick Viewer Button
+	# 5. Top-Right AX Data Quick Viewer Button (Heroes War Tactical Style)
 	var ax_btn := Button.new()
 	ax_btn.name = "BtnOpenAXData"
-	ax_btn.text = "📊 AX 기획"
-	ax_btn.position = Vector2(952, 18)
-	ax_btn.size = Vector2(124, 38)
-	ax_btn.add_theme_font_size_override("font_size", 14)
+	ax_btn.text = "📊 AX 도감"
+	ax_btn.position = Vector2(928, 14)
+	ax_btn.size = Vector2(102, 34)
+	ax_btn.add_theme_font_size_override("font_size", 12)
+	var ax_style := StyleBoxFlat.new()
+	ax_style.bg_color = Color("0d1622")
+	ax_style.border_color = Color("00e5ff")
+	ax_style.set_border_width_all(1)
+	ax_style.border_width_left = 4
+	ax_style.corner_radius_top_right = 6
+	ax_style.corner_radius_bottom_left = 6
+	ax_btn.add_theme_stylebox_override("normal", ax_style)
 	ax_btn.pressed.connect(open_ax_data_viewer)
 	mobile_controls.add_child(ax_btn)
 
