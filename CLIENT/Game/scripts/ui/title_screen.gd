@@ -17,6 +17,7 @@ const LEGACY_2D_CAMPAIGN_SCENE_PATH := "res://scenes/stage/Campaign.tscn"
 
 var btn_new_game: Button
 var btn_continue: Button
+var btn_legacy_2d: Button
 var btn_shop: Button
 var btn_ax_data: Button
 var btn_settings: Button
@@ -210,7 +211,7 @@ func _build_ui() -> void:
 	body_hbox.add_child(deck_panel)
 
 	var main_vbox := VBoxContainer.new()
-	main_vbox.add_theme_constant_override("separation", 10)
+	main_vbox.add_theme_constant_override("separation", 8)
 	deck_panel.add_child(main_vbox)
 
 	var deck_header := Label.new()
@@ -227,26 +228,35 @@ func _build_ui() -> void:
 		_on_continue_pressed,
 		Color("132838"),
 		Color("00e5ff"),
-		56
+		48
 	)
 	main_vbox.add_child(btn_continue)
 	btn_continue.disabled = not has_save
 
 	btn_new_game = _create_tactical_menu_button(
-		"◢ ⚔  작전 출격 : 새로운 여정 시작 (DEPLOY CAMPAIGN)",
+		"◢ ⚔  작전 출격 : 3D 쿼터뷰 캠페인 (DEPLOY 3D QV)",
 		_on_new_game_pressed,
 		Color("3b2308"),
 		Color("ffb800"),
-		62
+		52
 	)
 	main_vbox.add_child(btn_new_game)
+
+	btn_legacy_2d = _create_tactical_menu_button(
+		"◢ 🕹  2D 클래식 완성 버전 출격 (2D CLASSIC EDITION)",
+		_on_legacy_2d_pressed,
+		Color("1d2438"),
+		Color("38bdf8"),
+		48
+	)
+	main_vbox.add_child(btn_legacy_2d)
 
 	btn_shop = _create_tactical_menu_button(
 		"◢ 🔥  웨폰 & 코어 연구소 : 성소 강화 (SANCTUARY LAB)",
 		_on_shop_pressed,
 		Color("1a1f30"),
 		Color("c084fc"),
-		54
+		48
 	)
 	main_vbox.add_child(btn_shop)
 
@@ -255,7 +265,7 @@ func _build_ui() -> void:
 		_on_ax_data_pressed,
 		Color("102a2a"),
 		Color("34d399"),
-		54
+		48
 	)
 	main_vbox.add_child(btn_ax_data)
 
@@ -269,7 +279,7 @@ func _build_ui() -> void:
 		_on_settings_pressed,
 		Color("141e2b"),
 		Color("64748b"),
-		48
+		44
 	)
 	btn_settings.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	util_hbox.add_child(btn_settings)
@@ -279,7 +289,7 @@ func _build_ui() -> void:
 		_on_credits_pressed,
 		Color("141e2b"),
 		Color("64748b"),
-		48
+		44
 	)
 	btn_credits.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	util_hbox.add_child(btn_credits)
@@ -462,6 +472,10 @@ func _on_new_game_pressed() -> void:
 
 func _launch_campaign(_is_new: bool) -> void:
 	get_tree().change_scene_to_file(CAMPAIGN_SCENE_PATH)
+
+
+func _on_legacy_2d_pressed() -> void:
+	get_tree().change_scene_to_file(LEGACY_2D_CAMPAIGN_SCENE_PATH)
 
 
 func _on_shop_pressed() -> void:
