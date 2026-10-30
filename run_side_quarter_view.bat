@@ -1,28 +1,34 @@
 @echo off
 chcp 65001 > nul
-title Project Knight - Side Quarter-View Edition (2D Characters + 3D World)
+title Project Knight: Counterattack - Heroes War Tactical Edition (Stage 1~5 Full Campaign)
 echo ===================================================================
-echo [Project Knight] 사이드 쿼터뷰 에디션 (Side Quarter-View Edition)
-echo - 캐릭터: 2D 고해상도 스프라이트 (팔라딘, 적, 보스 지휘관)
-echo - 배경: 3D 석조 성채 아레나 (실시간 3D 조명 및 3D 그림자 투영)
-echo - 시점: 사이드 쿼터뷰 (-15도 피치 앵글 & 3D 벨트스크롤 깊이 이동)
+echo [Project Knight : Counterattack] 히어로즈 워 택티컬 & 사이드 쿼터뷰 에디션
+echo - 로비 & 도감: 히어로즈 워 택티컬 작전 사령부 & AX 기획 데이터 도감 (v2.0.0)
+echo - 캠페인: OP-01 성문 외곽 ~ OP-05 침묵의 성채 (5개 스테이지 & 5대 보스)
+echo - 시점: 3D 사이드 쿼터뷰 (-32도 피치 & 3D 벨트스크롤 깊이 이동)
 echo ===================================================================
 echo 조작법:
 echo   - 이동: A, D (좌우 이동) / W, S (3D 깊이 안팎 이동)
-echo   - 공격 / 콤보 / 검기: J 키 (3타 시 360도 황금빛 3D 크레센트 검기 방출)
-echo   - 점프: Space 키 (3D 물리 점프 & 보스 지진 충격파 회피)
-echo   - 가드 / 0.14초 저스트 패링: K 키 (적 공격 순간 방어 시 스턴 + 3배 카운터)
-echo   - 회피 대시: L 키 (무적 판정 고속 3D 대시)
-echo   - 모바일 UI: 화면 터치 및 마우스 클릭 지원
+echo   - 공격 / 3단 콤보 / 신성 관통창 검기: J 키 (우하단 STRIKE 버튼)
+echo   - 점프: Space 키 (우하단 LEAP 버튼)
+echo   - 방패 가드 / 0.14초 저스트 패링: K 키 (우하단 PARRY 버튼, 성공 시 3배 카운터)
+echo   - 무적 회피 대시: Shift 키 (우하단 DASH 버튼)
+echo   - AX 기획 데이터 도감: 타이틀 및 인게임 우상단 [AX 도감] 버튼
 echo ===================================================================
 
 set "GAME_DIR=%~dp0CLIENT\Game"
+set "BUILD_EXE=%GAME_DIR%\builds\windows\ProjectKnight.exe"
 set "GODOT_EXE=D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64.exe"
+
+if exist "%BUILD_EXE%" (
+    start "" "%BUILD_EXE%"
+    exit /b 0
+)
 
 if not exist "%GODOT_EXE%" (
     set "GODOT_EXE=D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe"
 )
 
 cd /d "%GAME_DIR%"
-start "" "%GODOT_EXE%" --rendering-driver opengl3 "scenes/side_quarter_view/SideQuarterViewArena.tscn"
+start "" "%GODOT_EXE%" --rendering-driver opengl3 "res://scenes/ui/TitleScreen.tscn"
 exit /b 0
