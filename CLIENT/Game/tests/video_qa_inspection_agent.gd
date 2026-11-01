@@ -12,7 +12,7 @@ extends SceneTree
 const ArenaScene = preload("res://scenes/side_quarter_view/SideQuarterViewArena.tscn")
 const SideQVBossClass = preload("res://scripts/side_quarter_view/side_qv_boss.gd")
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")
-const TexRun = preload("res://assets/player_frames/run_v2.png")
+const TexRun = preload("res://assets/player_frames/run_v2_aligned.png")
 const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")
 const TexJump = preload("res://assets/player_frames/jump_v1.png")
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")
@@ -265,7 +265,7 @@ func _run_inspection() -> void:
 
 	# Player walks directly right towards the boss
 	Input.action_press("move_right")
-	await _advance_frames(12)
+	await _advance_frames(16)
 	Input.action_release("move_right")
 
 	var contact_dist: float = player.global_position.distance_to(boss.global_position)

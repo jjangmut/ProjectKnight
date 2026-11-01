@@ -128,7 +128,7 @@ func _run_suite() -> void:
 
 	var b_sprite = boss.get_node_or_null("CommanderSprite3D") as Sprite3D
 	check(b_sprite != null, "TEST 4.5: Boss Sprite3D exists")
-	check(b_sprite.hframes == 3 and b_sprite.vframes == 2, "TEST 4.6: Boss sprite sheet is 3x2 frames")
+	check(b_sprite.hframes == 4 and b_sprite.vframes == 3, "TEST 4.6: Boss sprite sheet is 4x3 frames (crossbow_cmd_v2)")
 
 	var aura_ring = boss.get_node_or_null("CobaltAuraRing") as MeshInstance3D
 	check(aura_ring != null, "TEST 4.7: Boss Cobalt Aura Ring exists")

@@ -24,7 +24,9 @@ enum Pattern {
 
 const CrossbowBoltScene = preload("res://scripts/side_quarter_view/bosses/side_qv_crossbow_bolt.gd")
 const CaltropTrapScene = preload("res://scripts/side_quarter_view/bosses/side_qv_caltrop_trap.gd")
-const BossTexture = preload("res://assets/enemy_frames/ranged_v1.png")
+const BossTextureMain = preload("res://assets/enemy_frames/crossbow_cmd_v2.png")
+const BossTextureSkills = preload("res://assets/enemy_frames/crossbow_cmd_v2_skills.png")
+const BossTexture = BossTextureMain
 
 @export var max_hp: int = 28
 @export var current_hp: int = 28
@@ -61,18 +63,18 @@ func _ready() -> void:
 
 
 func _build_components() -> void:
-	# 1. 2D 고해상도 스프라이트 (ranged_v1.png: 3x2 프레임 시트, 높이 약 2.3m 사령관 위엄)
+	# 1. 2D 고해상도 스프라이트 (crossbow_cmd_v2.png: 4x3 프레임 시트, 높이 약 2.5m 사령관 위엄)
 	sprite_3d = Sprite3D.new()
 	sprite_3d.name = "CommanderSprite3D"
-	sprite_3d.texture = BossTexture
-	sprite_3d.hframes = 3
-	sprite_3d.vframes = 2
+	sprite_3d.texture = BossTextureMain
+	sprite_3d.hframes = 4
+	sprite_3d.vframes = 3
 	sprite_3d.frame = 0
 	sprite_3d.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite_3d.pixel_size = 0.0050 # 500px * 0.0050 = 2.5m tall
+	sprite_3d.pixel_size = 0.00835 # 298px * 0.00835 = ~2.5m tall
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite_3d.position.y = 1.25
+	sprite_3d.position.y = 1.15
 	sprite_3d.flip_h = true # 기본 왼쪽(플레이어 위치) 응시
 	add_child(sprite_3d)
 
@@ -120,7 +122,8 @@ func _physics_process(delta: float) -> void:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
-		sprite_3d.frame = 4 # Stagger / Hurt frame
+		sprite_3d.texture = BossTextureSkills
+		sprite_3d.frame = 8 # Stagger / Stunned frame
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 			is_acting = false
@@ -225,8 +228,9 @@ func _execute_fan_volley() -> void:
 	velocity.x = 0.0
 	velocity.z = 0.0
 
-	# 1. 조준 텔레그래프 (Frame 1: 조준 자세)
-	sprite_3d.frame = 1
+	# 1. 조준 텔레그래프 (Row 2 Frame 8: 석궁 조준 자세)
+	sprite_3d.texture = BossTextureMain
+	sprite_3d.frame = 8
 	var aim_marker := _create_aim_line()
 
 	await get_tree().create_timer(0.40).timeout
@@ -237,8 +241,9 @@ func _execute_fan_volley() -> void:
 		is_acting = false
 		return
 
-	# 2. 발사 (Frame 2: 발사 반동)
-	sprite_3d.frame = 2
+	# 2. 발사 (Row 2 Frame 9: 머즐 플래시 발사 반동)
+	sprite_3d.texture = BossTextureMain
+	sprite_3d.frame = 9
 	var base_dir := (target_player.global_position - global_position).normalized()
 	base_dir.y = 0.0
 	if base_dir.length_squared() < 0.001:
@@ -268,7 +273,8 @@ func _execute_backstep_shot() -> void:
 	velocity.x = -facing_dir_x * 8.5
 	velocity.y = 8.0
 	velocity.z = randf_range(-1.5, 1.5)
-	sprite_3d.frame = 3 # Jump / Backflip frame
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 6 # Jump / Backstep airborne frame
 
 	# 도약 최고점(정점) 부근 대기
 	await get_tree().create_timer(0.26).timeout
@@ -277,8 +283,9 @@ func _execute_backstep_shot() -> void:
 		is_acting = false
 		return
 
-	# 공중 저격 볼트 사출 (Frame 2)
-	sprite_3d.frame = 2
+	# 공중 저격 볼트 사출 (BossTextureMain Frame 9)
+	sprite_3d.texture = BossTextureMain
+	sprite_3d.frame = 9
 	if target_player != null and is_instance_valid(target_player):
 		var target_pos := target_player.global_position + Vector3(0.0, 0.8, 0.0)
 		var muzzle_pos := global_position + Vector3(muzzle_point_3d.position.x, 1.35, 0.0)
@@ -302,14 +309,16 @@ func _execute_caltrop_trap() -> void:
 	velocity.x = 0.0
 	velocity.z = 0.0
 
-	sprite_3d.frame = 1 # 던지기 모션
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 4 # 마름쇠 투척 준비
 	await get_tree().create_timer(0.28).timeout
 
 	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
 		is_acting = false
 		return
 
-	sprite_3d.frame = 2 # 투척 완료
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 5 # 마름쇠 살포 모션
 	var offsets: Array[Vector3] = [
 		Vector3(facing_dir_x * 2.2, 0.05, -1.4),
 		Vector3(facing_dir_x * 3.2, 0.05, 0.0),
@@ -349,7 +358,8 @@ func _execute_rapid_barrage() -> void:
 		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
 			break
 
-		sprite_3d.frame = 2 if (shot % 2 == 0) else 1
+		sprite_3d.texture = BossTextureMain
+		sprite_3d.frame = 9 if (shot % 2 == 0) else 8
 		if target_player != null and is_instance_valid(target_player):
 			var aim_dir := (target_player.global_position + Vector3(0.0, 0.8, 0.0) - global_position).normalized()
 			# 약간의 탄착군 편차(Spread) 적용
@@ -407,17 +417,21 @@ func _create_aim_line() -> Node3D:
 # ==============================================================================
 # 애니메이션 헬퍼
 # ==============================================================================
-func _update_idle_animation(_delta: float) -> void:
-	sprite_3d.frame = 0
+func _update_idle_animation(delta: float) -> void:
+	anim_timer += delta
+	sprite_3d.texture = BossTextureMain
+	sprite_3d.frame = int(anim_timer * 5.0) % 4
 
 
 func _update_movement_animation(delta: float) -> void:
 	anim_timer += delta
+	sprite_3d.texture = BossTextureMain
 	if velocity.length() > 0.4:
-		# Row 0: 걷기 프레임 순환 (0, 1)
-		sprite_3d.frame = int(anim_timer * 6.0) % 2
+		# Row 1: 사령관 전진/기동 프레임 순환 (4, 5, 6, 7)
+		sprite_3d.frame = 4 + (int(anim_timer * 7.0) % 4)
 	else:
-		sprite_3d.frame = 0
+		# Row 0: 대기 호흡 프레임 순환 (0, 1, 2, 3)
+		sprite_3d.frame = int(anim_timer * 5.0) % 4
 
 
 func _find_player() -> void:
@@ -434,7 +448,8 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	stun_timer = duration
 	is_acting = false
 	velocity = Vector3.ZERO
-	sprite_3d.frame = 4 # Stagger frame
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 8 # Stagger / Stunned frame
 
 	# 패링 성공 시 번쩍이는 황금빛 스턴 플래시
 	var tween := create_tween()
@@ -479,7 +494,8 @@ func _die() -> void:
 	emit_signal("boss_defeated", self)
 	set_physics_process(false)
 	is_acting = true
-	sprite_3d.frame = 5 # Defeat / Knockdown frame
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 11 # Defeat / Knockdown frame
 
 	var tween := create_tween()
 	if tween:

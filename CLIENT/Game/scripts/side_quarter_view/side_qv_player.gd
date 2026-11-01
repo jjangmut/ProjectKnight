@@ -75,15 +75,15 @@ var guard_barrier_3d: MeshInstance3D
 var slash_visual_3d: MeshInstance3D
 var attack_area_3d: Area3D
 
-# Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned)
+# Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned 780x780 Cells)
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
 const TexRun = preload("res://assets/player_frames/run_v2_aligned.png")      # 3x2 = 6 frames (780x780 cells, Pivot: 390,700)
 const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")# 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
-const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames
+const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
-const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames
-const TexHurt = preload("res://assets/player_frames/hurt_v1.png")            # 3x1 = 3 frames
-const TexDeath = preload("res://assets/player_frames/death_v1.png")          # 2x2 = 4 frames
+const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
+const TexHurt = preload("res://assets/player_frames/hurt_v1.png")            # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
+const TexDeath = preload("res://assets/player_frames/death_v1.png")          # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
 
 # Backward compatibility aliases
 const PaladinTexture = TexIdle
@@ -539,7 +539,7 @@ func _enter_death_state() -> void:
 		sprite_3d.texture = TexDeath
 		sprite_3d.hframes = 2
 		sprite_3d.vframes = 2
-		sprite_3d.pixel_size = 0.0026
+		sprite_3d.pixel_size = 0.00282
 		sprite_3d.frame = 3
 	emit_signal("died")
 
@@ -571,7 +571,7 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.texture = TexDeath
 			sprite_3d.hframes = 2
 			sprite_3d.vframes = 2
-			sprite_3d.pixel_size = 0.0026
+			sprite_3d.pixel_size = 0.00282
 		sprite_3d.frame = 3
 		return
 
@@ -581,7 +581,7 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.texture = TexJump
 			sprite_3d.hframes = 3
 			sprite_3d.vframes = 1
-			sprite_3d.pixel_size = 0.00212
+			sprite_3d.pixel_size = 0.00282
 		if velocity.y > 1.2:
 			sprite_3d.frame = 0 # Ascent
 		elif absf(velocity.y) <= 1.2:
@@ -633,7 +633,7 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.texture = TexHurt
 			sprite_3d.hframes = 3
 			sprite_3d.vframes = 1
-			sprite_3d.pixel_size = 0.00244
+			sprite_3d.pixel_size = 0.00282
 		sprite_3d.frame = 1
 		return
 
