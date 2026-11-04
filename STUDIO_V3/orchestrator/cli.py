@@ -1,7 +1,8 @@
-"""Command line interface for Studio V3 Orchestrator."""
+"""Command line interface for Studio V3 Orchestrator (V3-002-R1)."""
 from __future__ import annotations
 import argparse
 import sys
+import uuid
 from pathlib import Path
 
 from .schemas import ReviewVerdict, Issue, Severity
@@ -46,13 +47,16 @@ def main():
     p_sub.add_argument("task_id", help="Task ID")
     p_sub.add_argument("--actor", required=True, help="Actor name")
     p_sub.add_argument("--evidence", nargs="+", required=True, help="Evidence file paths")
+    p_sub.add_argument("--invocation-id", default="", help="Worker invocation ID")
 
     # review
     p_rev = subparsers.add_parser("review", help="Review work deliverables")
     p_rev.add_argument("task_id", help="Task ID")
-    p_rev.add_argument("--actor", required=True, help="Reviewer name")
+    p_rev.add_argument("--actor", required=True, help="Reviewer role name")
     p_rev.add_argument("--result", choices=["PASS", "FIX_REQUIRED"], required=True, help="Review verdict")
     p_rev.add_argument("--evidence", nargs="+", required=True, help="Review evidence paths")
+    p_rev.add_argument("--session-id", default=None, help="Authenticated session ID of reviewer")
+    p_rev.add_argument("--invocation-id", default=None, help="Invocation ID of reviewer")
     p_rev.add_argument("--notes", default="", help="Review notes")
     p_rev.add_argument("--issue-id", default=None, help="Issue ID if FIX_REQUIRED")
     p_rev.add_argument("--issue-title", default=None, help="Issue title if FIX_REQUIRED")
@@ -72,7 +76,7 @@ def main():
             print("=" * 60)
             for t in tasks.values():
                 print(f"[{t.status.value:<12}] {t.id}: {t.title}")
-                print(f"               Owner: {t.owner} | Iteration: {t.iteration}")
+                print(f"               Owner: {t.owner} | Iteration: {t.iteration} | Version: {t.version}")
                 print(f"               Reviewers: {', '.join(t.reviewers)}")
                 if t.reviews:
                     revs = [f"{k}={v.get('result')}" for k, v in t.reviews.items()]
@@ -108,17 +112,28 @@ def main():
             print(f"Task {task.id} -> {task.status.value} (Iteration {task.iteration})")
 
         elif args.command == "submit":
-            task = dispatcher.submit_work(args.task_id, actor=args.actor, evidence_paths=args.evidence)
+            task = dispatcher.submit_work(
+                args.task_id,
+                actor=args.actor,
+                evidence_paths=args.evidence,
+                invocation_id=args.invocation_id,
+            )
             print(f"Task {task.id} -> {task.status.value}")
 
         elif args.command == "review":
+            t = store.get_task(args.task_id)
+            if not t:
+                raise ValueError(f"Task {args.task_id} not found.")
+
+            session_id = args.session_id or f"operator-sess-{uuid.uuid4().hex[:8]}"
+            invocation_id = args.invocation_id or f"operator-inv-{uuid.uuid4().hex[:8]}"
+
             issues = []
             if args.result == "FIX_REQUIRED" and args.issue_id and args.issue_title:
-                t = store.get_task(args.task_id)
                 issues.append(Issue(
                     id=args.issue_id,
                     task_id=args.task_id,
-                    iteration=t.iteration if t else 1,
+                    iteration=t.iteration,
                     severity=Severity(args.severity),
                     title=args.issue_title,
                     reproduction_steps="See review evidence",
@@ -126,14 +141,21 @@ def main():
                     actual="Defect reported in review",
                     evidence=args.evidence,
                 ))
+
             verdict = ReviewVerdict(
+                task_id=t.id,
+                iteration=t.iteration,
+                agent_role=args.actor,
+                provider="OPERATOR_CLI",
+                invocation_id=invocation_id,
+                session_id=session_id,
+                reviewed_commit_sha=t.current_commit_sha,
                 result=args.result,
-                reviewer_id=args.actor,
                 evidence_paths=args.evidence,
                 issues=issues,
                 notes=args.notes,
             )
-            task = dispatcher.review_task(args.task_id, reviewer=args.actor, verdict=verdict)
+            task = dispatcher.review_task(args.task_id, verdict=verdict)
             print(f"Task {task.id} -> {task.status.value}")
 
         elif args.command == "restore":

@@ -1,0 +1,44 @@
+{
+  "where_agy": {
+    "command": "where.exe agy",
+    "exit_code": 1,
+    "start_utc": "2026-11-04T14:23:36.886135+00:00",
+    "end_utc": "2026-11-04T14:23:36.950217+00:00"
+  },
+  "get_command_agy": {
+    "command": "powershell.exe -NoProfile -Command Get-Command agy -ErrorAction Stop",
+    "exit_code": 1,
+    "start_utc": "2026-11-04T14:23:36.951220+00:00",
+    "end_utc": "2026-11-04T14:23:37.518532+00:00"
+  },
+  "agy_version": {
+    "command": "powershell.exe -NoProfile -Command agy --version",
+    "exit_code": 1,
+    "start_utc": "2026-11-04T14:23:37.529289+00:00",
+    "end_utc": "2026-11-04T14:23:37.984989+00:00"
+  },
+  "agy_agents": {
+    "command": "powershell.exe -NoProfile -Command agy agents",
+    "exit_code": 1,
+    "start_utc": "2026-11-04T14:23:37.985991+00:00",
+    "end_utc": "2026-11-04T14:23:38.459792+00:00"
+  },
+  "agy_models": {
+    "command": "powershell.exe -NoProfile -Command agy models",
+    "exit_code": 1,
+    "start_utc": "2026-11-04T14:23:38.460793+00:00",
+    "end_utc": "2026-11-04T14:23:38.917793+00:00"
+  },
+  "agentapi_help": {
+    "command": "C:\\Users\\jjang\\.gemini\\antigravity\\bin\\agentapi.bat --help",
+    "exit_code": 0,
+    "start_utc": "2026-11-04T14:23:38.919793+00:00",
+    "end_utc": "2026-11-04T14:23:39.160562+00:00"
+  },
+  "agentapi_metadata": {
+    "command": "C:\\Users\\jjang\\.gemini\\antigravity\\bin\\agentapi.bat get-conversation-metadata c1845c39-fd7b-445c-9a68-644aaac576ff",
+    "exit_code": 0,
+    "start_utc": "2026-11-04T14:23:39.162562+00:00",
+    "end_utc": "2026-11-04T14:23:39.417240+00:00"
+  }
+}

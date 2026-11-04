@@ -1,4 +1,4 @@
-# Studio V3 — Operator Runbook
+# Studio V3 — Operator Runbook (V3-002-R1)
 
 ## 1. Quick Start Commands
 
@@ -8,27 +8,27 @@ The Studio V3 Orchestrator is managed via the unified CLI tool or programmatical
 ```powershell
 python -m STUDIO_V3.orchestrator.cli show
 ```
-Displays current tasks, iterations, active owners, reviewer statuses, and open issues.
+Displays current tasks, iterations, active owners, reviewer statuses, state version, and open issues.
 
-### Start a Task (Owner Only)
+### Start a Task (Owner Only with Exclusive Lease)
 ```powershell
 python -m STUDIO_V3.orchestrator.cli start V3-001 --actor PK_ClientLead
 ```
-Transitions task `READY` / `FIX_REQUIRED` -> `IN_PROGRESS` and logs `TASK_STARTED`.
+Claims an exclusive 300s lease on the task, transitions `READY` / `FIX_REQUIRED` -> `IN_PROGRESS`, increments iteration, and logs `TASK_STARTED`.
 
-### Submit Work Deliverables
+### Submit Work Deliverables (Cryptographic Manifest)
 ```powershell
 python -m STUDIO_V3.orchestrator.cli submit V3-001 --actor PK_ClientLead --evidence STUDIO_V3/evidence/V3-001/audit.md
 ```
-Verifies evidence existence on disk, transitions `IN_PROGRESS` -> `IN_REVIEW`, and logs `WORK_SUBMITTED`.
+Computes SHA256 hashes of all submitted evidence files, builds the cryptographic manifest, transitions `IN_PROGRESS` -> `IN_REVIEW`, and logs `WORK_SUBMITTED`.
 
-### Review a Task (Authorized Reviewer Only)
+### Review a Task (Authorized Reviewer Only with Session Attestation)
 ```powershell
 # Reviewer approves
-python -m STUDIO_V3.orchestrator.cli review V3-001 --actor PK_QALead --result PASS --evidence STUDIO_V3/evidence/V3-001/qa_report.md
+python -m STUDIO_V3.orchestrator.cli review V3-001 --actor PK_QALead --result PASS --evidence STUDIO_V3/evidence/V3-001/qa_report.md --session-id qa-sess-12345
 
 # Reviewer rejects with defect
-python -m STUDIO_V3.orchestrator.cli review V3-001 --actor PK_QALead --result FIX_REQUIRED --evidence STUDIO_V3/evidence/V3-001/qa_report.md --issue-id ISS-001 --issue-title "Depth movement collision bug" --severity P1
+python -m STUDIO_V3.orchestrator.cli review V3-001 --actor PK_QALead --result FIX_REQUIRED --evidence STUDIO_V3/evidence/V3-001/qa_report.md --session-id qa-sess-12345 --issue-id ISS-001 --issue-title "Depth movement collision bug" --severity P1
 ```
 
 ## 2. Issue Lifecycle
@@ -46,3 +46,5 @@ python -m STUDIO_V3.orchestrator.cli review V3-001 --actor PK_QALead --result FI
   python -m STUDIO_V3.orchestrator.cli restore --snapshot STUDIO_V3/queue.json
   ```
 - **Audit Log:** `STUDIO_V3/events.jsonl` contains immutable event records for forensic analysis.
+- **Optimistic Locking:** If concurrent modifications occur, `ConcurrentModificationError` is raised and prevents database corruption.
+- **Task Leasing:** Prevents duplicate runs of the same task by distinct worker processes.

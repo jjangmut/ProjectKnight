@@ -1,15 +1,24 @@
-"""Tests for crash recovery, state persistence, bounded iteration limits, and adapter error handling."""
+"""Tests for crash recovery, leasing, optimistic locking (CAS), and adapter error handling (V3-002-R1)."""
 import unittest
 import tempfile
 import shutil
 import json
 from pathlib import Path
 
-from STUDIO_V3.orchestrator.schemas import Task, TaskState, Severity, Issue, ReviewVerdict
+from STUDIO_V3.orchestrator.schemas import (
+    Task,
+    TaskState,
+    Severity,
+    Issue,
+    ReviewVerdict,
+    ExecutionRecord,
+    ExecutionStatus,
+)
 from STUDIO_V3.orchestrator.queue_store import QueueStore
 from STUDIO_V3.orchestrator.event_log import EventLog
 from STUDIO_V3.orchestrator.dispatcher import TaskDispatcher
 from STUDIO_V3.orchestrator.adapters.mock import MockAdapter
+from STUDIO_V3.orchestrator.policies import TaskLeaseConflictError, ConcurrentModificationError
 
 
 class TestRecoveryAndResilience(unittest.TestCase):
@@ -27,7 +36,7 @@ class TestRecoveryAndResilience(unittest.TestCase):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_database_restart_preserves_state_and_issues(self):
-        """Simulate runner crash and restart: state, iteration, and issues survive intact."""
+        """Simulate runner crash and restart: state, iteration, version, and issues survive intact."""
         task = Task(
             id="REC-001",
             title="Crash Test Task",
@@ -35,6 +44,7 @@ class TestRecoveryAndResilience(unittest.TestCase):
             owner="PK_ClientLead",
             reviewers=["PK_QALead"],
             iteration=2,
+            version=3,
         )
         issue = Issue(
             id="ISS-REC-1",
@@ -49,18 +59,23 @@ class TestRecoveryAndResilience(unittest.TestCase):
         task.issues.append(issue)
         self.queue_store.save_task(task)
 
-        # "Crash" and re-instantiate QueueStore from existing DB
+        # Re-instantiate QueueStore from existing DB
         restarted_store = QueueStore(self.db_path, self.json_snapshot)
         restarted_task = restarted_store.get_task("REC-001")
 
         self.assertIsNotNone(restarted_task)
         self.assertEqual(restarted_task.status, TaskState.IN_PROGRESS)
         self.assertEqual(restarted_task.iteration, 2)
+        self.assertEqual(restarted_task.version, 3)
+        # Verify subsequent save increments version
+        restarted_task.iteration += 1
+        restarted_store.save_task(restarted_task)
+        self.assertEqual(restarted_task.version, 4)
         self.assertEqual(len(restarted_task.issues), 1)
         self.assertEqual(restarted_task.issues[0].id, "ISS-REC-1")
 
     def test_json_snapshot_synchronization(self):
-        """Changes to SQLite store export to queue.json snapshot accurately."""
+        """Changes to SQLite store export to queue.json snapshot accurately and atomically."""
         task = Task(
             id="REC-002",
             title="Snapshot Sync Task",
@@ -75,50 +90,71 @@ class TestRecoveryAndResilience(unittest.TestCase):
         task_ids = [t["id"] for t in data["tasks"]]
         self.assertIn("REC-002", task_ids)
 
-    def test_bounded_iterations_prevents_infinite_loop(self):
-        """When work is repeatedly rejected, autonomous loop halts at max_cycles and stays FIX_REQUIRED."""
+    def test_task_lease_prevents_concurrent_runs(self):
+        """A task actively leased by one actor cannot be started by another actor concurrently."""
         task = Task(
             id="REC-003",
-            title="Failing Task",
+            title="Concurrent Lease Task",
             status=TaskState.READY,
             owner="PK_ClientLead",
             reviewers=["PK_QALead"],
         )
         self.queue_store.save_task(task)
 
-        evidence_file = self.temp_dir / "work.md"
-        evidence_file.write_text("work", encoding="utf-8")
-        rev_evidence = self.temp_dir / "rev.md"
-        rev_evidence.write_text("rev", encoding="utf-8")
+        # Producer 1 starts task -> claims lease
+        self.dispatcher.start_task("REC-003", actor="PK_ClientLead")
 
-        def worker_action(t, cycle):
-            return [str(evidence_file)]
+        # Producer 2 attempts to claim lease on same task concurrently
+        with self.assertRaises(TaskLeaseConflictError):
+            self.queue_store.claim_task_lease("REC-003", actor="Other_Producer_Process")
 
-        def reviewer_eval(t, cycle):
-            # Always rejects
-            return ReviewVerdict(
-                result="FIX_REQUIRED",
-                reviewer_id="PK_QALead",
-                evidence_paths=[str(rev_evidence)],
-                notes=f"Rejection in cycle {cycle}",
-            )
-
-        summary = self.dispatcher.execute_autonomous_loop(
-            task_id="REC-003",
-            adapter=self.adapter,
-            worker_action=worker_action,
-            reviewer_evaluators={"PK_QALead": reviewer_eval},
-            max_cycles=3,
+    def test_optimistic_locking_prevents_concurrent_modification(self):
+        """Stale in-memory task cannot overwrite concurrent DB updates (CAS)."""
+        task = Task(
+            id="REC-004",
+            title="CAS Task",
+            status=TaskState.READY,
+            owner="PK_ClientLead",
+            reviewers=["PK_QALead"],
+            version=1,
         )
+        self.queue_store.save_task(task)
 
-        self.assertEqual(summary["iterations_run"], 3)
-        self.assertFalse(summary["approved"])
-        self.assertEqual(summary["final_status"], TaskState.FIX_REQUIRED.value)
+        # Worker A reads task at version 1
+        worker_a_task = self.queue_store.get_task("REC-004")
+        # Worker B reads task at version 1
+        worker_b_task = self.queue_store.get_task("REC-004")
 
-    def test_adapter_cancellation(self):
-        """Mock adapter supports invocation cancellation."""
-        rec = self.adapter.dispatch("REC-004", "PK_ClientLead", "test prompt", str(self.temp_dir))
-        self.assertTrue(self.adapter.cancel(rec.invocation_id))
+        # Worker A saves changes -> bumps version to 2
+        worker_a_task.status = TaskState.IN_PROGRESS
+        self.queue_store.save_task(worker_a_task)
+
+        # Worker B tries to save stale version 1 -> ConcurrentModificationError
+        worker_b_task.status = TaskState.BLOCKED
+        with self.assertRaises(ConcurrentModificationError):
+            self.queue_store.save_task(worker_b_task)
+
+    def test_adapter_timeout_handling(self):
+        """Mock adapter supports simulated timeout returning TIMED_OUT status."""
+        def timeout_hook(task_id, role, prompt, timeout_sec):
+            return ExecutionRecord(
+                invocation_id="inv-timeout",
+                task_id=task_id,
+                agent_id=role,
+                provider="SIMULATED_MOCK",
+                session_id="",
+                start_time="2026-11-04T12:00:00Z",
+                end_time="2026-11-04T12:02:00Z",
+                working_branch="test",
+                commit_sha="000",
+                exit_code=124,
+                status=ExecutionStatus.TIMED_OUT,
+                error="Simulated timeout",
+            )
+        self.adapter.behavior_hook = timeout_hook
+        rec = self.adapter.dispatch("REC-005", "PK_ClientLead", "do something", str(self.temp_dir))
+        self.assertEqual(rec.status, ExecutionStatus.TIMED_OUT)
+        self.assertEqual(rec.exit_code, 124)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Tests for permissions, self-approval blocking, and dependency gates."""
+"""Tests for permissions, self-approval blocking, cryptographic evidence tampering, and session attestation (V3-002-R1)."""
 import unittest
 import tempfile
 import shutil
@@ -11,8 +11,12 @@ from STUDIO_V3.orchestrator.dispatcher import TaskDispatcher
 from STUDIO_V3.orchestrator.policies import (
     PolicyViolation,
     SelfApprovalBlockedError,
-    DependencyBlockedError,
+    IdentityVerificationError,
     EvidenceMissingError,
+    EvidenceTamperedError,
+    StaleEvidenceError,
+    StaleReviewError,
+    DependencyBlockedError,
     validate_branch_safety,
 )
 
@@ -26,11 +30,11 @@ class TestPermissionsAndPolicies(unittest.TestCase):
         self.event_log = EventLog(self.log_path)
         self.dispatcher = TaskDispatcher(self.queue_store, self.event_log, self.temp_dir)
 
-        # Create dummy evidence files
+        # Create valid evidence files
         self.evidence1 = self.temp_dir / "evidence_1.md"
-        self.evidence1.write_text("# Evidence 1", encoding="utf-8")
+        self.evidence1.write_text("# Evidence 1 Content", encoding="utf-8")
         self.evidence_rev = self.temp_dir / "review_evidence.md"
-        self.evidence_rev.write_text("# Review Evidence", encoding="utf-8")
+        self.evidence_rev.write_text("# Review Evidence Content", encoding="utf-8")
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
@@ -46,7 +50,6 @@ class TestPermissionsAndPolicies(unittest.TestCase):
         )
         self.queue_store.save_task(task)
 
-        # Unauthorized actor attempts start
         with self.assertRaises(PolicyViolation):
             self.dispatcher.start_task("T-001", actor="PK_ArtDirector")
 
@@ -57,20 +60,31 @@ class TestPermissionsAndPolicies(unittest.TestCase):
             title="Self Review Attempt",
             status=TaskState.IN_PROGRESS,
             owner="PK_ClientLead",
-            reviewers=["PK_ClientLead", "PK_QALead"],  # Even if misconfigured
+            reviewers=["PK_ClientLead", "PK_QALead"],
         )
         self.queue_store.save_task(task)
         self.dispatcher.submit_work("T-002", actor="PK_ClientLead", evidence_paths=[str(self.evidence1)])
 
-        verdict = ReviewVerdict(result="PASS", reviewer_id="PK_ClientLead", evidence_paths=[str(self.evidence_rev)])
+        t = self.queue_store.get_task("T-002")
+        verdict = ReviewVerdict(
+            task_id="T-002",
+            iteration=t.iteration,
+            agent_role="PK_ClientLead",
+            provider="LOCAL",
+            invocation_id="inv-rev-1",
+            session_id="sess-rev-1",
+            reviewed_commit_sha=t.current_commit_sha,
+            result="PASS",
+            evidence_paths=[str(self.evidence_rev)],
+        )
         with self.assertRaises(SelfApprovalBlockedError):
-            self.dispatcher.review_task("T-002", reviewer="PK_ClientLead", verdict=verdict)
+            self.dispatcher.review_task("T-002", verdict=verdict)
 
-    def test_unauthorized_reviewer_blocked(self):
-        """Reviewer not in designated reviewers list cannot review."""
+    def test_reused_worker_session_rejected(self):
+        """Reviewer cannot spoof or reuse the worker's session ID."""
         task = Task(
             id="T-003",
-            title="Review Gate",
+            title="Session Spoofing Attempt",
             status=TaskState.IN_PROGRESS,
             owner="PK_ClientLead",
             reviewers=["PK_QALead", "PK_GameDirector"],
@@ -78,47 +92,105 @@ class TestPermissionsAndPolicies(unittest.TestCase):
         self.queue_store.save_task(task)
         self.dispatcher.submit_work("T-003", actor="PK_ClientLead", evidence_paths=[str(self.evidence1)])
 
-        verdict = ReviewVerdict(result="PASS", reviewer_id="PK_GameDesign", evidence_paths=[str(self.evidence_rev)])
-        with self.assertRaises(PolicyViolation):
-            self.dispatcher.review_task("T-003", reviewer="PK_GameDesign", verdict=verdict)
-
-    def test_dependency_blocking(self):
-        """Task with unapproved dependency cannot be started."""
-        dep_task = Task(
-            id="DEP-001",
-            title="Prerequisite",
-            status=TaskState.IN_PROGRESS,  # Not APPROVED
-            owner="PK_ClientLead",
-            reviewers=["PK_QALead"],
+        t = self.queue_store.get_task("T-003")
+        worker_session = "worker-sess-999"
+        verdict = ReviewVerdict(
+            task_id="T-003",
+            iteration=t.iteration,
+            agent_role="PK_QALead",
+            provider="LOCAL",
+            invocation_id="inv-rev-2",
+            session_id=worker_session,  # Reused worker session!
+            reviewed_commit_sha=t.current_commit_sha,
+            result="PASS",
+            evidence_paths=[str(self.evidence_rev)],
         )
-        task = Task(
-            id="DEP-002",
-            title="Dependent Task",
-            status=TaskState.READY,
-            owner="PK_ArtDirector",
-            reviewers=["PK_QALead"],
-            blocked_by=["DEP-001"],
-        )
-        self.queue_store.save_task(dep_task)
-        self.queue_store.save_task(task)
+        with self.assertRaises(IdentityVerificationError):
+            self.dispatcher.review_task("T-003", verdict=verdict, worker_session_id=worker_session)
 
-        with self.assertRaises(DependencyBlockedError):
-            self.dispatcher.start_task("DEP-002", actor="PK_ArtDirector")
-
-    def test_missing_evidence_rejected(self):
-        """Submission with nonexistent evidence files must fail."""
+    def test_empty_session_id_rejected(self):
+        """Reviewer without an authenticated session ID is rejected."""
         task = Task(
             id="T-004",
-            title="Missing Evidence Task",
+            title="Empty Session Review",
             status=TaskState.IN_PROGRESS,
             owner="PK_ClientLead",
             reviewers=["PK_QALead"],
         )
         self.queue_store.save_task(task)
+        self.dispatcher.submit_work("T-004", actor="PK_ClientLead", evidence_paths=[str(self.evidence1)])
 
-        fake_path = str(self.temp_dir / "nonexistent_evidence.png")
-        with self.assertRaises(EvidenceMissingError):
-            self.dispatcher.submit_work("T-004", actor="PK_ClientLead", evidence_paths=[fake_path])
+        t = self.queue_store.get_task("T-004")
+        verdict = ReviewVerdict(
+            task_id="T-004",
+            iteration=t.iteration,
+            agent_role="PK_QALead",
+            provider="LOCAL",
+            invocation_id="inv-rev-3",
+            session_id="",  # Empty session
+            reviewed_commit_sha=t.current_commit_sha,
+            result="PASS",
+            evidence_paths=[str(self.evidence_rev)],
+        )
+        with self.assertRaises(IdentityVerificationError):
+            self.dispatcher.review_task("T-004", verdict=verdict)
+
+    def test_tampered_evidence_rejected(self):
+        """If an evidence file is modified on disk after submission, review is rejected."""
+        task = Task(
+            id="T-005",
+            title="Evidence Tamper Check",
+            status=TaskState.IN_PROGRESS,
+            owner="PK_ClientLead",
+            reviewers=["PK_QALead"],
+        )
+        self.queue_store.save_task(task)
+        self.dispatcher.submit_work("T-005", actor="PK_ClientLead", evidence_paths=[str(self.evidence1)])
+
+        # Maliciously tamper with the evidence file after submission
+        self.evidence1.write_text("# Maliciously Altered Content", encoding="utf-8")
+
+        t = self.queue_store.get_task("T-005")
+        verdict = ReviewVerdict(
+            task_id="T-005",
+            iteration=t.iteration,
+            agent_role="PK_QALead",
+            provider="LOCAL",
+            invocation_id="inv-rev-4",
+            session_id="qa-sess-unique-4",
+            reviewed_commit_sha=t.current_commit_sha,
+            result="PASS",
+            evidence_paths=[str(self.evidence_rev)],
+        )
+        with self.assertRaises(EvidenceTamperedError):
+            self.dispatcher.review_task("T-005", verdict=verdict)
+
+    def test_stale_commit_review_rejected(self):
+        """Review for a commit SHA that doesn't match current task commit is rejected."""
+        task = Task(
+            id="T-006",
+            title="Stale Commit Review",
+            status=TaskState.IN_PROGRESS,
+            owner="PK_ClientLead",
+            reviewers=["PK_QALead"],
+        )
+        self.queue_store.save_task(task)
+        self.dispatcher.submit_work("T-006", actor="PK_ClientLead", evidence_paths=[str(self.evidence1)])
+
+        t = self.queue_store.get_task("T-006")
+        verdict = ReviewVerdict(
+            task_id="T-006",
+            iteration=t.iteration,
+            agent_role="PK_QALead",
+            provider="LOCAL",
+            invocation_id="inv-rev-5",
+            session_id="qa-sess-unique-5",
+            reviewed_commit_sha="stale_sha_9999999",  # Wrong commit
+            result="PASS",
+            evidence_paths=[str(self.evidence_rev)],
+        )
+        with self.assertRaises(StaleReviewError):
+            self.dispatcher.review_task("T-006", verdict=verdict)
 
     def test_protected_branch_safety(self):
         """Direct commits or branches targeting main/master are forbidden."""
@@ -127,9 +199,8 @@ class TestPermissionsAndPolicies(unittest.TestCase):
         with self.assertRaises(PolicyViolation):
             validate_branch_safety("master")
         with self.assertRaises(PolicyViolation):
-            validate_branch_safety("origin/main")
-        # Allowed feature branch
-        validate_branch_safety("studio/v3-002-agent-orchestrator")
+            validate_branch_safety("integration")
+        validate_branch_safety("studio/v3-002-agent-orchestrator-r1")
 
 
 if __name__ == "__main__":

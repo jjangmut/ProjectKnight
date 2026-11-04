@@ -1,4 +1,4 @@
-"""Base interface for agent execution adapters."""
+"""Base interface for agent execution adapters (V3-002-R1)."""
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
@@ -22,7 +22,7 @@ class AgentAdapter(ABC):
         worktree: str,
         timeout_sec: int = 120,
     ) -> ExecutionRecord:
-        """Dispatch a prompt to the specified agent role."""
+        """Dispatch a prompt to the specified agent role and return the verified execution record."""
         pass
 
     @abstractmethod
@@ -32,5 +32,5 @@ class AgentAdapter(ABC):
 
     @abstractmethod
     def cancel(self, invocation_id: str) -> bool:
-        """Cancel an in-flight invocation safely."""
+        """Cancel an in-flight invocation safely. Returns False if cancellation is unsupported or failed."""
         pass

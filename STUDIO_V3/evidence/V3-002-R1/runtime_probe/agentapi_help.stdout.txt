@@ -1,0 +1,6 @@
+Usage: agentapi <command> [args]
+
+Available Commands:
+  get-conversation-metadata <conversation_id>
+  new-conversation [--model=<flash_lite|flash|pro>] [--title=<title>] [--profile=<profile>] <prompt>
+  send-message [--title=<title>] <recipient_id> <content>
