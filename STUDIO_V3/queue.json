@@ -21,11 +21,8 @@
     {
       "id": "V3-002",
       "title": "Connect real Antigravity multi-agent runner with audited invocation logs",
-      "status": "BLOCKED",
+      "status": "READY",
       "owner": "PK_Producer",
-      "blocked_by": [
-        "V3-001"
-      ],
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
@@ -33,7 +30,8 @@
       "evidence": [],
       "reviews": {},
       "iteration": 0,
-      "priority": 1
+      "priority": 1,
+      "notes": "Independent infrastructure track. May run parallel with V3-001; V3-003 remains blocked until both approved."
     },
     {
       "id": "V3-003",
