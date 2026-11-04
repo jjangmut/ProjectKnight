@@ -1,0 +1,57 @@
+{
+  "version": 3,
+  "branch": "studio/production-v3-cleanroom",
+  "previous_system": "RETIRED",
+  "agent_dispatch": "NOT_CONNECTED",
+  "tasks": [
+    {
+      "id": "V3-001",
+      "title": "Clean Baseline Audit and Gameplay Plane Decision",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "evidence": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": 0
+    },
+    {
+      "id": "V3-002",
+      "title": "Connect real Antigravity multi-agent runner with audited invocation logs",
+      "status": "BLOCKED",
+      "owner": "PK_Producer",
+      "blocked_by": [
+        "V3-001"
+      ],
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "evidence": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": 1
+    },
+    {
+      "id": "V3-003",
+      "title": "Implement approved Stage 1 visual vertical slice through review/rework loops",
+      "status": "BLOCKED",
+      "owner": "PK_ArtDirector",
+      "blocked_by": [
+        "V3-001",
+        "V3-002"
+      ],
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "evidence": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": 2
+    }
+  ]
+}
