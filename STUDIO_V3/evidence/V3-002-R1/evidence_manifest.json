@@ -1,0 +1,101 @@
+{
+  "task_id": "V3-002-R1",
+  "live_workflow_task_id": "FIXTURE-V3-LIVE-001",
+  "working_branch": "studio/v3-002-agent-orchestrator-r1",
+  "commit_sha": "71e126bc4956d8f4c4d97acb9eb48625a78e135e",
+  "created_at": "2026-11-05T00:12:00+09:00",
+  "subagent_sessions": [
+    {
+      "role": "PK_ClientLead",
+      "session_id": "4352012b-b05c-4ac9-9372-5f02c1c89c1b",
+      "iteration": 1,
+      "cycle": "Cycle 1 Worker Implementation",
+      "transcript_file": "subagent_client_lead_cycle1.jsonl"
+    },
+    {
+      "role": "PK_QALead",
+      "session_id": "73fbe40a-0aec-4c1f-a6d8-dbe81727e4e3",
+      "iteration": 1,
+      "cycle": "Cycle 1 Independent QA Rejection",
+      "transcript_file": "subagent_qa_lead_cycle1.jsonl"
+    },
+    {
+      "role": "PK_ClientLead",
+      "session_id": "675011fe-4d89-46ea-97b0-9bd04bdb04de",
+      "iteration": 2,
+      "cycle": "Cycle 2 Remediation Fix",
+      "transcript_file": "subagent_client_lead_cycle2.jsonl"
+    },
+    {
+      "role": "PK_QALead",
+      "session_id": "ffbb3084-49f8-4101-a619-0bcf0c3ceeff",
+      "iteration": 2,
+      "cycle": "Cycle 2 Independent QA Retest Pass",
+      "transcript_file": "subagent_qa_lead_cycle2.jsonl"
+    },
+    {
+      "role": "PK_GameDirector",
+      "session_id": "be986d4e-e78f-4e2f-96fc-675525fa9ee5",
+      "iteration": 2,
+      "cycle": "Cycle 3 Independent Director Final Milestone Review",
+      "transcript_file": "subagent_game_director_cycle3.jsonl"
+    }
+  ],
+  "files": {
+    "cycle_1_client_lead_evidence.md": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/cycle_1_client_lead_evidence.md",
+      "sha256": "509e84c1abbb8623f345562b94c330c2963de171a4f30a7b6092019542322bf1",
+      "size_bytes": 1869
+    },
+    "cycle_1_qa_rejection.md": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/cycle_1_qa_rejection.md",
+      "sha256": "962c468bbc66105b161db3cf2d8f6d1751b36ed5073464888e6c5a646a087f54",
+      "size_bytes": 3634
+    },
+    "cycle_2_client_lead_fix.md": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/cycle_2_client_lead_fix.md",
+      "sha256": "3c1a142f2f4bf2b6ddc652b182ed3d131925b56c476b7be406c800bb5368597e",
+      "size_bytes": 3056
+    },
+    "cycle_2_qa_pass.md": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/cycle_2_qa_pass.md",
+      "sha256": "370e6b0c580b1aba2dca5cbfccf3dc71351debb2bdef91b180b70974f399c26b",
+      "size_bytes": 6087
+    },
+    "cycle_3_director_pass.md": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/cycle_3_director_pass.md",
+      "sha256": "73cebeb8c405250aa11a5301b1bbba3687af2ddaa2fd24097c3c48fda7b2d687",
+      "size_bytes": 4496
+    },
+    "fixture_health_component.gd": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/fixture_health_component.gd",
+      "sha256": "841cfb53fa65f2be76efab89fc33e681fde21e3c5c4ef2bfd1a0f9ae93bf85fc",
+      "size_bytes": 1218
+    },
+    "subagent_client_lead_cycle1.jsonl": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/subagent_client_lead_cycle1.jsonl",
+      "sha256": "bc2c95292f98960e0e84404007eebf3d14acf083aaa7e80573643994dd72a4f8",
+      "size_bytes": 25562
+    },
+    "subagent_client_lead_cycle2.jsonl": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/subagent_client_lead_cycle2.jsonl",
+      "sha256": "adb4a8f124f1a48d1de27be313a395497790fa25a3d9431be033d7c9037f3e0c",
+      "size_bytes": 56007
+    },
+    "subagent_game_director_cycle3.jsonl": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/subagent_game_director_cycle3.jsonl",
+      "sha256": "282282908213e49a0c5baf8f9df38a21ca6b1f345d1bba845485c03f093e539d",
+      "size_bytes": 64100
+    },
+    "subagent_qa_lead_cycle1.jsonl": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/subagent_qa_lead_cycle1.jsonl",
+      "sha256": "8497008a9fa787f64c4858b123ea315ec4d4f534215cf008e819e6e9dc72e52e",
+      "size_bytes": 19971
+    },
+    "subagent_qa_lead_cycle2.jsonl": {
+      "relative_path": "STUDIO_V3/evidence/V3-002-R1/live_workflow/subagent_qa_lead_cycle2.jsonl",
+      "sha256": "0ea83ae8e87c8fed9627231ed3575263d3ba0d17521180ed9f12450c7d949e08",
+      "size_bytes": 58241
+    }
+  }
+}
