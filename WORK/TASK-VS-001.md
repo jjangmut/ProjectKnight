@@ -1,0 +1,51 @@
+# [TASK-VS-001] VS-001 — 3D Background + 2D Character Vertical Slice
+
+- **Task ID**: `VS-001`
+- **Objective**: Stage 1 일부(약 3~5분)를 대상으로 3D 환경 + 2D 캐릭터 융합 횡스크롤 액션의 상용 수준 품질 기준 및 개발 표준 확립
+- **Owner**: `PK_ClientLead`, `PK_ArtDirector`, `PK_GameDesign`
+- **Reviewer**: `PK_GameDirector`, `PK_QALead`
+- **Base branch**: `main`
+- **Working branch**: `feat/quarter-view-mode`
+- **Allowed changes**:
+  - Stage 1 3D 석조 성채 아레나 환경, 실시간 3D 조명 및 뎁스 포그
+  - 2D 팔라딘 및 몬스터/보스 스프라이트 스케일 및 피봇 정합
+  - 3D 사이드 쿼터뷰(-32° 피치) 카메라 및 가변 Lookahead
+  - 2D 캐릭터 접지 그림자(Ground Shadow) 및 물리 충돌 평면
+  - 보스 지휘관 1페이즈/2페이즈 패턴 가독성 및 전조 비콘
+- **Forbidden changes**:
+  - `release/sidescroller-v1.2.0` (2D 완성본) 워크트리 변경 금지
+  - 승인 없는 시스템 파괴적 리팩터링 금지
+- **Deliverables**:
+  - `WORK/TASK-VS-001.md` (본 작업 명세서)
+  - `REVIEW/BASELINE.md` (기준점 분석 및 평가 지표)
+  - `CAPTURES/` (단계별 캡처 증거 보존)
+  - `QA/ISSUE_LIST.md` (P0~P3 이슈 목록)
+  - `QA/PLAY_REPORT.md` (실제 플레이 검증 리포트)
+  - `PERF/performance.json` (FPS, 드로우콜, 프레임타임 메트릭)
+- **Acceptance criteria**:
+  - **Graphics (평균 >= 9.0 권장)**:
+    - 2D Character Readability >= 9.0
+    - 3D Environment >= 9.0
+    - 2D/3D Integration >= 9.0
+    - Lighting >= 8.5
+    - Grounding >= 9.0
+    - Composition >= 8.5
+    - Gameplay Readability >= 9.0
+  - **Gameplay**:
+    - Traversal clear
+    - Combat readable
+    - No progression blockers
+    - Boss readable
+    - Checkpoint works
+  - **Technical**:
+    - No P0 Blocker
+    - No unresolved major rendering bug
+    - PC performance gate PASS (60 FPS 안정 유지)
+    - Android status honestly documented ("ANDROID PERFORMANCE NOT VERIFIED")
+- **Tests**:
+  - `tests/studio_auto_pipeline_suite.gd` (75/75 PASS)
+  - `tests/daily_dev_process_runner.gd` (50/50 PASS)
+  - `tests/test_advanced_combat_expansion.gd` (13/13 PASS)
+- **Quality gate**:
+  - 평균 >= 9.0 AND 모든 핵심 항목 >= 8.5
+- **Status**: `IN_PROGRESS`
