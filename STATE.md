@@ -14,5 +14,12 @@ Origin game baseline: main @ 10ecf64e6111b9a2ded819b43b38760fd1236695
 - Android real-device performance: NOT VERIFIED.
 - Gameplay X/Y vs X/Z control rule: UNDECIDED.
 
-## Next
-V3-001 — Independent baseline audit, playable capture, and gameplay-plane decision.
+## Active next tasks
+- V3-001 (READY): Independent baseline audit, playable capture, and gameplay-plane decision. No existing game source changes during audit.
+- V3-002 (READY): Actual Antigravity agent invocation, independent review and bounded rejection/fix/retest loop. Defined in STUDIO_V3/tasks/V3-002.md. Infrastructure may proceed in parallel with V3-001.
+- V3-003 (BLOCKED): Stage 1 quality pass starts only after V3-001 and V3-002 both approved.
+
+## Verification honesty
+- Six custom agent definitions are NOT YET INSTALLED into native .agents/agents/.
+- Real Antigravity dispatcher is NOT CONNECTED; V3-002 is a work order, not an executed integration.
+- QA status remains NOT VERIFIED until new evidence is submitted.
