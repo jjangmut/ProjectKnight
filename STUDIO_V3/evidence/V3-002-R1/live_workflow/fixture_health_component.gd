@@ -1,5 +1,5 @@
 # D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-002-R1/live_workflow/fixture_health_component.gd
-# Live Workflow Fixture: HealthComponent (Cycle 1 Initial Implementation)
+# Live Workflow Fixture: HealthComponent (Cycle 2 Fix Implementation)
 class_name FixtureHealthComponent
 extends Node
 
@@ -16,15 +16,14 @@ func _ready() -> void:
 	current_health = max_health
 
 ## Apply incoming damage.
-## NOTE (Cycle 1): Unclamped damage subtraction allows negative health.
+## NOTE (Cycle 2 Fix): Health is clamped to zero upon lethal or excess damage (ISS-LIVE-001 fix).
 func take_damage(amount: int) -> void:
 	if is_dead:
 		return
 	if amount <= 0:
 		return
 	
-	# INTENTIONAL DEFECT: Unclamped health subtraction allowing negative values
-	current_health -= amount
+	current_health = maxi(0, current_health - amount)
 	damaged.emit(amount)
 	health_changed.emit(current_health, max_health)
 	
