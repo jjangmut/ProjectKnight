@@ -5,8 +5,10 @@ class_name SideQVCamera
 ## - 플레이어 스무스 추적, 타격감 트라우마 셰이크 및 히트스탑 지원
 
 @export var target: Node3D = null
+@export var boss_target: Node3D = null
 @export var follow_smoothness: float = 12.0
 @export var camera_offset: Vector3 = Vector3(0.0, 5.2, 7.8)
+@export var lookahead_distance: float = 1.8
 
 var trauma: float = 0.0
 var trauma_power: float = 2.0
@@ -26,9 +28,27 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if target != null and is_instance_valid(target):
-		var dest := target.global_position + camera_offset
+		var target_pos: Vector3 = target.global_position
+		var desired_fov: float = 42.0
+		var dest: Vector3 = Vector3.ZERO
+
+		if boss_target != null and is_instance_valid(boss_target):
+			# Dual Combat Framing (Hades / Dead Cells style): Midpoint framing & dynamic FOV
+			var boss_pos: Vector3 = boss_target.global_position
+			var midpoint: Vector3 = (target_pos + boss_pos) * 0.5
+			var dist_x: float = absf(target_pos.x - boss_pos.x)
+			desired_fov = clampf(42.0 + (dist_x - 5.0) * 0.9, 42.0, 52.0)
+			dest = midpoint + camera_offset
+		else:
+			# Dynamic Lookahead (Celeste / Dead Cells style): Forward view offset in facing direction
+			var look_x: float = 0.0
+			if "facing_dir_x" in target:
+				look_x = float(target.facing_dir_x) * lookahead_distance
+			dest = target_pos + camera_offset + Vector3(look_x, 0.0, 0.0)
+
 		# Lockstep physics tracking without micro-stutter
 		base_pos = base_pos.lerp(dest, follow_smoothness * delta)
+		fov = lerpf(fov, desired_fov, 4.0 * delta)
 	
 	global_position = base_pos
 

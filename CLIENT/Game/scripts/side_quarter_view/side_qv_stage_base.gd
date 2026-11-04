@@ -14,6 +14,8 @@ const QVMobileControlsClass = preload("res://scripts/quarter_view/qv_mobile_cont
 const BossHealthBarClass = preload("res://scripts/ui/boss_health_bar.gd")
 const AXDataViewerClass = preload("res://scripts/ui/ax_data_viewer.gd")
 const AXDataRegistryClass = preload("res://scripts/data/ax_data_registry.gd")
+const SaveManagerClass = preload("res://scripts/system/save_manager.gd")
+const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 
 const TexAvatarFrame = preload("res://assets/ui/hud_player_avatar_frame.png")
 const TexSoulGemFull = preload("res://assets/ui/hud_soul_gem_full.png")
@@ -48,6 +50,14 @@ var soul_gem_rects: Array[TextureRect] = []
 var advance_banner: Control = null
 var progress_bar_fill: ColorRect = null
 var advance_timer: float = 0.0
+
+# Dynamic Combat Combo Counter HUD
+var combo_hud: Control = null
+var combo_label: Label = null
+var combo_sub_label: Label = null
+var current_combo_count: int = 0
+var combo_fade_timer: float = 0.0
+var _prev_player_hp: int = -1
 
 
 func _ready() -> void:
@@ -102,9 +112,17 @@ func _setup_3d_environment() -> void:
 	env.ambient_light_color = Color(0.62, 0.70, 0.82, 1.0)
 	env.ambient_light_energy = 1.15
 	env.glow_enabled = true
+	env.set("glow_levels/1", 1.0)
+	env.set("glow_levels/2", 1.0)
+	env.set("glow_levels/4", 0.5)
+	env.glow_bloom = 0.18
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	env.glow_hdr_threshold = 1.0
-	env.glow_hdr_scale = 1.4
+	env.glow_hdr_scale = 1.5
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.55, 0.65, 0.82, 1.0)
+	env.fog_density = 0.012
+	env.fog_aerial_perspective = 0.45
 	world_env.environment = env
 	add_child(world_env)
 
@@ -115,6 +133,40 @@ func _setup_3d_environment() -> void:
 	sun.light_energy = 1.45
 	sun.rotation_degrees = Vector3(-46.0, -32.0, 0.0)
 	add_child(sun)
+
+	_spawn_stage_floating_particles("CitadelDustEmbers", Color(2.4, 1.9, 0.9, 0.85), Vector3(0.18, 0.42, 0.0), 54)
+
+
+func _spawn_stage_floating_particles(node_name: String, particle_color: Color, gravity_vec: Vector3, amount_cnt: int = 56) -> CPUParticles3D:
+	var existing := get_node_or_null(node_name) as CPUParticles3D
+	if existing != null:
+		return existing
+	var p := CPUParticles3D.new()
+	p.name = node_name
+	p.amount = amount_cnt
+	p.lifetime = 4.2
+	p.preprocess = 1.5
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(arena_width * 0.5, 3.6, arena_depth * 0.5)
+	p.position = Vector3(0.0, 2.8, 0.0)
+	p.gravity = gravity_vec
+	p.initial_velocity_min = 0.4
+	p.initial_velocity_max = 1.4
+
+	var pmat := StandardMaterial3D.new()
+	pmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	pmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	pmat.albedo_color = particle_color
+	pmat.emission_enabled = true
+	pmat.emission = particle_color
+	pmat.emission_energy_multiplier = 2.8
+	pmat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	var qm := QuadMesh.new()
+	qm.size = Vector2(0.11, 0.11)
+	qm.material = pmat
+	p.mesh = qm
+	add_child(p)
+	return p
 
 
 func _setup_3d_background_architecture() -> void:
@@ -134,7 +186,11 @@ func _spawn_player() -> void:
 	player.position = Vector3(-8.0, 0.1, 0.0)
 	player.died.connect(_on_player_died)
 	player.hp_changed.connect(_on_player_hp_changed)
+	player.enemy_hit.connect(_on_player_enemy_hit)
+	player.pogo_bounced.connect(_on_player_pogo_bounced)
+	player.dive_slammed.connect(_on_player_dive_slammed)
 	add_child(player)
+	SaveManagerClass.apply_upgrades_to_player(player)
 
 
 func _setup_camera() -> void:
@@ -301,6 +357,33 @@ func _setup_mobile_ui() -> void:
 	ax_btn.pressed.connect(open_ax_data_viewer)
 	mobile_controls.add_child(ax_btn)
 
+	# 6. Dynamic Combat Combo Counter & Rank HUD (Right side, tactical style)
+	combo_hud = Control.new()
+	combo_hud.name = "ComboHUD"
+	combo_hud.position = Vector2(980, 58)
+	combo_hud.modulate.a = 0.0 # Initially hidden
+	mobile_controls.add_child(combo_hud)
+
+	combo_label = Label.new()
+	combo_label.name = "ComboLabel"
+	combo_label.text = "0 HITS"
+	combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	combo_label.add_theme_font_size_override("font_size", 28)
+	combo_label.add_theme_color_override("font_color", Color("ffb800"))
+	combo_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.95))
+	combo_label.add_theme_constant_override("shadow_offset_x", 2)
+	combo_label.add_theme_constant_override("shadow_offset_y", 2)
+	combo_hud.add_child(combo_label)
+
+	combo_sub_label = Label.new()
+	combo_sub_label.name = "ComboSubLabel"
+	combo_sub_label.text = "COMBO CHAIN"
+	combo_sub_label.position = Vector2(0, 32)
+	combo_sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	combo_sub_label.add_theme_font_size_override("font_size", 14)
+	combo_sub_label.add_theme_color_override("font_color", Color("00e5ff"))
+	combo_hud.add_child(combo_sub_label)
+
 
 func open_ax_data_viewer() -> Control:
 	if mobile_controls == null:
@@ -327,9 +410,79 @@ func _on_player_hp_changed(curr: int, m_hp: int) -> void:
 		if tw:
 			player_avatar_rect.modulate = Color(2.5, 0.4, 0.4)
 			tw.tween_property(player_avatar_rect, "modulate", Color.WHITE, 0.2)
+	if _prev_player_hp != -1 and curr < _prev_player_hp:
+		# Combat damage taken: drop combo count
+		current_combo_count = 0
+		if combo_hud != null:
+			combo_hud.modulate.a = 0.0
+	_prev_player_hp = curr
+
+
+func _on_player_enemy_hit(_enemy: Node, _dmg: int, was_counter: bool) -> void:
+	current_combo_count += 1
+	combo_fade_timer = 2.0
+	if combo_hud != null:
+		combo_hud.modulate.a = 1.0
+		var rank_text := "COMBO CHAIN"
+		var col := Color("ffb800")
+		if current_combo_count >= 8:
+			rank_text = "UNSTOPPABLE! ✦✦✦"
+			col = Color("ff3b5c")
+		elif current_combo_count >= 5:
+			rank_text = "GROGGY BREAKER! ✦✦"
+			col = Color("00e5ff")
+		elif current_combo_count >= 3:
+			rank_text = "BLADE FINISHER! ✦"
+			col = Color("ffd700")
+
+		if was_counter:
+			rank_text = "JUST PARRY COUNTER! ⚔"
+			col = Color(0.2, 1.2, 1.5)
+
+		combo_label.text = "%d HITS" % current_combo_count
+		combo_label.add_theme_color_override("font_color", col)
+		combo_sub_label.text = rank_text
+
+		combo_hud.scale = Vector2(1.25, 1.25)
+		var tw := create_tween()
+		if tw:
+			tw.tween_property(combo_hud, "scale", Vector2(1.0, 1.0), 0.12)
+
+	# Bonus shard reward on every 5 combo hits!
+	if current_combo_count % 5 == 0 and player != null:
+		SaveManagerClass.add_shards(1)
+		GameFeelManager.damage_popup_3d(self, player.global_position + Vector3(0.0, 1.8, 0.0), "+1 SHARD (COMBO BONUS)", Color("ffb800"), true)
+
+
+func _on_player_pogo_bounced(_p: Node) -> void:
+	if camera != null and camera.has_method("add_trauma"):
+		camera.add_trauma(0.12)
+
+
+func _on_player_dive_slammed(_p: Node, hit_count: int) -> void:
+	if hit_count > 0:
+		current_combo_count += hit_count
+		combo_fade_timer = 2.4
+		if combo_hud != null:
+			combo_hud.modulate.a = 1.0
+			if combo_label != null:
+				combo_label.text = "%d HITS" % current_combo_count
+			if combo_sub_label != null:
+				combo_sub_label.text = "TITAN STOMP! ✦✦"
+				combo_sub_label.add_theme_color_override("font_color", Color("ffb800"))
 
 
 func _process(delta: float) -> void:
+	# Combo decay timer
+	if combo_fade_timer > 0.0:
+		combo_fade_timer -= delta
+		if combo_fade_timer <= 0.0:
+			current_combo_count = 0
+			if combo_hud != null:
+				var tw := create_tween()
+				if tw:
+					tw.tween_property(combo_hud, "modulate:a", 0.0, 0.35)
+
 	# Update stage advancement progress bar
 	if player != null and is_instance_valid(player) and progress_bar_fill != null:
 		var p_x: float = player.global_position.x
@@ -385,6 +538,7 @@ func _start_boss_wave() -> void:
 		boss_encountered.emit(active_boss)
 		if camera != null:
 			camera.add_trauma(0.4)
+			camera.boss_target = active_boss
 
 
 func _spawn_stage_boss() -> void:
@@ -411,12 +565,20 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 	is_stage_finished = true
 	if camera != null:
 		camera.add_trauma(0.7)
+		camera.boss_target = null
+
+	# Save stage clear and award soul shards
+	SaveManagerClass.mark_stage_cleared(stage_index)
+	var shard_rewards := { 1: 20, 2: 25, 3: 30, 4: 35, 5: 50 }
+	var earned_shards: int = int(shard_rewards.get(stage_index, 20))
+	SaveManagerClass.add_shards(earned_shards)
 	
 	# 클리어 팡파르 연출
 	var clear_lbl := Label.new()
-	clear_lbl.text = "STAGE CLEARED!"
-	clear_lbl.position = Vector2(480, 240)
-	clear_lbl.add_theme_font_size_override("font_size", 42)
+	clear_lbl.text = "STAGE CLEARED!\n+ %d SOUL SHARDS" % earned_shards
+	clear_lbl.position = Vector2(440, 230)
+	clear_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	clear_lbl.add_theme_font_size_override("font_size", 38)
 	clear_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	if mobile_controls != null:
 		mobile_controls.add_child(clear_lbl)

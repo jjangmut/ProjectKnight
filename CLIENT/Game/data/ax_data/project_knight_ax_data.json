@@ -26,6 +26,12 @@
 			"gravity": 18.0,
 			"hit_invuln_duration": 0.65
 		},
+		"gameplay_feel_buffers": {
+			"coyote_time": 0.12,
+			"jump_buffer_time": 0.14,
+			"attack_buffer_time": 0.12,
+			"description_ko": "플랫폼 액션 명작 표준의 120~140ms 선입력 유예 및 지상 판정 이탈 후 조작 보정"
+		},
 		"combat": {
 			"combo_steps": 3,
 			"base_attack_damage": 2,
@@ -43,6 +49,34 @@
 				"damage": 2
 			}
 		},
+		"aerial_maneuvers": {
+			"pogo_bounce": {
+				"name_ko": "공중 하단 베기 포고 바운스 (Hollow Knight Nail Pogo)",
+				"recoil_velocity_y": 6.52,
+				"resets_air_dash": true,
+				"shockwave_vfx": "PogoShockwaveRing3D",
+				"description_ko": "공중에서 적 적중 시 상향 반동 가속도 부여 및 공중 대시 횟수 즉시 리셋"
+			},
+			"dive_slam": {
+				"name_ko": "공중 하향 급강하 스톰프 다이브 (Dead Cells Ground Slam)",
+				"dive_velocity_y": -22.0,
+				"impact_radius": 3.8,
+				"damage_multiplier": 2.0,
+				"poise_damage": 4,
+				"shockwave_vfx": "DiveShockwaveRing3D",
+				"description_ko": "공중 하향 공격 시 고속 급강하 후 착지 3D 대지 충격파 광역 2배 피해 및 보스 체간 4 파쇄"
+			}
+		},
+		"dash_mechanics": {
+			"invulnerability_duration": 0.22,
+			"ghost_afterimage": {
+				"enabled": true,
+				"ghost_interval": 0.045,
+				"fade_duration": 0.22,
+				"neon_color": "#4de6ff",
+				"description_ko": "대시 진행 경로에 3D 네온 시안 잔상 고스트 투영"
+			}
+		},
 		"defense_parry": {
 			"just_parry_window": 0.14,
 			"parry_damage_reduction": 1.0,
@@ -52,11 +86,45 @@
 			"counter_damage_multiplier": 3.0,
 			"counter_attack_damage": 6
 		},
+		"combat_hud_and_feedback": {
+			"floating_text_3d": {
+				"enabled": true,
+				"mode": "Label3D Billboard (no_depth_test)",
+				"styles": ["Normal(Yellow/White)", "Crit/Parry(Neon Cyan)", "Stomp(Gold)", "Shatter(Orange)", "Heal(Crimson)", "Reflect(Gold)"]
+			},
+			"combo_counter": {
+				"decay_time": 2.0,
+				"ranks": [
+					{ "threshold": 3, "title": "BLADE INITIATE", "color": "#ffb800" },
+					{ "threshold": 5, "title": "GROGGY BREAKER", "color": "#00e5ff" },
+					{ "threshold": 8, "title": "UNSTOPPABLE! ✦✦✦", "color": "#ff3b5c" },
+					{ "threshold": 10, "title": "GOD OF BATTLE ✦✦✦✦", "color": "#ff0077" }
+				],
+				"milestone_reward": "+1 Soul Shard per 5 consecutive hits"
+			}
+		},
+		"sanctuary_upgrades": {
+			"hp_boost": { "name_ko": "성스러운 결의", "effect_ko": "최대 체력 +1 영구 증가", "max_level": 3, "cost_shards": [15, 30, 50] },
+			"dmg_boost": { "name_ko": "빛의 성검 연마", "effect_ko": "기본 공격력 +1 영구 증가", "max_level": 3, "cost_shards": [20, 40, 60] },
+			"shadow_dash": { "name_ko": "그림자 발걸음", "effect_ko": "이동속도 +12%, 대시속도 +15% 증가", "max_level": 1, "cost_shards": [35] }
+		},
+		"boss_relic_synergies": {
+			"bastion_shield": { "stage": 1, "name_ko": "요새의 방패", "effect_ko": "가드 방어력 강화 및 기사단 상징" },
+			"shadow_cloak": { "stage": 2, "name_ko": "그림자 망토", "effect_ko": "이동속도 +12%, 대시속도 +15% 증폭" },
+			"wind_quiver": { "stage": 3, "name_ko": "질풍의 화살통", "effect_ko": "3단 피니셔 검기 사거리 +40%(33.6m), 관통 횟수 +1" },
+			"titan_pauldrons": { "stage": 4, "name_ko": "티탄의 견갑", "effect_ko": "최대 체력 +1, 공중 착지 시 3D 지면 충격파 발산" },
+			"abyssal_crown": { "stage": 5, "name_ko": "심연의 왕관", "effect_ko": "기본 공격력 +1(3 DMG), 저스트 패링 반격 데미지 +2" }
+		},
+		"runic_engravings": {
+			"vampiric_edge": { "name_ko": "흡혈의 칼날", "effect_ko": "3단 콤보 피니셔 적중 시 HP 1 치유 (쿨다운 8.0초)" },
+			"thunder_step": { "name_ko": "뇌전의 걸음", "effect_ko": "대시 경로 교차 적에게 1 피해 + 3D 번개 스파크 잔상" },
+			"aegis_reflect": { "name_ko": "이지스 반사", "effect_ko": "저스트 패링 성공 시 3D 황금 충격파 폭발 발산" }
+		},
 		"animations": [
 			{ "state": "IDLE", "sheet": "idle_v1_aligned.png", "grid": "2x2 (4f)", "fps": 5.0, "desc": "무게중심 정렬 대기 호흡 동작" },
 			{ "state": "RUN", "sheet": "run_v2_aligned.png", "grid": "3x2 (6f)", "fps": 11.0, "desc": "잔상 없는 선명한 전진 질주 동작" },
 			{ "state": "JUMP", "sheet": "jump_v1.png", "grid": "3x1 (3f)", "fps": 8.0, "desc": "체공 도약 및 하강 자세" },
-			{ "state": "DODGE", "sheet": "dodge_v1.png", "grid": "2x2 (4f)", "fps": 14.0, "desc": "무적 회피 대시 구르기/미끄러짐" },
+			{ "state": "DODGE", "sheet": "dodge_v1.png", "grid": "2x2 (4f)", "fps": 14.0, "desc": "무적 회피 대시 구르기/미끄러짐 및 네온 잔상" },
 			{ "state": "ATTACK", "sheet": "attack_v1_aligned.png", "grid": "2x2 (4f)", "fps": 20.0, "desc": "0->1->2->3 순차 재생 성검 찌르기 & 3단 검기 발사" },
 			{ "state": "GUARD", "sheet": "guard_v1_aligned.png", "grid": "3x1 (3f)", "fps": 8.0, "desc": "성기사의 방패 방어 및 저스트 패링 자세" },
 			{ "state": "HURT", "sheet": "hurt_v1.png", "grid": "3x1 (3f)", "fps": 10.0, "desc": "피격 경직 및 0.65초 무적 점멸" },
@@ -104,7 +172,8 @@
 			"wave_clear_heal": 2,
 			"boss_id": "boss_commander",
 			"boss_name_ko": "성문 수호 기사단장",
-			"reward_relic_id": "bastion_shield"
+			"reward_relic_id": "bastion_shield",
+			"clear_shard_reward": 20
 		},
 		{
 			"stage_num": 2,
@@ -123,7 +192,8 @@
 			"wave_clear_heal": 2,
 			"boss_id": "boss_beast_chieftain",
 			"boss_name_ko": "심연의 야수 우두머리",
-			"reward_relic_id": "shadow_cloak"
+			"reward_relic_id": "shadow_cloak",
+			"clear_shard_reward": 25
 		},
 		{
 			"stage_num": 3,
@@ -142,7 +212,8 @@
 			"wave_clear_heal": 2,
 			"boss_id": "boss_crossbow_commander",
 			"boss_name_ko": "폐허의 석궁 사령관",
-			"reward_relic_id": "piercing_quiver"
+			"reward_relic_id": "piercing_quiver",
+			"clear_shard_reward": 30
 		},
 		{
 			"stage_num": 4,
@@ -161,7 +232,8 @@
 			"wave_clear_heal": 2,
 			"boss_id": "boss_golem_guardian",
 			"boss_name_ko": "티탄 골렘 가디언",
-			"reward_relic_id": "golem_pauldrons"
+			"reward_relic_id": "golem_pauldrons",
+			"clear_shard_reward": 35
 		},
 		{
 			"stage_num": 5,
@@ -180,7 +252,8 @@
 			"wave_clear_heal": 2,
 			"boss_id": "boss_abyssal_arbiter",
 			"boss_name_ko": "심연의 심판관",
-			"reward_relic_id": "abyssal_crown"
+			"reward_relic_id": "abyssal_crown",
+			"clear_shard_reward": 50
 		}
 	],
 	"enemies": [
@@ -270,7 +343,7 @@
 			"name_ko": "성문 수호 기사단장",
 			"name_en": "Citadel Gate Commander",
 			"title_ko": "타락한 성문의 첫 번째 방벽",
-			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_boss_commander.gd",
+			"script_path": "res://scripts/side_quarter_view/side_qv_boss.gd",
 			"sprite_sheet": "res://assets/enemy_frames/boss_commander_v2.png",
 			"hp": 24,
 			"phase2_threshold": 0.5,
@@ -350,7 +423,7 @@
 			"title_ko": "성벽 폐허를 지배하는 비전 저격수",
 			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_crossbow_commander.gd",
 			"sprite_sheet": "res://assets/enemy_frames/crossbow_cmd_v2.png",
-			"hp": 28,
+			"hp": 30,
 			"phase2_threshold": 0.5,
 			"move_speed_p1": 3.8,
 			"move_speed_p2": 4.5,
@@ -397,7 +470,7 @@
 			"title_ko": "돌의 성소를 지키는 불멸의 거석병",
 			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_golem_guardian.gd",
 			"sprite_sheet": "res://assets/enemy_frames/golem_guardian_v2.png",
-			"hp": 32,
+			"hp": 34,
 			"phase2_threshold": 0.5,
 			"move_speed_p1": 3.2,
 			"move_speed_p2": 4.2,
@@ -436,7 +509,7 @@
 			"title_ko": "침묵의 성채 최심부의 공허 지배자",
 			"script_path": "res://scripts/side_quarter_view/bosses/side_qv_abyssal_arbiter.gd",
 			"sprite_sheet": "res://assets/enemy_frames/abyssal_arbiter_v2.png",
-			"hp": 30,
+			"hp": 38,
 			"phase2_threshold": 0.5,
 			"move_speed_p1": 4.2,
 			"move_speed_p2": 5.2,
@@ -561,6 +634,29 @@
 				"rarity": "신화 유물",
 				"color_hex": "#d973ff",
 				"effect_desc": "저스트 패링 치명타 강화 및 기본 공격력 +1 영구 상승"
+			}
+		],
+		"runic_engravings": [
+			{
+				"id": "vampiric_edge",
+				"name_ko": "흡혈의 칼날",
+				"cost_shards": 60,
+				"color_hex": "#f43f5e",
+				"effect_desc": "3단 콤보 피니셔 적중 시 체력 +1 회복 (내부 쿨다운 8초)"
+			},
+			{
+				"id": "thunder_step",
+				"name_ko": "뇌전의 걸음",
+				"cost_shards": 55,
+				"color_hex": "#38bdf8",
+				"effect_desc": "그림자 대시 경로에 번개 잔상을 남겨 관통한 적에게 1 피해"
+			},
+			{
+				"id": "aegis_reflect",
+				"name_ko": "이지스 반사",
+				"cost_shards": 65,
+				"color_hex": "#fbbf24",
+				"effect_desc": "저스트 패링 성공 시 공격자에게 즉시 2 피해 반사"
 			}
 		]
 	}

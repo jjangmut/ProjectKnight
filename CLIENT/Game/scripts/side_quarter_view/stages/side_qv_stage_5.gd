@@ -81,6 +81,9 @@ func _setup_3d_environment() -> void:
 	sun.rotation_degrees = Vector3(-50.0, -28.0, 0.0)
 	add_child(sun)
 
+	# 3. 심연 보이드 부유 입자 (Abyssal Void Particles)
+	_spawn_stage_floating_particles("AbyssalVoidParticles", Color(2.2, 0.35, 3.2, 0.88), Vector3(0.0, 0.45, 0.0), 68)
+
 
 # ==============================================================================
 # 3D 성채 옥좌 홀 배경 및 건축물 설정 (검은 대리석 옥좌 홀 & 룬 기둥)

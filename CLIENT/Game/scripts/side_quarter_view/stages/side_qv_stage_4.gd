@@ -36,11 +36,19 @@ func _setup_3d_environment() -> void:
 	env.ambient_light_color = Color(0.55, 0.28, 0.15, 1.0) # 규격 앰비언스 컬러
 	env.ambient_light_energy = 1.35
 
-	# 3D HDR Glow
+	# 3D HDR Glow & Volcanic Haze Fog
 	env.glow_enabled = true
+	env.set("glow_levels/1", 1.0)
+	env.set("glow_levels/2", 1.0)
+	env.set("glow_levels/4", 0.5)
+	env.glow_bloom = 0.22
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	env.glow_hdr_threshold = 0.95
 	env.glow_hdr_scale = 1.45
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.35, 0.16, 0.08, 1.0)
+	env.fog_density = 0.015
+	env.fog_aerial_perspective = 0.45
 	world_env.environment = env
 	add_child(world_env)
 

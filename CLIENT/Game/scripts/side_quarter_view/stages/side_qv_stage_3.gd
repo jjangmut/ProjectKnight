@@ -53,11 +53,19 @@ func _setup_3d_environment() -> void:
 	env.ambient_light_color = Color(0.25, 0.35, 0.55, 1.0) # 코발트 블루 황혼 앰비언스
 	env.ambient_light_energy = 1.25
 
-	# 3D HDR 발광 (Glow Bloom)
+	# 3D HDR 발광 (Glow Bloom) & 황혼 코발트 안개 (Fog)
 	env.glow_enabled = true
+	env.set("glow_levels/1", 1.0)
+	env.set("glow_levels/2", 1.0)
+	env.set("glow_levels/4", 0.5)
+	env.glow_bloom = 0.22
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	env.glow_hdr_threshold = 0.95
 	env.glow_hdr_scale = 1.45
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.16, 0.24, 0.42, 1.0)
+	env.fog_density = 0.015
+	env.fog_aerial_perspective = 0.45
 	world_env.environment = env
 	add_child(world_env)
 
@@ -69,6 +77,9 @@ func _setup_3d_environment() -> void:
 	sun.light_energy = 1.30
 	sun.rotation_degrees = Vector3(-45.0, 38.0, 0.0)
 	add_child(sun)
+
+	# 3. 부유 석편 주변 비전 마력 포자 파티클 (CPUParticles3D)
+	_spawn_stage_floating_particles("BastionArcaneSpores", Color(0.6, 1.6, 3.2, 0.88), Vector3(0.15, 0.35, 0.0), 60)
 
 
 # ==============================================================================

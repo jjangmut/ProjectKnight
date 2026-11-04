@@ -126,11 +126,11 @@ static func register_active_camera(cam: Camera2D) -> void:
 		inst.register_camera(cam)
 
 
-static func ensure_manager(tree: SceneTree):
+static func ensure_manager(tree: SceneTree) -> GameFeelManager:
 	var inst := get_instance()
 	if inst == null and tree != null and tree.root != null:
 		var script_res: GDScript = load("res://scripts/system/game_feel_manager.gd")
-		inst = script_res.new()
+		inst = script_res.new() as GameFeelManager
 		inst.name = "GameFeelManager"
 		tree.root.add_child(inst)
 	return inst
@@ -150,6 +150,79 @@ static func shake(amount: float) -> void:
 static func damage_popup(parent_node: Node2D, world_pos: Vector2, text: String, color: Color = Color.WHITE, is_crit: bool = false) -> void:
 	if _instance != null and is_instance_valid(_instance):
 		_instance.spawn_damage_number(parent_node, world_pos, text, color, is_crit)
+
+
+## Spawns a floating combat text node in 3D world space
+func spawn_damage_number_3d(parent_node: Node, world_pos: Vector3, text: String, color: Color = Color.WHITE, is_crit: bool = false) -> void:
+	if not is_instance_valid(parent_node):
+		return
+	var label := Label3D.new()
+	label.name = "FloatingDamage3D"
+	label.text = text
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.font_size = 40 if is_crit else 30
+	label.modulate = color
+	label.outline_render_priority = 1
+	label.outline_size = 4
+	label.outline_modulate = Color(0.02, 0.02, 0.04, 0.95)
+	label.no_depth_test = true
+	parent_node.add_child(label)
+	label.global_position = world_pos + Vector3(randf_range(-0.25, 0.25), 0.2, randf_range(-0.15, 0.15))
+
+	var tween := label.create_tween()
+	var rise_height := 1.25 if is_crit else 0.85
+	var target_pos := label.global_position + Vector3(0.0, rise_height, 0.0)
+	var duration := 0.65 if is_crit else 0.50
+
+	if is_crit:
+		label.scale = Vector3(1.35, 1.35, 1.35)
+		tween.tween_property(label, "scale", Vector3(1.0, 1.0, 1.0), 0.12)
+
+	tween.tween_property(label, "global_position", target_pos, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, duration * 0.45).set_delay(duration * 0.55)
+	tween.tween_callback(label.queue_free)
+
+
+static func damage_popup_3d(parent_node: Node, world_pos: Vector3, text: String, color: Color = Color.WHITE, is_crit: bool = false) -> void:
+	if _instance != null and is_instance_valid(_instance):
+		_instance.spawn_damage_number_3d(parent_node, world_pos, text, color, is_crit)
+	elif is_instance_valid(parent_node):
+		var tree: SceneTree = parent_node.get_tree() if parent_node.is_inside_tree() else null
+		var direct_mgr: GameFeelManager = ensure_manager(tree)
+		if direct_mgr != null and direct_mgr.has_method("spawn_damage_number_3d"):
+			direct_mgr.spawn_damage_number_3d(parent_node, world_pos, text, color, is_crit)
+		else:
+			var label := Label3D.new()
+			label.name = "FloatingDamage3D_Direct"
+			label.text = text
+			label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+			label.font_size = 40 if is_crit else 30
+			label.modulate = color
+			label.outline_render_priority = 1
+			label.outline_size = 4
+			label.outline_modulate = Color(0.02, 0.02, 0.04, 0.95)
+			label.no_depth_test = true
+			parent_node.add_child(label)
+			label.global_position = world_pos + Vector3(randf_range(-0.2, 0.2), 0.2, randf_range(-0.15, 0.15))
+			var tw := label.create_tween()
+			var target_p := label.global_position + Vector3(0.0, 1.0, 0.0)
+			tw.tween_property(label, "global_position", target_p, 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			tw.parallel().tween_property(label, "modulate:a", 0.0, 0.3).set_delay(0.25)
+			tw.tween_callback(label.queue_free)
+
+
+static func hit_stop_3d(duration: float = 0.05, time_scale: float = 0.05) -> void:
+	if duration <= 0.0:
+		return
+	Engine.time_scale = time_scale
+	if _instance != null and is_instance_valid(_instance):
+		_instance._hit_stop_end_msec = Time.get_ticks_msec() + int(duration * 1000.0)
+	elif Engine.get_main_loop() is SceneTree:
+		var tree := Engine.get_main_loop() as SceneTree
+		var inst: GameFeelManager = ensure_manager(tree)
+		if inst != null:
+			inst._hit_stop_end_msec = Time.get_ticks_msec() + int(duration * 1000.0)
+
 
 
 ## Spawns an energetic slash spark / hit burst at the point of impact

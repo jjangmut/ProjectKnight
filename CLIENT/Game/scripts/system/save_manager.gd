@@ -21,6 +21,7 @@ const DEFAULT_SAVE_DATA: Dictionary = {
 			"dmg_boost": 0,
 			"shadow_dash": 0
 		},
+		"engravings": [],
 		"last_updated": 0
 	}
 }
@@ -83,21 +84,104 @@ static func set_ad_free(enabled: bool) -> void:
 static func apply_upgrades_to_player(player: Node) -> void:
 	if player == null or not is_instance_valid(player):
 		return
+	if player.has_method("apply_studio_upgrades_and_relics"):
+		player.apply_studio_upgrades_and_relics()
+		return
 	var hp_boost := get_upgrade_level("hp_boost")
 	var dmg_boost := get_upgrade_level("dmg_boost")
 	var dash_unlocked := get_upgrade_level("shadow_dash")
 	if "max_hp" in player:
-		player.max_hp = 3 + hp_boost
+		var base_hp := 8 if player is CharacterBody3D else 3
+		player.max_hp = base_hp + hp_boost
 		if "current_hp" in player:
 			player.current_hp = mini(int(player.current_hp) + hp_boost, int(player.max_hp))
 	if "current_attack_damage" in player:
-		player.current_attack_damage = 1 + dmg_boost
+		var base_dmg := 2 if player is CharacterBody3D else 1
+		player.current_attack_damage = base_dmg + dmg_boost
 	if "has_shadow_dash" in player:
 		player.has_shadow_dash = (dash_unlocked > 0 or player.has_shadow_dash)
 	var spd_boost := get_upgrade_level("speed_boost")
 	var atk_spd_boost := get_upgrade_level("attack_speed_boost")
 	if player.has_method("update_stats_from_upgrades"):
 		player.update_stats_from_upgrades(spd_boost, atk_spd_boost)
+
+
+static func get_unlocked_relic_ids() -> Array[String]:
+	var data := load_game()
+	var cleared_arr: Array = data.get("cleared", [false, false, false, false, false])
+	var unlocked: Array[String] = []
+	var alias_map := {
+		1: ["bastion_shield", "fortress_shield"],
+		2: ["shadow_cloak"],
+		3: ["piercing_quiver", "wind_quiver"],
+		4: ["golem_pauldrons", "titan_pauldrons"],
+		5: ["abyssal_crown"],
+	}
+	for s_num in range(1, 6):
+		var idx: int = s_num - 1
+		if idx < cleared_arr.size() and bool(cleared_arr[idx]):
+			for rid in alias_map.get(s_num, []):
+				if not unlocked.has(rid):
+					unlocked.append(rid)
+	return unlocked
+
+
+const RUNIC_ENGRAVINGS := {
+	"vampiric_edge": {
+		"id": "vampiric_edge",
+		"name": "흡혈의 칼날",
+		"desc": "3단 콤보 피니셔 적중 시 체력 +1 회복 (내부 쿨다운 8초)",
+		"cost": 60,
+		"color": Color(0.95, 0.25, 0.35)
+	},
+	"thunder_step": {
+		"id": "thunder_step",
+		"name": "뇌전의 걸음",
+		"desc": "그림자 대시 경로에 번개 잔상을 남겨 관통한 적에게 1 피해",
+		"cost": 55,
+		"color": Color(0.3, 0.85, 1.0)
+	},
+	"aegis_reflect": {
+		"id": "aegis_reflect",
+		"name": "이지스 반사",
+		"desc": "저스트 패링 성공 시 공격자에게 즉시 2 피해 반사",
+		"cost": 65,
+		"color": Color(1.0, 0.85, 0.25)
+	}
+}
+
+
+static func is_engraving_unlocked(engraving_id: String) -> bool:
+	var data := load_game()
+	var stats: Dictionary = data.get("stats", {})
+	var raw_engravings: Array = stats.get("engravings", [])
+	return raw_engravings.has(engraving_id)
+
+
+static func unlock_engraving(engraving_id: String, cost: int) -> bool:
+	var data := load_game()
+	var stats: Dictionary = data.get("stats", {})
+	var shards: int = int(stats.get("soul_shards", 0))
+	if shards < cost:
+		return false
+	var raw_engravings: Array = stats.get("engravings", []).duplicate()
+	if raw_engravings.has(engraving_id):
+		return false
+	raw_engravings.append(engraving_id)
+	stats["engravings"] = raw_engravings
+	stats["soul_shards"] = shards - cost
+	save_game(int(data.get("stage_index", 0)), str(data.get("selected_trait", "basic")), data.get("cleared", []), stats)
+	return true
+
+
+static func get_unlocked_engravings() -> Array[String]:
+	var data := load_game()
+	var stats: Dictionary = data.get("stats", {})
+	var raw: Array = stats.get("engravings", [])
+	var result: Array[String] = []
+	for item in raw:
+		result.append(str(item))
+	return result
 
 
 const STAGE_RELICS := {

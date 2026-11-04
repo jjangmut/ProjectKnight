@@ -446,7 +446,11 @@ func _build_player_combat_tab() -> void:
 			float(parry.get("counter_damage_multiplier", 3.0)),
 			int(parry.get("counter_attack_damage", 6))
 		],
-		"▸ [STANDARD GUARD] 저스트 타이밍 이후 가드 유지 시 모든 피해 50% 경감"
+		"▸ [STANDARD GUARD] 저스트 타이밍 이후 가드 유지 시 모든 피해 50% 경감",
+		"▸ [AIR POGO BOUNCE] 공중 하단 적 적중 시 상향 반동 점프(Vy 6.52) & 공중 대시 즉시 리셋",
+		"▸ [AIR DIVE SLAM] 공중 하향 스톰프 급강하(Vy -22.0) · 착지 시 3.8m 대지 충격파 2배 광역 피해 & 체간 4 파쇄",
+		"▸ [DASH GHOST TRAIL] 대시 중 45ms 간격 3D 네온 시안 잔상 투영 및 0.22s 무적 회피",
+		"▸ [INPUT BUFFERING] 코요테 타임 0.12s · 점프 선입력 0.14s · 공격 선입력 0.12s 공중-지상 무봉 연계"
 	]
 	for cl in clines:
 		var l := Label.new()

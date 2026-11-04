@@ -1,83 +1,93 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
+  "character_id": "player_paladin",
+  "name_ko": "결의의 성기사",
+  "name_en": "Resolute Paladin",
   "base_stats": {
-    "max_hp": 3,
-    "move_speed": 320.0,
-    "jump_velocity": -520.0,
-    "gravity": 1400.0,
-    "jump_buffer": 0.14,
-    "coyote_time": 0.12,
-    "hit_invulnerability_usec": 500000
+    "max_hp": 8,
+    "move_speed_x": 7.5,
+    "move_speed_z": 4.8,
+    "dash_speed": 14.0,
+    "dash_duration": 0.22,
+    "jump_velocity": 6.8,
+    "gravity": 18.0,
+    "hit_invulnerability_duration": 0.65
   },
-  "guard_system": {
-    "recovery_duration": 0.12,
-    "cooldown_duration": 0.20,
-    "block_flash_duration": 0.14,
-    "counter_window": 0.18,
-    "counter_damage": 2,
-    "counter_range": 84.0,
-    "counter_stun_duration": 0.40
+  "gameplay_feel_buffers": {
+    "coyote_time": 0.12,
+    "jump_buffer_time": 0.14,
+    "attack_buffer_time": 0.12
   },
   "combo_system": {
-    "combo_steps": [
-      {
-        "step": 1,
-        "name": "thrust",
-        "duration": 0.12,
-        "cooldown": 0.15,
-        "range": 65.0,
-        "height": 40.0,
-        "damage": 1,
-        "stun_duration": 0.10,
-        "knockback": 40.0
-      },
-      {
-        "step": 2,
-        "name": "slash",
-        "duration": 0.14,
-        "cooldown": 0.18,
-        "range": 75.0,
-        "height": 55.0,
-        "damage": 1,
-        "stun_duration": 0.15,
-        "knockback": 80.0
-      },
-      {
-        "step": 3,
-        "name": "smash",
-        "duration": 0.20,
-        "cooldown": 0.35,
-        "range": 90.0,
-        "height": 60.0,
-        "damage": 2,
-        "stun_duration": 0.30,
-        "knockback": 200.0
-      }
-    ]
+    "combo_steps": 3,
+    "base_damage": 2,
+    "attack_duration": 0.20,
+    "attack_cooldown": 0.22,
+    "combo_reset_timer": 0.95,
+    "melee_reach_x": 2.9,
+    "melee_depth_z": 1.65,
+    "finisher_beam": {
+      "name_ko": "신성 관통창 검기",
+      "speed": 20.0,
+      "max_range": 24.0,
+      "damage": 2,
+      "pierce_count": 0
+    }
   },
   "aerial_system": {
-    "down_thrust": {
-      "descend_speed": 350.0,
-      "damage": 1,
-      "rebound_velocity": -420.0,
-      "rebound_height": 280.0,
-      "miss_landing_lag": 0.15
+    "pogo_bounce": {
+      "name_ko": "공중 하단 베기 포고 바운스 (Hollow Knight Style)",
+      "recoil_velocity_y": 6.52,
+      "resets_air_dash": true,
+      "shockwave_ring": "PogoShockwaveRing3D"
+    },
+    "dive_slam": {
+      "name_ko": "공중 하향 급강하 스톰프 다이브 (Dead Cells Style)",
+      "dive_speed": 22.0,
+      "impact_radius": 3.8,
+      "damage_multiplier": 2.0,
+      "poise_damage": 4,
+      "shockwave_ring": "DiveShockwaveRing3D"
     }
   },
-  "traits": {
-    "basic": {
-      "name": "기본 검술",
-      "desc": "사거리 72 / 쿨다운 0.32초 / 카운터 유효 시간 0.24초로 완화",
-      "attack_range": 72.0,
-      "attack_cooldown": 0.32,
-      "counter_window_bonus": 0.06
+  "guard_and_parry": {
+    "just_parry_window": 0.14,
+    "parry_damage_reduction": 1.0,
+    "counter_buff_duration": 3.5,
+    "counter_damage_multiplier": 3.0,
+    "counter_damage": 6,
+    "parry_enemy_stun": 2.0
+  },
+  "dash_system": {
+    "invulnerability_duration": 0.22,
+    "afterimage_interval": 0.045,
+    "afterimage_fade_duration": 0.22,
+    "ghost_color": "#4de6ff"
+  },
+  "sanctuary_upgrades": {
+    "hp_boost": {
+      "max_level": 3,
+      "effect": "+1 Max HP per level"
     },
-    "reach": {
-      "name": "리치 검술",
-      "desc": "사거리 90 / 쿨다운 0.40초 / 3타 콤보 사거리 110px",
-      "attack_range": 90.0,
-      "attack_cooldown": 0.40,
-      "combo_finisher_range_bonus": 20.0
+    "dmg_boost": {
+      "max_level": 3,
+      "effect": "+1 Base Attack DMG per level"
+    },
+    "shadow_dash": {
+      "max_level": 1,
+      "effect": "+12% Move Speed, +15% Dash Speed"
     }
+  },
+  "boss_relics": {
+    "bastion_shield": "Stage 1 전설 성기사 방패",
+    "shadow_cloak": "Stage 2 이동속도 +12%, 대시속도 +15%",
+    "wind_quiver": "Stage 3 검기 사거리 +40%, 관통 횟수 +1",
+    "titan_pauldrons": "Stage 4 최대 체력 +1, 착지 대지 충격파",
+    "abyssal_crown": "Stage 5 기본 공격력 +1, 반격 데미지 +2"
+  },
+  "runic_engravings": {
+    "vampiric_edge": "3단 콤보 피니셔 적중 시 HP 1 치유 (쿨다운 8.0초)",
+    "thunder_step": "대시 경로 교차 적에게 1 피해 + 3D 번개 스파크",
+    "aegis_reflect": "저스트 패링 시 3D 황금 충격파 발산"
   }
 }

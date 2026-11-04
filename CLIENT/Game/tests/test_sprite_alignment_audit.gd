@@ -75,7 +75,6 @@ func _run_audit() -> void:
 		["res://assets/player_frames/idle_v1_aligned.png", 2, 2, 695, 702],
 		["res://assets/player_frames/run_v2_aligned.png", 3, 2, 690, 702],
 		["res://assets/player_frames/attack_v1_aligned.png", 2, 2, 695, 702],
-		["res://assets/player_frames/attack_v2_aligned.png", 2, 2, 695, 702],
 		["res://assets/player_frames/guard_v1_aligned.png", 3, 1, 695, 702],
 		["res://assets/player_frames/jump_v1.png", 3, 1, 670, 702],
 		["res://assets/player_frames/dodge_v1.png", 2, 2, 695, 702],

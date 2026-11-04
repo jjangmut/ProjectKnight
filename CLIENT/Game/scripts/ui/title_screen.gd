@@ -9,6 +9,7 @@ extends Control
 const SaveManagerClass := preload("res://scripts/system/save_manager.gd")
 const CampfireShopClass := preload("res://scripts/ui/campfire_shop.gd")
 const AXDataViewerClass := preload("res://scripts/ui/ax_data_viewer.gd")
+const SpriteInspectorToolClass := preload("res://scripts/ui/sprite_inspector_tool.gd")
 const TexPaladinIdle := preload("res://assets/player_frames/idle_v1_aligned.png")
 const TexAvatarFrame := preload("res://assets/ui/hud_player_avatar_frame.png")
 
@@ -20,6 +21,7 @@ var btn_continue: Button
 var btn_legacy_2d: Button
 var btn_shop: Button
 var btn_ax_data: Button
+var btn_sprite_studio: Button
 var btn_settings: Button
 var btn_credits: Button
 
@@ -260,14 +262,29 @@ func _build_ui() -> void:
 	)
 	main_vbox.add_child(btn_shop)
 
+	var tools_hbox := HBoxContainer.new()
+	tools_hbox.add_theme_constant_override("separation", 10)
+	main_vbox.add_child(tools_hbox)
+
 	btn_ax_data = _create_tactical_menu_button(
-		"◢ 📊  AX 택티컬 데이터 도감 (AX TACTICAL CODEX)",
+		"📊 AX 데이터 도감 (CODEX)",
 		_on_ax_data_pressed,
 		Color("102a2a"),
 		Color("34d399"),
 		48
 	)
-	main_vbox.add_child(btn_ax_data)
+	btn_ax_data.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tools_hbox.add_child(btn_ax_data)
+
+	btn_sprite_studio = _create_tactical_menu_button(
+		"🎨 스프라이트 검증 툴 (SPRITES)",
+		_on_sprite_studio_pressed,
+		Color("291830"),
+		Color("f472b6"),
+		48
+	)
+	btn_sprite_studio.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tools_hbox.add_child(btn_sprite_studio)
 
 	# Bottom Row: Settings & Credits Side-by-Side
 	var util_hbox := HBoxContainer.new()
@@ -489,6 +506,12 @@ func _on_ax_data_pressed() -> void:
 	var viewer := AXDataViewerClass.new()
 	viewer.name = "AXDataViewer"
 	add_child(viewer)
+
+
+func _on_sprite_studio_pressed() -> void:
+	var studio := SpriteInspectorToolClass.new()
+	studio.name = "SpriteInspectorTool"
+	add_child(studio)
 
 
 func _on_settings_pressed() -> void:

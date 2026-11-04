@@ -8,9 +8,11 @@ class_name SideQVSwordBeam
 @export var speed: float = 20.0
 @export var damage: int = 2
 @export var max_range: float = 24.0
+@export var pierce_count: int = 0
 
 var direction: Vector3 = Vector3.RIGHT
 var traveled_distance: float = 0.0
+var _hit_ids: Dictionary = {}
 
 var core_mesh_inst: MeshInstance3D
 var aura_mesh_inst: MeshInstance3D
@@ -52,10 +54,10 @@ func _build_vertical_crescent_visuals() -> void:
 	aura_mesh_inst.mesh = aura_mesh
 
 	var aura_mat := StandardMaterial3D.new()
-	aura_mat.albedo_color = Color(1.0, 0.82, 0.25, 0.42)
+	aura_mat.albedo_color = Color(1.6, 1.2, 0.35, 0.52)
 	aura_mat.emission_enabled = true
-	aura_mat.emission = Color(1.0, 0.82, 0.25, 1.0)
-	aura_mat.emission_energy_multiplier = 1.6
+	aura_mat.emission = Color(1.6, 1.2, 0.35, 1.0)
+	aura_mat.emission_energy_multiplier = 2.4
 	aura_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	aura_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	aura_mesh_inst.material_override = aura_mat
@@ -67,10 +69,10 @@ func _build_vertical_crescent_visuals() -> void:
 	core_mesh_inst.mesh = crescent_mesh
 
 	var core_mat := StandardMaterial3D.new()
-	core_mat.albedo_color = Color(1.2, 1.05, 0.65, 0.78) # Crisp Golden-White Core without over-blooming
+	core_mat.albedo_color = Color(2.4, 2.0, 1.0, 0.88)
 	core_mat.emission_enabled = true
-	core_mat.emission = Color(1.2, 1.05, 0.65, 1.0)
-	core_mat.emission_energy_multiplier = 2.0
+	core_mat.emission = Color(2.4, 2.0, 1.0, 1.0)
+	core_mat.emission_energy_multiplier = 3.4
 	core_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	core_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	core_mesh_inst.material_override = core_mat
@@ -187,6 +189,45 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node3D) -> void:
+	if body == null or not is_instance_valid(body):
+		return
+	var bid := body.get_instance_id()
+	if _hit_ids.has(bid):
+		return
 	if body.has_method("receive_hit"):
+		_hit_ids[bid] = true
 		body.receive_hit(damage, direction)
-		queue_free()
+		_spawn_beam_impact_burst(global_position)
+		if pierce_count > 0:
+			pierce_count -= 1
+		else:
+			queue_free()
+
+
+func _spawn_beam_impact_burst(hit_pos: Vector3) -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var ring := MeshInstance3D.new()
+	ring.name = "BeamImpactBurst3D"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.22
+	torus.outer_radius = 0.36
+	ring.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(3.2, 2.4, 0.8, 0.85)
+	mat.emission_enabled = true
+	mat.emission = Color(3.2, 2.4, 0.8, 1.0)
+	mat.emission_energy_multiplier = 4.0
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ring.material_override = mat
+	p.add_child(ring)
+	ring.global_position = hit_pos
+	ring.rotation_degrees = Vector3(0.0, 0.0, 90.0)
+	var tw := ring.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(ring, "scale", Vector3(2.4, 2.4, 2.4), 0.18)
+		tw.tween_property(mat, "albedo_color:a", 0.0, 0.18)
+		tw.chain().tween_callback(ring.queue_free)

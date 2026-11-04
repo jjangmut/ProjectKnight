@@ -17,7 +17,7 @@ var run_distance := 0.0
 var death_time := 0.0
 var was_dead := false
 var previous_position := Vector2.ZERO
-const ATTACK_PIVOTS := [Vector2(255, 599), Vector2(210, 599), Vector2(250, 569), Vector2(212, 568)]
+const ATTACK_PIVOTS := [Vector2(390, 700), Vector2(390, 700), Vector2(390, 700), Vector2(390, 700)]
 
 # Full Character Texture Evolution System (Stages 1-5)
 const EVOLUTION_TEXTURES := {
@@ -46,11 +46,11 @@ func _ready() -> void:
 	base_character_offset = offset
 	idle_centered = centered
 	previous_position = actor.global_position
-	var sheet: Texture2D = preload("res://assets/player_frames/attack_v1.png")
+	var sheet: Texture2D = preload("res://assets/player_frames/attack_v1_aligned.png")
 	for index in range(4):
 		var cell := AtlasTexture.new()
 		cell.atlas = sheet
-		cell.region = Rect2((index % 2) * 627, (index / 2) * 627, 627, 627)
+		cell.region = Rect2((index % 2) * 780, (index / 2) * 780, 780, 780)
 		attack_frames.append(cell)
 	motions["attack"] = {"frames": attack_frames, "pivots": ATTACK_PIVOTS, "scale": 64.0 / 560.0}
 	_load_motion_manifest()

@@ -17,7 +17,10 @@ var _dmg_btn: Button
 var _dash_btn: Button
 var _heal_btn: Button
 var _ad_boost_btn: Button
-var target_player: CharacterBody2D = null
+var _vamp_btn: Button
+var _thunder_btn: Button
+var _aegis_btn: Button
+var target_player: Node = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -67,10 +70,22 @@ func _build_ui() -> void:
 	var sep := HSeparator.new()
 	panel_box.add_child(sep)
 
-	# Items Container
+	# Scrollable Items Container
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(940, 360)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel_box.add_child(scroll)
+
 	var items_box := VBoxContainer.new()
-	items_box.add_theme_constant_override("separation", 14)
-	panel_box.add_child(items_box)
+	items_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	items_box.add_theme_constant_override("separation", 10)
+	scroll.add_child(items_box)
+
+	var stat_title := Label.new()
+	stat_title.text = "❖ 기본 스탯 & 액션 강화 (Basic Upgrades)"
+	stat_title.add_theme_font_size_override("font_size", 22)
+	stat_title.add_theme_color_override("font_color", Color("fbbf24"))
+	items_box.add_child(stat_title)
 
 	_hp_btn = _create_shop_button("생명의 축복 (Max HP +1)", 25, _on_buy_hp)
 	items_box.add_child(_hp_btn)
@@ -83,6 +98,27 @@ func _build_ui() -> void:
 
 	_heal_btn = _create_shop_button("영혼의 성유 (체력 완전 회복)", 10, _on_buy_heal)
 	items_box.add_child(_heal_btn)
+
+	var rune_sep := HSeparator.new()
+	items_box.add_child(rune_sep)
+
+	var rune_title := Label.new()
+	rune_title.text = "❖ 고대 룬 각인 시스템 (Ancient Runic Engravings)"
+	rune_title.add_theme_font_size_override("font_size", 22)
+	rune_title.add_theme_color_override("font_color", Color("38bdf8"))
+	items_box.add_child(rune_title)
+
+	_vamp_btn = _create_shop_button("흡혈의 칼날 (Vampiric Edge - 3콤보 적중 시 체력 1 회복)", 60, func(): _on_buy_engraving("vampiric_edge", 60))
+	items_box.add_child(_vamp_btn)
+
+	_thunder_btn = _create_shop_button("뇌전의 걸음 (Thunder Step - 대시 궤적 번개 관통 1 피해)", 55, func(): _on_buy_engraving("thunder_step", 55))
+	items_box.add_child(_thunder_btn)
+
+	_aegis_btn = _create_shop_button("이지스 반사 (Aegis Reflect - 저스트 패링 시 2 데미지 즉시 반사)", 65, func(): _on_buy_engraving("aegis_reflect", 65))
+	items_box.add_child(_aegis_btn)
+
+	var ad_sep := HSeparator.new()
+	items_box.add_child(ad_sep)
 
 	_ad_boost_btn = _create_ad_button("🎬 성소의 기도 (후원 영상 시청 시 파편 +30개 즉시 획득)", _on_watch_ad_boost)
 	items_box.add_child(_ad_boost_btn)
@@ -168,6 +204,38 @@ func _refresh_ui() -> void:
 		_dash_btn.disabled = (shards < 50)
 
 	_heal_btn.disabled = (shards < 10)
+
+	# Runic Engravings Status
+	if SaveManagerClass.is_engraving_unlocked("vampiric_edge"):
+		_vamp_btn.text = "흡혈의 칼날 (Vampiric Edge) [ 각인 완료 ]"
+		_vamp_btn.disabled = true
+	else:
+		_vamp_btn.text = "흡혈의 칼날 (3단 콤보 피니셔 시 HP 1 흡수) — 60 Shards"
+		_vamp_btn.disabled = (shards < 60)
+
+	if SaveManagerClass.is_engraving_unlocked("thunder_step"):
+		_thunder_btn.text = "뇌전의 걸음 (Thunder Step) [ 각인 완료 ]"
+		_thunder_btn.disabled = true
+	else:
+		_thunder_btn.text = "뇌전의 걸음 (대시 궤적 번개 관통 1 피해) — 55 Shards"
+		_thunder_btn.disabled = (shards < 55)
+
+	if SaveManagerClass.is_engraving_unlocked("aegis_reflect"):
+		_aegis_btn.text = "이지스 반사 (Aegis Reflect) [ 각인 완료 ]"
+		_aegis_btn.disabled = true
+	else:
+		_aegis_btn.text = "이지스 반사 (저스트 패링 시 2 데미지 즉시 반사) — 65 Shards"
+		_aegis_btn.disabled = (shards < 65)
+
+
+func _on_buy_engraving(engraving_id: String, cost: int) -> void:
+	if SaveManagerClass.unlock_engraving(engraving_id, cost):
+		AudioManager.play("counter_hit", global_position)
+		GameFeelManager.shake(0.22)
+		if is_instance_valid(target_player):
+			SaveManagerClass.apply_upgrades_to_player(target_player)
+		_refresh_ui()
+		upgrade_purchased.emit(engraving_id)
 
 
 func _on_buy_hp() -> void:

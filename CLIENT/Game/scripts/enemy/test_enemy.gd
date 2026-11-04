@@ -80,39 +80,23 @@ func _build_enemy_sprite() -> void:
 	var variant: String = str(get_meta("art_variant", "melee"))
 	var file_path := "res://assets/enemy_frames/melee_v1.png"
 	var regions: Array[Rect2] = [
-		Rect2(0, 0, 512, 500), Rect2(512, 0, 550, 500), Rect2(1062, 0, 474, 500),
-		Rect2(0, 500, 512, 524), Rect2(512, 500, 585, 524), Rect2(1097, 500, 439, 524)
+		Rect2(0, 0, 512, 512), Rect2(512, 0, 512, 512), Rect2(1024, 0, 512, 512),
+		Rect2(0, 512, 512, 512), Rect2(512, 512, 512, 512), Rect2(1024, 512, 512, 512)
 	]
 	var pivots: Array[Vector2] = [
-		Vector2(225, 484), Vector2(250, 486), Vector2(240, 486),
-		Vector2(240, 483), Vector2(240, 480), Vector2(210, 480)
+		Vector2(256, 490), Vector2(256, 490), Vector2(256, 490),
+		Vector2(256, 490), Vector2(256, 490), Vector2(256, 490)
 	]
 	var sprite_y := 28.0
-	_base_scale = 0.13
+	_base_scale = 0.136
 
 	if variant == "beast":
-		file_path = "res://assets/enemy_frames/beast_v1.png"
-		regions = [
-			Rect2(0, 0, 512, 500), Rect2(512, 0, 512, 500), Rect2(1024, 0, 512, 500),
-			Rect2(0, 500, 512, 524), Rect2(512, 500, 512, 524), Rect2(1024, 500, 512, 524)
-		]
-		pivots = [
-			Vector2(255, 433), Vector2(275, 432), Vector2(295, 434),
-			Vector2(260, 381), Vector2(285, 380), Vector2(290, 383)
-		]
-		_base_scale = 0.135
+		file_path = "res://assets/enemy_frames/beast_v2.png"
+		_base_scale = 0.159
 		sprite_y = 24.0
 	elif variant == "golem":
 		file_path = "res://assets/enemy_frames/golem_v1.png"
-		regions = [
-			Rect2(0, 0, 550, 495), Rect2(550, 0, 510, 495), Rect2(1060, 0, 476, 495),
-			Rect2(0, 495, 535, 529), Rect2(535, 495, 585, 529), Rect2(1120, 495, 416, 529)
-		]
-		pivots = [
-			Vector2(275, 481), Vector2(245, 491), Vector2(235, 492),
-			Vector2(260, 502), Vector2(250, 500), Vector2(225, 502)
-		]
-		_base_scale = 0.15
+		_base_scale = 0.168
 		sprite_y = 30.0
 
 	if ResourceLoader.exists(file_path):

@@ -27,9 +27,15 @@ const CaltropTrapScene = preload("res://scripts/side_quarter_view/bosses/side_qv
 const BossTextureMain = preload("res://assets/enemy_frames/crossbow_cmd_v2.png")
 const BossTextureSkills = preload("res://assets/enemy_frames/crossbow_cmd_v2_skills.png")
 const BossTexture = BossTextureMain
+const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 
-@export var max_hp: int = 28
-@export var current_hp: int = 28
+@export var max_hp: int = 30
+@export var current_hp: int = 30
+@export var max_poise: int = 12
+var current_poise: int = 12
+var is_groggy: bool = false
+var groggy_timer: float = 0.0
+var groggy_halo_3d: MeshInstance3D = null
 @export var move_speed: float = 3.8
 @export var retreat_speed: float = 4.5
 
@@ -116,6 +122,16 @@ func _build_components() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
+
+	if is_groggy:
+		groggy_timer -= delta
+		if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
+			groggy_halo_3d.rotation_degrees.y += 180.0 * delta
+		if groggy_timer <= 0.0:
+			_exit_groggy_state()
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
 
 	# 스턴 / 그로기 상태 처리
 	if current_pattern == Pattern.STUNNED:
@@ -340,11 +356,97 @@ func _execute_caltrop_trap() -> void:
 # ==============================================================================
 # 패턴 4: 2페이즈 연사 폭풍 (Rapid Crossbow Barrage: 5연발 고속 점사)
 # ==============================================================================
+func _show_danger_telegraph(duration: float = 0.35) -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var ring := MeshInstance3D.new()
+	ring.name = "DangerTelegraphRing3D"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.55
+	torus.outer_radius = 0.85
+	ring.mesh = torus
+	var rmat := StandardMaterial3D.new()
+	rmat.albedo_color = Color(3.8, 0.4, 0.2, 0.9)
+	rmat.emission_enabled = true
+	rmat.emission = Color(3.8, 0.4, 0.2, 1.0)
+	rmat.emission_energy_multiplier = 4.5
+	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ring.material_override = rmat
+	p.add_child(ring)
+	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
+	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+	var tw := ring.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(ring, "scale", Vector3(2.5, 2.5, 2.5), duration)
+		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
+		tw.chain().tween_callback(ring.queue_free)
+
+	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "!", Color(3.8, 0.3, 0.2), true)
+
+
+func _enter_groggy_state() -> void:
+	is_groggy = true
+	groggy_timer = 3.0
+	current_pattern = Pattern.STUNNED
+	is_acting = false
+	velocity = Vector3.ZERO
+	sprite_3d.texture = BossTextureSkills
+	sprite_3d.frame = 8 # Stagger frame
+	var p := get_parent()
+	if p != null:
+		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "GROGGY!", Color(1.0, 0.7, 0.1), true)
+		_spawn_groggy_halo()
+
+
+func _spawn_groggy_halo() -> void:
+	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
+		groggy_halo_3d.queue_free()
+	groggy_halo_3d = MeshInstance3D.new()
+	groggy_halo_3d.name = "GroggyHalo3D"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.35
+	torus.outer_radius = 0.55
+	groggy_halo_3d.mesh = torus
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(3.2, 2.4, 0.4, 0.95)
+	mat.emission_enabled = true
+	mat.emission = Color(3.2, 2.4, 0.4, 1.0)
+	mat.emission_energy_multiplier = 4.2
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	groggy_halo_3d.material_override = mat
+	add_child(groggy_halo_3d)
+	groggy_halo_3d.position = Vector3(0.0, 2.6, 0.0)
+	groggy_halo_3d.rotation_degrees = Vector3(75.0, 0.0, 0.0)
+
+
+func _exit_groggy_state() -> void:
+	is_groggy = false
+	current_poise = max_poise
+	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
+		groggy_halo_3d.queue_free()
+		groggy_halo_3d = null
+	current_pattern = Pattern.CHASE
+	pattern_timer = 1.0
+	var p := get_parent()
+	if p != null:
+		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.4, 0.0), "RECOVER!", Color(0.4, 0.8, 1.2), false)
+
+
 func _execute_rapid_barrage() -> void:
 	is_acting = true
 	current_pattern = Pattern.RAPID_BARRAGE
 	velocity.x = 0.0
 	velocity.z = 0.0
+
+	_show_danger_telegraph(0.35)
+	await get_tree().create_timer(0.35).timeout
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
+		is_acting = false
+		return
 
 	# 점사 준비 발광
 	var tween := create_tween()
@@ -355,7 +457,7 @@ func _execute_rapid_barrage() -> void:
 	await get_tree().create_timer(0.25).timeout
 
 	for shot in range(5):
-		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
+		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
 			break
 
 		sprite_3d.texture = BossTextureMain
@@ -444,6 +546,11 @@ func _find_player() -> void:
 # 피격 / 저스트 패링 스턴 / 2페이즈 / 사망 처리
 # ==============================================================================
 func apply_parry_stun(duration: float = 2.0) -> void:
+	if not is_groggy:
+		current_poise = maxi(0, current_poise - 4)
+		if current_poise <= 0:
+			_enter_groggy_state()
+			return
 	current_pattern = Pattern.STUNNED
 	stun_timer = duration
 	is_acting = false
@@ -459,6 +566,16 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 
 
 func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+	if is_groggy:
+		amount += 1 # Bonus shatter damage during groggy break
+		var p := get_parent()
+		if p != null:
+			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.3, 0.0), "SHATTER +1", Color(1.0, 0.8, 0.2), true)
+	else:
+		current_poise = maxi(0, current_poise - maxi(1, amount))
+		if current_poise <= 0:
+			_enter_groggy_state()
+
 	current_hp -= amount
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
@@ -491,6 +608,9 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
+	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
+		groggy_halo_3d.queue_free()
+		groggy_halo_3d = null
 	emit_signal("boss_defeated", self)
 	set_physics_process(false)
 	is_acting = true
