@@ -1,25 +1,30 @@
 # ProjectKnight — Clean Production Restart
 
 Date: 2026-11-04
-Branch: studio/production-v3-cleanroom
+Branch: studio/v3-002-agent-orchestrator
 Origin game baseline: main @ 10ecf64e6111b9a2ded819b43b38760fd1236695
 
 ## Status
 - Previous agent system, old review claims, old VS-001 status: RETIRED; NOT AUTHORITATIVE.
 - Game source and art assets: PRESERVED; NO CLAIM OF NEW QA PASS.
-- Active production system: STUDIO_V3 (new from zero).
-- Workflow state engine: available (local CLI; no unattended AI provider connection).
-- Autonomous AI agent dispatch: NOT CONNECTED.
-- Visual independent review: NOT VERIFIED.
+- Active production system: STUDIO_V3 (cleanroom architecture).
+- Workflow state engine: Operational (`STUDIO_V3/orchestrator/` with SQLite atomic persistence and JSON snapshot sync).
+- Custom Agents: Registered in `.agents/agents/` (`PK_GameDirector`, `PK_Producer`, `PK_GameDesign`, `PK_ArtDirector`, `PK_ClientLead`, `PK_QALead`) with official Antigravity frontmatter.
+- Autonomous AI agent dispatch:
+  - Antigravity Native Subagents: CONNECTED & VERIFIED (distinct subagent sessions executed for `PK_QALead` and `PK_GameDirector`).
+  - Antigravity AgentAPI: CONNECTED & VERIFIED (Language server session creation via `agentapi.bat`).
+  - Standalone Antigravity CLI (`agy`): NOT INSTALLED on host Windows environment (reported honestly as `AGENT_RUNTIME_NOT_AVAILABLE` for headless CLI without fabrication).
+- Test Suites: 17/17 tests PASSING in `STUDIO_V3/tests/` (dispatcher, permissions, review gates, recovery, state transitions).
+- Visual independent review: NOT VERIFIED for game code (in-progress on V3-001).
 - Android real-device performance: NOT VERIFIED.
-- Gameplay X/Y vs X/Z control rule: UNDECIDED.
+- Gameplay X/Y vs X/Z control rule: UNDECIDED (owned by V3-001).
 
-## Active next tasks
-- V3-001 (READY): Independent baseline audit, playable capture, and gameplay-plane decision. No existing game source changes during audit.
-- V3-002 (READY): Actual Antigravity agent invocation, independent review and bounded rejection/fix/retest loop. Defined in STUDIO_V3/tasks/V3-002.md. Infrastructure may proceed in parallel with V3-001.
-- V3-003 (BLOCKED): Stage 1 quality pass starts only after V3-001 and V3-002 both approved.
+## Active Tasks
+- V3-001 (READY): Independent baseline audit, playable capture, and gameplay-plane decision.
+- V3-002 (IN_REVIEW): Connect real Antigravity multi-agent runner with audited invocation logs. Implementation complete; submitted for independent review by `PK_QALead` and `PK_GameDirector`.
+- V3-003 (BLOCKED): Blocked until V3-001 and V3-002 are both APPROVED.
 
-## Verification honesty
-- Six custom agent definitions are NOT YET INSTALLED into native .agents/agents/.
-- Real Antigravity dispatcher is NOT CONNECTED; V3-002 is a work order, not an executed integration.
-- QA status remains NOT VERIFIED until new evidence is submitted.
+## Verification Honesty
+- Six custom agent definitions are INSTALLED in `.agents/agents/` and defined in Antigravity session.
+- Real Antigravity dispatch is verified via Native Subagents (`invoke_subagent`) and AgentAPI (`agentapi.bat`).
+- Task V3-002 is submitted for independent review; never self-approved.

@@ -1,0 +1,6 @@
+{
+  "command": "powershell.exe -NoProfile -Command agy agents",
+  "exit_code": 1,
+  "start_utc": "2026-11-04T14:23:37.985991+00:00",
+  "end_utc": "2026-11-04T14:23:38.459792+00:00"
+}

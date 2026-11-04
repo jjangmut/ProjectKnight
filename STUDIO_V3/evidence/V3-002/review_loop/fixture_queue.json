@@ -1,0 +1,66 @@
+{
+  "version": 3,
+  "branch": "studio/v3-002-agent-orchestrator",
+  "agent_dispatch": "NOT_CONNECTED",
+  "tasks": [
+    {
+      "id": "FIXTURE-QA-LOOP",
+      "title": "Harmless Platform Shader Calibration Fixture",
+      "status": "APPROVED",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-002/review_loop/cycle_2_worker_fix.md"
+      ],
+      "reviews": {
+        "PK_QALead": {
+          "result": "PASS",
+          "reviewer_id": "PK_QALead",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002/review_loop/cycle_2_qa_pass.md"
+          ],
+          "issues": [],
+          "notes": "Retest verified fix successfully.",
+          "timestamp": "2026-11-04T14:34:34.431547+00:00"
+        },
+        "PK_GameDirector": {
+          "result": "PASS",
+          "reviewer_id": "PK_GameDirector",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002/review_loop/cycle_3_director_pass.md"
+          ],
+          "issues": [],
+          "notes": "Milestone quality gate passed.",
+          "timestamp": "2026-11-04T14:34:34.490504+00:00"
+        }
+      },
+      "iteration": 2,
+      "priority": 0,
+      "active_branch": "",
+      "issues": [
+        {
+          "id": "ISS-FIXTURE-1",
+          "task_id": "FIXTURE-QA-LOOP",
+          "iteration": 1,
+          "severity": "P1",
+          "title": "Platform Edge Shimmering under 720p",
+          "reproduction_steps": "View platform at camera zoom 1.0 on 1280x720 viewport",
+          "expected": "Crisp non-shimmering edge (threshold >= 0.15)",
+          "actual": "Visible sub-pixel shimmering (threshold = 0.05)",
+          "evidence": [
+            "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\STUDIO_V3\\evidence\\V3-002\\review_loop\\cycle_1_qa_rejection.md"
+          ],
+          "status": "RESOLVED",
+          "resolved_by": "PK_ClientLead",
+          "created_at": "2026-11-04T14:34:34.247344+00:00",
+          "resolved_at": "2026-11-04T14:34:34.429270+00:00"
+        }
+      ],
+      "notes": ""
+    }
+  ]
+}

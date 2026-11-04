@@ -1,8 +1,7 @@
 {
   "version": 3,
   "branch": "studio/production-v3-cleanroom",
-  "previous_system": "RETIRED",
-  "agent_dispatch": "NOT_CONNECTED",
+  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_AGENTAPI",
   "tasks": [
     {
       "id": "V3-001",
@@ -13,24 +12,35 @@
         "PK_QALead",
         "PK_GameDirector"
       ],
+      "blocked_by": [],
       "evidence": [],
       "reviews": {},
       "iteration": 0,
-      "priority": 0
+      "priority": 0,
+      "active_branch": "",
+      "issues": [],
+      "notes": ""
     },
     {
       "id": "V3-002",
       "title": "Connect real Antigravity multi-agent runner with audited invocation logs",
-      "status": "READY",
+      "status": "IN_REVIEW",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
       ],
-      "evidence": [],
+      "blocked_by": [],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-002/runtime_probe/audit_report.md",
+        "STUDIO_V3/evidence/V3-002/live_smoke/live_execution_manifest.json",
+        "STUDIO_V3/evidence/V3-002/review_loop/cycle_1_worker_evidence.md"
+      ],
       "reviews": {},
-      "iteration": 0,
+      "iteration": 1,
       "priority": 1,
+      "active_branch": "",
+      "issues": [],
       "notes": "Independent infrastructure track. May run parallel with V3-001; V3-003 remains blocked until both approved."
     },
     {
@@ -38,18 +48,21 @@
       "title": "Implement approved Stage 1 visual vertical slice through review/rework loops",
       "status": "BLOCKED",
       "owner": "PK_ArtDirector",
-      "blocked_by": [
-        "V3-001",
-        "V3-002"
-      ],
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
       ],
+      "blocked_by": [
+        "V3-001",
+        "V3-002"
+      ],
       "evidence": [],
       "reviews": {},
       "iteration": 0,
-      "priority": 2
+      "priority": 2,
+      "active_branch": "",
+      "issues": [],
+      "notes": ""
     }
   ]
 }

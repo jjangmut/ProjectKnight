@@ -1,0 +1,6 @@
+{
+  "command": "powershell.exe -NoProfile -Command Get-Command agy -ErrorAction Stop",
+  "exit_code": 1,
+  "start_utc": "2026-11-04T14:23:36.951220+00:00",
+  "end_utc": "2026-11-04T14:23:37.518532+00:00"
+}
