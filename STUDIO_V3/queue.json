@@ -1,12 +1,35 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-agent-orchestrator-r2",
-  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
+  "branch": "studio/v3-002-agent-orchestrator-r3",
+  "agent_dispatch": "NATIVE_SUBAGENT_SESSIONS_VERIFIED_ONE_ENTRY_COORDINATION_R3_PENDING",
   "tasks": [
+    {
+      "id": "V3-002-R3",
+      "title": "Native Producer IDE orchestration and final live approval gate",
+      "status": "READY",
+      "owner": "PK_Producer",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -2,
+      "active_branch": "studio/v3-002-agent-orchestrator-r3",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Initial task spec STUDIO_V3/tasks/V3-002-R3.md. Implement on R3 branch; use actual IDE-native subagent calls and Python control plane, with no unsupported Python agent launch claims."
+    },
     {
       "id": "V3-002-R2",
       "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
-      "status": "IN_REVIEW",
+      "status": "FIX_REQUIRED",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
@@ -27,7 +50,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "P0 remediation complete. 24/24 tests pass. Live multi-agent rework proof verified. Submitted for independent review."
+      "notes": "Independent R2 review: native sessions + control-plane ingestion exist, but automatic native launch, session provenance, mock/live approval isolation, SHA and lease gates need R3 corrections."
     },
     {
       "id": "V3-001",
@@ -77,7 +100,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "R1 independent review rejected approval: no authenticated two-key binding, execution success incorrectly treated as QA PASS, integrated live Producer dispatch unverified. R2 remediation in progress."
+      "notes": "Remains blocked by unfinished infrastructure acceptance; R3 task created and must pass independent review. V3-003 must stay BLOCKED."
     },
     {
       "id": "V3-003",
