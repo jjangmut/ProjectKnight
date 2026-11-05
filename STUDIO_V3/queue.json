@@ -1,7 +1,7 @@
 {
   "version": 3,
   "branch": "studio/production-v3-cleanroom",
-  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_AGENTAPI",
+  "agent_dispatch": "NATIVE_SUBAGENT_SESSIONS_EXIST_AUTONOMOUS_LOOP_NOT_VERIFIED",
   "tasks": [
     {
       "id": "V3-001",
@@ -24,7 +24,7 @@
     {
       "id": "V3-002",
       "title": "Connect real Antigravity multi-agent runner with audited invocation logs",
-      "status": "IN_REVIEW",
+      "status": "FIX_REQUIRED",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
@@ -41,7 +41,7 @@
       "priority": 1,
       "active_branch": "",
       "issues": [],
-      "notes": "Independent infrastructure track. May run parallel with V3-001; V3-003 remains blocked until both approved."
+      "notes": "R1 independent review rejected approval: no authenticated two-key binding, execution success incorrectly treated as QA PASS, integrated live Producer dispatch unverified. R2 remediation in progress."
     },
     {
       "id": "V3-003",
@@ -63,6 +63,24 @@
       "active_branch": "",
       "issues": [],
       "notes": ""
+    },
+    {
+      "id": "V3-002-R2",
+      "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
+      "status": "READY",
+      "owner": "PK_Producer",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -1,
+      "active_branch": "studio/v3-002-agent-orchestrator-r2",
+      "issues": [],
+      "notes": "P0 remediation. Task spec STUDIO_V3/tasks/V3-002-R2.md. Approval must be independently reviewed before V3-002 can close."
     }
   ]
 }
