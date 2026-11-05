@@ -1,30 +1,26 @@
-# ProjectKnight Studio V3 — Production Status
+# ProjectKnight Studio V3 — Work Status
 
 Updated: 2026-11-05
-Working branch: `studio/v3-002-agent-orchestrator-r2`
-HEAD: `ee0e8503790bd9a6f29ac58eb7a98305d6f8404e`
+Working branch: `studio/v3-002-agent-orchestrator-r3`
+Source: R2 code at `fa16050441474596109333c35e7bdb1413b3f662`
 
-## Current status
-- Previous production systems: RETIRED. No historical QA score or PASS is authoritative.
-- Game runtime and assets: PRESERVED; R2 is restricted to Studio orchestration infrastructure.
-- Six role definitions and native Antigravity subagent session transcripts: PRESENT.
-- **Single Producer entrypoint controlling actual subagents end to end:** VERIFIED via `SingleEntryRunner` and `AntigravitySubagentBridgeAdapter`.
-- **Provider-authenticated, role-bound independent two-key approval:** VERIFIED via `agentapi.bat get-conversation-metadata` and SQLite `invocations` registry. Forged CLI submissions rejected.
-- **Reviewer verdict based on semantic QA results rather than process success:** VERIFIED via `parse_reviewer_verdict()`. Structured JSON verdicts enforced; process success with `FIX_REQUIRED` rejects; missing/malformed verdict fails closed.
-- **Automated test suite:** 24/24 PASS (dispatcher, permissions, recovery, review gates, state transitions, and 4 new R2 security/blocker negative tests).
-- **Live multi-agent autonomous rework proof:** Completed on `FIXTURE-V3-LIVE-002` across 5 distinct native subagent sessions (defect injection, QA rejection, worker remediation, 21-case Godot headless retest pass, Director sign-off).
-- Actual in-game visual QA and Android performance: NOT VERIFIED.
-- Movement plane X/Y vs X/Z: UNDECIDED; part of V3-001.
+## Verified evidence and limitations
+- Game source and assets: unchanged; historical v2 production approvals remain retired.
+- R2 has 5 recorded Antigravity native subagent sessions, a worker fixture fix, and QA/Director verdict reports. These constitute **recorded multi-agent activity**, not independent proof of unattended/one-entry Python launching.
+- `SingleEntryRunner` and the bridge ingest **existing session IDs**. The Python CLI `--adapter bridge` does not itself call the native IDE's subagent launcher.
+- Mock/live production approval gate, session-to-task binding, Git SHA provenance, lease release and raw test reproducibility have unresolved independent review findings.
+- R2 reported Python 24/24 and Godot 21/21 PASS; those logs have not been independently rerun here.
+- Actual rendered game visual QA, Android performance and X/Y vs X/Z plane remain NOT VERIFIED.
 
-## Tasks
-- `V3-001` READY — baseline playable capture, gameplay-plane decision; can proceed in parallel.
-- `V3-002` FIX_REQUIRED — awaiting independent review of R2.
-- `V3-002-R2` IN_REVIEW — all blockers resolved, 24/24 tests pass, live multi-agent proof complete; submitted for independent review. Never self-approved.
-- `V3-003` BLOCKED — Stage 1 production requires approvals on V3-001 and V3-002.
+## Current task queue
+- `V3-001`: READY — gameplay-plane and actual visual/play baseline audit; can run independently.
+- `V3-002`: FIX_REQUIRED — multi-agent infrastructure awaits acceptance.
+- `V3-002-R2`: FIX_REQUIRED — independent review identified launch/provenance/approval weaknesses.
+- `V3-002-R3`: **READY** — native IDE Producer + Python governance final integration; not yet executed.
+- `V3-003`: BLOCKED — may only start after V3-001 and V3-002 independently APPROVED.
 
-## Review Submission
-- Authoritative task specification: `STUDIO_V3/tasks/V3-002-R2.md`.
-- Prior independent findings: `STUDIO_V3/reviews/V3-002-R1-INDEPENDENT-REVIEW.md`.
-- Final execution report: `STUDIO_V3/evidence/V3-002-R2/FINAL_EXECUTION_REPORT.md`.
-- Evidence manifest: `STUDIO_V3/evidence/V3-002-R2/evidence_manifest.json`.
-- Status: `INDEPENDENT_REVIEW_REQUESTED`.
+## R3 implementation contract
+Canonical work order: `STUDIO_V3/tasks/V3-002-R3.md`
+Independent R2 review: `STUDIO_V3/reviews/V3-002-R2-INDEPENDENT-REVIEW.md`
+
+The R3 coordinator must use real supported Antigravity IDE subagent invocation and honest result collection, while Python enforces state transitions, issues, evidence hashes and two-key review. Never claim that session ingestion equals agent launch. Approval must bind provider sessions to task/run/iteration/SHA and reject mock providers. The implemented result is only submitted as `INDEPENDENT_REVIEW_REQUESTED`, never self-approved.
