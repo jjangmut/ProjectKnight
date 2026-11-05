@@ -1,0 +1,20 @@
+{
+  "task_id": "V3-002-CLOSE",
+  "iteration": 1,
+  "role": "PK_QALead",
+  "session_id": "437a514d-4678-4067-a374-9ce22713391c",
+  "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+  "reviewed_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "verdict": "PASS",
+  "issues": [],
+  "evidence_manifest": [
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/python_tests_raw.log",
+      "sha256": "71a55f8968f9076f3f103873ca154374745dc52edff33665b51708ce1711888d"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/godot_tests_raw.log",
+      "sha256": "92391dabbba0ff2d758e5b3f49df89f0bf9b70b040642a2ea6b52c0a94e63689"
+    }
+  ]
+}

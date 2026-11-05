@@ -1,0 +1,55 @@
+{
+  "task_id": "V3-002-CLOSE",
+  "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "branch": "studio/v3-002-closure-patch",
+  "files": {
+    "STUDIO_V3/orchestrator/policies.py": {
+      "size_bytes": 21167,
+      "sha256": "4814571012decbf741a3f7a75634d16f4bb27b658293afca83c33520616d23d9"
+    },
+    "STUDIO_V3/orchestrator/dispatcher.py": {
+      "size_bytes": 31038,
+      "sha256": "0ad09d1dc0efb6450014516494e2de690b5d58d8faa0b359d727866e6ebb7444"
+    },
+    "STUDIO_V3/orchestrator/adapters/subagent_bridge.py": {
+      "size_bytes": 13187,
+      "sha256": "2a2bd39df34791f56bfa42b0829890bbf7f9be7fddb7e44e536d5d6b65eefadf"
+    },
+    "STUDIO_V3/orchestrator/queue_store.py": {
+      "size_bytes": 32352,
+      "sha256": "43fbb11a61e9fb31425012b2903e654be7873bfd4af59f7c967159221ee1edd8"
+    },
+    "STUDIO_V3/orchestrator/runner.py": {
+      "size_bytes": 9096,
+      "sha256": "a1cc7da2b6e7e80eaba0ae71bf63dbec63971aceda4a60a1ab1bf17a2adc4c1c"
+    },
+    "STUDIO_V3/tests/test_v3_002_closure_gate.py": {
+      "size_bytes": 18584,
+      "sha256": "ed13b992526c7f6be5e9bbcc05b67b128d128f798ed61b4a844394720b7ba9b2"
+    },
+    "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/python_tests_raw.log": {
+      "size_bytes": 13438,
+      "sha256": "71a55f8968f9076f3f103873ca154374745dc52edff33665b51708ce1711888d"
+    },
+    "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/godot_tests_raw.log": {
+      "size_bytes": 7942,
+      "sha256": "92391dabbba0ff2d758e5b3f49df89f0bf9b70b040642a2ea6b52c0a94e63689"
+    },
+    "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/qa_verdict.json": {
+      "size_bytes": 683,
+      "sha256": "7af4c6c3929fd5b8f7bbbe47402bdad9954519141aec12b0e4086fc225693bd0"
+    },
+    "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/director_verdict.json": {
+      "size_bytes": 689,
+      "sha256": "8fdb03cf32c549bd5412262b6a8470c7bbcff76d4fcaebdaafc412469e713626"
+    },
+    "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/provider_provenance.json": {
+      "size_bytes": 1298,
+      "sha256": "5c0184a6b63e51ede8c290980e49ab6cb25deae79dcfdc29826f791a8d35a157"
+    },
+    "STUDIO_V3/queue.json": {
+      "size_bytes": 22939,
+      "sha256": "b4db1a2bfb0fed36cf7edaef61b23ecfdda1f754716b67648387c785f4a9e63d"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "V3-002-CLOSE",
+  "run_id": "run-v3-002-close-live",
+  "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "branch": "studio/v3-002-closure-patch",
+  "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+  "environment": {
+    "host_os": "Windows",
+    "python_version": "Python 3.11.9",
+    "godot_version": "Godot 4.7.2.stable.official.ed1daf0bf"
+  },
+  "reviewers": {
+    "PK_QALead": {
+      "role": "PK_QALead",
+      "session_id": "437a514d-4678-4067-a374-9ce22713391c",
+      "invocation_id": "inv-sub-pk_qalead-437a514d",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+      "verdict": "PASS",
+      "open_p0_p1_issues": 0,
+      "terminal_status": "SUCCEEDED"
+    },
+    "PK_GameDirector": {
+      "role": "PK_GameDirector",
+      "session_id": "786a9ea1-032b-4655-83a1-ca7b990d0e03",
+      "invocation_id": "inv-sub-pk_gamedirector-786a9ea1",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+      "verdict": "PASS",
+      "open_p0_p1_issues": 0,
+      "terminal_status": "SUCCEEDED"
+    }
+  },
+  "approval_gate": {
+    "two_key_status": "SATISFIED",
+    "gate_status": "APPROVED",
+    "lease_cleared": true
+  }
+}

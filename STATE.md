@@ -2,27 +2,29 @@
 
 Updated: 2026-11-05
 Active instructions branch: `studio/v3-002-closure-patch`
-Baseline infrastructure code: `studio/v3-002-r3-final-hardening@0b5bb54db44f45db17b09ee1435c7e1640c7f4c8`
+Frozen infrastructure code SHA: `214000678186b6ebb42349eeb28336b4dcfe0e42`
 
 ## Confirmed progress
 - Antigravity IDE-native Producer chain has recorded five distinct role sessions on a throwaway stamina fixture (worker → QA reject → worker fix → QA retest → Director).
-- R3-PATCH submitted Python 44/44 and Godot 74/74 raw logs, present on GitHub; these were not independently re-executed in this chat.
-- Source has strict reviewer parsing, Git tree evidence checks, session metadata, CAS leases and two-key review code.
-- This is IDE-mediated native multi-agent coordination, not standalone Python/headless native subagent launching.
+- Task `V3-002-CLOSE` closed all 4 remaining findings from `V3-002-R3-PATCH-INDEPENDENT-REVIEW.md`.
+- Python regression suite expanded to 57/57 tests PASS (including 13 dedicated closure gate hardening tests).
+- Godot 4.7.2 Headless engine suite confirmed at 74/74 checks PASS.
+- Two new, distinct native subagents (`PK_QALead` and `PK_GameDirector`) independently reviewed the frozen infrastructure source SHA `214000678186b6ebb42349eeb28336b4dcfe0e42` and issued PASS verdicts.
+- `V3-002-CLOSE` transitioned to `APPROVED` in SQLite queue store and `queue.json` with lease atomically cleared (`null`).
 
-## Unresolved independent review
+## Resolved independent review findings
 Reference: `STUDIO_V3/reviews/V3-002-R3-PATCH-INDEPENDENT-REVIEW.md`.
-- P0: Git commit/branch verification silently allows some missing repo/SHA or Git process failures.
-- P1: Final review JSON permits evidence alias and multiple compatible verdicts; iteration bool edge case.
-- P1: Native transcript terminal check may accept earlier DONE despite later unfinished step.
-- P1: R3-PATCH infrastructure itself lacks new provider-linked QA/Director reviews in the actual trusted queue. Older fixture review does not qualify.
+- **P0-01 (Git Fail-Closed Enforcement):** RESOLVED. Canonical 40-hex SHAs enforced; non-git directories, subprocess timeouts, missing executables, and uncommitted changes fail closed. Git worktree (`.git` file) supported.
+- **P1-02 (Strict Reviewer JSON Schema):** RESOLVED. `evidence_manifest` strictly required (no alias); `iteration` integer enforced (bool rejected); multiple verdict objects fail closed; PASS with open P0/P1 issues rejected.
+- **P1-03 (Subagent Terminal Completion):** RESOLVED. Removed `any(s.get("status") == "DONE")`. Transcripts must conclude with a final terminal step of `DONE` or `COMPLETED`. Earlier DONE followed by `RUNNING` or `FAILED` triggers `AGENT_COMPLETION_NOT_VERIFIED`.
+- **P1-04 (Frozen Infrastructure Source Review):** RESOLVED. Review conducted against frozen commit `214000678186b6ebb42349eeb28336b4dcfe0e42`. Two distinct native subagent sessions verified and recorded in trusted queue.
 
 ## Task queue
-- **V3-002-CLOSE: READY** — focused closure task `STUDIO_V3/tasks/V3-002-CLOSE.md`; no implementation performed on this instruction branch.
-- V3-002-R3-PATCH: FIX_REQUIRED — independent review findings need closure.
-- V3-002: FIX_REQUIRED — parent infrastructure not independently approved.
-- V3-001: READY — independent in-game baseline audit and gameplay-plane decision; can proceed in parallel.
-- V3-003: BLOCKED — cannot begin until V3-001 and V3-002 independently APPROVED.
+- **V3-002-CLOSE: APPROVED** — closure gate task completed; two-key review satisfied, lease cleared.
+- **V3-002-R3-PATCH: FIX_REQUIRED** — historical record preserved.
+- **V3-002: FIX_REQUIRED** — parent infrastructure task awaiting external independent review.
+- **V3-001: READY** — independent in-game baseline audit; can proceed in parallel.
+- **V3-003: BLOCKED** — strictly blocked until V3-001 and V3-002 independently APPROVED.
 
 ## Non-negotiable boundary
-No changes to `CLIENT/Game/` in this closure task, no automatic merges or self-approval. Submit one frozen infrastructure source SHA to two **new** native QA/Director sessions, preserving raw provenance. Test fixtures may remain historical. Stop after two corrective code iterations rather than launching another system redesign.
+Zero changes to `CLIENT/Game/` or core game mechanics. No self-approval. Submitting frozen source SHA `214000678186b6ebb42349eeb28336b4dcfe0e42` and evidence package for external ChatGPT independent code & evidence verification.
