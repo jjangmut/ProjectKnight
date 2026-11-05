@@ -1,12 +1,35 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-agent-orchestrator-r2",
-  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
+  "branch": "studio/v3-002-r3-final-hardening",
+  "agent_dispatch": "IDE_NATIVE_PRODUCER_CHAIN_RECORDED_PRODUCTION_APPROVAL_GATES_NOT_VERIFIED",
   "tasks": [
+    {
+      "id": "V3-002-R3-PATCH",
+      "title": "R3 final approval gate hardening — strict verdict and committed evidence",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -3,
+      "active_branch": "studio/v3-002-r3-final-hardening",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Task file STUDIO_V3/tasks/V3-002-R3-PATCH.md. Submitted code must undergo separate independent QA+Director review. No self-approval."
+    },
     {
       "id": "V3-002-R3",
       "title": "Native Producer IDE orchestration and final live approval gate",
-      "status": "IN_REVIEW",
+      "status": "FIX_REQUIRED",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
@@ -27,12 +50,12 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Initial task spec STUDIO_V3/tasks/V3-002-R3.md. Implement on R3 branch; use actual IDE-native subagent calls and Python control plane, with no unsupported Python agent launch claims."
+      "notes": "Independent R3 review found strict verdict JSON, exact Git tree evidence, session provenance and raw log issues. Implement scoped patch V3-002-R3-PATCH."
     },
     {
       "id": "V3-002-R2",
       "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
-      "status": "IN_REVIEW",
+      "status": "FIX_REQUIRED",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
@@ -53,7 +76,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Independent R2 review: native sessions + control-plane ingestion exist, but automatic native launch, session provenance, mock/live approval isolation, SHA and lease gates need R3 corrections."
+      "notes": "Independent R2 review found unresolved integration and provenance defects; retained as historic R2 issue status. Superseded by R3-PATCH corrective work."
     },
     {
       "id": "V3-001",
@@ -103,7 +126,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Remains blocked by unfinished infrastructure acceptance; R3 task created and must pass independent review. V3-003 must stay BLOCKED."
+      "notes": "Infrastructure approval pending scoped V3-002-R3-PATCH correction and separate independent approval on final infra SHA."
     },
     {
       "id": "V3-003",
