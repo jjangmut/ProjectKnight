@@ -1,12 +1,35 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-agent-orchestrator-r2",
-  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
+  "branch": "studio/v3-002-closure-patch",
+  "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
+    {
+      "id": "V3-002-CLOSE",
+      "title": "Final Studio V3 closure: fail-closed provenance, strict review output and infrastructure sign-off",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -4,
+      "active_branch": "studio/v3-002-closure-patch",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Source: STUDIO_V3/tasks/V3-002-CLOSE.md. Must get two new independent live infra review sessions on the exact frozen source SHA. Parent V3-002 not auto-approved."
+    },
     {
       "id": "V3-002-R3-PATCH",
       "title": "R3 final approval gate hardening — strict verdict and committed evidence",
-      "status": "IN_PROGRESS",
+      "status": "FIX_REQUIRED",
       "owner": "PK_ClientLead",
       "reviewers": [
         "PK_QALead",
@@ -24,7 +47,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Task file STUDIO_V3/tasks/V3-002-R3-PATCH.md. Final approval gate hardening in progress."
+      "notes": "R3-PATCH implementation delivered but independent code/evidence review found four closure findings. Superseded by V3-002-CLOSE; prior review/issue evidence retained."
     },
     {
       "id": "V3-002-R3",
@@ -126,7 +149,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Infrastructure approval pending scoped V3-002-R3-PATCH correction and separate independent approval on final infra SHA."
+      "notes": "IDE-native workflow observed, but final infrastructure acceptance is pending V3-002-CLOSE (Git fail-closed, strict final JSON, terminal state, new independent infrastructure reviews)."
     },
     {
       "id": "V3-003",
