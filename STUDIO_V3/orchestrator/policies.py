@@ -1,6 +1,7 @@
 """Security, governance, and cryptographic evidence policies for Studio V3 (V3-002-R1)."""
 from __future__ import annotations
 import hashlib
+import subprocess
 import uuid
 import datetime
 from pathlib import Path
@@ -35,6 +36,11 @@ class SelfApprovalBlockedError(PolicyViolation):
 
 class IdentityVerificationError(PolicyViolation):
     """Raised when reviewer identity or independent session attestation fails."""
+    pass
+
+
+class UntrustedSessionError(IdentityVerificationError):
+    """Raised when an unverified or forged session ID is presented without trusted registration."""
     pass
 
 
@@ -166,6 +172,8 @@ def verify_reviewer_attestation(
     verdict: ReviewVerdict,
     task: Task,
     worker_session_id: Optional[str] = None,
+    invocation_registry: Optional[Any] = None,
+    allow_mock: bool = True,
 ) -> None:
     """Verify cryptographic and session identity of reviewer to prevent spoofing."""
     if verdict.agent_role not in task.reviewers:
@@ -202,6 +210,36 @@ def verify_reviewer_attestation(
             f"Review is for iteration {verdict.iteration}, but current task iteration is {task.iteration}."
         )
 
+    # Check trusted invocation registry
+    if invocation_registry is not None:
+        if verdict.provider in ("OPERATOR_CLI", "OPERATOR_MANUAL"):
+            raise IdentityVerificationError(
+                f"Reviewer '{verdict.agent_role}' submitted verdict with provider '{verdict.provider}'. "
+                "Autonomous AI review gate requires a registered provider invocation."
+            )
+
+        inv = invocation_registry.find_invocation_by_session(
+            task.id, verdict.iteration, verdict.agent_role, verdict.session_id
+        )
+        if not inv:
+            raise IdentityVerificationError(
+                f"Reviewer session '{verdict.session_id}' for role '{verdict.agent_role}' is not found "
+                f"in trusted invocation registry for task {task.id} iteration {task.iteration}."
+            )
+
+        if inv.terminal_status != "SUCCEEDED":
+            raise IdentityVerificationError(
+                f"Reviewer invocation '{inv.invocation_id}' did not complete with SUCCEEDED (actual: {inv.terminal_status})."
+            )
+
+        if task.current_commit_sha and inv.target_commit_sha != task.current_commit_sha:
+            raise IdentityVerificationError(
+                f"Reviewer invocation targeted commit '{inv.target_commit_sha}', but current task commit is '{task.current_commit_sha}'."
+            )
+
+        if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK"):
+            raise IdentityVerificationError("Mock invocation cannot satisfy live independent AI review gate.")
+
 
 def validate_start(task: Task, actor: str, all_tasks: Dict[str, Task]) -> None:
     """Validate whether an actor can start work on a task."""
@@ -224,7 +262,11 @@ def validate_start(task: Task, actor: str, all_tasks: Dict[str, Task]) -> None:
             )
 
 
-def can_approve(task: Task) -> Tuple[bool, str]:
+def can_approve(
+    task: Task,
+    invocation_registry: Optional[Any] = None,
+    allow_mock: bool = True,
+) -> Tuple[bool, str]:
     """Check if all independent approval gates are met."""
     if not task.reviewers:
         return False, "No reviewers designated for task."
@@ -245,6 +287,19 @@ def can_approve(task: Task) -> Tuple[bool, str]:
             return False, f"Reviewers share identical session ID '{sess_id}'. Independent agents required."
         reviewer_sessions[r] = sess_id
 
+        # Verify against registry if available
+        if invocation_registry is not None:
+            provider = review_entry.get("provider", "")
+            if provider in ("OPERATOR_CLI", "OPERATOR_MANUAL"):
+                return False, f"Reviewer '{r}' used '{provider}'. Independent AI review required."
+            inv = invocation_registry.find_invocation_by_session(task.id, task.iteration, r, sess_id)
+            if not inv:
+                return False, f"Reviewer '{r}' session '{sess_id}' is not verified in trusted invocation registry."
+            if inv.terminal_status != "SUCCEEDED":
+                return False, f"Reviewer '{r}' invocation '{inv.invocation_id}' terminal status is '{inv.terminal_status}', not SUCCEEDED."
+            if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK"):
+                return False, f"Reviewer '{r}' used mock provider; live AI verification required."
+
     # Check that there are no unresolved P0 or P1 issues
     open_blockers = [
         i for i in task.issues
@@ -253,6 +308,28 @@ def can_approve(task: Task) -> Tuple[bool, str]:
     if open_blockers:
         issue_ids = [i.id for i in open_blockers]
         return False, f"Cannot approve: open blocking issues exist: {issue_ids}"
+
+    return True, "All independent reviewers passed with distinct verified sessions and no open blocking issues."
+
+
+def verify_commit_exists(commit_sha: str, repo_root: Path) -> None:
+    """Verify that a Git commit SHA exists in the local repository."""
+    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
+        return
+    try:
+        res = subprocess.run(
+            ["git", "cat-file", "-e", f"{commit_sha}^{{commit}}"],
+            cwd=str(repo_root),
+            capture_output=True,
+            timeout=5,
+        )
+        if res.returncode != 0:
+            raise PolicyViolation(f"Commit '{commit_sha}' does not exist in repository git object database.")
+    except Exception as e:
+        if isinstance(e, PolicyViolation):
+            raise
+        raise PolicyViolation(f"Failed to verify commit object '{commit_sha}': {e}")
+
 
     return True, "All independent reviewers passed with distinct verified sessions and no open blocking issues."
 

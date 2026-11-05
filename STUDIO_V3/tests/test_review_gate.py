@@ -30,6 +30,24 @@ class TestReviewGate(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
+    def _register_mock_invocation(self, task_id: str, iteration: int, role: str, session_id: str, commit_sha: str = ""):
+        from STUDIO_V3.orchestrator.schemas import InvocationRecord
+        self.queue_store.register_invocation(InvocationRecord(
+            invocation_id=f"inv-{role}-{session_id}",
+            run_id="test-run",
+            task_id=task_id,
+            iteration=iteration,
+            role=role,
+            provider="SIMULATED_MOCK",
+            session_id=session_id,
+            worktree=str(self.temp_dir),
+            branch="",
+            target_commit_sha=commit_sha,
+            started_at="2026-11-05T00:00:00Z",
+            completed_at="2026-11-05T00:01:00Z",
+            terminal_status="SUCCEEDED",
+        ))
+
     def test_single_reviewer_pass_insufficient(self):
         """When 2 reviewers are designated, 1 PASS leaves status in IN_REVIEW."""
         task = Task(
@@ -44,11 +62,12 @@ class TestReviewGate(unittest.TestCase):
         self.dispatcher.submit_work("REV-001", actor="PK_ClientLead", evidence_paths=[str(self.work_evidence)])
 
         t = self.queue_store.get_task("REV-001")
+        self._register_mock_invocation("REV-001", t.iteration, "PK_QALead", "qa-sess-distinct-1", t.current_commit_sha)
         verdict = ReviewVerdict(
             task_id="REV-001",
             iteration=t.iteration,
             agent_role="PK_QALead",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-qa-1",
             session_id="qa-sess-distinct-1",
             reviewed_commit_sha=t.current_commit_sha,
@@ -77,11 +96,12 @@ class TestReviewGate(unittest.TestCase):
         t = self.queue_store.get_task("REV-002")
 
         # 1. QA passes with distinct session
+        self._register_mock_invocation("REV-002", t.iteration, "PK_QALead", "qa-sess-distinct-2", t.current_commit_sha)
         v_qa = ReviewVerdict(
             task_id="REV-002",
             iteration=t.iteration,
             agent_role="PK_QALead",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-qa-2",
             session_id="qa-sess-distinct-2",
             reviewed_commit_sha=t.current_commit_sha,
@@ -91,11 +111,12 @@ class TestReviewGate(unittest.TestCase):
         self.dispatcher.review_task("REV-002", verdict=v_qa)
 
         # 2. Director passes with distinct session
+        self._register_mock_invocation("REV-002", t.iteration, "PK_GameDirector", "dir-sess-distinct-2", t.current_commit_sha)
         v_dir = ReviewVerdict(
             task_id="REV-002",
             iteration=t.iteration,
             agent_role="PK_GameDirector",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-dir-2",
             session_id="dir-sess-distinct-2",
             reviewed_commit_sha=t.current_commit_sha,
@@ -121,12 +142,14 @@ class TestReviewGate(unittest.TestCase):
 
         t = self.queue_store.get_task("REV-003")
         shared_session = "shared-spoofed-sess-99"
+        self._register_mock_invocation("REV-003", t.iteration, "PK_QALead", shared_session, t.current_commit_sha)
+        self._register_mock_invocation("REV-003", t.iteration, "PK_GameDirector", shared_session, t.current_commit_sha)
 
         v_qa = ReviewVerdict(
             task_id="REV-003",
             iteration=t.iteration,
             agent_role="PK_QALead",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-qa-3",
             session_id=shared_session,
             reviewed_commit_sha=t.current_commit_sha,
@@ -139,7 +162,7 @@ class TestReviewGate(unittest.TestCase):
             task_id="REV-003",
             iteration=t.iteration,
             agent_role="PK_GameDirector",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-dir-3",
             session_id=shared_session,  # Identical to QA session!
             reviewed_commit_sha=t.current_commit_sha,
@@ -165,6 +188,7 @@ class TestReviewGate(unittest.TestCase):
         self.dispatcher.submit_work("REV-004", actor="PK_ClientLead", evidence_paths=[str(self.work_evidence)])
 
         t = self.queue_store.get_task("REV-004")
+        self._register_mock_invocation("REV-004", t.iteration, "PK_QALead", "qa-sess-distinct-4", t.current_commit_sha)
         issue = Issue(
             id="ISS-001",
             task_id="REV-004",
@@ -180,7 +204,7 @@ class TestReviewGate(unittest.TestCase):
             task_id="REV-004",
             iteration=t.iteration,
             agent_role="PK_QALead",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-qa-4",
             session_id="qa-sess-distinct-4",
             reviewed_commit_sha=t.current_commit_sha,

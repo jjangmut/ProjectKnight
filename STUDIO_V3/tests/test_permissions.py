@@ -151,11 +151,28 @@ class TestPermissionsAndPolicies(unittest.TestCase):
         self.evidence1.write_text("# Maliciously Altered Content", encoding="utf-8")
 
         t = self.queue_store.get_task("T-005")
+        from STUDIO_V3.orchestrator.schemas import InvocationRecord
+        self.queue_store.register_invocation(InvocationRecord(
+            invocation_id="inv-rev-4",
+            run_id="test-run",
+            task_id="T-005",
+            iteration=t.iteration,
+            role="PK_QALead",
+            provider="SIMULATED_MOCK",
+            session_id="qa-sess-unique-4",
+            worktree=str(self.temp_dir),
+            branch="",
+            target_commit_sha=t.current_commit_sha,
+            started_at="2026-11-05T00:00:00Z",
+            completed_at="2026-11-05T00:01:00Z",
+            terminal_status="SUCCEEDED",
+        ))
+
         verdict = ReviewVerdict(
             task_id="T-005",
             iteration=t.iteration,
             agent_role="PK_QALead",
-            provider="LOCAL",
+            provider="SIMULATED_MOCK",
             invocation_id="inv-rev-4",
             session_id="qa-sess-unique-4",
             reviewed_commit_sha=t.current_commit_sha,

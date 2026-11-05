@@ -13,6 +13,7 @@ from .schemas import (
     ExecutionRecord,
     ExecutionStatus,
     EvidenceItem,
+    InvocationRecord,
 )
 from .queue_store import QueueStore
 from .event_log import EventLog
@@ -24,12 +25,14 @@ from .policies import (
     can_approve,
     validate_branch_safety,
     calculate_sha256,
+    verify_commit_exists,
     PolicyViolation,
     EvidenceMissingError,
     EvidenceTamperedError,
     StaleEvidenceError,
     SelfApprovalBlockedError,
     IdentityVerificationError,
+    UntrustedSessionError,
     StaleReviewError,
     DependencyBlockedError,
     TaskLeaseConflictError,
@@ -79,21 +82,28 @@ class TaskDispatcher:
         candidates.sort(key=lambda x: (x.priority, x.iteration, x.id))
         return candidates[0]
 
-    def start_task(self, task_id: str, actor: str) -> Task:
+    def start_task(self, task_id: str, actor: str, claim_token: str = "") -> Task:
         """Producer/Worker transition: READY/FIX_REQUIRED -> IN_PROGRESS with lease locking."""
-        # 1. Claim task lease to prevent duplicate runs
-        self.queue_store.claim_task_lease(task_id, actor=actor)
-
         task = self.queue_store.get_task(task_id)
         if not task:
             raise ValueError(f"Task {task_id} not found.")
 
-        # 2. Enforce branch safety if active branch is set
+        # 1. Enforce branch safety if active branch is set
         if task.active_branch:
             validate_branch_safety(task.active_branch)
 
+        # 2. Validate start conditions (status, dependencies, owner) BEFORE claiming lease
         all_tasks = self.queue_store.load_all_tasks()
         validate_start(task, actor, all_tasks)
+
+        # 3. Claim task lease with unique token to prevent duplicate runs
+        lease_token = claim_token or f"lease-{actor}-{task.id}"
+        self.queue_store.claim_task_lease(task_id, actor=actor, claim_token=lease_token)
+
+        # Refresh task from store so in-memory object has the active lease
+        refreshed = self.queue_store.get_task(task_id)
+        if refreshed:
+            task = refreshed
 
         task.status = TaskState.IN_PROGRESS
         task.iteration += 1
@@ -107,7 +117,7 @@ class TaskDispatcher:
             task_id=task.id,
             actor=actor,
             commit_sha=sha,
-            details={"iteration": task.iteration, "status": task.status.value, "version": task.version},
+            details={"iteration": task.iteration, "status": task.status.value, "version": task.version, "claim_token": lease_token},
         )
         return task
 
@@ -130,6 +140,7 @@ class TaskDispatcher:
             raise PolicyViolation(f"Task {task.id} is not IN_PROGRESS (current: {task.status.value}).")
 
         current_sha = self.get_current_commit_sha()
+        verify_commit_exists(current_sha, self.repo_root)
         task.current_commit_sha = current_sha
 
         # Build cryptographic manifest with SHA256 of every file
@@ -176,8 +187,13 @@ class TaskDispatcher:
         if task.status != TaskState.IN_REVIEW:
             raise PolicyViolation(f"Task {task.id} is in status '{task.status.value}', must be IN_REVIEW to conduct review.")
 
-        # 1. Cryptographic and Session Identity Attestation
-        verify_reviewer_attestation(verdict, task, worker_session_id=worker_session_id)
+        # 1. Cryptographic and Session Identity Attestation against Invocation Registry
+        verify_reviewer_attestation(
+            verdict,
+            task,
+            worker_session_id=worker_session_id,
+            invocation_registry=self.queue_store,
+        )
 
         # 2. Cryptographic Evidence Integrity Check on submitted artifacts
         verify_evidence_manifest(
@@ -230,11 +246,11 @@ class TaskDispatcher:
                 },
             )
         elif verdict.result == "PASS":
-            can_appr, reason = can_approve(task)
+            can_appr, reason = can_approve(task, invocation_registry=self.queue_store)
             if can_appr:
                 task.status = TaskState.APPROVED
                 # Release lease upon approval
-                self.queue_store.release_task_lease(task.id, actor=task.owner)
+                self.queue_store.release_task_lease(task.id, actor=task.owner, claim_token=task.lease_owner)
                 self.queue_store.save_task(task)
                 self.event_log.record_event(
                     event_type="TASK_APPROVED",
@@ -263,6 +279,97 @@ class TaskDispatcher:
 
         return task
 
+    def is_worker_execution_acceptable(self, worker_record: ExecutionRecord) -> bool:
+        """Check whether worker execution finished successfully and produced verified deliverables."""
+        return worker_record.status == ExecutionStatus.SUCCEEDED
+
+    def parse_reviewer_verdict(self, rev_record: ExecutionRecord, task: Task) -> ReviewVerdict:
+        """Parse and semantically validate structured reviewer output payload into ReviewVerdict."""
+        if rev_record.status != ExecutionStatus.SUCCEEDED:
+            raise PolicyViolation(
+                f"Reviewer '{rev_record.agent_id}' execution did not complete with SUCCEEDED (actual: {rev_record.status.value}): {rev_record.error}"
+            )
+
+        text = rev_record.output_text.strip()
+        payload = None
+
+        # Try to locate JSON inside text (e.g. ```json ... ``` or raw {...})
+        if "{" in text and "}" in text:
+            start_idx = text.find("{")
+            end_idx = text.rfind("}")
+            json_str = text[start_idx : end_idx + 1]
+            try:
+                import json
+                payload = json.loads(json_str)
+            except Exception:
+                pass
+
+        if not payload or not isinstance(payload, dict):
+            raise PolicyViolation(
+                f"Reviewer '{rev_record.agent_id}' did not return a parseable structured JSON verdict payload. Raw output: {text[:200]}"
+            )
+
+        # Validate mandatory fields
+        verdict_str = payload.get("verdict", "").upper().strip()
+        if verdict_str not in ("PASS", "FIX_REQUIRED"):
+            raise PolicyViolation(
+                f"Invalid verdict '{verdict_str}' in reviewer payload; must be 'PASS' or 'FIX_REQUIRED'."
+            )
+
+        req_role = payload.get("role", "")
+        if req_role and req_role != rev_record.agent_id:
+            raise PolicyViolation(
+                f"Reviewer role mismatch: payload declared '{req_role}', adapter dispatched '{rev_record.agent_id}'."
+            )
+
+        target_sha = payload.get("reviewed_commit_sha", task.current_commit_sha)
+        if task.current_commit_sha and target_sha != task.current_commit_sha:
+            raise StaleReviewError(
+                f"Review targeted commit '{target_sha}', but current task commit is '{task.current_commit_sha}'."
+            )
+
+        # If FIX_REQUIRED, require issues list
+        issues: List[Issue] = []
+        if verdict_str == "FIX_REQUIRED":
+            raw_issues = payload.get("issues", [])
+            if not raw_issues:
+                raise PolicyViolation("Reviewer declared FIX_REQUIRED but provided zero structured issues.")
+            for idx, raw_i in enumerate(raw_issues):
+                iss_id = raw_i.get("id") or f"ISS-{task.id}-{task.iteration}-{idx+1}"
+                sev_str = raw_i.get("severity", "P1").upper()
+                issues.append(Issue(
+                    id=iss_id,
+                    task_id=task.id,
+                    iteration=task.iteration,
+                    severity=Severity(sev_str) if sev_str in Severity._value2member_map_ else Severity.P1,
+                    title=raw_i.get("title", "Reviewer Reported Defect"),
+                    reproduction_steps=raw_i.get("reproduction_steps", raw_i.get("steps", "See review report")),
+                    expected=raw_i.get("expected", "Compliant deliverable"),
+                    actual=raw_i.get("actual", "Defect observed"),
+                    evidence=raw_i.get("evidence", []),
+                ))
+
+        evidence_manifest = payload.get("evidence_manifest", [])
+        if isinstance(evidence_manifest, list):
+            evidence_paths = [e if isinstance(e, str) else e.get("file_path", "") for e in evidence_manifest]
+        else:
+            evidence_paths = [m.file_path for m in rev_record.evidence_manifest]
+
+        return ReviewVerdict(
+            task_id=task.id,
+            iteration=task.iteration,
+            agent_role=rev_record.agent_id,
+            provider=rev_record.provider,
+            invocation_id=rev_record.invocation_id,
+            session_id=rev_record.session_id,
+            reviewed_commit_sha=target_sha,
+            result=verdict_str,
+            evidence_paths=evidence_paths,
+            issues=issues,
+            notes=payload.get("notes", ""),
+        )
+
+
     def execute_autonomous_loop(
         self,
         task_id: str,
@@ -272,7 +379,7 @@ class TaskDispatcher:
         max_cycles: int = 3,
     ) -> Dict[str, Any]:
         """
-        BLOCKER 01 FIX: Executes the autonomous quality loop using the provided adapter.
+        Executes the autonomous quality loop using the provided adapter.
         Producer -> Worker (via adapter) -> Submit (with SHA256 manifest) ->
         QA (via adapter) -> (if reject: Issue -> Worker fix -> QA retest) ->
         Director (via adapter) -> Approval.
@@ -284,6 +391,15 @@ class TaskDispatcher:
         is_mock = probe_res.get("mock", False)
         execution_tag = "MOCK_TEST_PASS" if is_mock else "REAL_AGENT_INVOKED"
 
+        if (worker_action or reviewer_evaluators) and not is_mock:
+            raise PolicyViolation(
+                "Direct Python callback injection (worker_action/reviewer_evaluators) is restricted to "
+                "isolated mock tests; real autonomous loops must dispatch through real adapters."
+            )
+
+        import uuid
+        run_id = f"run-{datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}"
+
         for cycle_idx in range(1, max_cycles + 1):
             task = self.queue_store.get_task(task_id)
             if not task:
@@ -292,9 +408,10 @@ class TaskDispatcher:
             if task.status == TaskState.APPROVED:
                 break
 
-            # 1. Start task
-            self.start_task(task.id, actor=task.owner)
+            # 1. Start task with unique run token lease
+            self.start_task(task.id, actor=task.owner, claim_token=run_id)
             cycle_meta = {
+                "run_id": run_id,
                 "cycle": cycle_idx,
                 "iteration": task.iteration,
                 "worker": task.owner,
@@ -322,11 +439,31 @@ class TaskDispatcher:
                 )
                 evidence_paths = [m.file_path for m in worker_record.evidence_manifest]
 
+            # Register worker invocation in trusted registry
+            self.queue_store.register_invocation(InvocationRecord(
+                invocation_id=worker_record.invocation_id,
+                run_id=run_id,
+                task_id=task.id,
+                iteration=task.iteration,
+                role=task.owner,
+                provider=worker_record.provider,
+                session_id=worker_record.session_id,
+                worktree=str(self.repo_root),
+                branch=task.active_branch,
+                target_commit_sha=task.current_commit_sha,
+                started_at=worker_record.start_time,
+                completed_at=worker_record.end_time,
+                terminal_status=worker_record.status.value,
+                result_hash=worker_record.evidence_manifest[0].sha256 if worker_record.evidence_manifest else "",
+                output_text=worker_record.output_text,
+                error=worker_record.error,
+            ))
+
             cycle_meta["worker_execution"] = worker_record.to_dict()
 
-            # If worker failed or timed out, halt cycle safely
-            if worker_record.status in (ExecutionStatus.FAILED, ExecutionStatus.TIMED_OUT):
-                cycle_meta["final_task_status"] = "WORKER_FAILED"
+            # Worker acceptability check: only SUCCEEDED is allowed to proceed to submission
+            if not self.is_worker_execution_acceptable(worker_record):
+                cycle_meta["final_task_status"] = worker_record.status.value
                 audit_history.append(cycle_meta)
                 break
 
@@ -345,6 +482,25 @@ class TaskDispatcher:
             for reviewer in task.reviewers:
                 if reviewer_evaluators and reviewer in reviewer_evaluators:
                     verdict = reviewer_evaluators[reviewer](task, cycle_idx, adapter, worker_record)
+                    # Register evaluator invocation in trusted registry for mock testing
+                    self.queue_store.register_invocation(InvocationRecord(
+                        invocation_id=verdict.invocation_id,
+                        run_id=run_id,
+                        task_id=task.id,
+                        iteration=task.iteration,
+                        role=reviewer,
+                        provider=verdict.provider,
+                        session_id=verdict.session_id,
+                        worktree=str(self.repo_root),
+                        branch=task.active_branch,
+                        target_commit_sha=task.current_commit_sha,
+                        started_at=verdict.timestamp,
+                        completed_at=verdict.timestamp,
+                        terminal_status="SUCCEEDED",
+                        result_hash="",
+                        output_text="",
+                        error=None,
+                    ))
                 else:
                     # Direct review dispatch
                     rev_prompt = f"Review Task {task.id} (Commit: {task.current_commit_sha})."
@@ -354,18 +510,26 @@ class TaskDispatcher:
                         prompt=rev_prompt,
                         worktree=str(self.repo_root),
                     )
-                    # Parse verdict from adapter record
-                    verdict = ReviewVerdict(
+                    self.queue_store.register_invocation(InvocationRecord(
+                        invocation_id=rev_record.invocation_id,
+                        run_id=run_id,
                         task_id=task.id,
                         iteration=task.iteration,
-                        agent_role=reviewer,
+                        role=reviewer,
                         provider=rev_record.provider,
-                        invocation_id=rev_record.invocation_id,
                         session_id=rev_record.session_id,
-                        reviewed_commit_sha=task.current_commit_sha,
-                        result="PASS" if rev_record.status == ExecutionStatus.SUCCEEDED else "FIX_REQUIRED",
-                        evidence_paths=[m.file_path for m in rev_record.evidence_manifest],
-                    )
+                        worktree=str(self.repo_root),
+                        branch=task.active_branch,
+                        target_commit_sha=task.current_commit_sha,
+                        started_at=rev_record.start_time,
+                        completed_at=rev_record.end_time,
+                        terminal_status=rev_record.status.value,
+                        result_hash="",
+                        output_text=rev_record.output_text,
+                        error=rev_record.error,
+                    ))
+                    # Parse structured verdict
+                    verdict = self.parse_reviewer_verdict(rev_record, task)
 
                 task = self.review_task(
                     task.id,
@@ -387,6 +551,7 @@ class TaskDispatcher:
         final_task = self.queue_store.get_task(task_id)
         approved = final_task.status == TaskState.APPROVED if final_task else False
         return {
+            "run_id": run_id,
             "task_id": task_id,
             "final_status": final_task.status.value if final_task else "UNKNOWN",
             "iterations_run": len(audit_history),
@@ -394,3 +559,4 @@ class TaskDispatcher:
             "execution_mode": "MOCK" if is_mock else "REAL_AGENT",
             "cycles": audit_history,
         }
+

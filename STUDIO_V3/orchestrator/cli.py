@@ -66,6 +66,15 @@ def main():
     p_res = subparsers.add_parser("restore", help="Restore database from snapshot")
     p_res.add_argument("--snapshot", required=True, help="Snapshot JSON file path")
 
+    # reconcile
+    subparsers.add_parser("reconcile", help="Non-destructively reconcile local queue.db with queue.json snapshot")
+
+    # run-loop
+    p_loop = subparsers.add_parser("run-loop", help="Execute autonomous quality loop on a task")
+    p_loop.add_argument("task_id", help="Task ID to run")
+    p_loop.add_argument("--adapter", choices=["mock", "antigravity", "bridge"], default="mock", help="Adapter type")
+    p_loop.add_argument("--max-cycles", type=int, default=3, help="Max rework cycles")
+
     args = parser.parse_args()
 
     try:
@@ -161,6 +170,29 @@ def main():
         elif args.command == "restore":
             store.import_snapshot(Path(args.snapshot))
             print(f"Queue restored successfully from {args.snapshot}")
+
+        elif args.command == "reconcile":
+            res = store.reconcile_snapshot(json_path)
+            print(f"Queue reconciled with snapshot: {res}")
+
+        elif args.command == "run-loop":
+            import json
+            if args.adapter == "mock":
+                from .adapters.mock import MockAdapter
+                adapter = MockAdapter(repo_root)
+            elif args.adapter == "bridge":
+                from .adapters.subagent_bridge import AntigravitySubagentBridgeAdapter
+                adapter = AntigravitySubagentBridgeAdapter(repo_root)
+            else:
+                from .adapters.antigravity_cli import AntigravityCLIAdapter
+                adapter = AntigravityCLIAdapter()
+
+            res = dispatcher.execute_autonomous_loop(
+                task_id=args.task_id,
+                adapter=adapter,
+                max_cycles=args.max_cycles,
+            )
+            print(json.dumps(res, indent=2))
 
     except (PolicyViolation, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

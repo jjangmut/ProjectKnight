@@ -17,3 +17,12 @@ CLIENT/Game/builds/
 *.apk
 *.aab
 
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.lock
+STUDIO_V3/*.db
+STUDIO_V3/*.db-wal
+STUDIO_V3/*.db-shm
+STUDIO_V3/.active_run_id

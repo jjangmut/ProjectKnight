@@ -1,8 +1,34 @@
 {
   "version": 3,
-  "branch": "studio/production-v3-cleanroom",
-  "agent_dispatch": "NATIVE_SUBAGENT_SESSIONS_EXIST_AUTONOMOUS_LOOP_NOT_VERIFIED",
+  "branch": "studio/v3-002-agent-orchestrator-r2",
+  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
   "tasks": [
+    {
+      "id": "V3-002-R2",
+      "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
+      "status": "IN_REVIEW",
+      "owner": "PK_Producer",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-002-R2/FINAL_EXECUTION_REPORT.md",
+        "STUDIO_V3/evidence/V3-002-R2/evidence_manifest.json"
+      ],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 1,
+      "priority": -1,
+      "active_branch": "studio/v3-002-agent-orchestrator-r2",
+      "current_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+      "version": 2,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "P0 remediation complete. 24/24 tests pass. Live multi-agent rework proof verified. Submitted for independent review."
+    },
     {
       "id": "V3-001",
       "title": "Clean Baseline Audit and Gameplay Plane Decision",
@@ -14,10 +40,15 @@
       ],
       "blocked_by": [],
       "evidence": [],
+      "evidence_manifest": [],
       "reviews": {},
       "iteration": 0,
       "priority": 0,
       "active_branch": "",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
       "issues": [],
       "notes": ""
     },
@@ -36,10 +67,15 @@
         "STUDIO_V3/evidence/V3-002/live_smoke/live_execution_manifest.json",
         "STUDIO_V3/evidence/V3-002/review_loop/cycle_1_worker_evidence.md"
       ],
+      "evidence_manifest": [],
       "reviews": {},
       "iteration": 1,
       "priority": 1,
       "active_branch": "",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
       "issues": [],
       "notes": "R1 independent review rejected approval: no authenticated two-key binding, execution success incorrectly treated as QA PASS, integrated live Producer dispatch unverified. R2 remediation in progress."
     },
@@ -57,30 +93,125 @@
         "V3-002"
       ],
       "evidence": [],
+      "evidence_manifest": [],
       "reviews": {},
       "iteration": 0,
       "priority": 2,
       "active_branch": "",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
       "issues": [],
       "notes": ""
     },
     {
-      "id": "V3-002-R2",
-      "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
-      "status": "READY",
-      "owner": "PK_Producer",
+      "id": "FIXTURE-V3-LIVE-002",
+      "title": "Live R2 Fixture: Stamina Component",
+      "status": "APPROVED",
+      "owner": "PK_ClientLead",
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
       ],
       "blocked_by": [],
-      "evidence": [],
-      "reviews": {},
-      "iteration": 0,
-      "priority": -1,
+      "evidence": [
+        "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_2_worker_fix.md",
+        "STUDIO_V3/evidence/V3-002-R2/live_workflow/fixture_stamina_component.gd"
+      ],
+      "evidence_manifest": [
+        {
+          "evidence_id": "ev-85c094a8be",
+          "task_id": "FIXTURE-V3-LIVE-002",
+          "iteration": 2,
+          "source_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+          "working_branch": "studio/v3-002-agent-orchestrator-r2",
+          "agent_invocation_id": "inv-sub-pk_clientlead-08110bfb",
+          "file_path": "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_2_worker_fix.md",
+          "sha256": "bf7353ff2b58efcc8776a288ffa758b3eaaa460ca815b0248f0f4c5bdcb41bb8",
+          "creation_time": "2026-11-05T04:17:44.083629+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-2fa9c56917",
+          "task_id": "FIXTURE-V3-LIVE-002",
+          "iteration": 2,
+          "source_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+          "working_branch": "studio/v3-002-agent-orchestrator-r2",
+          "agent_invocation_id": "inv-sub-pk_clientlead-08110bfb",
+          "file_path": "STUDIO_V3/evidence/V3-002-R2/live_workflow/fixture_stamina_component.gd",
+          "sha256": "257f82bf02c3e22f40682f11a0c510b083eed9727276250c83c92d330eed4214",
+          "creation_time": "2026-11-05T04:17:44.083629+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        }
+      ],
+      "reviews": {
+        "PK_QALead": {
+          "task_id": "FIXTURE-V3-LIVE-002",
+          "iteration": 2,
+          "agent_role": "PK_QALead",
+          "provider": "ANTIGRAVITY_SUBAGENT",
+          "invocation_id": "inv-sub-pk_qalead-53d225b8",
+          "session_id": "53d225b8-dd5c-4de4-abd7-5b6357230ef3",
+          "reviewed_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_2_qa_pass.md": "7918399153ac0d8fc4c253f3316ecf15f4e84d24aed67661940fa3da5d21fecf"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_2_qa_pass.md"
+          ],
+          "issues": [],
+          "notes": "All functional edge cases passed. Defect ISS-LIVE-002 is fully resolved. QA PASS.",
+          "timestamp": "2026-11-05T04:21:36.951645+00:00"
+        },
+        "PK_GameDirector": {
+          "task_id": "FIXTURE-V3-LIVE-002",
+          "iteration": 2,
+          "agent_role": "PK_GameDirector",
+          "provider": "ANTIGRAVITY_SUBAGENT",
+          "invocation_id": "inv-sub-pk_gamedirector-72bc5ed2",
+          "session_id": "72bc5ed2-6777-460d-b6b4-b418d34b0ffd",
+          "reviewed_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_3_director_pass.md": "813516001a9c021860d461246e4d0c2cb661fbac14afb1eafe2803afb9d1096e"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_3_director_pass.md"
+          ],
+          "issues": [],
+          "notes": "Director milestone inspection complete. Core gameplay invariants validated, QA pass verified, zero blockers remaining. Two-key gate APPROVED.",
+          "timestamp": "2026-11-05T04:23:19.558290+00:00"
+        }
+      },
+      "iteration": 2,
+      "priority": 99,
       "active_branch": "studio/v3-002-agent-orchestrator-r2",
-      "issues": [],
-      "notes": "P0 remediation. Task spec STUDIO_V3/tasks/V3-002-R2.md. Approval must be independently reviewed before V3-002 can close."
+      "current_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
+      "version": 8,
+      "lease_owner": "run-r2-20261105-040933-4caf40",
+      "lease_expires_at": "2026-11-05T04:16:20.690134+00:00",
+      "issues": [
+        {
+          "id": "ISS-LIVE-002",
+          "task_id": "FIXTURE-V3-LIVE-002",
+          "iteration": 1,
+          "severity": "P1",
+          "title": "Stamina underflow allows negative stamina values on over-consumption",
+          "reproduction_steps": "Initialize stamina at 100.0. Call consume_stamina(150.0).",
+          "expected": "consume_stamina returns false or clamps current_stamina to 0.0.",
+          "actual": "current_stamina becomes -50.0 and returns true unconditionally.",
+          "evidence": [
+            "STUDIO_V3/evidence/V3-002-R2/live_workflow/cycle_1_qa_rejection.md"
+          ],
+          "status": "RESOLVED",
+          "resolved_by": "PK_QALead",
+          "created_at": "2026-11-05T04:10:57.389178+00:00",
+          "resolved_at": "2026-11-05T04:21:36.960652+00:00"
+        }
+      ],
+      "notes": "Throwaway live multi-agent verification fixture for TASK V3-002-R2."
     }
   ]
 }

@@ -2,6 +2,7 @@
 from __future__ import annotations
 import uuid
 import datetime
+import json
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Callable
 from .base import AgentAdapter
@@ -48,6 +49,21 @@ class MockAdapter(AgentAdapter):
             return rec
 
         end_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        if ("qa" in role.lower() and "lead" in role.lower()) or "director" in role.lower():
+            verdict_dict = {
+                "task_id": task_id,
+                "iteration": 1,
+                "role": role,
+                "reviewed_commit_sha": "0000000000000000000000000000000000000000",
+                "verdict": "PASS",
+                "issues": [],
+                "evidence_manifest": [],
+                "notes": f"Mock automated review pass for {role}",
+            }
+            output_text = json.dumps(verdict_dict)
+        else:
+            output_text = f"Mock response for {role}: completed task {task_id}"
+
         rec = ExecutionRecord(
             invocation_id=inv_id,
             task_id=task_id,
@@ -61,7 +77,7 @@ class MockAdapter(AgentAdapter):
             exit_code=0,
             status=ExecutionStatus.SUCCEEDED,
             evidence_manifest=[],
-            output_text=f"Mock response for {role}: completed task {task_id}",
+            output_text=output_text,
             error=None,
         )
         self.invocations.append(rec)

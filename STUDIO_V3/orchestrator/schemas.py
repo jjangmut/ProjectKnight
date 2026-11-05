@@ -174,6 +174,35 @@ class ExecutionRecord:
 
 
 @dataclass
+class InvocationRecord:
+    invocation_id: str
+    run_id: str
+    task_id: str
+    iteration: int
+    role: str
+    provider: str
+    session_id: str
+    worktree: str
+    branch: str
+    target_commit_sha: str
+    started_at: str
+    completed_at: Optional[str] = None
+    terminal_status: str = "RUNNING"
+    result_hash: str = ""
+    output_text: str = ""
+    error: Optional[str] = None
+    created_at: str = field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> InvocationRecord:
+        return cls(**data)
+
+
+
+@dataclass
 class Task:
     id: str
     title: str
