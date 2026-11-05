@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-closure-patch",
+  "branch": "studio/v3-001-playable-baseline",
   "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
     {
@@ -251,14 +251,14 @@
       "evidence_manifest": [],
       "reviews": {},
       "iteration": 0,
-      "priority": 0,
-      "active_branch": "",
+      "priority": -5,
+      "active_branch": "studio/v3-001-playable-baseline",
       "current_commit_sha": "",
       "version": 1,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": ""
+      "notes": "P0 live game audit, not game polish. Canonical task STUDIO_V3/tasks/V3-001.md. Actual CLIENT/Game TitleScreen -> SideQVCampaign -> SideQVStage1 visible window, real input X/Z/Y, windowed FPS, screenshots/video and Director plane decision mandatory."
     },
     {
       "id": "V3-002",
@@ -285,7 +285,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "IDE-native workflow observed, but final infrastructure acceptance is pending V3-002-CLOSE (Git fail-closed, strict final JSON, terminal state, new independent infrastructure reviews)."
+      "notes": "Child V3-002-CLOSE accepted in external source/evidence review (chatgpt/v3-002-close-independent-acceptance); parent V3-002 requires separate formal QA/Director roll-up; cannot auto-approve."
     },
     {
       "id": "V3-003",
