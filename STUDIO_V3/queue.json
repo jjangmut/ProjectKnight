@@ -1,26 +1,29 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-agent-orchestrator-r3",
-  "agent_dispatch": "NATIVE_SUBAGENT_SESSIONS_VERIFIED_ONE_ENTRY_COORDINATION_R3_PENDING",
+  "branch": "studio/v3-002-agent-orchestrator-r2",
+  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
   "tasks": [
     {
       "id": "V3-002-R3",
       "title": "Native Producer IDE orchestration and final live approval gate",
-      "status": "READY",
+      "status": "IN_REVIEW",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
       ],
       "blocked_by": [],
-      "evidence": [],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-002-R3/FINAL_EXECUTION_REPORT.md",
+        "STUDIO_V3/evidence/V3-002-R3/source_manifest.json"
+      ],
       "evidence_manifest": [],
       "reviews": {},
       "iteration": 0,
       "priority": -2,
       "active_branch": "studio/v3-002-agent-orchestrator-r3",
       "current_commit_sha": "",
-      "version": 1,
+      "version": 2,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
@@ -29,7 +32,7 @@
     {
       "id": "V3-002-R2",
       "title": "R2 — Single-entry real Antigravity orchestration, trusted identity and verdict parsing",
-      "status": "FIX_REQUIRED",
+      "status": "IN_REVIEW",
       "owner": "PK_Producer",
       "reviewers": [
         "PK_QALead",
@@ -46,7 +49,7 @@
       "priority": -1,
       "active_branch": "studio/v3-002-agent-orchestrator-r2",
       "current_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
-      "version": 2,
+      "version": 3,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
@@ -96,7 +99,7 @@
       "priority": 1,
       "active_branch": "",
       "current_commit_sha": "",
-      "version": 1,
+      "version": 2,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
@@ -232,6 +235,114 @@
           "resolved_by": "PK_QALead",
           "created_at": "2026-11-05T04:10:57.389178+00:00",
           "resolved_at": "2026-11-05T04:21:36.960652+00:00"
+        }
+      ],
+      "notes": "Throwaway live multi-agent verification fixture for TASK V3-002-R2."
+    },
+    {
+      "id": "FIXTURE-V3-LIVE-003",
+      "title": "Live R3 Fixture: Advanced Stamina & Dash System",
+      "status": "APPROVED",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [
+        "STUDIO_V3/tests/fixtures/fixture_stamina_component_r3.gd",
+        "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_2_worker_fix.md"
+      ],
+      "evidence_manifest": [
+        {
+          "evidence_id": "ev-b2fd05d145",
+          "task_id": "FIXTURE-V3-LIVE-003",
+          "iteration": 2,
+          "source_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+          "working_branch": "studio/v3-002-agent-orchestrator-r2",
+          "agent_invocation_id": "inv-sub-pk_clientlead-727a24d2",
+          "file_path": "STUDIO_V3/tests/fixtures/fixture_stamina_component_r3.gd",
+          "sha256": "42c8ee2742b8aba8c343cb1edf70351d3e5e8c5e9363ab50bd049c7a0cd9fb3c",
+          "creation_time": "2026-11-05T06:17:03.982674+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-0e62ac74d8",
+          "task_id": "FIXTURE-V3-LIVE-003",
+          "iteration": 2,
+          "source_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+          "working_branch": "studio/v3-002-agent-orchestrator-r2",
+          "agent_invocation_id": "inv-sub-pk_clientlead-727a24d2",
+          "file_path": "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_2_worker_fix.md",
+          "sha256": "0182a88408b6625b1f9ee198e425212e6edbef6edddbc436675adb01d69a2a33",
+          "creation_time": "2026-11-05T06:17:03.982674+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        }
+      ],
+      "reviews": {
+        "PK_QALead": {
+          "task_id": "FIXTURE-V3-LIVE-003",
+          "iteration": 2,
+          "agent_role": "PK_QALead",
+          "provider": "ANTIGRAVITY_SUBAGENT",
+          "invocation_id": "inv-sub-pk_qalead-7e0a0fad",
+          "session_id": "7e0a0fad-50b9-45c4-8b62-85c3c4cab0cd",
+          "reviewed_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_2_qa_pass.md": "6a49cfd9db79a59a06f6d900afcb038fbfd4e847586d326c703a5b17a5c50cb2"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_2_qa_pass.md"
+          ],
+          "issues": [],
+          "notes": "",
+          "timestamp": "2026-11-05T06:22:52.354442+00:00"
+        },
+        "PK_GameDirector": {
+          "task_id": "FIXTURE-V3-LIVE-003",
+          "iteration": 2,
+          "agent_role": "PK_GameDirector",
+          "provider": "ANTIGRAVITY_SUBAGENT",
+          "invocation_id": "inv-sub-pk_gamedirector-c7819a4f",
+          "session_id": "c7819a4f-c19c-4a14-9a40-abcf60737f6e",
+          "reviewed_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_3_director_pass.md": "9e1b67472398f812e725d71959b18374a6b882591e4109042e2f408850422d19"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_3_director_pass.md"
+          ],
+          "issues": [],
+          "notes": "",
+          "timestamp": "2026-11-05T06:25:28.630787+00:00"
+        }
+      },
+      "iteration": 2,
+      "priority": 99,
+      "active_branch": "studio/v3-002-agent-orchestrator-r2",
+      "current_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+      "version": 8,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [
+        {
+          "id": "ISS-LIVE-003",
+          "task_id": "FIXTURE-V3-LIVE-003",
+          "iteration": 1,
+          "severity": "P1",
+          "title": "Stamina & Dash: Missing exhaustion guard and cooldown enforcement in consume_dash()",
+          "reproduction_steps": "1. Initialize FixtureStaminaComponentR3 with max_stamina=100. 2. Consume 100 stamina to trigger exhaustion (is_exhausted=true). 3. Call consume_dash(). Expected: false. Actual: true, stamina drops to -25.0.",
+          "expected": "consume_dash() returns false when is_exhausted == true or dash_cooldown_remaining > 0.0, and stamina never drops below 0.0.",
+          "actual": "consume_dash() returns true, ignores exhaustion and cooldown, allowing stamina underflow to -25.0.",
+          "evidence": [
+            "STUDIO_V3/evidence/V3-002-R3/live_workflow/cycle_1_qa_rejection.md"
+          ],
+          "status": "RESOLVED",
+          "resolved_by": "PK_QALead",
+          "created_at": "2026-11-05T06:11:39.958605+00:00",
+          "resolved_at": "2026-11-05T06:22:52.084183+00:00"
         }
       ],
       "notes": "Throwaway live multi-agent verification fixture for TASK V3-002-R2."

@@ -191,6 +191,7 @@ class InvocationRecord:
     result_hash: str = ""
     output_text: str = ""
     error: Optional[str] = None
+    parent_conversation_id: str = ""
     created_at: str = field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
@@ -198,7 +199,10 @@ class InvocationRecord:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> InvocationRecord:
-        return cls(**data)
+        data_copy = dict(data)
+        if "parent_conversation_id" not in data_copy:
+            data_copy["parent_conversation_id"] = ""
+        return cls(**data_copy)
 
 
 

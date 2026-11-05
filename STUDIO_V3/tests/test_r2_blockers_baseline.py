@@ -47,7 +47,7 @@ class TestR2BlockersBaseline(unittest.TestCase):
 
         self.store = QueueStore(self.db_path, self.json_path)
         self.event_log = EventLog(self.log_path)
-        self.dispatcher = TaskDispatcher(self.store, self.event_log, self.repo_root)
+        self.dispatcher = TaskDispatcher(self.store, self.event_log, self.repo_root, allow_mock=True)
 
         # Create dummy evidence file
         self.ev_file = self.studio_dir / "evidence.txt"

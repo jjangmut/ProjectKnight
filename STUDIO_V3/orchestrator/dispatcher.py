@@ -44,10 +44,17 @@ from .adapters.base import AgentAdapter
 class TaskDispatcher:
     """Manages task scheduling, agent execution, cryptographic evidence gates, and the autonomous quality rework loop."""
 
-    def __init__(self, queue_store: QueueStore, event_log: EventLog, repo_root: Path):
+    def __init__(
+        self,
+        queue_store: QueueStore,
+        event_log: EventLog,
+        repo_root: Path,
+        allow_mock: bool = False,
+    ):
         self.queue_store = queue_store
         self.event_log = event_log
-        self.repo_root = repo_root
+        self.repo_root = repo_root.resolve()
+        self.allow_mock = allow_mock
 
     def get_current_commit_sha(self) -> str:
         try:
@@ -127,6 +134,7 @@ class TaskDispatcher:
         actor: str,
         evidence_paths: List[str],
         invocation_id: str = "",
+        target_commit_sha: Optional[str] = None,
     ) -> Task:
         """Worker transition: IN_PROGRESS -> IN_REVIEW with cryptographic evidence manifest."""
         task = self.queue_store.get_task(task_id)
@@ -140,7 +148,11 @@ class TaskDispatcher:
             raise PolicyViolation(f"Task {task.id} is not IN_PROGRESS (current: {task.status.value}).")
 
         current_sha = self.get_current_commit_sha()
-        verify_commit_exists(current_sha, self.repo_root)
+        if target_commit_sha and target_commit_sha != current_sha:
+            verify_commit_exists(target_commit_sha, self.repo_root)
+            current_sha = target_commit_sha
+        else:
+            verify_commit_exists(current_sha, self.repo_root)
         task.current_commit_sha = current_sha
 
         # Build cryptographic manifest with SHA256 of every file
@@ -178,8 +190,10 @@ class TaskDispatcher:
         task_id: str,
         verdict: ReviewVerdict,
         worker_session_id: Optional[str] = None,
+        allow_mock: Optional[bool] = None,
     ) -> Task:
         """Reviewer transition: IN_REVIEW -> FIX_REQUIRED or APPROVED with identity attestation."""
+        use_mock = self.allow_mock if allow_mock is None else allow_mock
         task = self.queue_store.get_task(task_id)
         if not task:
             raise ValueError(f"Task {task_id} not found.")
@@ -193,6 +207,7 @@ class TaskDispatcher:
             task,
             worker_session_id=worker_session_id,
             invocation_registry=self.queue_store,
+            allow_mock=use_mock,
         )
 
         # 2. Cryptographic Evidence Integrity Check on submitted artifacts
@@ -246,11 +261,14 @@ class TaskDispatcher:
                 },
             )
         elif verdict.result == "PASS":
-            can_appr, reason = can_approve(task, invocation_registry=self.queue_store)
+            can_appr, reason = can_approve(task, invocation_registry=self.queue_store, allow_mock=use_mock)
             if can_appr:
                 task.status = TaskState.APPROVED
-                # Release lease upon approval
-                self.queue_store.release_task_lease(task.id, actor=task.owner, claim_token=task.lease_owner)
+                # Explicitly clear lease upon approval
+                old_lease = task.lease_owner
+                task.lease_owner = None
+                task.lease_expires_at = None
+                self.queue_store.release_task_lease(task.id, actor=task.owner, claim_token=old_lease)
                 self.queue_store.save_task(task)
                 self.event_log.record_event(
                     event_type="TASK_APPROVED",
@@ -535,6 +553,7 @@ class TaskDispatcher:
                     task.id,
                     verdict=verdict,
                     worker_session_id=worker_record.session_id,
+                    allow_mock=is_mock,
                 )
                 cycle_meta[f"review_{reviewer}"] = verdict.to_dict()
 

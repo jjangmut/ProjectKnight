@@ -1,0 +1,65 @@
+{
+  "task_id": "V3-002-R3",
+  "live_fixture_task_id": "FIXTURE-V3-LIVE-003",
+  "run_id": "run-r3-20261105-060455-363c24",
+  "target_branch": "studio/v3-002-agent-orchestrator-r3",
+  "fixture_commit_sha": "9d1012f74c025a08f44723be25fb2cc61d7e6dd2",
+  "files": {
+    "live_workflow/cycle_1_qa_rejection.md": {
+      "sha256": "5e740ed21ab950f4c1f6aac0fccd8219322c63550f66c282366e2972d8c0ec45",
+      "size_bytes": 6564
+    },
+    "live_workflow/cycle_1_worker_evidence.md": {
+      "sha256": "8a17e04f692f284ce3bf8ac9228f5809bba58176e53066c267b8fe5a1aeb91f1",
+      "size_bytes": 3513
+    },
+    "live_workflow/cycle_2_qa_pass.md": {
+      "sha256": "6a49cfd9db79a59a06f6d900afcb038fbfd4e847586d326c703a5b17a5c50cb2",
+      "size_bytes": 6660
+    },
+    "live_workflow/cycle_2_worker_fix.md": {
+      "sha256": "0182a88408b6625b1f9ee198e425212e6edbef6edddbc436675adb01d69a2a33",
+      "size_bytes": 7908
+    },
+    "live_workflow/cycle_3_director_pass.md": {
+      "sha256": "9e1b67472398f812e725d71959b18374a6b882591e4109042e2f408850422d19",
+      "size_bytes": 8255
+    },
+    "live_workflow/subagent_client_lead_cycle1.jsonl": {
+      "sha256": "1883cb247a5223610b3739514cdb2919779db09cd1d195e1e636d793ef34d80d",
+      "size_bytes": 78191
+    },
+    "live_workflow/subagent_client_lead_cycle2.jsonl": {
+      "sha256": "c9b59b8d62ce50869db5d0b732b2061bd8f591572a38f2adaea3aa808af6dcb3",
+      "size_bytes": 100942
+    },
+    "live_workflow/subagent_game_director_cycle3.jsonl": {
+      "sha256": "7668b0b56221a016af9a95152561961796a93e2f0a9dfafb5d811c6e7cee4152",
+      "size_bytes": 56734
+    },
+    "live_workflow/subagent_qa_lead_cycle1.jsonl": {
+      "sha256": "e70a8ee541aa840bdc38407d7a475fdcb68ac3777c54f9f63b600ce89776ec7a",
+      "size_bytes": 31035
+    },
+    "live_workflow/subagent_qa_lead_cycle2.jsonl": {
+      "sha256": "926c6ec88f63046e8a465b381eb6547090033f9f8c8b24ac88e6ee77e7ffe65f",
+      "size_bytes": 98731
+    },
+    "test_logs/godot_tests_cycle2_retest.log": {
+      "sha256": "36b5a61341fcdb84fbb12012fa9fb79df1d7859ad390264d44c2629dd2e5b6b6",
+      "size_bytes": 6950
+    },
+    "test_logs/python_tests_29_pass.log": {
+      "sha256": "440d4f98cbbaf5b1877560c3e583a4d2ab569eef7aaa63eab1f49d920d1b2167",
+      "size_bytes": 13184
+    },
+    "STUDIO_V3/tests/fixtures/fixture_stamina_component_r3.gd": {
+      "sha256": "42c8ee2742b8aba8c343cb1edf70351d3e5e8c5e9363ab50bd049c7a0cd9fb3c",
+      "size_bytes": 3119
+    },
+    "STUDIO_V3/tests/fixtures/test_fixture_stamina_r3.gd": {
+      "sha256": "36cbd18bab1f58ddca9be019d3ffe8d8c55731618614e9c9a8812ecaa6807046",
+      "size_bytes": 15871
+    }
+  }
+}

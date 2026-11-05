@@ -173,7 +173,7 @@ def verify_reviewer_attestation(
     task: Task,
     worker_session_id: Optional[str] = None,
     invocation_registry: Optional[Any] = None,
-    allow_mock: bool = True,
+    allow_mock: bool = False,
 ) -> None:
     """Verify cryptographic and session identity of reviewer to prevent spoofing."""
     if verdict.agent_role not in task.reviewers:
@@ -237,7 +237,7 @@ def verify_reviewer_attestation(
                 f"Reviewer invocation targeted commit '{inv.target_commit_sha}', but current task commit is '{task.current_commit_sha}'."
             )
 
-        if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK"):
+        if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK", "MOCK_SIMULATED"):
             raise IdentityVerificationError("Mock invocation cannot satisfy live independent AI review gate.")
 
 
@@ -265,7 +265,7 @@ def validate_start(task: Task, actor: str, all_tasks: Dict[str, Task]) -> None:
 def can_approve(
     task: Task,
     invocation_registry: Optional[Any] = None,
-    allow_mock: bool = True,
+    allow_mock: bool = False,
 ) -> Tuple[bool, str]:
     """Check if all independent approval gates are met."""
     if not task.reviewers:
@@ -297,7 +297,7 @@ def can_approve(
                 return False, f"Reviewer '{r}' session '{sess_id}' is not verified in trusted invocation registry."
             if inv.terminal_status != "SUCCEEDED":
                 return False, f"Reviewer '{r}' invocation '{inv.invocation_id}' terminal status is '{inv.terminal_status}', not SUCCEEDED."
-            if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK"):
+            if not allow_mock and inv.provider in ("MOCK", "SIMULATED_MOCK", "MOCK_SIMULATED"):
                 return False, f"Reviewer '{r}' used mock provider; live AI verification required."
 
     # Check that there are no unresolved P0 or P1 issues
@@ -329,9 +329,6 @@ def verify_commit_exists(commit_sha: str, repo_root: Path) -> None:
         if isinstance(e, PolicyViolation):
             raise
         raise PolicyViolation(f"Failed to verify commit object '{commit_sha}': {e}")
-
-
-    return True, "All independent reviewers passed with distinct verified sessions and no open blocking issues."
 
 
 def validate_branch_safety(branch_name: str) -> None:

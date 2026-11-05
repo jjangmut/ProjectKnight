@@ -14,6 +14,13 @@ from .policies import PolicyViolation
 
 
 def main():
+    if sys.platform == "win32":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
     repo_root = Path(__file__).resolve().parent.parent.parent
     studio_dir = repo_root / "STUDIO_V3"
     db_path = studio_dir / "queue.db"

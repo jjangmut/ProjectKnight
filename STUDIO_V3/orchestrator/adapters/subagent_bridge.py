@@ -57,6 +57,7 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
         session_id: str,
         target_commit_sha: str = "",
         expected_deliverables: Optional[List[str]] = None,
+        expected_parent_conversation_id: Optional[str] = None,
     ) -> ExecutionRecord:
         """
         Verify provider identity via AgentAPI metadata, inspect transcript, and construct ExecutionRecord.
@@ -100,6 +101,12 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 .get("metadata", {})
                 .get("createdAt", now_iso)
             )
+            parent_conversation_id = (
+                meta.get("response", {})
+                .get("conversationMetadata", {})
+                .get("metadata", {})
+                .get("parentConversationId", "")
+            )
         except Exception as e:
             raise IdentityVerificationError(f"Failed to parse AgentAPI metadata for session '{session_id}': {e}")
 
@@ -107,6 +114,11 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
         if verified_type_name != role:
             raise IdentityVerificationError(
                 f"Session '{session_id}' typeName mismatch: expected '{role}', provider reported '{verified_type_name}'."
+            )
+
+        if expected_parent_conversation_id and parent_conversation_id != expected_parent_conversation_id:
+            raise IdentityVerificationError(
+                f"Session '{session_id}' parentConversationId mismatch: expected '{expected_parent_conversation_id}', provider reported '{parent_conversation_id}'."
             )
 
         # 2. Inspect transcript.jsonl
@@ -217,7 +229,11 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 status=ExecutionStatus.AGENT_COMPLETION_NOT_VERIFIED,
                 evidence_manifest=[],
                 output_text="",
-                error=f"No active native subagent session bound for role '{role}'.",
+                error=(
+                    f"No active native subagent session bound for role '{role}'. Standalone Python process "
+                    "cannot autonomously spawn Antigravity IDE native subagents; execution must be orchestrated "
+                    "by PK_Producer inside Antigravity."
+                ),
             )
 
         return self.ingest_verified_subagent_execution(task_id, role, bound_session)

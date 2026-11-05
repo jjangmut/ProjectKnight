@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from filelock import FileLock
 from .schemas import Task, TaskState, Issue, Severity, EvidenceItem, InvocationRecord
-from .policies import TaskLeaseConflictError, ConcurrentModificationError
+from .policies import TaskLeaseConflictError, ConcurrentModificationError, PolicyViolation
 
 
 class QueueStore:
@@ -95,10 +95,15 @@ class QueueStore:
                         result_hash TEXT NOT NULL DEFAULT '',
                         output_text TEXT NOT NULL DEFAULT '',
                         error TEXT,
+                        parent_conversation_id TEXT NOT NULL DEFAULT '',
                         created_at TEXT NOT NULL,
                         FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE CASCADE
                     )
                 """)
+                # Check for parent_conversation_id column migration
+                inv_cols = [c["name"] for c in conn.execute("PRAGMA table_info(invocations)").fetchall()]
+                if "parent_conversation_id" not in inv_cols:
+                    conn.execute("ALTER TABLE invocations ADD COLUMN parent_conversation_id TEXT NOT NULL DEFAULT ''")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_invocations_lookup ON invocations (task_id, iteration, role, session_id)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_invocations_run ON invocations (run_id)")
                 conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('agent_dispatch', 'NOT_CONNECTED')")
@@ -168,15 +173,31 @@ class QueueStore:
     # ---------------------------------------------------------
 
     def register_invocation(self, record: InvocationRecord) -> None:
-        """Register an agent invocation in the trusted provider registry."""
+        """Register an agent invocation in the trusted provider registry (immutable provenance)."""
         with FileLock(str(self.lock_path), timeout=10):
             with self._get_connection() as conn:
+                existing_inv = conn.execute("SELECT invocation_id FROM invocations WHERE invocation_id = ?", (record.invocation_id,)).fetchone()
+                if existing_inv:
+                    raise PolicyViolation(f"Invocation ID '{record.invocation_id}' already registered. Overwriting provenance is forbidden.")
+
+                # Reusing a session across different tasks or iterations is strictly forbidden
+                existing_sess = conn.execute(
+                    "SELECT invocation_id, task_id, iteration, role FROM invocations WHERE session_id = ? AND (task_id != ? OR iteration != ?)",
+                    (record.session_id, record.task_id, record.iteration),
+                ).fetchone()
+                if existing_sess:
+                    raise PolicyViolation(
+                        f"Session '{record.session_id}' already registered under invocation '{existing_sess['invocation_id']}' "
+                        f"for task '{existing_sess['task_id']}' iteration {existing_sess['iteration']}. Reusing sessions across tasks or iterations is forbidden."
+                    )
+
                 conn.execute("""
-                    INSERT OR REPLACE INTO invocations (
+                    INSERT INTO invocations (
                         invocation_id, run_id, task_id, iteration, role, provider,
                         session_id, worktree, branch, target_commit_sha, started_at,
-                        completed_at, terminal_status, result_hash, output_text, error, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        completed_at, terminal_status, result_hash, output_text, error,
+                        parent_conversation_id, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     record.invocation_id,
                     record.run_id,
@@ -194,6 +215,7 @@ class QueueStore:
                     record.result_hash,
                     record.output_text,
                     record.error,
+                    record.parent_conversation_id,
                     record.created_at or datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 ))
 
@@ -242,6 +264,7 @@ class QueueStore:
                 result_hash=row["result_hash"],
                 output_text=row["output_text"],
                 error=row["error"],
+                parent_conversation_id=row["parent_conversation_id"] if "parent_conversation_id" in row.keys() else "",
                 created_at=row["created_at"],
             )
 
@@ -278,6 +301,7 @@ class QueueStore:
                 result_hash=row["result_hash"],
                 output_text=row["output_text"],
                 error=row["error"],
+                parent_conversation_id=row["parent_conversation_id"] if "parent_conversation_id" in row.keys() else "",
                 created_at=row["created_at"],
             )
 
@@ -303,6 +327,7 @@ class QueueStore:
                     result_hash=r["result_hash"],
                     output_text=r["output_text"],
                     error=r["error"],
+                    parent_conversation_id=r["parent_conversation_id"] if "parent_conversation_id" in r.keys() else "",
                     created_at=r["created_at"],
                 )
                 for r in rows
@@ -330,6 +355,7 @@ class QueueStore:
                     result_hash=r["result_hash"],
                     output_text=r["output_text"],
                     error=r["error"],
+                    parent_conversation_id=r["parent_conversation_id"] if "parent_conversation_id" in r.keys() else "",
                     created_at=r["created_at"],
                 )
                 for r in rows
@@ -345,41 +371,40 @@ class QueueStore:
         imported = []
         updated = []
 
-        with FileLock(str(self.lock_path), timeout=10):
-            existing_tasks = self.load_all_tasks()
-            for t_dict in snapshot_tasks:
-                tid = t_dict.get("id")
-                if not tid:
-                    continue
-                if tid not in existing_tasks:
-                    # New task from snapshot: import directly
-                    new_task = Task.from_dict(t_dict)
-                    self.save_task(new_task)
-                    imported.append(tid)
-                else:
-                    # Task exists: merge metadata non-destructively
-                    db_task = existing_tasks[tid]
-                    modified = False
-                    # Update non-state fields if changed in snapshot
-                    if t_dict.get("title") and db_task.title != t_dict["title"]:
-                        db_task.title = t_dict["title"]
-                        modified = True
-                    if t_dict.get("notes") and db_task.notes != t_dict["notes"]:
-                        db_task.notes = t_dict["notes"]
-                        modified = True
-                    if "priority" in t_dict and db_task.priority != t_dict["priority"]:
-                        db_task.priority = t_dict["priority"]
-                        modified = True
-                    if t_dict.get("blocked_by") is not None and db_task.blocked_by != t_dict["blocked_by"]:
-                        db_task.blocked_by = t_dict["blocked_by"]
-                        modified = True
-                    if t_dict.get("active_branch") and db_task.active_branch != t_dict["active_branch"]:
-                        db_task.active_branch = t_dict["active_branch"]
-                        modified = True
+        existing_tasks = self.load_all_tasks()
+        for t_dict in snapshot_tasks:
+            tid = t_dict.get("id")
+            if not tid:
+                continue
+            if tid not in existing_tasks:
+                # New task from snapshot: import directly
+                new_task = Task.from_dict(t_dict)
+                self.save_task(new_task)
+                imported.append(tid)
+            else:
+                # Task exists: merge metadata non-destructively
+                db_task = existing_tasks[tid]
+                modified = False
+                # Update non-state fields if changed in snapshot
+                if t_dict.get("title") and db_task.title != t_dict["title"]:
+                    db_task.title = t_dict["title"]
+                    modified = True
+                if t_dict.get("notes") and db_task.notes != t_dict["notes"]:
+                    db_task.notes = t_dict["notes"]
+                    modified = True
+                if "priority" in t_dict and db_task.priority != t_dict["priority"]:
+                    db_task.priority = t_dict["priority"]
+                    modified = True
+                if t_dict.get("blocked_by") is not None and db_task.blocked_by != t_dict["blocked_by"]:
+                    db_task.blocked_by = t_dict["blocked_by"]
+                    modified = True
+                if t_dict.get("active_branch") and db_task.active_branch != t_dict["active_branch"]:
+                    db_task.active_branch = t_dict["active_branch"]
+                    modified = True
 
-                    if modified:
-                        self.save_task(db_task)
-                        updated.append(tid)
+                if modified:
+                    self.save_task(db_task)
+                    updated.append(tid)
 
         if self.json_snapshot_path:
             self.export_snapshot(self.json_snapshot_path)
@@ -447,6 +472,10 @@ class QueueStore:
 
     def save_task(self, task: Task) -> None:
         """Save task with optimistic locking check (CAS) and atomic JSON snapshot."""
+        if task.status == TaskState.APPROVED:
+            task.lease_owner = None
+            task.lease_expires_at = None
+
         with FileLock(str(self.lock_path), timeout=10):
             with self._get_connection() as conn:
                 existing = conn.execute("SELECT version FROM tasks WHERE id = ?", (task.id,)).fetchone()

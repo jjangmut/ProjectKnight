@@ -36,7 +36,7 @@ class SingleEntryRunner:
     """Coordinates a complete multi-agent workflow under one authoritative run_id."""
 
     def __init__(self, repo_root: Path, run_id: Optional[str] = None):
-        self.repo_root = repo_root
+        self.repo_root = repo_root.resolve()
         self.studio_dir = repo_root / "STUDIO_V3"
         self.db_path = self.studio_dir / "queue.db"
         self.json_path = self.studio_dir / "queue.json"
@@ -76,9 +76,13 @@ class SingleEntryRunner:
             self.store.save_task(task)
         return task
 
-    def step_start_task(self, task_id: str) -> Task:
+    def step_start_task(self, task_id: str, actor: Optional[str] = None) -> Task:
         """Start task with unique run token lease."""
-        task = self.dispatcher.start_task(task_id, actor="PK_ClientLead", claim_token=self.run_id)
+        task = self.store.get_task(task_id)
+        if not task:
+            raise ValueError(f"Task {task_id} not found.")
+        claim_actor = actor or task.owner
+        task = self.dispatcher.start_task(task_id, actor=claim_actor, claim_token=self.run_id)
         self.audit_log.append({
             "action": "START_TASK",
             "task_id": task.id,
@@ -95,6 +99,7 @@ class SingleEntryRunner:
         session_id: str,
         commit_sha: str,
         evidence_files: List[str],
+        parent_conversation_id: str = "",
     ) -> ExecutionRecord:
         """Ingest real worker subagent session, verify identity, and submit work."""
         task = self.store.get_task(task_id)
@@ -108,27 +113,30 @@ class SingleEntryRunner:
             session_id=session_id,
             target_commit_sha=commit_sha,
             expected_deliverables=evidence_files,
+            expected_parent_conversation_id=parent_conversation_id or None,
         )
 
-        # Register in trusted invocation registry
-        self.store.register_invocation(InvocationRecord(
-            invocation_id=rec.invocation_id,
-            run_id=self.run_id,
-            task_id=task.id,
-            iteration=task.iteration,
-            role=task.owner,
-            provider="ANTIGRAVITY_SUBAGENT",
-            session_id=rec.session_id,
-            worktree=str(self.repo_root),
-            branch=task.active_branch,
-            target_commit_sha=commit_sha,
-            started_at=rec.start_time,
-            completed_at=rec.end_time,
-            terminal_status=rec.status.value,
-            result_hash=rec.evidence_manifest[0].sha256 if rec.evidence_manifest else "",
-            output_text=rec.output_text,
-            error=rec.error,
-        ))
+        # Register in trusted invocation registry if not already registered
+        if not self.store.get_invocation(rec.invocation_id):
+            self.store.register_invocation(InvocationRecord(
+                invocation_id=rec.invocation_id,
+                run_id=self.run_id,
+                task_id=task.id,
+                iteration=task.iteration,
+                role=task.owner,
+                provider="ANTIGRAVITY_SUBAGENT",
+                session_id=rec.session_id,
+                worktree=str(self.repo_root),
+                branch=task.active_branch,
+                target_commit_sha=commit_sha,
+                started_at=rec.start_time,
+                completed_at=rec.end_time,
+                terminal_status=rec.status.value,
+                result_hash=rec.evidence_manifest[0].sha256 if rec.evidence_manifest else "",
+                output_text=rec.output_text,
+                error=rec.error,
+                parent_conversation_id=parent_conversation_id,
+            ))
 
         # Submit work on verified commit SHA
         self.dispatcher.submit_work(
@@ -136,6 +144,7 @@ class SingleEntryRunner:
             actor=task.owner,
             evidence_paths=evidence_files,
             invocation_id=rec.invocation_id,
+            target_commit_sha=commit_sha,
         )
 
         self.audit_log.append({
@@ -156,6 +165,7 @@ class SingleEntryRunner:
         commit_sha: str,
         worker_session_id: str,
         evidence_files: Optional[List[str]] = None,
+        parent_conversation_id: str = "",
     ) -> ReviewVerdict:
         """Ingest real reviewer subagent session, verify identity, parse verdict, and apply review."""
         task = self.store.get_task(task_id)
@@ -169,27 +179,30 @@ class SingleEntryRunner:
             session_id=session_id,
             target_commit_sha=commit_sha,
             expected_deliverables=evidence_files,
+            expected_parent_conversation_id=parent_conversation_id or None,
         )
 
-        # Register in trusted invocation registry
-        self.store.register_invocation(InvocationRecord(
-            invocation_id=rec.invocation_id,
-            run_id=self.run_id,
-            task_id=task.id,
-            iteration=task.iteration,
-            role=reviewer_role,
-            provider="ANTIGRAVITY_SUBAGENT",
-            session_id=rec.session_id,
-            worktree=str(self.repo_root),
-            branch=task.active_branch,
-            target_commit_sha=commit_sha,
-            started_at=rec.start_time,
-            completed_at=rec.end_time,
-            terminal_status=rec.status.value,
-            result_hash="",
-            output_text=rec.output_text,
-            error=rec.error,
-        ))
+        # Register in trusted invocation registry if not already registered
+        if not self.store.get_invocation(rec.invocation_id):
+            self.store.register_invocation(InvocationRecord(
+                invocation_id=rec.invocation_id,
+                run_id=self.run_id,
+                task_id=task.id,
+                iteration=task.iteration,
+                role=reviewer_role,
+                provider="ANTIGRAVITY_SUBAGENT",
+                session_id=rec.session_id,
+                worktree=str(self.repo_root),
+                branch=task.active_branch,
+                target_commit_sha=commit_sha,
+                started_at=rec.start_time,
+                completed_at=rec.end_time,
+                terminal_status=rec.status.value,
+                result_hash="",
+                output_text=rec.output_text,
+                error=rec.error,
+                parent_conversation_id=parent_conversation_id,
+            ))
 
         # Parse structured review JSON
         verdict = self.dispatcher.parse_reviewer_verdict(rec, task)
