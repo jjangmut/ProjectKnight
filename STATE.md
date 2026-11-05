@@ -1,30 +1,27 @@
-# ProjectKnight Studio V3 — Current Status
+# ProjectKnight Studio V3 — Game Baseline Audit Status
 
 Updated: 2026-11-05
-Active instructions branch: `studio/v3-002-closure-patch`
-Frozen infrastructure code SHA: `214000678186b6ebb42349eeb28336b4dcfe0e42`
+Current task branch: `studio/v3-001-playable-baseline`
+Audit-only branch base: `studio/v3-002-closure-patch@f8ee860f84d0289c76ba2207ea231c6495145bb7`
 
-## Confirmed progress
-- Antigravity IDE-native Producer chain has recorded five distinct role sessions on a throwaway stamina fixture (worker → QA reject → worker fix → QA retest → Director).
-- Task `V3-002-CLOSE` closed all 4 remaining findings from `V3-002-R3-PATCH-INDEPENDENT-REVIEW.md`.
-- Python regression suite expanded to 57/57 tests PASS (including 13 dedicated closure gate hardening tests).
-- Godot 4.7.2 Headless engine suite confirmed at 74/74 checks PASS.
-- Two new, distinct native subagents (`PK_QALead` and `PK_GameDirector`) independently reviewed the frozen infrastructure source SHA `214000678186b6ebb42349eeb28336b4dcfe0e42` and issued PASS verdicts.
-- `V3-002-CLOSE` transitioned to `APPROVED` in SQLite queue store and `queue.json` with lease atomically cleared (`null`).
+## Status verified from code and governance
+- V3-002-CLOSE implementation and submitted evidence accepted in ChatGPT external source review (`chatgpt/v3-002-close-independent-acceptance`, commit `b3237c5b`); live Antigravity and Windows tools were not independently operated in that review.
+- Parent V3-002 official status remains FIX_REQUIRED pending a **separate formal parent milestone roll-up** in the approved control plane. Do not silently change to APPROVED.
+- **V3-001 READY** — actual Godot graphical Stage 1 playability, input, visual and PC performance baseline evidence not yet collected.
+- V3-003 BLOCKED — cannot polish Stage 1 until both V3-001 and parent V3-002 are independently APPROVED.
+- Existing historical stamina fixture headless results do NOT establish real Stage 1 rendered gameplay or mobile performance.
 
-## Resolved independent review findings
-Reference: `STUDIO_V3/reviews/V3-002-R3-PATCH-INDEPENDENT-REVIEW.md`.
-- **P0-01 (Git Fail-Closed Enforcement):** RESOLVED. Canonical 40-hex SHAs enforced; non-git directories, subprocess timeouts, missing executables, and uncommitted changes fail closed. Git worktree (`.git` file) supported.
-- **P1-02 (Strict Reviewer JSON Schema):** RESOLVED. `evidence_manifest` strictly required (no alias); `iteration` integer enforced (bool rejected); multiple verdict objects fail closed; PASS with open P0/P1 issues rejected.
-- **P1-03 (Subagent Terminal Completion):** RESOLVED. Removed `any(s.get("status") == "DONE")`. Transcripts must conclude with a final terminal step of `DONE` or `COMPLETED`. Earlier DONE followed by `RUNNING` or `FAILED` triggers `AGENT_COMPLETION_NOT_VERIFIED`.
-- **P1-04 (Frozen Infrastructure Source Review):** RESOLVED. Review conducted against frozen commit `214000678186b6ebb42349eeb28336b4dcfe0e42`. Two distinct native subagent sessions verified and recorded in trusted queue.
+## Existing source facts to be VERIFIED at runtime
+- Godot game root: `CLIENT/Game` (not the repository root); project renderer GL Compatibility; configured resolution 1280×720.
+- Default route: `TitleScreen.tscn` -> `SideQVCampaign.tscn` -> `SideQVStage1.tscn`.
+- Current Stage 1 uses `SideQVPlayer` CharacterBody3D with X left/right, Z depth and Y jumping, a Sprite3D in a 3D world, and a SideQVCamera.
+- The design goal historically called for mobile 2D side-scrolling. Whether to retain 2.5D X/Z depth, convert to fixed X/Y, or keep 3D visuals while locking gameplay plane is **UNDECIDED**. Director must select after reviewing actual game evidence.
 
-## Task queue
-- **V3-002-CLOSE: APPROVED** — closure gate task completed; two-key review satisfied, lease cleared.
-- **V3-002-R3-PATCH: FIX_REQUIRED** — historical record preserved.
-- **V3-002: FIX_REQUIRED** — parent infrastructure task awaiting external independent review.
-- **V3-001: READY** — independent in-game baseline audit; can proceed in parallel.
-- **V3-003: BLOCKED** — strictly blocked until V3-001 and V3-002 independently APPROVED.
+## Current task queue
+- V3-001 **READY** — source/graphics/input/boss/PC-performance audit and Director gameplay-plane choice. Canonical instructions `STUDIO_V3/tasks/V3-001.md`.
+- V3-002-CLOSE **APPROVED (child)** — separate external code/evidence review accepted.
+- V3-002 **FIX_REQUIRED (parent)** — final formal roll-up pending; this does not block V3-001 audit.
+- V3-003 **BLOCKED** — Stage 1 quality implementation not yet authorized.
 
-## Non-negotiable boundary
-Zero changes to `CLIENT/Game/` or core game mechanics. No self-approval. Submitting frozen source SHA `214000678186b6ebb42349eeb28336b4dcfe0e42` and evidence package for external ChatGPT independent code & evidence verification.
+## Safety
+This branch is **read-only with respect to gameplay and art**, except ignored Godot cache/import generated by normal launch. New audit evidence belongs in `STUDIO_V3/evidence/V3-001/` after real capture. Do not fabricate screenshots, video, FPS figures, input passes or boss progress. No merges, balance changes, save resets or redesign during baseline audit. Missing proof means NOT_VERIFIED.
