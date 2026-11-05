@@ -1,0 +1,129 @@
+{
+  "task_id": "V3-001",
+  "timestamp": "2026-11-06T03:03:41Z",
+  "resolution": "1280x720",
+  "renderer": "GL Compatibility (OpenGL 3.3.0)",
+  "captures": [
+    {
+      "filename": "00_title.png",
+      "gate": "Gate 1",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 18295,
+      "description": "Heroes War Tactical Command Lobby & Title Screen (CP, Rank, Deploy Deck)",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "01_stage_entry.png",
+      "gate": "Gate 1",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 134826,
+      "description": "Stage 1 Citadel Terrace Gate Entrance (Daylight 3D Vista, Runic Seal, Paladin Spawn)",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "02_idle_run.png",
+      "gate": "Gate 2 (A)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 129259,
+      "description": "Character Moving Right along X-axis, Camera Follow Active, Ground Contact",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "03_depth_occlusion.png",
+      "gate": "Gate 2 (B)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 140022,
+      "description": "Depth Z-movement Lane Position, Curb Collision Boundary & Occlusion",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "04_jump.png",
+      "gate": "Gate 2 (C)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 144765,
+      "description": "Jump Airborne Stance, Sprite Elevation, Dynamic Ground Shadow Projection",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "05_attack_impact.png",
+      "gate": "Gate 2 (D)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 135286,
+      "description": "Paladin Radiant Spear Thrust & Slash Visual VFX Streak",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "06_guard_dash.png",
+      "gate": "Gate 2 (E)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 128704,
+      "description": "Guard Barrier Runic Torus Shield & Dash Evasion Streak",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "07_enemy_wave.png",
+      "gate": "Gate 2 (F)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 147857,
+      "description": "Combat Engagement with Wave 1 Melee Enemies, Hit Feedback & Overhead HP Bars",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "08_boss_telegraph.png",
+      "gate": "Gate 2 (G)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 128747,
+      "description": "Wave 2 Boss Sector Arrival / Advance Notice / Boss Spawn Arena",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "09_boss_combat.png",
+      "gate": "Gate 2 (G)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 76985,
+      "description": "Boss Commander Combat, Gothic Winged Boss Health Bar & Attack Telegraphs",
+      "status": "VERIFIED"
+    },
+    {
+      "filename": "10_stage_result.png",
+      "gate": "Gate 2 (G)",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "unique_colors": 62181,
+      "description": "Stage 1 Progression State, Tactical Status Header & Combat Result Feedback",
+      "status": "VERIFIED"
+    }
+  ]
+}

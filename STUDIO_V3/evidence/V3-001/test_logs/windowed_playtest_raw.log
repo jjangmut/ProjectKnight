@@ -1,0 +1,55 @@
+[2026-11-06 03:03:05] ================================================================================
+[2026-11-06 03:03:05] TASK V3-001: Genuine Graphical Windowed Stage 1 Playable Audit
+[2026-11-06 03:03:05] Godot Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+[2026-11-06 03:03:05] Project Path: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game
+[2026-11-06 03:03:05] ================================================================================
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+ERROR: Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead.
+   at: add_child (scene/main/node.cpp:1721)
+   GDScript backtrace (most recent call first):
+       [0] ensure_manager (res://scripts/audio/audio_manager.gd:47)
+       [1] _ready (res://scripts/ui/title_screen.gd:38)
+[2026-11-06 03:03:10] Located Godot Window HWND: 37094300 in 4.51s
+[2026-11-06 03:03:13] Configured Client Viewport Dimensions: 1280x720 (Target 1280x720)
+[2026-11-06 03:03:13] --- STEP 1: Main Title Screen Verification (Gate 1 / Gate 3) ---
+[2026-11-06 03:03:13] CAPTURED: 00_title.png (1280x720, 18295 unique colors) - Heroes War Tactical Command Lobby & Title Screen (CP, Rank, Deploy Deck)
+[2026-11-06 03:03:13] --- STEP 2: Transitioning via Deploy 3D QV Button (Gate 1) ---
+[2026-11-06 03:03:13] Sent WM_LBUTTONDOWN/UP to Deploy Button at (880, 215)
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[2026-11-06 03:03:16] --- STEP 3: Stage 1 Entry Verification (Gate 1 / Gate 3) ---
+[2026-11-06 03:03:17] CAPTURED: 01_stage_entry.png (1280x720, 134826 unique colors) - Stage 1 Citadel Terrace Gate Entrance (Daylight 3D Vista, Runic Seal, Paladin Spawn)
+[2026-11-06 03:03:17] --- STEP 4: Matrix A -- Horizontal Movement & Camera Follow (Gate 2A) ---
+[2026-11-06 03:03:17] Sending Right Run (D key) for 1.8s...
+[2026-11-06 03:03:19] CAPTURED: 02_idle_run.png (1280x720, 129259 unique colors) - Character Moving Right along X-axis, Camera Follow Active, Ground Contact
+[2026-11-06 03:03:19] --- STEP 5: Matrix B -- Front/Back Depth Movement (W/S) (Gate 2B) ---
+[2026-11-06 03:03:19] Moving Up/Back towards rear Balustrade Wall (W key) for 1.5s...
+[2026-11-06 03:03:20] Moving Down/Front towards front curb (S key) for 0.8s...
+[2026-11-06 03:03:21] CAPTURED: 03_depth_occlusion.png (1280x720, 140022 unique colors) - Depth Z-movement Lane Position, Curb Collision Boundary & Occlusion
+[2026-11-06 03:03:21] --- STEP 6: Matrix C -- Jump (Space) & Airborne Position (Gate 2C) ---
+[2026-11-06 03:03:21] Triggering Jump (Space)...
+[2026-11-06 03:03:22] CAPTURED: 04_jump.png (1280x720, 144765 unique colors) - Jump Airborne Stance, Sprite Elevation, Dynamic Ground Shadow Projection
+[2026-11-06 03:03:22] --- STEP 7: Matrix D -- Melee 3-Combo Attack (J) (Gate 2D) ---
+[2026-11-06 03:03:22] Executing Combo: Attack 1 -> Attack 2 -> Attack 3 Finisher...
+[2026-11-06 03:03:23] CAPTURED: 05_attack_impact.png (1280x720, 135286 unique colors) - Paladin Radiant Spear Thrust & Slash Visual VFX Streak
+[2026-11-06 03:03:24] --- STEP 8: Matrix E -- Guard Barrier (K) & Dash (Shift) (Gate 2E) ---
+[2026-11-06 03:03:24] Activating Guard Barrier (K key) & Dash...
+[2026-11-06 03:03:24] CAPTURED: 06_guard_dash.png (1280x720, 128704 unique colors) - Guard Barrier Runic Torus Shield & Dash Evasion Streak
+[2026-11-06 03:03:25] --- STEP 9: Matrix F -- Advance to Wave 1 Enemies & Engage Combat (Gate 2F) ---
+[2026-11-06 03:03:25] Moving right towards enemy spawn sector (D key)...
+[2026-11-06 03:03:27] Engaging Wave 1 Melee Minions with combo attacks...
+[2026-11-06 03:03:29] CAPTURED: 07_enemy_wave.png (1280x720, 147857 unique colors) - Combat Engagement with Wave 1 Melee Enemies, Hit Feedback & Overhead HP Bars
+[2026-11-06 03:03:29] --- STEP 10: Matrix G -- Wave 2 Boss Spawn & Telegraph (Gate 2G) ---
+[2026-11-06 03:03:29] Clearing wave and advancing right towards Boss arena boundary...
+[2026-11-06 03:03:35] CAPTURED: 08_boss_telegraph.png (1280x720, 128747 unique colors) - Wave 2 Boss Sector Arrival / Advance Notice / Boss Spawn Arena
+[2026-11-06 03:03:35] --- STEP 11: Boss Commander Combat Encounter (Gate 2G) ---
+[2026-11-06 03:03:35] Engaging Boss Commander: Attacking, parrying and dodging...
+[2026-11-06 03:03:39] CAPTURED: 09_boss_combat.png (1280x720, 76985 unique colors) - Boss Commander Combat, Gothic Winged Boss Health Bar & Attack Telegraphs
+[2026-11-06 03:03:39] --- STEP 12: Stage Progression & Result Verification (Gate 2G / Gate 3) ---
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+[2026-11-06 03:03:41] CAPTURED: 10_stage_result.png (1280x720, 62181 unique colors) - Stage 1 Progression State, Tactical Status Header & Combat Result Feedback
+[2026-11-06 03:03:41] ================================================================================
+[2026-11-06 03:03:41] AUDIT RUN COMPLETED SUCCESSFULLY: All 11 Captures Produced
+[2026-11-06 03:03:41] ================================================================================
+[2026-11-06 03:03:41] Capture index written to D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\STUDIO_V3\evidence\V3-001\captures\capture_index.json (11 entries)

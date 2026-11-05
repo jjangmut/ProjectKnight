@@ -1,0 +1,668 @@
+Command: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --editor --path D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game --quit
+Exit Code: 0
+
+=== STDOUT/STDERR ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Could not find version of build tools that matches Target SDK, using 35.0.0
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 프로젝트 초기화 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 파일 구조 스캔 중...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 전역 클래스 이름을 불러오는 중...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | GDExtensions 검증 중...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 오토로드 스크립트를 만드는 중...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 플러그인을 초기화 중...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 파일 스캔 시작 중...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started 전역 클래스를 등록하는 중... (201 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | ParallaxStageBackdrop[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | StageStaticArt[39m[0m
+[   1% ] [90m[1mupdate_scripts_classes[22m | AudioManager[39m[0m
+[   1% ] [90m[1mupdate_scripts_classes[22m | AXDataRegistry[39m[0m
+[   2% ] [90m[1mupdate_scripts_classes[22m | AbyssalArbiter[39m[0m
+[   2% ] [90m[1mupdate_scripts_classes[22m | AbyssalBlade[39m[0m
+[   3% ] [90m[1mupdate_scripts_classes[22m | AncientGolemGuardian[39m[0m
+[   3% ] [90m[1mupdate_scripts_classes[22m | BeastChieftain[39m[0m
+[   4% ] [90m[1mupdate_scripts_classes[22m | BossCommander[39m[0m
+[   4% ] [90m[1mupdate_scripts_classes[22m | BossShockwave[39m[0m
+[   5% ] [90m[1mupdate_scripts_classes[22m | CaltropTrap[39m[0m
+[   5% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   6% ] [90m[1mupdate_scripts_classes[22m | CrossbowBolt[39m[0m
+[   6% ] [90m[1mupdate_scripts_classes[22m | CrossbowCommander[39m[0m
+[   7% ] [90m[1mupdate_scripts_classes[22m | FallingBoulder[39m[0m
+[   7% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   8% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   8% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  10% ] [90m[1mupdate_scripts_classes[22m | PlayerEquipment[39m[0m
+[  10% ] [90m[1mupdate_scripts_classes[22m | SwordBeam[39m[0m
+[  11% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  11% ] [90m[1mupdate_scripts_classes[22m | QuarterViewStage[39m[0m
+[  12% ] [90m[1mupdate_scripts_classes[22m | QVBossCommander[39m[0m
+[  12% ] [90m[1mupdate_scripts_classes[22m | QVCamera[39m[0m
+[  13% ] [90m[1mupdate_scripts_classes[22m | QVEnemy[39m[0m
+[  13% ] [90m[1mupdate_scripts_classes[22m | QVMobileControls[39m[0m
+[  14% ] [90m[1mupdate_scripts_classes[22m | QVPlayer[39m[0m
+[  14% ] [90m[1mupdate_scripts_classes[22m | QVSwordBeam[39m[0m
+[  15% ] [90m[1mupdate_scripts_classes[22m | QuarterViewArena3D[39m[0m
+[  15% ] [90m[1mupdate_scripts_classes[22m | QVBossCommander3D[39m[0m
+[  16% ] [90m[1mupdate_scripts_classes[22m | QVCamera3D[39m[0m
+[  16% ] [90m[1mupdate_scripts_classes[22m | QVEnemy3D[39m[0m
+[  17% ] [90m[1mupdate_scripts_classes[22m | QVPlayer3D[39m[0m
+[  17% ] [90m[1mupdate_scripts_classes[22m | QVSwordBeam3D[39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | SideQVAbyssalArbiter[39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | SideQVBeastChieftain[39m[0m
+[  19% ] [90m[1mupdate_scripts_classes[22m | SideQVCaltropTrap[39m[0m
+[  19% ] [90m[1mupdate_scripts_classes[22m | SideQVCrossbowBolt[39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | SideQVCrossbowCommander[39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | SideQVDarkCrescentWave[39m[0m
+[  21% ] [90m[1mupdate_scripts_classes[22m | SideQVGolemGuardian[39m[0m
+[  21% ] [90m[1mupdate_scripts_classes[22m | SideQVBeastMinion[39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | SideQVStage1[39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | SideQVStage2[39m[0m
+[  23% ] [90m[1mupdate_scripts_classes[22m | SideQVStage3[39m[0m
+[  23% ] [90m[1mupdate_scripts_classes[22m | SideQVStage4[39m[0m
+[  24% ] [90m[1mupdate_scripts_classes[22m | SideQVStage5[39m[0m
+[  24% ] [90m[1mupdate_scripts_classes[22m | SideQVArena[39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | SideQVBossCommander[39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | SideQVCamera[39m[0m
+[  26% ] [90m[1mupdate_scripts_classes[22m | SideQVCampaign[39m[0m
+[  26% ] [90m[1mupdate_scripts_classes[22m | SideQVEliteKnight[39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | SideQVEnemy[39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | SideQVGolemMinion[39m[0m
+[  28% ] [90m[1mupdate_scripts_classes[22m | SideQVPlayer[39m[0m
+[  28% ] [90m[1mupdate_scripts_classes[22m | SideQVRangedMinion[39m[0m
+[  29% ] [90m[1mupdate_scripts_classes[22m | SideQVStageBase[39m[0m
+[  29% ] [90m[1mupdate_scripts_classes[22m | SideQVSwordBeam[39m[0m
+[  30% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  30% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  31% ] [90m[1mupdate_scripts_classes[22m | StageLoader[39m[0m
+[  31% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  32% ] [90m[1mupdate_scripts_classes[22m | AdManager[39m[0m
+[  32% ] [90m[1mupdate_scripts_classes[22m | GameFeelManager[39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | SaveManager[39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | ShardDrop[39m[0m
+[  34% ] [90m[1mupdate_scripts_classes[22m | AXDataViewer[39m[0m
+[  34% ] [90m[1mupdate_scripts_classes[22m | BossHealthBar[39m[0m
+[  35% ] [90m[1mupdate_scripts_classes[22m | CampfireShop[39m[0m
+[  35% ] [90m[1mupdate_scripts_classes[22m | MobileControls[39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | SpriteInspectorTool[39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  37% ] [90m[1mupdate_scripts_classes[22m | TitleScreen[39m[0m
+[  37% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  38% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  38% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  39% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  39% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  41% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  41% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  42% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  42% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  43% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  43% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  44% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  44% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  46% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  46% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  47% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  47% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  48% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  48% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  49% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  49% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  51% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  51% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  52% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  52% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  53% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  53% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  55% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  55% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  56% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  56% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  57% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  57% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  58% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  58% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  59% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  59% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  61% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  61% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  62% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  62% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  64% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  64% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  65% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  65% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  67% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  67% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  68% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  68% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  69% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  69% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  70% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  70% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  71% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  71% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  73% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  73% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  74% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  74% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  76% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  76% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  78% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  78% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  79% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  79% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  80% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  80% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  82% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  82% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  83% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  83% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  84% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  84% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  85% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  85% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  86% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  86% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  87% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  87% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  88% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  88% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  89% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  89% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  91% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  91% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  92% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  92% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  93% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  93% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  94% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  94% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  95% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  95% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  96% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  96% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  97% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  97% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  98% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  98% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  99% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started 액션 스캔 중... (106 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | guard_clang.wav[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | stage_five_v1.png[39m[0m
+[   1% ] [90m[1m_update_scan_actions[22m | stage_four_v1.png[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | stage_three_v1.png[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | s05_checkpoint_v1.png[39m[0m
+[   4% ] [90m[1m_update_scan_actions[22m | abyssal_arbiter_v2.png[39m[0m
+[   5% ] [90m[1m_update_scan_actions[22m | abyssal_arbiter_v2_skills.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | beast_chieftain_v2.png[39m[0m
+[   7% ] [90m[1m_update_scan_actions[22m | beast_chieftain_v2_skills.png[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | beast_v2.png[39m[0m
+[   9% ] [90m[1m_update_scan_actions[22m | boss_commander_v2.png[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | boss_commander_v2_defense.png[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | crossbow_cmd_v2.png[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | crossbow_cmd_v2_skills.png[39m[0m
+[  13% ] [90m[1m_update_scan_actions[22m | golem_guardian_v2.png[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | golem_guardian_v2_skills.png[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | golem_v1.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | melee_v1.png[39m[0m
+[  16% ] [90m[1m_update_scan_actions[22m | ranged_v1.png[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | Korean_Warrior_Female_Blender_Textured.glb[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | Korean_Warrior_Female_Blender_Textured_warrior_albedo_baked.png[39m[0m
+[  19% ] [90m[1m_update_scan_actions[22m | Korean_Warrior_Female_Textured.glb[39m[0m
+[  20% ] [90m[1m_update_scan_actions[22m | paladin_attack_24frames_master.png[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | Paladin_Body_Clean.glb[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | Paladin_Body_Clean_paladin_perfect_final_albedo_4k.png[39m[0m
+[  23% ] [90m[1m_update_scan_actions[22m | Paladin_Greatsword_Prop.glb[39m[0m
+[  24% ] [90m[1m_update_scan_actions[22m | Paladin_Greatsword_Prop_paladin_perfect_final_albedo_4k.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | paladin_methods_1_2_3_comparison_master.png[39m[0m
+[  26% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin.glb[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated.glb[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated_LOD.glb[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated_LOD_paladin_perfect_final_albedo_4k.png[39m[0m
+[  29% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated_paladin_perfect_final_albedo_4k.png[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated_Web.glb[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Animated_Web_paladin_perfect_final_albedo_4k.jpg[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method1_GameReady.glb[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method1_GameReady_paladin_perfect_final_albedo_4k.png[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method1_Paint.glb[39m[0m
+[  35% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method1_Paint_paladin_method1_paint_albedo.png[39m[0m
+[  36% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method2_Blender4Part.glb[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method2_Blender4Part_paladin_method2_albedo_4k.png[39m[0m
+[  38% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method2_Blender4Part_paladin_perfect_final_albedo_4k.png[39m[0m
+[  39% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method2_PropSocket.glb[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method2_PropSocket_paladin_perfect_final_albedo_4k.png[39m[0m
+[  41% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method3_AIPBR.glb[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Method3_AIPBR_paladin_method3_aipbr_albedo.png[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Textured.glb[39m[0m
+[  43% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Textured_paladin_method2_albedo_4k.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_Textured_paladin_perfect_final_albedo_4k.png[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR.glb[39m[0m
+[  46% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR_Reworked.glb[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR_Reworked_albedo_4k.png[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR_Reworked_paladin_perfect_final_albedo_4k.png[39m[0m
+[  49% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR_Reworked_ProjectKnight_Paladin_TripoSR_Reworked_albedo_4k.png[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | ProjectKnight_Paladin_TripoSR_texture.png[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | Vaelyn_Perfect_PBR.glb[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | knight_idle_v1.png[39m[0m
+[  53% ] [90m[1m_update_scan_actions[22m | knight_stage1_paladin.png[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | knight_stage2_windrunner.png[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | knight_stage3_arcane.png[39m[0m
+[  56% ] [90m[1m_update_scan_actions[22m | knight_stage4_titan.png[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | knight_stage5_abyssal.png[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | attack_v1_aligned.png[39m[0m
+[  58% ] [90m[1m_update_scan_actions[22m | death_v1.png[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | dodge_v1.png[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | guard_v1_aligned.png[39m[0m
+[  61% ] [90m[1m_update_scan_actions[22m | hurt_v1.png[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | idle_v1_aligned.png[39m[0m
+[  63% ] [90m[1m_update_scan_actions[22m | jump_v1.png[39m[0m
+[  64% ] [90m[1m_update_scan_actions[22m | run_v2_aligned.png[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | projectiles_sheet.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | arena_runic_circle.png[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | citadel_banner.png[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | flagstone_floor.png[39m[0m
+[  69% ] [90m[1m_update_scan_actions[22m | background.png[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | goal.png[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | ground.png[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | melee.png[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | projectile.png[39m[0m
+[  73% ] [90m[1m_update_scan_actions[22m | ranged.png[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | background.png[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | beast.png[39m[0m
+[  76% ] [90m[1m_update_scan_actions[22m | golem.png[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | melee.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | ranged.png[39m[0m
+[  79% ] [90m[1m_update_scan_actions[22m | background_v1.png[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | citadel.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | forest.png[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | outskirts.png[39m[0m
+[  83% ] [90m[1m_update_scan_actions[22m | sanctuary.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | wall.png[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | boss_bar_fill_ruby.png[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | boss_bar_frame.png[39m[0m
+[  86% ] [90m[1m_update_scan_actions[22m | boss_bar_linger_amber.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | btn_attack.png[39m[0m
+[  88% ] [90m[1m_update_scan_actions[22m | btn_dash.png[39m[0m
+[  89% ] [90m[1m_update_scan_actions[22m | btn_guard.png[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | btn_jump.png[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | combo_banner_frame.png[39m[0m
+[  92% ] [90m[1m_update_scan_actions[22m | hud_banner_scroll.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | hud_player_avatar_frame.png[39m[0m
+[  94% ] [90m[1m_update_scan_actions[22m | hud_soul_gem_empty.png[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | hud_soul_gem_full.png[39m[0m
+[  96% ] [90m[1m_update_scan_actions[22m | joypad_base.png[39m[0m
+[  97% ] [90m[1m_update_scan_actions[22m | joypad_knob.png[39m[0m
+[  98% ] [90m[1m_update_scan_actions[22m | parry_burst_banner.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 애셋 (다시) 가져오는 중 (106 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   0% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   1% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   2% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   3% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   4% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   5% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   6% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   7% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   8% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   9% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  10% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  11% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  12% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  13% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  14% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  14% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  15% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  16% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  17% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  18% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  19% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  20% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  21% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  22% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  23% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  24% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  25% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  26% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  27% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  28% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  28% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  29% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  30% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  31% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  32% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  33% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  34% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  35% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  36% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  37% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  38% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  39% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  40% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  41% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  42% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  42% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  43% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  44% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  45% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  46% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  47% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  48% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  49% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  50% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  51% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  52% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  53% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  54% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  55% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  56% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  57% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  57% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  58% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  59% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  60% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  61% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  62% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  63% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  64% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  65% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  66% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  67% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  68% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  69% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  70% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  71% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  71% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  72% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  73% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  74% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  75% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  76% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  77% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  78% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  79% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  80% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  81% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  82% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  83% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  84% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  85% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  85% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  86% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  87% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  88% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  89% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  90% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  91% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  92% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  93% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  94% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  95% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  96% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  97% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[  98% ] [90m[1mreimport[22m | 다시 가져올 파일을 준비 중...[39m[0m
+[   0% ] [90m[1mreimport[22m | 다시 가져오기 전 작업을 수행 중...[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | Started 다시 불러오기를 위해 씬 준비 중 (1 steps)[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | 씬 [비었음] 분석 중[39m[0m
+[  50% ] [90m[1mpreload_reimporting_scene[22m | 준비가 완료되었습니다.[39m[0m
+[92m[ DONE ][39m [1mpreload_reimporting_scene[22m
+[0m
+[   0% ] [90m[1mreimport[22m | ranged.png[39m[0m
+[   0% ] [90m[1mreimport[22m | projectile.png[39m[0m
+[   1% ] [90m[1mreimport[22m | melee.png[39m[0m
+[   2% ] [90m[1mreimport[22m | ground.png[39m[0m
+[   3% ] [90m[1mreimport[22m | goal.png[39m[0m
+[   4% ] [90m[1mreimport[22m | background.png[39m[0m
+[   5% ] [90m[1mreimport[22m | flagstone_floor.png[39m[0m
+[   6% ] [90m[1mreimport[22m | citadel_banner.png[39m[0m
+[   7% ] [90m[1mreimport[22m | arena_runic_circle.png[39m[0m
+[   8% ] [90m[1mreimport[22m | projectiles_sheet.png[39m[0m
+[   9% ] [90m[1mreimport[22m | run_v2_aligned.png[39m[0m
+[  10% ] [90m[1mreimport[22m | jump_v1.png[39m[0m
+[  11% ] [90m[1mreimport[22m | idle_v1_aligned.png[39m[0m
+[  12% ] [90m[1mreimport[22m | hurt_v1.png[39m[0m
+[  13% ] [90m[1mreimport[22m | guard_v1_aligned.png[39m[0m
+[  14% ] [90m[1mreimport[22m | dodge_v1.png[39m[0m
+[  14% ] [90m[1mreimport[22m | death_v1.png[39m[0m
+[  15% ] [90m[1mreimport[22m | attack_v1_aligned.png[39m[0m
+[  16% ] [90m[1mreimport[22m | knight_stage5_abyssal.png[39m[0m
+[  17% ] [90m[1mreimport[22m | knight_stage4_titan.png[39m[0m
+[  18% ] [90m[1mreimport[22m | knight_stage3_arcane.png[39m[0m
+[  19% ] [90m[1mreimport[22m | knight_stage2_windrunner.png[39m[0m
+[  20% ] [90m[1mreimport[22m | knight_stage1_paladin.png[39m[0m
+[  21% ] [90m[1mreimport[22m | knight_idle_v1.png[39m[0m
+[  22% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR_texture.png[39m[0m
+[  23% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR_Reworked_ProjectKnight_Paladin_TripoSR_Reworked_albedo_4k.png[39m[0m
+[  24% ] [90m[1mreimport[22m | parry_burst_banner.png[39m[0m
+[  25% ] [90m[1mreimport[22m | joypad_knob.png[39m[0m
+[  26% ] [90m[1mreimport[22m | joypad_base.png[39m[0m
+[  27% ] [90m[1mreimport[22m | hud_soul_gem_full.png[39m[0m
+[  28% ] [90m[1mreimport[22m | hud_soul_gem_empty.png[39m[0m
+[  28% ] [90m[1mreimport[22m | hud_player_avatar_frame.png[39m[0m
+[  29% ] [90m[1mreimport[22m | hud_banner_scroll.png[39m[0m
+[  30% ] [90m[1mreimport[22m | combo_banner_frame.png[39m[0m
+[  31% ] [90m[1mreimport[22m | btn_jump.png[39m[0m
+[  32% ] [90m[1mreimport[22m | btn_guard.png[39m[0m
+[  33% ] [90m[1mreimport[22m | btn_dash.png[39m[0m
+[  34% ] [90m[1mreimport[22m | btn_attack.png[39m[0m
+[  35% ] [90m[1mreimport[22m | boss_bar_linger_amber.png[39m[0m
+[  36% ] [90m[1mreimport[22m | boss_bar_frame.png[39m[0m
+[  37% ] [90m[1mreimport[22m | boss_bar_fill_ruby.png[39m[0m
+[  38% ] [90m[1mreimport[22m | wall.png[39m[0m
+[  39% ] [90m[1mreimport[22m | sanctuary.png[39m[0m
+[  40% ] [90m[1mreimport[22m | outskirts.png[39m[0m
+[  41% ] [90m[1mreimport[22m | forest.png[39m[0m
+[  42% ] [90m[1mreimport[22m | citadel.png[39m[0m
+[  42% ] [90m[1mreimport[22m | background_v1.png[39m[0m
+[  43% ] [90m[1mreimport[22m | ranged.png[39m[0m
+[  44% ] [90m[1mreimport[22m | melee.png[39m[0m
+[  45% ] [90m[1mreimport[22m | golem.png[39m[0m
+[  46% ] [90m[1mreimport[22m | beast.png[39m[0m
+[  47% ] [90m[1mreimport[22m | background.png[39m[0m
+[  48% ] [90m[1mreimport[22m | paladin_methods_1_2_3_comparison_master.png[39m[0m
+[  49% ] [90m[1mreimport[22m | Paladin_Greatsword_Prop_paladin_perfect_final_albedo_4k.png[39m[0m
+[  50% ] [90m[1mreimport[22m | Paladin_Body_Clean_paladin_perfect_final_albedo_4k.png[39m[0m
+[  51% ] [90m[1mreimport[22m | paladin_attack_24frames_master.png[39m[0m
+[  52% ] [90m[1mreimport[22m | Korean_Warrior_Female_Blender_Textured_warrior_albedo_baked.png[39m[0m
+[  53% ] [90m[1mreimport[22m | ranged_v1.png[39m[0m
+[  54% ] [90m[1mreimport[22m | melee_v1.png[39m[0m
+[  55% ] [90m[1mreimport[22m | golem_v1.png[39m[0m
+[  56% ] [90m[1mreimport[22m | golem_guardian_v2_skills.png[39m[0m
+[  57% ] [90m[1mreimport[22m | golem_guardian_v2.png[39m[0m
+[  57% ] [90m[1mreimport[22m | crossbow_cmd_v2_skills.png[39m[0m
+[  58% ] [90m[1mreimport[22m | crossbow_cmd_v2.png[39m[0m
+[  59% ] [90m[1mreimport[22m | boss_commander_v2_defense.png[39m[0m
+[  60% ] [90m[1mreimport[22m | boss_commander_v2.png[39m[0m
+[  61% ] [90m[1mreimport[22m | beast_v2.png[39m[0m
+[  62% ] [90m[1mreimport[22m | beast_chieftain_v2_skills.png[39m[0m
+[  63% ] [90m[1mreimport[22m | beast_chieftain_v2.png[39m[0m
+[  64% ] [90m[1mreimport[22m | abyssal_arbiter_v2_skills.png[39m[0m
+[  65% ] [90m[1mreimport[22m | abyssal_arbiter_v2.png[39m[0m
+[  66% ] [90m[1mreimport[22m | s05_checkpoint_v1.png[39m[0m
+[  67% ] [90m[1mreimport[22m | stage_three_v1.png[39m[0m
+[  68% ] [90m[1mreimport[22m | stage_four_v1.png[39m[0m
+[  69% ] [90m[1mreimport[22m | stage_five_v1.png[39m[0m
+[  70% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_PropSocket_paladin_perfect_final_albedo_4k.png[39m[0m
+[  70% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_PropSocket_paladin_perfect_final_albedo_4k.png[39m[0m
+[  71% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_Blender4Part_paladin_perfect_final_albedo_4k.png[39m[0m
+[  71% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_Blender4Part_paladin_method2_albedo_4k.png[39m[0m
+[  71% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_Blender4Part_paladin_method2_albedo_4k.png[39m[0m
+[  72% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method1_Paint_paladin_method1_paint_albedo.png[39m[0m
+[  73% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method3_AIPBR_paladin_method3_aipbr_albedo.png[39m[0m
+[  74% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method1_GameReady_paladin_perfect_final_albedo_4k.png[39m[0m
+[  75% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Textured_paladin_method2_albedo_4k.png[39m[0m
+[  76% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Textured_paladin_perfect_final_albedo_4k.png[39m[0m
+[  77% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated_Web_paladin_perfect_final_albedo_4k.jpg[39m[0m
+[  78% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated_paladin_perfect_final_albedo_4k.png[39m[0m
+[  79% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated_LOD_paladin_perfect_final_albedo_4k.png[39m[0m
+[  80% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR_Reworked_albedo_4k.png[39m[0m
+[  81% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR_Reworked_paladin_perfect_final_albedo_4k.png[39m[0m
+[  82% ] [90m[1mreimport[22m | guard_clang.wav[39m[0m
+[  83% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  84% ] [90m[1mreimport[22m | Vaelyn_Perfect_PBR.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  85% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Textured.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  85% ] [90m[1mreimport[22m | ProjectKnight_Paladin_TripoSR_Reworked.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  86% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method3_AIPBR.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  87% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_PropSocket.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  88% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method2_Blender4Part.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  89% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method1_Paint.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  90% ] [90m[1mreimport[22m | Korean_Warrior_Female_Blender_Textured.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  91% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Method1_GameReady.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  92% ] [90m[1mreimport[22m | Korean_Warrior_Female_Textured.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  93% ] [90m[1mreimport[22m | Paladin_Body_Clean.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  94% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated_Web.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  95% ] [90m[1mreimport[22m | Paladin_Greatsword_Prop.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  96% ] [90m[1mreimport[22m | ProjectKnight_Paladin.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  97% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  98% ] [90m[1mreimport[22m | ProjectKnight_Paladin_Animated_LOD.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 씬 가져오기 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 씬 가져오는 중...[39m[0m
+[   1% ] [90m[1mimport[22m | 커스텀 스크립트 실행 중...[39m[0m
+[  99% ] [90m[1mimport[22m | 저장 중...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  99% ] [90m[1mreimport[22m | 애셋 가져오기 마무리 중...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 애셋 (다시) 가져오는 중 (106 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 다시 가져오기 후 작업을 수행 중...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started 편집기를 불러오는 중 (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | 편집기 레이아웃을 불러오는 중...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | 독을 불러오는 중...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | 씬을 다시 여는 중...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | 중앙 편집기 레이아웃을 불러오는 중...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | 플러그인 창 레이아웃을 불러오는 중...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | 편집기 레이아웃이 준비되었습니다.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
