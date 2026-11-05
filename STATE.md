@@ -1,32 +1,31 @@
-# ProjectKnight — Clean Production Restart
+# ProjectKnight Studio V3 — Production Status
 
-Date: 2026-11-05
-Branch: studio/v3-002-agent-orchestrator-r1
-Target Commit: 71e126bc4956d8f4c4d97acb9eb48625a78e135e
-Origin game baseline: main @ 10ecf64e6111b9a2ded819b43b38760fd1236695
+Updated: 2026-11-05
+Working branch: `studio/v3-002-agent-orchestrator-r2`
+R2 start baseline: `67e60384c920c03e9b7d9dc730bd939a56b77f21`
 
-## Status
-- Previous agent system, old review claims, old VS-001 status: RETIRED; NOT AUTHORITATIVE.
-- Game source and art assets: PRESERVED; NO CLAIM OF NEW QA PASS.
-- Active production system: STUDIO_V3 (cleanroom architecture).
-- Workflow state engine: Operational (`STUDIO_V3/orchestrator/` with SQLite atomic persistence, file locking, task leasing, and JSON snapshot sync).
-- Custom Agents: Registered in `.agents/agents/` (`PK_GameDirector`, `PK_Producer`, `PK_GameDesign`, `PK_ArtDirector`, `PK_ClientLead`, `PK_QALead`) with official Antigravity frontmatter.
-- Autonomous AI agent dispatch:
-  - Antigravity Native Subagents: CONNECTED & VERIFIED with live autonomous rework loop (5 subagent sessions executed across 3 cycles for `PK_ClientLead`, `PK_QALead`, and `PK_GameDirector`).
-  - Antigravity AgentAPI: CONNECTED & VERIFIED with distinct state lifecycle (`SESSION_CREATED`, `RUNNING`, `SUCCEEDED`, `FAILED`, `TIMED_OUT`, `AGENT_COMPLETION_NOT_VERIFIED`).
-  - Standalone Antigravity CLI (`agy`): NOT INSTALLED on host Windows environment (reported honestly as `AGENT_RUNTIME_NOT_AVAILABLE` for headless CLI without fabrication).
-- Test Suites: 20/20 tests PASSING in `STUDIO_V3/tests/` (dispatcher, permissions, review gates, recovery, state transitions, attestation, SHA256 evidence integrity, optimistic locking, task leasing, branch protection).
-- Visual independent review: NOT VERIFIED for game code (in-progress on V3-001).
-- Android real-device performance: NOT VERIFIED.
-- Gameplay X/Y vs X/Z control rule: UNDECIDED (owned by V3-001).
+## Current status
+- Previous production systems: RETIRED. No historical QA score or PASS is authoritative.
+- Game runtime and assets: PRESERVED; R2 is restricted to Studio orchestration infrastructure.
+- Six role definitions and native Antigravity subagent session transcripts: PRESENT from R1.
+- Five reported live native-subagent session records and repaired health fixture: PRESENT (R1).
+- **Single Producer entrypoint controlling actual subagents end to end:** NOT VERIFIED.
+- **Provider-authenticated, role-bound independent two-key approval:** NOT VERIFIED; R1 independent review identified forgery risk.
+- **Reviewer verdict based on semantic QA results rather than process success:** R1 BLOCKER, not fixed yet.
+- Existing 20/20 test PASS: reported by implementation; not independently rerun.
+- Actual in-game visual QA and Android performance: NOT VERIFIED.
+- Movement plane X/Y vs X/Z: UNDECIDED; part of V3-001.
 
-## Active Tasks
-- V3-001 (READY): Independent baseline audit, playable capture, and gameplay-plane decision.
-- V3-002 / V3-002-R1 (IN_REVIEW): Real Multi-Agent Orchestrator & Autonomous Quality Loop Blocker Remediation. Implementation, 20/20 test suite, and live 3-cycle execution complete. Submitted for independent review; never self-approved.
-- V3-003 (BLOCKED): Blocked until V3-001 and V3-002 are both APPROVED.
+## Tasks
+- `V3-001` READY — baseline playable capture, gameplay-plane decision; can proceed in parallel.
+- `V3-002` FIX_REQUIRED — integration infrastructure not approved.
+- `V3-002-R2` READY — `STUDIO_V3/tasks/V3-002-R2.md`; priority P0.
+- `V3-003` BLOCKED — Stage 1 production requires approvals on V3-001 and V3-002.
 
-## Verification Honesty
-- Six custom agent definitions are INSTALLED in `.agents/agents/` and active in the Antigravity session.
-- Real Antigravity dispatch is verified via Native Subagents (`invoke_subagent`) and AgentAPI (`agentapi.bat`).
-- Real autonomous quality loop (`FIXTURE-V3-LIVE-001`) completed with live defect injection, detection/rejection by `PK_QALead`, remediation by `PK_ClientLead`, independent 9-case retest by `PK_QALead`, and final sign-off by `PK_GameDirector`.
-- Task V3-002 / V3-002-R1 is submitted for independent review; never self-approved.
+## Acceptance standard
+R2 must demonstrate real Producer worker → QA reject → worker fix → QA retest → Director review from one execution entrypoint, with provider identity, final task/issue states, immutable exact Git SHA and sanitized logs.
+No success claim is inferred from session creation, CLI exit code, a manual review name or mock tests. If the live runtime does not expose an authenticated completion channel, mark LIVE_AUTONOMOUS_LOOP_NOT_VERIFIED and keep V3-002 blocked.
+
+## Review
+Independent R1 findings: `STUDIO_V3/reviews/V3-002-R1-INDEPENDENT-REVIEW.md`.
+R2 work specification: `STUDIO_V3/tasks/V3-002-R2.md`.
