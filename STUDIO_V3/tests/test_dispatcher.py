@@ -27,7 +27,7 @@ class TestDispatcherAutonomousLoop(unittest.TestCase):
         self.log_path = self.temp_dir / "events.jsonl"
         self.queue_store = QueueStore(self.db_path)
         self.event_log = EventLog(self.log_path)
-        self.dispatcher = TaskDispatcher(self.queue_store, self.event_log, self.temp_dir)
+        self.dispatcher = TaskDispatcher(self.queue_store, self.event_log, self.temp_dir, allow_mock=True)
         self.adapter = MockAdapter(self.temp_dir)
 
         (self.temp_dir / "worker_evidence").mkdir(parents=True, exist_ok=True)

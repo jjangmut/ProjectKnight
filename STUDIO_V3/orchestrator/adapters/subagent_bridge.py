@@ -132,9 +132,34 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 f"Transcript log not found on disk for verified session '{session_id}' at {transcript_path}."
             )
 
+        return self._parse_transcript_record(
+            session_id=session_id,
+            role=role,
+            task_id=task_id,
+            inv_id=inv_id,
+            target_commit_sha=target_commit_sha,
+            created_at=created_at,
+            now_iso=now_iso,
+            transcript_path=transcript_path,
+            expected_deliverables=expected_deliverables,
+        )
+
+    def _parse_transcript_record(
+        self,
+        session_id: str,
+        role: str,
+        task_id: str,
+        inv_id: str,
+        target_commit_sha: str,
+        created_at: str,
+        now_iso: str,
+        transcript_path: Path,
+        expected_deliverables: Optional[List[str]] = None,
+    ) -> ExecutionRecord:
+        """Parse subagent transcript with fail-closed terminal completion validation."""
         output_text = ""
-        is_done = False
         steps = []
+        truncated_or_corrupt = False
         with open(transcript_path, "r", encoding="utf-8", errors="replace") as f:
             for line in f:
                 line_str = line.strip()
@@ -144,19 +169,9 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                     step = json.loads(line_str)
                     steps.append(step)
                 except Exception:
-                    pass
+                    truncated_or_corrupt = True
 
-        # Inspect steps for terminal model completion
-        for step in reversed(steps):
-            if step.get("source") == "MODEL" and step.get("content"):
-                output_text = step["content"]
-                break
-
-        # A valid subagent execution must have reached terminal DONE state
-        if steps and (steps[-1].get("status") in ("DONE", "COMPLETED") or any(s.get("status") == "DONE" for s in steps)):
-            is_done = True
-
-        if not is_done or not output_text:
+        if not steps or truncated_or_corrupt:
             return ExecutionRecord(
                 invocation_id=inv_id,
                 task_id=task_id,
@@ -170,11 +185,56 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 exit_code=1,
                 status=ExecutionStatus.AGENT_COMPLETION_NOT_VERIFIED,
                 evidence_manifest=[],
-                output_text=output_text,
-                error="Subagent transcript did not reach terminal DONE state or produced no model response.",
+                output_text="",
+                error=f"Transcript for session '{session_id}' is empty or contains truncated/corrupted lines.",
             )
 
-        # 3. Build evidence manifest if deliverables provided
+        # Strictly check that the final terminal step status is DONE or COMPLETED (reject earlier DONE followed by RUNNING/FAILED)
+        final_step = steps[-1]
+        final_status = final_step.get("status", "")
+        if final_status not in ("DONE", "COMPLETED"):
+            return ExecutionRecord(
+                invocation_id=inv_id,
+                task_id=task_id,
+                agent_id=role,
+                provider="ANTIGRAVITY_SUBAGENT",
+                session_id=session_id,
+                start_time=created_at,
+                end_time=now_iso,
+                working_branch="",
+                commit_sha=target_commit_sha,
+                exit_code=1,
+                status=ExecutionStatus.AGENT_COMPLETION_NOT_VERIFIED,
+                evidence_manifest=[],
+                output_text="",
+                error=f"Subagent final terminal step status is '{final_status}', expected 'DONE' or 'COMPLETED'.",
+            )
+
+        # Inspect steps for terminal model completion
+        for step in reversed(steps):
+            if step.get("source") == "MODEL" and step.get("content"):
+                output_text = step["content"]
+                break
+
+        if not output_text:
+            return ExecutionRecord(
+                invocation_id=inv_id,
+                task_id=task_id,
+                agent_id=role,
+                provider="ANTIGRAVITY_SUBAGENT",
+                session_id=session_id,
+                start_time=created_at,
+                end_time=now_iso,
+                working_branch="",
+                commit_sha=target_commit_sha,
+                exit_code=1,
+                status=ExecutionStatus.AGENT_COMPLETION_NOT_VERIFIED,
+                evidence_manifest=[],
+                output_text="",
+                error="Subagent completed with DONE status but produced no model response content.",
+            )
+
+        # Build evidence manifest if deliverables provided
         evidence_manifest: List[EvidenceItem] = []
         if expected_deliverables:
             for p_str in expected_deliverables:

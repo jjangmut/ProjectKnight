@@ -12,6 +12,7 @@ from __future__ import annotations
 import unittest
 import tempfile
 import shutil
+import subprocess
 from pathlib import Path
 
 from STUDIO_V3.orchestrator.schemas import (
@@ -52,9 +53,19 @@ class TestR3BlockersBaseline(unittest.TestCase):
         # Production dispatcher defaults to allow_mock=False
         self.dispatcher = TaskDispatcher(self.store, self.event_log, self.repo_root, allow_mock=False)
 
+        # Initialize a real Git repository in temp_dir for git blob tests
+        subprocess.run(["git", "init", "-b", "studio/v3-002-closure-patch"], cwd=str(self.repo_root), capture_output=True, check=True)
+        subprocess.run(["git", "config", "user.name", "Test Runner"], cwd=str(self.repo_root), capture_output=True, check=True)
+        subprocess.run(["git", "config", "user.email", "test@projectknight.local"], cwd=str(self.repo_root), capture_output=True, check=True)
+        subprocess.run(["git", "config", "core.autocrlf", "false"], cwd=str(self.repo_root), capture_output=True, check=True)
+
         # Create dummy evidence file
         self.ev_file = self.studio_dir / "evidence.txt"
         self.ev_file.write_text("sample deliverable content", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=str(self.repo_root), capture_output=True, check=True)
+        subprocess.run(["git", "commit", "-m", "initial test commit"], cwd=str(self.repo_root), capture_output=True, check=True)
+        res_sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(self.repo_root), capture_output=True, text=True, check=True)
+        self.commit_sha = res_sha.stdout.strip()
 
         self.task = Task(
             id="TEST-R3-001",
@@ -63,7 +74,8 @@ class TestR3BlockersBaseline(unittest.TestCase):
             owner="PK_ClientLead",
             reviewers=["PK_QALead", "PK_GameDirector"],
             priority=1,
-            current_commit_sha="dummy-commit-sha-r3-123456789012",
+            active_branch="studio/v3-002-closure-patch",
+            current_commit_sha=self.commit_sha,
         )
         self.store.save_task(self.task)
 

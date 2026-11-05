@@ -122,7 +122,8 @@ class TestR2BlockersBaseline(unittest.TestCase):
             '{"task_id": "TEST-R2-001", "iteration": 1, "role": "PK_QALead", '
             f'"reviewed_commit_sha": "{task.current_commit_sha}", "verdict": "FIX_REQUIRED", '
             '"issues": [{"id": "ISS-01", "severity": "P1", "title": "Defect", '
-            '"reproduction_steps": "step", "expected": "ok", "actual": "bad", "evidence": []}]}'
+            '"reproduction_steps": "step", "expected": "ok", "actual": "bad", "evidence": []}], '
+            '"evidence_manifest": []}'
         )
 
         # Adapter returns SUCCEEDED exit status, but output text specifies FIX_REQUIRED

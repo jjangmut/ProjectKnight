@@ -73,72 +73,119 @@ def calculate_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def verify_commit_on_branch(commit_sha: str, branch: str, repo_root: Path) -> None:
-    """Verify that commit_sha exists and is reachable from branch or HEAD."""
-    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
-        return
-    git_dir = repo_root / ".git"
-    if not git_dir.exists():
-        return
-    verify_commit_exists(commit_sha, repo_root)
+def is_valid_hex_sha40(sha: str) -> bool:
+    """Check if a string is a canonical 40-character hexadecimal SHA."""
+    if not isinstance(sha, str) or len(sha) != 40:
+        return False
+    return all(c in "0123456789abcdefABCDEF" for c in sha)
 
-    target_ref = branch if branch and branch not in ("HEAD", "") else "HEAD"
+
+def verify_commit_exists(commit_sha: str, repo_root: Path, skip_git_check: bool = False) -> None:
+    """Verify that a canonical 40-hex Git commit SHA exists in the local repository."""
+    if skip_git_check:
+        return
+    if not is_valid_hex_sha40(commit_sha):
+        raise PolicyViolation(
+            f"Invalid commit SHA: '{commit_sha}'. Production gates require a canonical 40-character hexadecimal SHA."
+        )
     try:
-        # Check if commit_sha is ancestor of target_ref or equal to target_ref
+        res_wt = subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if res_wt.returncode != 0 or res_wt.stdout.strip() != "true":
+            raise PolicyViolation(f"Path '{repo_root}' is not inside a valid Git repository or worktree.")
+
+        res = subprocess.run(
+            ["git", "cat-file", "-e", f"{commit_sha}^{{commit}}"],
+            cwd=str(repo_root),
+            capture_output=True,
+            timeout=5,
+        )
+        if res.returncode != 0:
+            raise PolicyViolation(f"Commit '{commit_sha}' does not exist in repository git object database.")
+    except (FileNotFoundError, subprocess.SubprocessError) as e:
+        if isinstance(e, PolicyViolation):
+            raise
+        raise PolicyViolation(f"Git execution failed while verifying commit object '{commit_sha}': {e}")
+
+
+def verify_commit_on_branch(commit_sha: str, branch: str, repo_root: Path, skip_git_check: bool = False) -> None:
+    """Verify that commit_sha exists and is reachable from authorized branch ref."""
+    if skip_git_check:
+        return
+    verify_commit_exists(commit_sha, repo_root, skip_git_check=skip_git_check)
+
+    if not branch or branch in ("HEAD", ""):
+        raise PolicyViolation("Authorized branch ref is required; cannot be empty or 'HEAD'.")
+
+    try:
+        # Check if authorized branch exists in refs
+        target_ref = None
+        candidates = [
+            branch,
+            f"refs/heads/{branch}",
+            f"refs/remotes/origin/{branch}",
+            f"origin/{branch}",
+        ]
+        for cand in candidates:
+            res_chk = subprocess.run(
+                ["git", "rev-parse", "--verify", cand],
+                cwd=str(repo_root),
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if res_chk.returncode == 0:
+                target_ref = cand
+                break
+
+        if not target_ref:
+            raise PolicyViolation(
+                f"Authorized branch '{branch}' does not exist in repository refs."
+            )
+
+        # Check if commit_sha is ancestor of target_ref (or equal to target_ref)
         res = subprocess.run(
             ["git", "merge-base", "--is-ancestor", commit_sha, target_ref],
             cwd=str(repo_root),
             capture_output=True,
             timeout=5,
         )
-        if res.returncode != 0:
-            # Check if rev-parse target_ref is equal to commit_sha
-            res_rev = subprocess.run(
-                ["git", "rev-parse", target_ref],
-                cwd=str(repo_root),
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-            if res_rev.returncode == 0 and res_rev.stdout.strip().lower() == commit_sha.lower():
-                return
-
-            # Check git branch -a --contains commit_sha
-            res_branch = subprocess.run(
-                ["git", "branch", "-a", "--contains", commit_sha],
-                cwd=str(repo_root),
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-            clean_target = target_ref.replace("refs/heads/", "").split("/")[-1]
-            if res_branch.returncode == 0 and (clean_target in res_branch.stdout or "* " in res_branch.stdout):
-                return
-
+        if res.returncode == 0:
+            return
+        elif res.returncode == 1:
             raise PolicyViolation(
                 f"Commit '{commit_sha}' is not reachable from authorized branch '{branch}' (target_ref: '{target_ref}')."
             )
-    except Exception as e:
+        else:
+            err = res.stderr.decode("utf-8", errors="replace").strip()
+            raise PolicyViolation(
+                f"Git merge-base failed with exit code {res.returncode}: {err}"
+            )
+    except (FileNotFoundError, subprocess.SubprocessError) as e:
         if isinstance(e, PolicyViolation):
             raise
-        pass
+        raise PolicyViolation(f"Git execution failed while checking branch reachability: {e}")
 
 
 def verify_committed_source_evidence(
     manifest: List[EvidenceItem],
     commit_sha: str,
     repo_root: Path,
+    skip_git_check: bool = False,
 ) -> None:
     """
     Verify that all source code deliverables exist in git commit commit_sha and match disk bytes exactly.
     Uncommitted changes on disk or paths not found in commit_sha are strictly rejected.
     Post-commit generated runtime logs (under STUDIO_V3/evidence/) are verified for hash integrity.
     """
-    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
+    if skip_git_check:
         return
-    git_dir = repo_root / ".git"
-    if not git_dir.exists():
-        return
+    verify_commit_exists(commit_sha, repo_root, skip_git_check=skip_git_check)
 
     for item in manifest:
         p = Path(item.file_path)
@@ -174,43 +221,48 @@ def verify_committed_source_evidence(
             or "cycle_" in norm_path
         )
 
-        # Check git commit object database for this path
-        res_cat = subprocess.run(
-            ["git", "cat-file", "-e", f"{commit_sha}:{norm_path}"],
-            cwd=str(repo_root),
-            capture_output=True,
-            timeout=5,
-        )
-        if res_cat.returncode != 0:
-            if is_runtime_artifact:
-                # Post-commit runtime logs are valid separate generated evidence
-                continue
-            else:
-                raise PolicyViolation(
-                    f"Source deliverable '{norm_path}' does not exist in git commit '{commit_sha}'. "
-                    "Uncommitted source files cannot be accepted as committed deliverables."
+        try:
+            # Check git commit object database for this path
+            res_cat = subprocess.run(
+                ["git", "cat-file", "-e", f"{commit_sha}:{norm_path}"],
+                cwd=str(repo_root),
+                capture_output=True,
+                timeout=5,
+            )
+            if res_cat.returncode != 0:
+                if is_runtime_artifact:
+                    # Post-commit runtime logs are valid separate generated evidence
+                    continue
+                else:
+                    raise PolicyViolation(
+                        f"Source deliverable '{norm_path}' does not exist in git commit '{commit_sha}'. "
+                        "Uncommitted source files cannot be accepted as committed deliverables."
+                    )
+
+            # Retrieve git blob content
+            res_show = subprocess.run(
+                ["git", "show", f"{commit_sha}:{norm_path}"],
+                cwd=str(repo_root),
+                capture_output=True,
+                timeout=10,
+            )
+            if res_show.returncode != 0:
+                raise PolicyViolation(f"Failed to read git blob for '{norm_path}' at commit '{commit_sha}'.")
+
+            committed_sha = hashlib.sha256(res_show.stdout).hexdigest()
+            if disk_sha != committed_sha:
+                raise EvidenceTamperedError(
+                    f"Evidence file '{norm_path}' has uncommitted changes on disk! "
+                    f"Disk SHA256: {disk_sha}, Git commit {commit_sha} blob SHA256: {committed_sha}."
                 )
-
-        # Retrieve git blob content
-        res_show = subprocess.run(
-            ["git", "show", f"{commit_sha}:{norm_path}"],
-            cwd=str(repo_root),
-            capture_output=True,
-            timeout=10,
-        )
-        if res_show.returncode != 0:
-            raise PolicyViolation(f"Failed to read git blob for '{norm_path}' at commit '{commit_sha}'.")
-
-        committed_sha = hashlib.sha256(res_show.stdout).hexdigest()
-        if disk_sha != committed_sha:
-            raise EvidenceTamperedError(
-                f"Evidence file '{norm_path}' has uncommitted changes on disk! "
-                f"Disk SHA256: {disk_sha}, Git commit {commit_sha} blob SHA256: {committed_sha}."
-            )
-        if item.sha256 != committed_sha:
-            raise EvidenceTamperedError(
-                f"Evidence manifest recorded SHA256 for '{norm_path}' does not match git commit {commit_sha} blob SHA256."
-            )
+            if item.sha256 != committed_sha:
+                raise EvidenceTamperedError(
+                    f"Evidence manifest recorded SHA256 for '{norm_path}' does not match git commit {commit_sha} blob SHA256."
+                )
+        except (FileNotFoundError, subprocess.SubprocessError) as e:
+            if isinstance(e, PolicyViolation):
+                raise
+            raise PolicyViolation(f"Git execution failed while checking evidence '{norm_path}': {e}")
 
 
 def build_evidence_manifest(
@@ -270,6 +322,7 @@ def verify_evidence_manifest(
     expected_iteration: int,
     expected_commit_sha: str,
     repo_root: Path,
+    skip_git_check: bool = False,
 ) -> List[str]:
     """Verify that all evidence items exist, have not been altered, and match commit/iteration."""
     if not manifest:
@@ -312,7 +365,7 @@ def verify_evidence_manifest(
         verified_paths.append(item.file_path)
 
     # In addition, verify committed source evidence against the git commit blob
-    verify_committed_source_evidence(manifest, expected_commit_sha, repo_root)
+    verify_committed_source_evidence(manifest, expected_commit_sha, repo_root, skip_git_check=skip_git_check)
 
     return verified_paths
 
@@ -459,25 +512,6 @@ def can_approve(
         return False, f"Cannot approve: open blocking issues exist: {issue_ids}"
 
     return True, "All independent reviewers passed with distinct verified sessions and no open blocking issues."
-
-
-def verify_commit_exists(commit_sha: str, repo_root: Path) -> None:
-    """Verify that a Git commit SHA exists in the local repository."""
-    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
-        return
-    try:
-        res = subprocess.run(
-            ["git", "cat-file", "-e", f"{commit_sha}^{{commit}}"],
-            cwd=str(repo_root),
-            capture_output=True,
-            timeout=5,
-        )
-        if res.returncode != 0:
-            raise PolicyViolation(f"Commit '{commit_sha}' does not exist in repository git object database.")
-    except Exception as e:
-        if isinstance(e, PolicyViolation):
-            raise
-        raise PolicyViolation(f"Failed to verify commit object '{commit_sha}': {e}")
 
 
 def validate_branch_safety(branch_name: str) -> None:

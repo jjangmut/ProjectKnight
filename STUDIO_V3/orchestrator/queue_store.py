@@ -367,6 +367,13 @@ class QueueStore:
             return {"status": "SNAPSHOT_NOT_FOUND", "imported": [], "updated": []}
 
         data = json.loads(json_path.read_text(encoding="utf-8"))
+        if "branch" in data:
+            self.set_meta("branch", str(data["branch"]))
+        if "agent_dispatch" in data:
+            self.set_meta("agent_dispatch", str(data["agent_dispatch"]))
+        if "version" in data:
+            self.set_meta("version", str(data["version"]))
+
         snapshot_tasks = data.get("tasks", [])
         imported = []
         updated = []
