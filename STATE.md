@@ -1,30 +1,32 @@
-# ProjectKnight Studio V3 — Work Status
+# ProjectKnight Studio V3 — Production Status
 
 Updated: 2026-11-05
-Working branch: `studio/v3-002-agent-orchestrator-r3`
+Working branch: `studio/v3-002-r3-final-hardening`
+Patch base: `studio/v3-002-agent-orchestrator-r3@e298c4d8ed0c7d4ff77bc86b6e096a9e3fd1ab6d`
 
-## Verified evidence and limitations
-- Game source and assets: strictly preserved (`CLIENT/Game/` untouched); historical v2 production approvals remain retired.
-- **Native Producer IDE Autonomous Chaining:** VERIFIED. `PK_Producer` autonomously chained Cycle 1 Worker implementation -> Cycle 1 QA rejection -> Issue registration -> Cycle 2 Worker remediation -> Cycle 2 QA retest -> Cycle 3 Director milestone sign-off under a single user command.
-- **Provider-authenticated, role-bound independent two-key approval:** VERIFIED via `agentapi.bat get-conversation-metadata` and immutable SQLite `invocations` registry. Forged CLI submissions, cross-task session reuse, and duplicate invocation IDs are strictly rejected.
-- **Reviewer verdict based on semantic QA results rather than process success:** VERIFIED via `parse_reviewer_verdict()`. Structured JSON verdicts enforced; process success with `FIX_REQUIRED` rejects; missing/malformed verdict fails closed.
-- **Mock provider approval gate protection:** VERIFIED. Production approval gate enforces `allow_mock=False` by default; `MOCK_SIMULATED`, `SIMULATED_MOCK`, and `MOCK` providers cannot satisfy live milestone approval.
-- **Atomic task lease clearance upon approval:** VERIFIED. `FIXTURE-V3-LIVE-003` transitioned to `APPROVED` with `lease_owner=None` and `lease_expires_at=None` in both SQLite and `queue.json`.
-- **Automated test suite:** 29/29 PASS (Python unit tests including 5 new R3 security/blocker negative tests).
-- **Godot 4.7.2 Headless engine tests:** 74/74 checks PASS (all 10 test groups in `test_fixture_stamina_r3.gd` satisfied).
-- Actual rendered in-game visual QA and Android performance remain NOT VERIFIED (PC headless engine environment only).
-- Movement plane X/Y vs X/Z: UNDECIDED; part of V3-001.
+## Verified progress
+- R3 has recorded one Antigravity IDE Producer session orchestrating five real native subagent calls and a fixture defect → QA reject → worker fix → QA retest → Director chain.
+- R3 Godot fixture test code and a 74/74 reported raw result log are committed.
+- R3 Python 29/29 is a report; prior R3 review did not find the claimed raw Python log in the remote tree.
+- IDE-native agent orchestration is **different from standalone Python/headless fully autonomous invocation**.
 
-## Current task queue
-- `V3-001`: READY — gameplay-plane and actual visual/play baseline audit; can run independently.
-- `V3-002`: FIX_REQUIRED — multi-agent infrastructure awaits independent acceptance of R3.
-- `V3-002-R2`: FIX_REQUIRED — superseded by R3 remediation.
-- `V3-002-R3`: **IN_REVIEW** — all 6 blockers resolved, 29/29 Python tests pass, 74/74 Godot tests pass, live 3-cycle autonomous rework loop complete on FIXTURE-V3-LIVE-003; submitted for independent review. Never self-approved.
-- `V3-003`: BLOCKED — may only start after V3-001 and V3-002 independently APPROVED.
+## Unresolved independent R3 review blockers
+1. Mandatory reviewer JSON fields can be omitted and silently substituted.
+2. Submitted work SHA is not verified against actual committed artifact bytes in the Git tree.
+3. Session/parent/task/run/SHA binding and final terminal detection are not mandatory.
+4. Remote raw Python test log not available for independent replay.
+5. Event log run_id correlation incomplete.
+6. Legacy queue statuses and Producer agent runbook link need correction.
+See `STUDIO_V3/reviews/V3-002-R3-INDEPENDENT-REVIEW.md`.
 
-## Review Submission
-- Authoritative task specification: `STUDIO_V3/tasks/V3-002-R3.md`.
-- Prior independent findings: `STUDIO_V3/reviews/V3-002-R2-INDEPENDENT-REVIEW.md`.
-- Final execution report: `STUDIO_V3/evidence/V3-002-R3/FINAL_EXECUTION_REPORT.md`.
-- Source manifest: `STUDIO_V3/evidence/V3-002-R3/source_manifest.json`.
-- Status: `INDEPENDENT_REVIEW_REQUESTED`.
+## Current tasks
+- **V3-002-R3-PATCH READY** — narrow final hardening task; no implementation executed yet.
+- V3-002-R3 FIX_REQUIRED — independent review findings must be resolved.
+- V3-002-R2 FIX_REQUIRED — retained historical review status.
+- V3-002 FIX_REQUIRED — parent infrastructure NOT APPROVED.
+- V3-001 READY — gameplay visual baseline and movement-plane decision.
+- V3-003 BLOCKED — only allowed after V3-001 and V3-002 independent approval.
+
+## Scope
+Current patch is limited to Studio V3 review/approval integrity and evidence replay. No CLIENT/Game scenes, character controller, art, main, integration or balance modifications.
+Fixture QA/Director approval is NOT the same as infrastructure milestone approval.
