@@ -67,16 +67,16 @@ File: `STUDIO_V3/orchestrator/adapters/subagent_bridge.py` and tests.
 
 ## P1-04 — actually register independent review of the infrastructure patch
 
-**Crucial distinction:** prior stamina fixture has two-key approval. `V3-002-R3-PATCH` in committed `queue.json` is still `IN_PROGRESS`, `iteration:0`, `reviews:{}`, and no committed source SHA. A pasted PASS statement does not update the trusted queue.
+**Crucial distinction:** prior stamina fixture has two-key approval. Historical `V3-002-R3-PATCH` in the base commit's `queue.json` was `IN_PROGRESS`, `iteration:0`, `reviews:{}`, with no submitted SHA. Its independent review is FIX_REQUIRED. The **current closure task `V3-002-CLOSE`** must be separately submitted/reviewed; pasted PASS statements do not update trusted queue.
 
 Required action:
 1. PK_ClientLead completes code changes and commits the **frozen infrastructure source SHA**, e.g. `SRC_SHA`. Test code and any required source/test changes must be included. Use exactly that SHA for validation.
 2. Produce final test logs against `SRC_SHA`; verify branch and source artifact SHA256, then create a **separate evidence-only commit** after tests if needed. Record `source_sha` and `evidence_commit_sha` separately to avoid an infinite self-referential hash cycle.
-3. Update actual local SQLite queue through safe workflow transitions (not direct JSON status edits), submit infrastructure task **`V3-002-R3-PATCH`** against `SRC_SHA` with immutable evidence. Correct any stuck `IN_PROGRESS/iteration:0` state through documented migration / audited repair; no hidden resets.
+3. Update actual local SQLite queue through safe workflow transitions (not direct JSON status edits), submit **`V3-002-CLOSE`** against `SRC_SHA` with immutable evidence. Reconcile the new closure task into the DB; preserve historical `V3-002-R3-PATCH` as FIX_REQUIRED from independent review. If a stuck task needs correction, use an audited repair; no hidden resets.
 4. Invoke **two new distinct native subagent sessions**, one `PK_QALead`, one `PK_GameDirector`, to review **`SRC_SHA`**, not the older stamina fixture SHA or evidence-only commit. Have them submit exact schema-compliant final JSON, terminal completion, session and parent IDs, own evidence paths and explicit verdicts.
 5. Ingest through trusted `SingleEntryRunner` / TaskDispatcher, validate QA and Director both review same `SRC_SHA`, persist invocation registry + `queue.json` + `events.jsonl` with one run ID and independent statuses. Only safe gate can approve.
 6. Confirm **task `APPROVED` => lease_owner/lease_expires_at NULL**. Do not bypass by directly editing the JSON snapshot. If any review rejects, keep FIX_REQUIRED with a precise issue and stop for bounded fix.
-7. Parent `V3-002` is a **separate milestone**. Even if `V3-002-R3-PATCH` is approved, propose final parent acceptance with its own reviewed SHA / evidence; do NOT automatically mark parent APPROVED or unblock V3-003.
+7. Parent `V3-002` is a **separate milestone**. Even if `V3-002-CLOSE` is approved, propose final parent acceptance with its own reviewed SHA / evidence; do NOT automatically mark parent APPROVED or unblock V3-003.
 
 Evidence requirement: real provider session IDs, parent ID, start/completion timestamps, terminal JSON, reviewer diff/test evidence, submitted source SHA, manifest hash, exact command outputs, SQLite snapshots and synchronized queue export. Old fixture sessions cannot be reused as proof of new infrastructure reviews.
 
