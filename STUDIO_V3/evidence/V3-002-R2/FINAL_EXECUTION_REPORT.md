@@ -168,7 +168,7 @@ All deliverable files and subagent transcripts are verified in `STUDIO_V3/eviden
 
 ```text
 Task: V3-002-R2
-Branch / HEAD: studio/v3-002-agent-orchestrator-r2 @ 2f3cc94af0c75e91f9374909dfeafe7a4ed008d2
+Branch / HEAD: studio/v3-002-agent-orchestrator-r2 @ 8cad8b682f47fbf1d464b37ee5b4aa1b3e5360c7 (Fixture commit: 2f3cc94af0c75e91f9374909dfeafe7a4ed008d2)
 Mock tests: 24/24 (recorded; not live proof)
 Real Producer one-entry loop: VERIFIED (SingleEntryRunner driving TaskDispatcher)
 Real Worker/QA/Worker/QA/Director: VERIFIED (5 subagents: 8bd5a2b9, 3461561e, 08110bfb, 53d225b8, 72bc5ed2)
