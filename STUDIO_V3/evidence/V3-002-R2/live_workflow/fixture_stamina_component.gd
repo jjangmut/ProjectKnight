@@ -1,5 +1,5 @@
 # D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-002-R2/live_workflow/fixture_stamina_component.gd
-# Live Workflow Fixture: StaminaComponent (Cycle 1 Initial Implementation)
+# Live Workflow Fixture: StaminaComponent (Cycle 2 Remediation)
 class_name FixtureStaminaComponent
 extends Node
 
@@ -23,12 +23,16 @@ func init(max_val: float) -> void:
 	stamina_changed.emit(current_stamina, max_stamina)
 
 ## Consume stamina for actions (dash, attack, guard).
-## INTENTIONAL DEFECT (Cycle 1): Does not clamp to 0 and does not check if amount > current_stamina,
-## allowing stamina to underflow into negative numbers and always returning true.
+## Remediated in Cycle 2 (ISS-LIVE-002):
+## Clamps stamina and rejects over-consumption / invalid requests.
 func consume_stamina(amount: float) -> bool:
-	current_stamina -= amount
+	if amount <= 0.0:
+		return false
+	if amount > current_stamina:
+		return false
+	current_stamina = maxf(0.0, current_stamina - amount)
 	stamina_changed.emit(current_stamina, max_stamina)
-	if current_stamina <= 0.0 and not is_depleted:
+	if is_zero_approx(current_stamina):
 		is_depleted = true
 		stamina_depleted.emit()
 	return true
@@ -37,8 +41,9 @@ func consume_stamina(amount: float) -> bool:
 func regenerate(delta: float) -> void:
 	if delta <= 0.0 or current_stamina >= max_stamina:
 		return
-	current_stamina = minf(current_stamina + regen_rate * delta, max_stamina)
+	var prev: float = current_stamina
+	current_stamina = minf(max_stamina, current_stamina + regen_rate * delta)
 	stamina_changed.emit(current_stamina, max_stamina)
-	if is_depleted and current_stamina > 0.0:
+	if prev <= 0.0 and current_stamina > 0.0:
 		is_depleted = false
 		stamina_recovered.emit()
