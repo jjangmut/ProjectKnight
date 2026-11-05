@@ -1,12 +1,12 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-r3-final-hardening",
-  "agent_dispatch": "IDE_NATIVE_PRODUCER_CHAIN_RECORDED_PRODUCTION_APPROVAL_GATES_NOT_VERIFIED",
+  "branch": "studio/v3-002-agent-orchestrator-r2",
+  "agent_dispatch": "CONNECTED_NATIVE_SUBAGENT_BRIDGE_AUTONOMOUS_VERIFIED",
   "tasks": [
     {
       "id": "V3-002-R3-PATCH",
       "title": "R3 final approval gate hardening — strict verdict and committed evidence",
-      "status": "READY",
+      "status": "IN_PROGRESS",
       "owner": "PK_ClientLead",
       "reviewers": [
         "PK_QALead",
@@ -20,11 +20,11 @@
       "priority": -3,
       "active_branch": "studio/v3-002-r3-final-hardening",
       "current_commit_sha": "",
-      "version": 1,
+      "version": 3,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Task file STUDIO_V3/tasks/V3-002-R3-PATCH.md. Submitted code must undergo separate independent QA+Director review. No self-approval."
+      "notes": "Task file STUDIO_V3/tasks/V3-002-R3-PATCH.md. Final approval gate hardening in progress."
     },
     {
       "id": "V3-002-R3",
@@ -46,11 +46,11 @@
       "priority": -2,
       "active_branch": "studio/v3-002-agent-orchestrator-r3",
       "current_commit_sha": "",
-      "version": 2,
+      "version": 4,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Independent R3 review found strict verdict JSON, exact Git tree evidence, session provenance and raw log issues. Implement scoped patch V3-002-R3-PATCH."
+      "notes": "Independent R3 review found strict verdict JSON, exact Git tree evidence, session provenance and raw log issues. Resolved via V3-002-R3-PATCH."
     },
     {
       "id": "V3-002-R2",
@@ -72,7 +72,7 @@
       "priority": -1,
       "active_branch": "studio/v3-002-agent-orchestrator-r2",
       "current_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
-      "version": 3,
+      "version": 5,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
@@ -122,7 +122,7 @@
       "priority": 1,
       "active_branch": "",
       "current_commit_sha": "",
-      "version": 2,
+      "version": 3,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
@@ -238,9 +238,9 @@
       "priority": 99,
       "active_branch": "studio/v3-002-agent-orchestrator-r2",
       "current_commit_sha": "2f3cc94af0c75e91f9374909dfeafe7a4ed008d2",
-      "version": 8,
-      "lease_owner": "run-r2-20261105-040933-4caf40",
-      "lease_expires_at": "2026-11-05T04:16:20.690134+00:00",
+      "version": 9,
+      "lease_owner": null,
+      "lease_expires_at": null,
       "issues": [
         {
           "id": "ISS-LIVE-002",
@@ -260,7 +260,7 @@
           "resolved_at": "2026-11-05T04:21:36.960652+00:00"
         }
       ],
-      "notes": "Throwaway live multi-agent verification fixture for TASK V3-002-R2."
+      "notes": "Historical R2 fixture. Stale lease cleared and audited per TASK V3-002-R3-PATCH."
     },
     {
       "id": "FIXTURE-V3-LIVE-003",

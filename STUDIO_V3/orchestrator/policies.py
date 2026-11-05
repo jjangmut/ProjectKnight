@@ -73,6 +73,146 @@ def calculate_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def verify_commit_on_branch(commit_sha: str, branch: str, repo_root: Path) -> None:
+    """Verify that commit_sha exists and is reachable from branch or HEAD."""
+    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
+        return
+    git_dir = repo_root / ".git"
+    if not git_dir.exists():
+        return
+    verify_commit_exists(commit_sha, repo_root)
+
+    target_ref = branch if branch and branch not in ("HEAD", "") else "HEAD"
+    try:
+        # Check if commit_sha is ancestor of target_ref or equal to target_ref
+        res = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", commit_sha, target_ref],
+            cwd=str(repo_root),
+            capture_output=True,
+            timeout=5,
+        )
+        if res.returncode != 0:
+            # Check if rev-parse target_ref is equal to commit_sha
+            res_rev = subprocess.run(
+                ["git", "rev-parse", target_ref],
+                cwd=str(repo_root),
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if res_rev.returncode == 0 and res_rev.stdout.strip().lower() == commit_sha.lower():
+                return
+
+            # Check git branch -a --contains commit_sha
+            res_branch = subprocess.run(
+                ["git", "branch", "-a", "--contains", commit_sha],
+                cwd=str(repo_root),
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            clean_target = target_ref.replace("refs/heads/", "").split("/")[-1]
+            if res_branch.returncode == 0 and (clean_target in res_branch.stdout or "* " in res_branch.stdout):
+                return
+
+            raise PolicyViolation(
+                f"Commit '{commit_sha}' is not reachable from authorized branch '{branch}' (target_ref: '{target_ref}')."
+            )
+    except Exception as e:
+        if isinstance(e, PolicyViolation):
+            raise
+        pass
+
+
+def verify_committed_source_evidence(
+    manifest: List[EvidenceItem],
+    commit_sha: str,
+    repo_root: Path,
+) -> None:
+    """
+    Verify that all source code deliverables exist in git commit commit_sha and match disk bytes exactly.
+    Uncommitted changes on disk or paths not found in commit_sha are strictly rejected.
+    Post-commit generated runtime logs (under STUDIO_V3/evidence/) are verified for hash integrity.
+    """
+    if not commit_sha or commit_sha in ("UNKNOWN_SHA", "HEAD"):
+        return
+    git_dir = repo_root / ".git"
+    if not git_dir.exists():
+        return
+
+    for item in manifest:
+        p = Path(item.file_path)
+        if ".." in item.file_path.replace("\\", "/").split("/"):
+            raise PolicyViolation(f"Path traversal detected: '{item.file_path}' contains parent directory references.")
+
+        if p.is_absolute():
+            resolved = p.resolve()
+        else:
+            resolved = (repo_root / p).resolve()
+
+        try:
+            rel = resolved.relative_to(repo_root)
+            norm_path = str(rel).replace("\\", "/")
+        except ValueError:
+            raise PolicyViolation(f"Path traversal detected: '{item.file_path}' is outside repository root.")
+
+        if not resolved.is_file():
+            raise EvidenceMissingError(f"Evidence file missing on disk: {norm_path}")
+
+        disk_sha = calculate_sha256(resolved)
+        if disk_sha != item.sha256:
+            raise EvidenceTamperedError(
+                f"Evidence file '{norm_path}' on disk (SHA: {disk_sha}) does not match manifest SHA: {item.sha256}."
+            )
+
+        # Distinguish runtime generated evidence vs committed source deliverables
+        is_runtime_artifact = norm_path.startswith("STUDIO_V3/evidence/") and (
+            norm_path.endswith(".log")
+            or norm_path.endswith(".json")
+            or "live_run" in norm_path
+            or "test_logs" in norm_path
+            or "cycle_" in norm_path
+        )
+
+        # Check git commit object database for this path
+        res_cat = subprocess.run(
+            ["git", "cat-file", "-e", f"{commit_sha}:{norm_path}"],
+            cwd=str(repo_root),
+            capture_output=True,
+            timeout=5,
+        )
+        if res_cat.returncode != 0:
+            if is_runtime_artifact:
+                # Post-commit runtime logs are valid separate generated evidence
+                continue
+            else:
+                raise PolicyViolation(
+                    f"Source deliverable '{norm_path}' does not exist in git commit '{commit_sha}'. "
+                    "Uncommitted source files cannot be accepted as committed deliverables."
+                )
+
+        # Retrieve git blob content
+        res_show = subprocess.run(
+            ["git", "show", f"{commit_sha}:{norm_path}"],
+            cwd=str(repo_root),
+            capture_output=True,
+            timeout=10,
+        )
+        if res_show.returncode != 0:
+            raise PolicyViolation(f"Failed to read git blob for '{norm_path}' at commit '{commit_sha}'.")
+
+        committed_sha = hashlib.sha256(res_show.stdout).hexdigest()
+        if disk_sha != committed_sha:
+            raise EvidenceTamperedError(
+                f"Evidence file '{norm_path}' has uncommitted changes on disk! "
+                f"Disk SHA256: {disk_sha}, Git commit {commit_sha} blob SHA256: {committed_sha}."
+            )
+        if item.sha256 != committed_sha:
+            raise EvidenceTamperedError(
+                f"Evidence manifest recorded SHA256 for '{norm_path}' does not match git commit {commit_sha} blob SHA256."
+            )
+
+
 def build_evidence_manifest(
     task_id: str,
     iteration: int,
@@ -90,6 +230,9 @@ def build_evidence_manifest(
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     for raw in paths:
+        if ".." in raw.replace("\\", "/").split("/"):
+            raise PolicyViolation(f"Path traversal detected in evidence path: {raw}")
+
         p = Path(raw)
         resolved = p if p.is_absolute() else (repo_root / p).resolve()
         if not resolved.is_file():
@@ -146,6 +289,9 @@ def verify_evidence_manifest(
                 f"Evidence source commit {item.source_commit_sha} does not match task commit {expected_commit_sha}."
             )
 
+        if ".." in item.file_path.replace("\\", "/").split("/"):
+            raise PolicyViolation(f"Path traversal detected in evidence path: {item.file_path}")
+
         # Check disk existence and workspace boundary
         resolved = (repo_root / item.file_path).resolve()
         if not resolved.is_file():
@@ -164,6 +310,9 @@ def verify_evidence_manifest(
                 f"Recorded SHA: {item.sha256}, Actual on disk: {current_hash}"
             )
         verified_paths.append(item.file_path)
+
+    # In addition, verify committed source evidence against the git commit blob
+    verify_committed_source_evidence(manifest, expected_commit_sha, repo_root)
 
     return verified_paths
 

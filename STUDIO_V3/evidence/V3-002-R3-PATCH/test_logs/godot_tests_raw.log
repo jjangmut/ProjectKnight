@@ -1,0 +1,138 @@
+================================================================================
+PROJECTKNIGHT STUDIO V3: GODOT HEADLESS ENGINE TEST LOG
+Task: TASK V3-002-R3-PATCH
+Start Time: 2026-11-05T07:19:14.703412+00:00
+End Time:   2026-11-05T07:19:15.181823+00:00
+================================================================================
+
+[ENVIRONMENT & PROVENANCE]
+Execution Command: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\JUNYPAPA_STUDIO\Projects\ProjectKnight -s res://STUDIO_V3/tests/fixtures/test_fixture_stamina_r3.gd
+Engine Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+Engine Version: 4.7.2.stable.official.ed1daf0bf
+Working Directory: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight
+Git Branch: studio/v3-002-r3-final-hardening
+Git Commit SHA: d453e93314015d2f3698049dd9cf49b7ef254637
+
+[TEST SUMMARY]
+Total Test Checks: 74
+Passed: 74
+Failed: 0
+Exit Code: 0
+Status: PASS
+
+================================================================================
+RAW STDOUT
+================================================================================
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+================================================================================
+PROJECTKNIGHT QA: INDEPENDENT HEADLESS RETEST SUITE FOR ISS-LIVE-003 (CYCLE 2)
+Engine: Godot 4.7.2 Headless
+Fixture: res://STUDIO_V3/tests/fixtures/fixture_stamina_component_r3.gd
+================================================================================
+
+--- TEST GROUP 1: Initialization & Initial Values ---
+  [PASS] Init: max_stamina initialized to 100.0 (actual: 100.00 == expected: 100.00)
+  [PASS] Init: current_stamina initialized to 100.0 (actual: 100.00 == expected: 100.00)
+  [PASS] Init: dash_cooldown_remaining initialized to 0.0 (actual: 0.00 == expected: 0.00)
+  [PASS] Init: is_exhausted initialized to false
+  [PASS] Init: can_dash() is true
+  [PASS] Init: stamina_changed(100.0, 100.0) emitted
+  [PASS] Init: exhaustion_state_changed(false) emitted
+
+--- TEST GROUP 2: Basic Consumption & Clamping ---
+  [PASS] Consume: consume_stamina(40.0) returns true
+  [PASS] Consume: current_stamina decremented to 60.0 (actual: 60.00 == expected: 60.00)
+  [PASS] Consume: character remains unexhausted at 60.0
+  [PASS] Consume: stamina_changed emitted with 60.0
+  [PASS] Consume: negative amount (-10.0) rejected
+  [PASS] Consume: zero amount (0.0) rejected
+  [PASS] Consume: stamina unaffected by invalid amounts (actual: 60.00 == expected: 60.00)
+
+--- TEST GROUP 3: Exhaustion Trigger on Reaching 0.0 Stamina ---
+  [PASS] Exhaustion: consume_stamina(60.0) drained stamina to zero
+  [PASS] Exhaustion: current_stamina is exactly 0.0 (actual: 0.00 == expected: 0.00)
+  [PASS] Exhaustion: is_exhausted transitioned to true
+  [PASS] Exhaustion: stamina_depleted signal fired
+  [PASS] Exhaustion: exhaustion_state_changed(true) fired
+  [PASS] Exhaustion: can_dash() returns false when exhausted
+
+--- TEST GROUP 4: Dash Rejection While Exhausted (ISS-LIVE-003 Core) ---
+  [PASS] ISS-LIVE-003: consume_dash() MUST return false while exhausted
+  [PASS] ISS-LIVE-003: current_stamina remains clamped at 0.0 (NO UNDERFLOW) (actual: 0.00 == expected: 0.00)
+  [PASS] ISS-LIVE-003: dash cooldown remaining remains 0.0 (actual: 0.00 == expected: 0.00)
+  [PASS] ISS-LIVE-003: NO dash_performed signal emitted
+  [PASS] ISS-LIVE-003: NO stamina_changed signal emitted
+
+--- TEST GROUP 5: Overconsumption Rejection ---
+  [PASS] Overconsumption: initialized to 20.0 (actual: 20.00 == expected: 20.00)
+  [PASS] Overconsumption: consume_stamina(25.0) rejected when current is 20.0
+  [PASS] Overconsumption: current_stamina unchanged at 20.0 (actual: 20.00 == expected: 20.00)
+  [PASS] Overconsumption: can_dash() returns false when stamina (20.0) < dash_cost (25.0)
+  [PASS] Overconsumption: consume_dash() rejected when stamina < dash_cost
+  [PASS] Overconsumption: stamina unchanged at 20.0 (NO underflow to -5.0) (actual: 20.00 == expected: 20.00)
+
+--- TEST GROUP 6: Dash Consumption Deduction Accuracy & Signals ---
+  [PASS] Dash Accuracy: consume_dash() returns true with full stamina
+  [PASS] Dash Accuracy: current_stamina accurately decremented by 25.0 to 75.0 (actual: 75.00 == expected: 75.00)
+  [PASS] Dash Accuracy: dash_cooldown_remaining set to 0.5 (actual: 0.50 == expected: 0.50)
+  [PASS] Dash Signals: dash_performed emitted with cost 25.0
+  [PASS] Dash Signals: stamina_changed emitted with (75.0, 100.0)
+  [PASS] Dash Accuracy: can_dash() is false while cooldown is active
+
+--- TEST GROUP 7: Dash Cooldown Enforcement and Recovery ---
+  [PASS] ISS-LIVE-003 Cooldown: consume_dash() rejected during active cooldown (0.5s)
+  [PASS] ISS-LIVE-003 Cooldown: stamina preserved at 75.0 on rejection (actual: 75.00 == expected: 75.00)
+  [PASS] Cooldown Update: remaining decremented to 0.3s (actual: 0.30 == expected: 0.30)
+  [PASS] Cooldown Update: can_dash() still false at 0.3s
+  [PASS] Cooldown Update: consume_dash() still rejected at 0.3s
+  [PASS] Cooldown Update: remaining expired and clamped to 0.0s (actual: 0.00 == expected: 0.00)
+  [PASS] Cooldown Update: can_dash() restored to true
+  [PASS] Cooldown Update: second dash succeeded after cooldown expiration
+  [PASS] Cooldown Update: stamina decremented to 50.0 (actual: 50.00 == expected: 50.00)
+  [PASS] Cooldown Update: cooldown re-engaged to 0.5s (actual: 0.50 == expected: 0.50)
+
+--- TEST GROUP 8: Exhaustion Recovery Threshold (Threshold >= 30.0) ---
+  [PASS] Threshold: fixture successfully placed into exhausted state
+  [PASS] Threshold: stamina is 0.0 (actual: 0.00 == expected: 0.00)
+  [PASS] Threshold: current_stamina is 15.0 after 1.0s (actual: 15.00 == expected: 15.00)
+  [PASS] Threshold: STILL exhausted at 15.0 stamina (below 30.0 threshold)
+  [PASS] Threshold: can_dash() is false while exhausted below threshold
+  [PASS] Threshold: consume_dash() rejected while exhausted below threshold
+  [PASS] Threshold: stamina_recovered NOT emitted at 15.0
+  [PASS] Threshold: current_stamina is 28.5 after +0.9s (actual: 28.50 == expected: 28.50)
+  [PASS] Threshold: STILL exhausted at 28.5 stamina (below 30.0 threshold)
+  [PASS] Threshold: stamina_recovered NOT emitted at 28.5
+  [PASS] Threshold: current_stamina reached 30.75 (>= 30.0 threshold) (actual: 30.75 == expected: 30.75)
+  [PASS] Threshold: is_exhausted CLEARED upon reaching recovery threshold
+  [PASS] Threshold: stamina_recovered emitted exactly once
+  [PASS] Threshold: exhaustion_state_changed(false) emitted
+  [PASS] Threshold: can_dash() restored upon exhaustion recovery
+
+--- TEST GROUP 9: Delta Regeneration Rates & Max Clamping ---
+  [PASS] Regen Bounds: negative delta ignored (actual: 30.75 == expected: 30.75)
+  [PASS] Regen Bounds: zero delta ignored (actual: 30.75 == expected: 30.75)
+  [PASS] Regen Rate: 1.0s delta adds exactly regen_rate (15.0) (actual: 45.75 == expected: 45.75)
+  [PASS] Regen Clamping: stamina clamped at max_stamina (100.0) (actual: 100.00 == expected: 100.00)
+
+--- TEST GROUP 10: Dash Directly Triggering Exhaustion ---
+  [PASS] Dash to Exhaustion: can_dash() is true with exactly 25.0 stamina
+  [PASS] Dash to Exhaustion: consume_dash() succeeded with 25.0 stamina
+  [PASS] Dash to Exhaustion: current_stamina is exactly 0.0 (actual: 0.00 == expected: 0.00)
+  [PASS] Dash to Exhaustion: is_exhausted transitioned to true
+  [PASS] Dash to Exhaustion: stamina_depleted emitted
+  [PASS] Dash to Exhaustion: exhaustion_state_changed(true) emitted
+  [PASS] Dash to Exhaustion: immediate follow-up dash rejected
+  [PASS] Dash to Exhaustion: stamina remains 0.0 without underflow (actual: 0.00 == expected: 0.00)
+
+================================================================================
+TEST EXECUTION COMPLETE
+Total Checks: 74 | Passed: 74 | Failed: 0
+================================================================================
+RESULT: QA PASS - All test cases satisfied. ISS-LIVE-003 fully resolved.
+
+
+================================================================================
+RAW STDERR
+================================================================================
+

@@ -1,0 +1,54 @@
+
+test_mock_two_iteration_rejection_and_approval_loop (test_dispatcher.TestDispatcherAutonomousLoop.test_mock_two_iteration_rejection_and_approval_loop)
+Verify the autonomous quality loop: ... ok
+test_empty_session_id_rejected (test_permissions.TestPermissionsAndPolicies.test_empty_session_id_rejected)
+Reviewer without an authenticated session ID is rejected. ... ok
+test_protected_branch_safety (test_permissions.TestPermissionsAndPolicies.test_protected_branch_safety)
+Direct commits or branches targeting main/master are forbidden. ... ok
+test_reused_worker_session_rejected (test_permissions.TestPermissionsAndPolicies.test_reused_worker_session_rejected)
+Reviewer cannot spoof or reuse the worker's session ID. ... ok
+test_self_approval_blocked (test_permissions.TestPermissionsAndPolicies.test_self_approval_blocked)
+Task owner cannot review or approve their own task. ... ok
+test_stale_commit_review_rejected (test_permissions.TestPermissionsAndPolicies.test_stale_commit_review_rejected)
+Review for a commit SHA that doesn't match current task commit is rejected. ... ok
+test_tampered_evidence_rejected (test_permissions.TestPermissionsAndPolicies.test_tampered_evidence_rejected)
+If an evidence file is modified on disk after submission, review is rejected. ... ok
+test_unauthorized_start_blocked (test_permissions.TestPermissionsAndPolicies.test_unauthorized_start_blocked)
+Worker cannot start a task owned by someone else. ... ok
+test_forged_cli_reviews_must_not_approve (test_r2_blockers_baseline.TestR2BlockersBaseline.test_forged_cli_reviews_must_not_approve)
+Negative Test 1: Arbitrary unverified session IDs from CLI must NOT approve. ... ok
+test_provider_succeeded_with_fix_required_verdict_must_reject (test_r2_blockers_baseline.TestR2BlockersBaseline.test_provider_succeeded_with_fix_required_verdict_must_reject)
+Negative Test 2: Process SUCCEEDED but reviewer payload FIX_REQUIRED must reject task. ... ok
+test_provider_succeeded_without_parseable_verdict_must_fail_closed (test_r2_blockers_baseline.TestR2BlockersBaseline.test_provider_succeeded_without_parseable_verdict_must_fail_closed)
+Negative Test 3: Process SUCCEEDED with non-JSON or missing verdict must fail-closed. ... ok
+test_worker_unverified_status_must_not_submit (test_r2_blockers_baseline.TestR2BlockersBaseline.test_worker_unverified_status_must_not_submit)
+Negative Test 4: Worker with AGENT_COMPLETION_NOT_VERIFIED or UNKNOWN must halt. ... ok
+test_adapter_timeout_handling (test_recovery.TestRecoveryAndResilience.test_adapter_timeout_handling)
+Mock adapter supports simulated timeout returning TIMED_OUT status. ... ok
+test_database_restart_preserves_state_and_issues (test_recovery.TestRecoveryAndResilience.test_database_restart_preserves_state_and_issues)
+Simulate runner crash and restart: state, iteration, version, and issues survive intact. ... ok
+test_json_snapshot_synchronization (test_recovery.TestRecoveryAndResilience.test_json_snapshot_synchronization)
+Changes to SQLite store export to queue.json snapshot accurately and atomically. ... ok
+test_optimistic_locking_prevents_concurrent_modification (test_recovery.TestRecoveryAndResilience.test_optimistic_locking_prevents_concurrent_modification)
+Stale in-memory task cannot overwrite concurrent DB updates (CAS). ... ok
+test_task_lease_prevents_concurrent_runs (test_recovery.TestRecoveryAndResilience.test_task_lease_prevents_concurrent_runs)
+A task actively leased by one actor cannot be started by another actor concurrently. ... ok
+test_both_reviewers_pass_approves (test_review_gate.TestReviewGate.test_both_reviewers_pass_approves)
+When both QA and GameDirector pass with distinct sessions, task transitions to APPROVED. ... ok
+test_duplicate_reviewer_sessions_rejected (test_review_gate.TestReviewGate.test_duplicate_reviewer_sessions_rejected)
+When QA and Director attempt to use the same session ID, approval is blocked. ... ok
+test_qa_rejection_creates_issue_and_sets_fix_required (test_review_gate.TestReviewGate.test_qa_rejection_creates_issue_and_sets_fix_required)
+When QA rejects with issues, task transitions to FIX_REQUIRED and issues are saved. ... ok
+test_single_reviewer_pass_insufficient (test_review_gate.TestReviewGate.test_single_reviewer_pass_insufficient)
+When 2 reviewers are designated, 1 PASS leaves status in IN_REVIEW. ... ok
+test_invalid_start_from_in_review (test_state_transitions.TestStateTransitions.test_invalid_start_from_in_review)
+Cannot start a task that is already IN_REVIEW. ... ok
+test_invalid_submit_from_ready (test_state_transitions.TestStateTransitions.test_invalid_submit_from_ready)
+Cannot submit a task that has not been started (is READY). ... ok
+test_task_selection_priority (test_state_transitions.TestStateTransitions.test_task_selection_priority)
+Dispatcher selects highest priority unblocked task. ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 2.000s
+
+OK

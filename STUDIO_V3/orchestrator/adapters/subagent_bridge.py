@@ -116,7 +116,11 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 f"Session '{session_id}' typeName mismatch: expected '{role}', provider reported '{verified_type_name}'."
             )
 
-        if expected_parent_conversation_id and parent_conversation_id != expected_parent_conversation_id:
+        if not expected_parent_conversation_id:
+            raise IdentityVerificationError(
+                f"Parent conversation ID is required to verify session '{session_id}'."
+            )
+        if parent_conversation_id != expected_parent_conversation_id:
             raise IdentityVerificationError(
                 f"Session '{session_id}' parentConversationId mismatch: expected '{expected_parent_conversation_id}', provider reported '{parent_conversation_id}'."
             )
@@ -130,6 +134,7 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
 
         output_text = ""
         is_done = False
+        steps = []
         with open(transcript_path, "r", encoding="utf-8", errors="replace") as f:
             for line in f:
                 line_str = line.strip()
@@ -137,12 +142,19 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                     continue
                 try:
                     step = json.loads(line_str)
-                    if step.get("source") == "MODEL" and step.get("content"):
-                        output_text = step["content"]
-                    if step.get("status") == "DONE":
-                        is_done = True
+                    steps.append(step)
                 except Exception:
                     pass
+
+        # Inspect steps for terminal model completion
+        for step in reversed(steps):
+            if step.get("source") == "MODEL" and step.get("content"):
+                output_text = step["content"]
+                break
+
+        # A valid subagent execution must have reached terminal DONE state
+        if steps and (steps[-1].get("status") in ("DONE", "COMPLETED") or any(s.get("status") == "DONE" for s in steps)):
+            is_done = True
 
         if not is_done or not output_text:
             return ExecutionRecord(
@@ -159,7 +171,7 @@ class AntigravitySubagentBridgeAdapter(AgentAdapter):
                 status=ExecutionStatus.AGENT_COMPLETION_NOT_VERIFIED,
                 evidence_manifest=[],
                 output_text=output_text,
-                error="Subagent transcript did not reach terminal DONE state.",
+                error="Subagent transcript did not reach terminal DONE state or produced no model response.",
             )
 
         # 3. Build evidence manifest if deliverables provided

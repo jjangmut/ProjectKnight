@@ -1,0 +1,23 @@
+﻿python : test_forged_cli_reviews_must_not_approve (STUDIO_V3.tests.test_r2_blockers_baseline.TestR2BlockersBaseline.tes
+t_forged_cli_reviews_must_not_approve)
+At line:1 char:57
++ ... jectKnight; python -m unittest STUDIO_V3/tests/test_r2_blockers_basel ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_forged_cli...st_not_approve):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Negative Test 1: Arbitrary unverified session IDs from CLI must NOT approve. ... ok
+test_provider_succeeded_with_fix_required_verdict_must_reject (STUDIO_V3.tests.test_r2_blockers_baseline.TestR2Blockers
+Baseline.test_provider_succeeded_with_fix_required_verdict_must_reject)
+Negative Test 2: Process SUCCEEDED but reviewer payload FIX_REQUIRED must reject task. ... ok
+test_provider_succeeded_without_parseable_verdict_must_fail_closed (STUDIO_V3.tests.test_r2_blockers_baseline.TestR2Blo
+ckersBaseline.test_provider_succeeded_without_parseable_verdict_must_fail_closed)
+Negative Test 3: Process SUCCEEDED with non-JSON or missing verdict must fail-closed. ... ok
+test_worker_unverified_status_must_not_submit (STUDIO_V3.tests.test_r2_blockers_baseline.TestR2BlockersBaseline.test_wo
+rker_unverified_status_must_not_submit)
+Negative Test 4: Worker with AGENT_COMPLETION_NOT_VERIFIED or UNKNOWN must halt. ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.458s
+
+OK

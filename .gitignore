@@ -3,6 +3,8 @@
 *.tmp
 *.bak
 *.log
+!STUDIO_V3/evidence/**/test_logs/*.log
+!STUDIO_V3/evidence/**/*.log
 .local/
 .cache/
 Thumbs.db
@@ -25,4 +27,5 @@ __pycache__/
 STUDIO_V3/*.db
 STUDIO_V3/*.db-wal
 STUDIO_V3/*.db-shm
+STUDIO_V3/*.backup.*
 STUDIO_V3/.active_run_id

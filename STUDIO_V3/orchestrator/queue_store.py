@@ -385,7 +385,10 @@ class QueueStore:
                 # Task exists: merge metadata non-destructively
                 db_task = existing_tasks[tid]
                 modified = False
-                # Update non-state fields if changed in snapshot
+                # Update metadata or status if updated in snapshot
+                if t_dict.get("status") and db_task.status.value != t_dict["status"]:
+                    db_task.status = TaskState(t_dict["status"])
+                    modified = True
                 if t_dict.get("title") and db_task.title != t_dict["title"]:
                     db_task.title = t_dict["title"]
                     modified = True

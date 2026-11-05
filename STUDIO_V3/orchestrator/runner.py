@@ -57,6 +57,7 @@ class SingleEntryRunner:
             self.run_id = f"run-r2-{datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}"
             active_run_file.write_text(self.run_id, encoding="utf-8")
 
+        self.dispatcher.current_run_id = self.run_id
         self.audit_log: List[Dict[str, Any]] = []
 
     def setup_fixture_task(self, task_id: str, title: str, owner: str, reviewers: List[str]) -> Task:
@@ -106,6 +107,10 @@ class SingleEntryRunner:
         if not task:
             raise ValueError(f"Task {task_id} not found.")
 
+        if not parent_conversation_id:
+            from .policies import IdentityVerificationError
+            raise IdentityVerificationError("Parent conversation ID is required for live subagent delivery.")
+
         # Ingest and verify subagent execution via AgentAPI
         rec = self.adapter.ingest_verified_subagent_execution(
             task_id=task.id,
@@ -113,32 +118,32 @@ class SingleEntryRunner:
             session_id=session_id,
             target_commit_sha=commit_sha,
             expected_deliverables=evidence_files,
-            expected_parent_conversation_id=parent_conversation_id or None,
+            expected_parent_conversation_id=parent_conversation_id,
         )
 
-        # Register in trusted invocation registry if not already registered
-        if not self.store.get_invocation(rec.invocation_id):
-            self.store.register_invocation(InvocationRecord(
-                invocation_id=rec.invocation_id,
-                run_id=self.run_id,
-                task_id=task.id,
-                iteration=task.iteration,
-                role=task.owner,
-                provider="ANTIGRAVITY_SUBAGENT",
-                session_id=rec.session_id,
-                worktree=str(self.repo_root),
-                branch=task.active_branch,
-                target_commit_sha=commit_sha,
-                started_at=rec.start_time,
-                completed_at=rec.end_time,
-                terminal_status=rec.status.value,
-                result_hash=rec.evidence_manifest[0].sha256 if rec.evidence_manifest else "",
-                output_text=rec.output_text,
-                error=rec.error,
-                parent_conversation_id=parent_conversation_id,
-            ))
+        # Register in trusted invocation registry (immutable provenance)
+        self.store.register_invocation(InvocationRecord(
+            invocation_id=rec.invocation_id,
+            run_id=self.run_id,
+            task_id=task.id,
+            iteration=task.iteration,
+            role=task.owner,
+            provider="ANTIGRAVITY_SUBAGENT",
+            session_id=rec.session_id,
+            worktree=str(self.repo_root),
+            branch=task.active_branch,
+            target_commit_sha=commit_sha,
+            started_at=rec.start_time,
+            completed_at=rec.end_time,
+            terminal_status=rec.status.value,
+            result_hash=rec.evidence_manifest[0].sha256 if rec.evidence_manifest else "",
+            output_text=rec.output_text,
+            error=rec.error,
+            parent_conversation_id=parent_conversation_id,
+        ))
 
-        # Submit work on verified commit SHA
+        # Submit work on verified commit SHA under active run_id
+        self.dispatcher.current_run_id = self.run_id
         self.dispatcher.submit_work(
             task_id=task.id,
             actor=task.owner,
@@ -172,6 +177,10 @@ class SingleEntryRunner:
         if not task:
             raise ValueError(f"Task {task_id} not found.")
 
+        if not parent_conversation_id:
+            from .policies import IdentityVerificationError
+            raise IdentityVerificationError("Parent conversation ID is required for live subagent review.")
+
         # Ingest and verify subagent execution via AgentAPI
         rec = self.adapter.ingest_verified_subagent_execution(
             task_id=task.id,
@@ -179,35 +188,35 @@ class SingleEntryRunner:
             session_id=session_id,
             target_commit_sha=commit_sha,
             expected_deliverables=evidence_files,
-            expected_parent_conversation_id=parent_conversation_id or None,
+            expected_parent_conversation_id=parent_conversation_id,
         )
 
-        # Register in trusted invocation registry if not already registered
-        if not self.store.get_invocation(rec.invocation_id):
-            self.store.register_invocation(InvocationRecord(
-                invocation_id=rec.invocation_id,
-                run_id=self.run_id,
-                task_id=task.id,
-                iteration=task.iteration,
-                role=reviewer_role,
-                provider="ANTIGRAVITY_SUBAGENT",
-                session_id=rec.session_id,
-                worktree=str(self.repo_root),
-                branch=task.active_branch,
-                target_commit_sha=commit_sha,
-                started_at=rec.start_time,
-                completed_at=rec.end_time,
-                terminal_status=rec.status.value,
-                result_hash="",
-                output_text=rec.output_text,
-                error=rec.error,
-                parent_conversation_id=parent_conversation_id,
-            ))
+        # Register in trusted invocation registry (immutable provenance)
+        self.store.register_invocation(InvocationRecord(
+            invocation_id=rec.invocation_id,
+            run_id=self.run_id,
+            task_id=task.id,
+            iteration=task.iteration,
+            role=reviewer_role,
+            provider="ANTIGRAVITY_SUBAGENT",
+            session_id=rec.session_id,
+            worktree=str(self.repo_root),
+            branch=task.active_branch,
+            target_commit_sha=commit_sha,
+            started_at=rec.start_time,
+            completed_at=rec.end_time,
+            terminal_status=rec.status.value,
+            result_hash="",
+            output_text=rec.output_text,
+            error=rec.error,
+            parent_conversation_id=parent_conversation_id,
+        ))
 
         # Parse structured review JSON
         verdict = self.dispatcher.parse_reviewer_verdict(rec, task)
 
-        # Apply review transition
+        # Apply review transition under active run_id
+        self.dispatcher.current_run_id = self.run_id
         self.dispatcher.review_task(
             task_id=task.id,
             verdict=verdict,

@@ -1,0 +1,104 @@
+{
+  "task_id": "V3-002-R3-PATCH",
+  "generated_at": "2026-11-05T07:21:31.919051+00:00",
+  "files": [
+    {
+      "file_path": "STUDIO_V3/orchestrator/dispatcher.py",
+      "sha256": "47110d698960e9e1232acf209a0ce4d35349c80a7478f1437a2a9c13e7d7693e",
+      "size_bytes": 30653,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/orchestrator/policies.py",
+      "sha256": "ab48b45cebed0e494c5450df7f5cac78bc05fb385d04ac68597f03eb69fb5cf5",
+      "size_bytes": 19576,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/orchestrator/queue_store.py",
+      "sha256": "52519b16326e197e8dc83713af59afcfcfb2dfc7fbcdff9ce8cf749fb742a4f7",
+      "size_bytes": 32066,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/orchestrator/runner.py",
+      "sha256": "a1cc7da2b6e7e80eaba0ae71bf63dbec63971aceda4a60a1ab1bf17a2adc4c1c",
+      "size_bytes": 9096,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/orchestrator/adapters/subagent_bridge.py",
+      "sha256": "f45a0ae099198d12a297aa820b0320d215e85523ae1a7da85f3a9318c8bb2adb",
+      "size_bytes": 10938,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/tests/test_r3_patch_approval_gate.py",
+      "sha256": "6131545644ad7b4a0946c9d4973f8921da5934cfaf20de548782aaf495d3b04f",
+      "size_bytes": 17567,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/evidence/V3-002-R3-PATCH/test_logs/python_tests_raw.log",
+      "sha256": "220a2bb591d1ad3494868f4985a5161093617a646fd4643994c1408dc5afee32",
+      "size_bytes": 10931,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/evidence/V3-002-R3-PATCH/test_logs/godot_tests_raw.log",
+      "sha256": "4b5718e174edaa84ef5f115f5e6d7b89e01e37a4ea269544289c24b3387c0de1",
+      "size_bytes": 8292,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/evidence/V3-002-R3-PATCH/live_native_run/audit_record.md",
+      "sha256": "c4f35b5f2614bc07ccaeb48992ef797852b7ea7b75a6164c609266121baf9e9b",
+      "size_bytes": 4861,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/evidence/V3-002-R3-PATCH/FINAL_EXECUTION_REPORT.md",
+      "sha256": "da0ffa1f83cfaa71128f13bbcb8b0097a9c6ef0a21ffd6e1414919a0e0fae58d",
+      "size_bytes": 4878,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/queue.json",
+      "sha256": "ffc0e7e09f67de5f13689716bcc0b8961d2006bdd2e8ab0f084a54afe17e842e",
+      "size_bytes": 15019,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STUDIO_V3/events.jsonl",
+      "sha256": "89640f82ed5187b9bab1129051c9acae6ae731d0132c96309edc305b2f1ea871",
+      "size_bytes": 13806,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": "STATE.md",
+      "sha256": "5e4c12e0ae7f4ba404ef62505a012a2b550c8c2fb0637c4934732e18c2cbd776",
+      "size_bytes": 2568,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    },
+    {
+      "file_path": ".agents/agents/PK_Producer.md",
+      "sha256": "5e618734ab867b6044516b38dd8fe39b07d94aa0c634c443c1aaf5b46195c375",
+      "size_bytes": 2569,
+      "created_at": "2026-11-05T07:21:31.919051+00:00",
+      "verification_method": "SHA256_HASH_VERIFIED"
+    }
+  ]
+}

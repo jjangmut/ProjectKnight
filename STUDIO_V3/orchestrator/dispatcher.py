@@ -26,6 +26,8 @@ from .policies import (
     validate_branch_safety,
     calculate_sha256,
     verify_commit_exists,
+    verify_commit_on_branch,
+    verify_committed_source_evidence,
     PolicyViolation,
     EvidenceMissingError,
     EvidenceTamperedError,
@@ -55,6 +57,7 @@ class TaskDispatcher:
         self.event_log = event_log
         self.repo_root = repo_root.resolve()
         self.allow_mock = allow_mock
+        self.current_run_id: str = ""
 
     def get_current_commit_sha(self) -> str:
         try:
@@ -104,7 +107,12 @@ class TaskDispatcher:
         validate_start(task, actor, all_tasks)
 
         # 3. Claim task lease with unique token to prevent duplicate runs
-        lease_token = claim_token or f"lease-{actor}-{task.id}"
+        if claim_token:
+            self.current_run_id = claim_token
+        lease_token = claim_token or self.current_run_id or f"lease-{actor}-{task.id}"
+        if not self.current_run_id:
+            self.current_run_id = lease_token
+
         self.queue_store.claim_task_lease(task_id, actor=actor, claim_token=lease_token)
 
         # Refresh task from store so in-memory object has the active lease
@@ -123,6 +131,7 @@ class TaskDispatcher:
             event_type="TASK_STARTED",
             task_id=task.id,
             actor=actor,
+            parent_run_id=self.current_run_id,
             commit_sha=sha,
             details={"iteration": task.iteration, "status": task.status.value, "version": task.version, "claim_token": lease_token},
         )
@@ -150,9 +159,13 @@ class TaskDispatcher:
         current_sha = self.get_current_commit_sha()
         if target_commit_sha and target_commit_sha != current_sha:
             verify_commit_exists(target_commit_sha, self.repo_root)
+            if task.active_branch:
+                verify_commit_on_branch(target_commit_sha, task.active_branch, self.repo_root)
             current_sha = target_commit_sha
         else:
             verify_commit_exists(current_sha, self.repo_root)
+            if task.active_branch:
+                verify_commit_on_branch(current_sha, task.active_branch, self.repo_root)
         task.current_commit_sha = current_sha
 
         # Build cryptographic manifest with SHA256 of every file
@@ -166,6 +179,9 @@ class TaskDispatcher:
             repo_root=self.repo_root,
         )
 
+        # Verify that committed source evidence exists in current_sha without uncommitted changes
+        verify_committed_source_evidence(manifest, current_sha, self.repo_root)
+
         task.evidence_manifest = manifest
         task.evidence = [m.file_path for m in manifest]
         task.status = TaskState.IN_REVIEW
@@ -175,6 +191,7 @@ class TaskDispatcher:
             event_type="WORK_SUBMITTED",
             task_id=task.id,
             actor=actor,
+            parent_run_id=self.current_run_id,
             commit_sha=current_sha,
             evidence_paths=task.evidence,
             details={
@@ -250,6 +267,7 @@ class TaskDispatcher:
                 task_id=task.id,
                 actor=verdict.agent_role,
                 provider=verdict.provider,
+                parent_run_id=self.current_run_id,
                 commit_sha=sha,
                 verdict=verdict.result,
                 evidence_paths=[m.file_path for m in task.evidence_manifest],
@@ -275,6 +293,7 @@ class TaskDispatcher:
                     task_id=task.id,
                     actor=verdict.agent_role,
                     provider=verdict.provider,
+                    parent_run_id=self.current_run_id,
                     commit_sha=sha,
                     verdict="APPROVED",
                     evidence_paths=[m.file_path for m in task.evidence_manifest],
@@ -287,6 +306,7 @@ class TaskDispatcher:
                     task_id=task.id,
                     actor=verdict.agent_role,
                     provider=verdict.provider,
+                    parent_run_id=self.current_run_id,
                     commit_sha=sha,
                     verdict="PASS",
                     evidence_paths=[m.file_path for m in task.evidence_manifest],
@@ -309,68 +329,176 @@ class TaskDispatcher:
             )
 
         text = rev_record.output_text.strip()
-        payload = None
+        if not text:
+            raise PolicyViolation(f"Reviewer '{rev_record.agent_id}' output is empty. Structured JSON required.")
 
-        # Try to locate JSON inside text (e.g. ```json ... ``` or raw {...})
-        if "{" in text and "}" in text:
-            start_idx = text.find("{")
-            end_idx = text.rfind("}")
-            json_str = text[start_idx : end_idx + 1]
-            try:
-                import json
-                payload = json.loads(json_str)
-            except Exception:
-                pass
+        import json
+        import re
 
-        if not payload or not isinstance(payload, dict):
+        # Extract structured JSON payloads from code blocks
+        code_block_matches = re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
+        parsed_payloads = []
+        if code_block_matches:
+            for cb in code_block_matches:
+                try:
+                    obj = json.loads(cb)
+                    if isinstance(obj, dict) and "verdict" in obj:
+                        parsed_payloads.append(obj)
+                except Exception:
+                    pass
+
+        # If no code block found or no verdict in code blocks, scan text for top-level JSON objects
+        if not parsed_payloads:
+            decoder = json.JSONDecoder()
+            idx = 0
+            while idx < len(text):
+                pos = text.find("{", idx)
+                if pos == -1:
+                    break
+                try:
+                    obj, end_pos = decoder.raw_decode(text[pos:])
+                    if isinstance(obj, dict) and "verdict" in obj:
+                        parsed_payloads.append(obj)
+                    idx = pos + max(1, end_pos)
+                except Exception:
+                    idx = pos + 1
+
+        if not parsed_payloads:
             raise PolicyViolation(
                 f"Reviewer '{rev_record.agent_id}' did not return a parseable structured JSON verdict payload. Raw output: {text[:200]}"
             )
 
-        # Validate mandatory fields
-        verdict_str = payload.get("verdict", "").upper().strip()
+        # Reject multiple contradictory or ambiguous JSON payloads
+        if len(parsed_payloads) > 1:
+            first_v = parsed_payloads[0].get("verdict")
+            first_tid = parsed_payloads[0].get("task_id")
+            first_iter = parsed_payloads[0].get("iteration")
+            for other in parsed_payloads[1:]:
+                if (
+                    other.get("verdict") != first_v
+                    or other.get("task_id") != first_tid
+                    or other.get("iteration") != first_iter
+                ):
+                    raise PolicyViolation(
+                        f"Multiple contradictory structured JSON payloads detected in output from reviewer '{rev_record.agent_id}'."
+                    )
+
+        payload = parsed_payloads[-1]  # The definitive final payload
+
+        # 1. MANDATORY: task_id
+        if "task_id" not in payload:
+            raise PolicyViolation("Reviewer payload missing mandatory 'task_id' field.")
+        if payload["task_id"] != task.id:
+            raise PolicyViolation(
+                f"Reviewer payload task_id '{payload['task_id']}' does not match target task '{task.id}'."
+            )
+
+        # 2. MANDATORY: iteration (must be int and match task.iteration)
+        if "iteration" not in payload:
+            raise PolicyViolation("Reviewer payload missing mandatory 'iteration' field.")
+        if not isinstance(payload["iteration"], int):
+            raise PolicyViolation(
+                f"Reviewer payload iteration must be an integer, got {type(payload['iteration']).__name__}."
+            )
+        if payload["iteration"] != task.iteration:
+            raise StaleReviewError(
+                f"Reviewer targeted iteration {payload['iteration']}, but current task iteration is {task.iteration}."
+            )
+
+        # 3. MANDATORY: role
+        if "role" not in payload:
+            raise PolicyViolation("Reviewer payload missing mandatory 'role' field.")
+        req_role = payload["role"]
+        if req_role != rev_record.agent_id:
+            raise PolicyViolation(
+                f"Reviewer role mismatch: payload declared '{req_role}', adapter dispatched '{rev_record.agent_id}'."
+            )
+        if req_role not in task.reviewers:
+            raise PolicyViolation(
+                f"Reviewer role '{req_role}' is not in designated task reviewers list {task.reviewers}."
+            )
+
+        # 4. MANDATORY: reviewed_commit_sha (NEVER default to task.current_commit_sha!)
+        if "reviewed_commit_sha" not in payload or not payload["reviewed_commit_sha"]:
+            raise PolicyViolation(
+                "Reviewer payload missing mandatory 'reviewed_commit_sha'. Automatic fallback is forbidden."
+            )
+        target_sha = str(payload["reviewed_commit_sha"]).strip()
+        if task.current_commit_sha and target_sha.lower() != task.current_commit_sha.lower():
+            raise StaleReviewError(
+                f"Review targeted commit '{target_sha}', but current task commit is '{task.current_commit_sha}'."
+            )
+
+        # 5. MANDATORY: verdict
+        if "verdict" not in payload:
+            raise PolicyViolation("Reviewer payload missing mandatory 'verdict' field.")
+        verdict_str = str(payload["verdict"]).upper().strip()
         if verdict_str not in ("PASS", "FIX_REQUIRED"):
             raise PolicyViolation(
                 f"Invalid verdict '{verdict_str}' in reviewer payload; must be 'PASS' or 'FIX_REQUIRED'."
             )
 
-        req_role = payload.get("role", "")
-        if req_role and req_role != rev_record.agent_id:
-            raise PolicyViolation(
-                f"Reviewer role mismatch: payload declared '{req_role}', adapter dispatched '{rev_record.agent_id}'."
-            )
+        # 6. MANDATORY: issues (must be list)
+        if "issues" not in payload or not isinstance(payload["issues"], list):
+            raise PolicyViolation("Reviewer payload missing mandatory 'issues' array.")
 
-        target_sha = payload.get("reviewed_commit_sha", task.current_commit_sha)
-        if task.current_commit_sha and target_sha != task.current_commit_sha:
-            raise StaleReviewError(
-                f"Review targeted commit '{target_sha}', but current task commit is '{task.current_commit_sha}'."
-            )
-
-        # If FIX_REQUIRED, require issues list
         issues: List[Issue] = []
         if verdict_str == "FIX_REQUIRED":
-            raw_issues = payload.get("issues", [])
-            if not raw_issues:
+            if not payload["issues"]:
                 raise PolicyViolation("Reviewer declared FIX_REQUIRED but provided zero structured issues.")
-            for idx, raw_i in enumerate(raw_issues):
+            for idx, raw_i in enumerate(payload["issues"]):
+                if not isinstance(raw_i, dict):
+                    raise PolicyViolation(f"Issue item at index {idx} is not a valid dictionary object.")
                 iss_id = raw_i.get("id") or f"ISS-{task.id}-{task.iteration}-{idx+1}"
-                sev_str = raw_i.get("severity", "P1").upper()
+                sev_str = str(raw_i.get("severity", "P1")).upper()
+                if sev_str not in Severity._value2member_map_:
+                    sev_str = "P1"
+                title = raw_i.get("title") or raw_i.get("description") or "Reviewer Reported Defect"
+                steps = raw_i.get("reproduction_steps") or raw_i.get("steps") or "See review report"
+                expected = raw_i.get("expected") or "Compliant deliverable"
+                actual = raw_i.get("actual") or "Defect observed"
+                evidence = raw_i.get("evidence") or []
+                if isinstance(evidence, str):
+                    evidence = [evidence]
                 issues.append(Issue(
                     id=iss_id,
                     task_id=task.id,
                     iteration=task.iteration,
-                    severity=Severity(sev_str) if sev_str in Severity._value2member_map_ else Severity.P1,
-                    title=raw_i.get("title", "Reviewer Reported Defect"),
-                    reproduction_steps=raw_i.get("reproduction_steps", raw_i.get("steps", "See review report")),
-                    expected=raw_i.get("expected", "Compliant deliverable"),
-                    actual=raw_i.get("actual", "Defect observed"),
-                    evidence=raw_i.get("evidence", []),
+                    severity=Severity(sev_str),
+                    title=str(title),
+                    reproduction_steps=str(steps),
+                    expected=str(expected),
+                    actual=str(actual),
+                    evidence=evidence,
                 ))
+        elif verdict_str == "PASS":
+            # Check that issues list has no unresolved P0 or P1
+            for raw_i in payload["issues"]:
+                if isinstance(raw_i, dict):
+                    sev = str(raw_i.get("severity", "")).upper()
+                    if sev in ("P0", "P1") and raw_i.get("status", "OPEN") != "RESOLVED":
+                        raise PolicyViolation(
+                            f"Reviewer declared PASS but included open blocking issue '{raw_i.get('id', 'unknown')}' ({sev})."
+                        )
 
-        evidence_manifest = payload.get("evidence_manifest", [])
-        if isinstance(evidence_manifest, list):
-            evidence_paths = [e if isinstance(e, str) else e.get("file_path", "") for e in evidence_manifest]
-        else:
+        # 7. MANDATORY: evidence_manifest (must be list)
+        if "evidence_manifest" not in payload and "evidence" not in payload:
+            if verdict_str == "PASS":
+                raise PolicyViolation("Reviewer payload missing mandatory 'evidence_manifest' array.")
+
+        raw_ev = payload.get("evidence_manifest", payload.get("evidence", []))
+        if not isinstance(raw_ev, list):
+            raise PolicyViolation("Reviewer payload 'evidence_manifest' must be an array.")
+
+        if verdict_str == "PASS" and not raw_ev and not rev_record.evidence_manifest:
+            raise PolicyViolation("Reviewer declared PASS but provided empty evidence_manifest. Evidence required.")
+
+        evidence_paths = [
+            e if isinstance(e, str) else e.get("file_path", "")
+            for e in raw_ev
+            if (isinstance(e, str) and e) or (isinstance(e, dict) and e.get("file_path"))
+        ]
+        if not evidence_paths:
             evidence_paths = [m.file_path for m in rev_record.evidence_manifest]
 
         return ReviewVerdict(
