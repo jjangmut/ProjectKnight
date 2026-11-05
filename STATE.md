@@ -2,7 +2,7 @@
 
 Updated: 2026-11-05
 Working branch: `studio/v3-002-agent-orchestrator-r2`
-HEAD: `2f3cc94af0c75e91f9374909dfeafe7a4ed008d2`
+HEAD: `ee0e8503790bd9a6f29ac58eb7a98305d6f8404e`
 
 ## Current status
 - Previous production systems: RETIRED. No historical QA score or PASS is authoritative.
