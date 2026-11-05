@@ -1,5 +1,5 @@
 # D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/tests/fixtures/fixture_stamina_component_r3.gd
-# Live Workflow Fixture: Advanced Stamina & Dash System (Cycle 1 Implementation)
+# Live Workflow Fixture: Advanced Stamina & Dash System (Cycle 2 Remediation)
 class_name FixtureStaminaComponentR3
 extends Node
 
@@ -57,32 +57,34 @@ func can_dash() -> bool:
 	return not is_exhausted and dash_cooldown_remaining <= 0.0 and current_stamina >= dash_cost
 
 ## Consume dash action.
-## INTENTIONAL DEFECT FOR CYCLE 1:
-## Intentionally OMITS checking is_exhausted and OMITS checking dash_cooldown_remaining.
-## Allows dash to execute even when is_exhausted == true.
-## Does NOT clamp current_stamina below zero when dash_cost exceeds available stamina.
+## Remediated in Cycle 2 (ISS-LIVE-003):
+## Enforces exhaustion guard, cooldown check, and sufficiency before consumption.
+## Clamps stamina lower bound and emits state events accurately.
 func consume_dash() -> bool:
-	# Intentional flaw: neither is_exhausted nor dash_cooldown_remaining is checked
-	current_stamina -= dash_cost # Intentional underflow below 0.0 without clamping
+	if is_exhausted:
+		return false
+	if dash_cooldown_remaining > 0.0:
+		return false
+	if current_stamina < dash_cost:
+		return false
+	current_stamina = maxf(0.0, current_stamina - dash_cost)
 	dash_cooldown_remaining = dash_cooldown
-	stamina_changed.emit(current_stamina, max_stamina)
 	dash_performed.emit(dash_cost)
-	if current_stamina <= 0.0:
-		if not is_exhausted:
-			is_exhausted = true
-			exhaustion_state_changed.emit(true)
-			stamina_depleted.emit()
+	stamina_changed.emit(current_stamina, max_stamina)
+	if is_zero_approx(current_stamina):
+		is_exhausted = true
+		exhaustion_state_changed.emit(true)
+		stamina_depleted.emit()
 	return true
 
 ## Regenerate stamina over time given delta seconds.
 func regenerate(delta: float) -> void:
 	if delta <= 0.0 or current_stamina >= max_stamina:
 		return
-	var prev: float = current_stamina
 	current_stamina = minf(max_stamina, current_stamina + regen_rate * delta)
 	stamina_changed.emit(current_stamina, max_stamina)
-	if prev <= 0.0 and current_stamina > 0.0:
-		stamina_recovered.emit()
 	if is_exhausted and current_stamina >= exhaustion_recovery_threshold:
 		is_exhausted = false
 		exhaustion_state_changed.emit(false)
+		stamina_recovered.emit()
+
