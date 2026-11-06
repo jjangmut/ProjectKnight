@@ -1,0 +1,338 @@
+{
+  "dataset_metadata": {
+    "source_csv": "STUDIO_V3/evidence/V3-001/performance/raw_frames.csv",
+    "total_rows": 14404,
+    "expected_rows": 14404,
+    "integrity": "VERIFIED_IDENTICAL_UNTOUCHED",
+    "benchmark_harness": "STUDIO_V3/evidence/V3-001-reconcile/performance/benchmark_source/benchmark_stage1_windowed.gd",
+    "hardware": {
+      "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "cpu": "AMD Ryzen 9 8945HX (16 cores, 32 threads)",
+      "display_refresh_hz": 240,
+      "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+      "renderer": "GL Compatibility (OpenGL 3.3.0)"
+    }
+  },
+  "discrepancy_reconciliation": {
+    "observation": "Report previously cited 60.03 FPS mean and 59.46 1% Low, while CSV fps column records ~239-240 FPS.",
+    "technical_cause": "The benchmark script benchmark_stage1_windowed.gd collected metrics inside func _physics_process(delta). In Godot Engine, physics_ticks_per_second defaults to 60. Consequently, _physics_process is called exactly ~60 times per second (dt ~ 16.666 ms). The 60.03 and 59.46 numbers were calculated as 1000.0 / dt_ms, representing the PHYSICS TICK SAMPLING RATE, NOT the graphic render loop framerate. Meanwhile, the engine's unconstrained render loop framerate, measured via Performance.get_monitor(Performance.TIME_FPS), ran at ~239.5 FPS (matching the 240 Hz display refresh cap).",
+    "reconciled_metrics": {
+      "engine_render_framerate_fps": "239.5 FPS median (Engine render loop on RTX 5060)",
+      "sampling_tick_frequency_hz": "60.03 Hz mean, 59.46 Hz 1% low (Physics tick loop)",
+      "process_frame_time_ms": "4.30 ms median (leaving >11.5 ms headroom under a 60 FPS / 16.67 ms budget)",
+      "render_continuous_capture_status": "CORRECTED — periodic 60 Hz physics sampling of a 240 FPS renderer, NOT per-render-frame capture",
+      "combat_differential_stress_status": "COMBAT_STRESS_DIFFERENTIAL_NOT_VERIFIED — draw calls (225) and node counts (155) remained flat across walking, normal_combat, and boss_combat",
+      "android_performance_status": "NOT_TESTED"
+    }
+  },
+  "sector_breakdown": {
+    "idle": {
+      "sector": "idle",
+      "sample_count": 3601,
+      "duration_seconds": 59.915,
+      "engine_fps_monitor": {
+        "min": 1.0,
+        "max": 240.0,
+        "mean": 234.74,
+        "median": 240.0,
+        "unique_values": [
+          1.0,
+          81.0,
+          238.0,
+          239.0,
+          240.0
+        ]
+      },
+      "physics_tick_interval_ms": {
+        "min": 0.133,
+        "max": 52.558,
+        "mean": 16.638,
+        "median": 16.698,
+        "p95": 16.758,
+        "p99": 16.846,
+        "stutter_spikes_gt_33ms": 2
+      },
+      "derived_physics_sampling_rate_hz": {
+        "mean_hz": 60.1,
+        "median_hz": 59.89,
+        "low_1pct_hz": 59.36
+      },
+      "rendering_load": {
+        "mean_process_ms": 4.723,
+        "median_process_ms": 4.276,
+        "mean_physics_ms": 0.677,
+        "median_physics_ms": 0.485,
+        "draw_calls": {
+          "min": 0,
+          "max": 228,
+          "mean": 224.7,
+          "unique_values": [
+            0,
+            215,
+            219,
+            221,
+            222,
+            223,
+            225,
+            226,
+            227,
+            228
+          ]
+        },
+        "node_count": {
+          "min": 154,
+          "max": 156,
+          "mean": 155.0,
+          "unique_values": [
+            154,
+            155,
+            156
+          ]
+        },
+        "memory_mb": {
+          "min": 70.63,
+          "max": 77.89,
+          "mean": 76.01
+        }
+      }
+    },
+    "walking": {
+      "sector": "walking",
+      "sample_count": 3601,
+      "duration_seconds": 60.014,
+      "engine_fps_monitor": {
+        "min": 239.0,
+        "max": 240.0,
+        "mean": 239.54,
+        "median": 240.0,
+        "unique_values": [
+          239.0,
+          240.0
+        ]
+      },
+      "physics_tick_interval_ms": {
+        "min": 12.449,
+        "max": 20.16,
+        "mean": 16.666,
+        "median": 16.698,
+        "p95": 16.76,
+        "p99": 16.824,
+        "stutter_spikes_gt_33ms": 0
+      },
+      "derived_physics_sampling_rate_hz": {
+        "mean_hz": 60.0,
+        "median_hz": 59.89,
+        "low_1pct_hz": 59.44
+      },
+      "rendering_load": {
+        "mean_process_ms": 4.37,
+        "median_process_ms": 4.27,
+        "mean_physics_ms": 0.68,
+        "median_physics_ms": 0.493,
+        "draw_calls": {
+          "min": 225,
+          "max": 225,
+          "mean": 225.0,
+          "unique_values": [
+            225
+          ]
+        },
+        "node_count": {
+          "min": 155,
+          "max": 155,
+          "mean": 155.0,
+          "unique_values": [
+            155
+          ]
+        },
+        "memory_mb": {
+          "min": 77.89,
+          "max": 81.54,
+          "mean": 79.72
+        }
+      }
+    },
+    "normal_combat": {
+      "sector": "normal_combat",
+      "sample_count": 3601,
+      "duration_seconds": 60.018,
+      "engine_fps_monitor": {
+        "min": 239.0,
+        "max": 240.0,
+        "mean": 239.55,
+        "median": 240.0,
+        "unique_values": [
+          239.0,
+          240.0
+        ]
+      },
+      "physics_tick_interval_ms": {
+        "min": 11.813,
+        "max": 17.469,
+        "mean": 16.667,
+        "median": 16.697,
+        "p95": 16.757,
+        "p99": 16.797,
+        "stutter_spikes_gt_33ms": 0
+      },
+      "derived_physics_sampling_rate_hz": {
+        "mean_hz": 60.0,
+        "median_hz": 59.89,
+        "low_1pct_hz": 59.53
+      },
+      "rendering_load": {
+        "mean_process_ms": 4.316,
+        "median_process_ms": 4.268,
+        "mean_physics_ms": 0.543,
+        "median_physics_ms": 0.491,
+        "draw_calls": {
+          "min": 225,
+          "max": 225,
+          "mean": 225.0,
+          "unique_values": [
+            225
+          ]
+        },
+        "node_count": {
+          "min": 155,
+          "max": 155,
+          "mean": 155.0,
+          "unique_values": [
+            155
+          ]
+        },
+        "memory_mb": {
+          "min": 81.54,
+          "max": 85.22,
+          "mean": 83.4
+        }
+      }
+    },
+    "boss_combat": {
+      "sector": "boss_combat",
+      "sample_count": 3601,
+      "duration_seconds": 60.018,
+      "engine_fps_monitor": {
+        "min": 239.0,
+        "max": 240.0,
+        "mean": 239.54,
+        "median": 240.0,
+        "unique_values": [
+          239.0,
+          240.0
+        ]
+      },
+      "physics_tick_interval_ms": {
+        "min": 11.757,
+        "max": 18.013,
+        "mean": 16.667,
+        "median": 16.697,
+        "p95": 16.757,
+        "p99": 16.812,
+        "stutter_spikes_gt_33ms": 0
+      },
+      "derived_physics_sampling_rate_hz": {
+        "mean_hz": 60.0,
+        "median_hz": 59.89,
+        "low_1pct_hz": 59.48
+      },
+      "rendering_load": {
+        "mean_process_ms": 4.299,
+        "median_process_ms": 4.264,
+        "mean_physics_ms": 0.629,
+        "median_physics_ms": 0.492,
+        "draw_calls": {
+          "min": 225,
+          "max": 225,
+          "mean": 225.0,
+          "unique_values": [
+            225
+          ]
+        },
+        "node_count": {
+          "min": 155,
+          "max": 155,
+          "mean": 155.0,
+          "unique_values": [
+            155
+          ]
+        },
+        "memory_mb": {
+          "min": 85.22,
+          "max": 88.94,
+          "mean": 87.1
+        }
+      }
+    }
+  },
+  "overall_summary": {
+    "sector": "overall",
+    "sample_count": 14404,
+    "duration_seconds": 239.964,
+    "engine_fps_monitor": {
+      "min": 1.0,
+      "max": 240.0,
+      "mean": 238.34,
+      "median": 240.0,
+      "unique_values": [
+        1.0,
+        81.0,
+        238.0,
+        239.0,
+        240.0
+      ]
+    },
+    "physics_tick_interval_ms": {
+      "min": 0.133,
+      "max": 52.558,
+      "mean": 16.66,
+      "median": 16.698,
+      "p95": 16.758,
+      "p99": 16.819,
+      "stutter_spikes_gt_33ms": 2
+    },
+    "derived_physics_sampling_rate_hz": {
+      "mean_hz": 60.03,
+      "median_hz": 59.89,
+      "low_1pct_hz": 59.46
+    },
+    "rendering_load": {
+      "mean_process_ms": 4.427,
+      "median_process_ms": 4.268,
+      "mean_physics_ms": 0.632,
+      "median_physics_ms": 0.491,
+      "draw_calls": {
+        "min": 0,
+        "max": 228,
+        "mean": 224.9,
+        "unique_values": [
+          0,
+          215,
+          219,
+          221,
+          222,
+          223,
+          225,
+          226,
+          227,
+          228
+        ]
+      },
+      "node_count": {
+        "min": 154,
+        "max": 156,
+        "mean": 155.0,
+        "unique_values": [
+          154,
+          155,
+          156
+        ]
+      },
+      "memory_mb": {
+        "min": 70.63,
+        "max": 88.94,
+        "mean": 81.56
+      }
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "manifest_version": "1.0",
+  "task_id": "V3-001-EVIDENCE-RECONCILE",
+  "verified_total_images": 11,
+  "target_resolution": "1280x720",
+  "integrity_status": "ALL_ORIGINAL_CAPTURES_PRESERVED_AND_VERIFIED",
+  "captures": [
+    {
+      "file_name": "00_title.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/00_title.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 185985,
+      "sha256": "7b3327e96b40e250aa05cb624da9750837c1942b6e06460665a023faa17dbdbd",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Main Title Screen & Campaign Entry UI",
+      "visual_observations": "Authentic 1280x720 windowed UI rendering. Shows 'PROJECT KNIGHT: THE CHOSEN ONE' title logo, version v1.2.0, and 3 mode selection cards ('DEPLOY 3D QV', 'CLASSIC 2D RUN', 'AX-PROTOTYPE'). Background features volumetric fog and cyan rim lighting."
+    },
+    {
+      "file_name": "01_stage_entry.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/01_stage_entry.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1261723,
+      "sha256": "28b3bb8a0824e9f530355fa6933bcb4b3e3911b146567ba229e010f911af9b29",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Stage 1 Initial Spawn & Camera Framing",
+      "visual_observations": "Stage 1 '성문 외곽' (Citadel Terrace Gate) first rendered frame at X=-8.0. Shows 3D flagstone floor, distant castle backdrop, top-left tactical unit plate ('SSR Paladin' with soul gems), and progress bar. Critical defect observed: NO on-screen virtual joystick or touch buttons instantiated (ISSUE-V3-001-01)."
+    },
+    {
+      "file_name": "02_idle_run.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/02_idle_run.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1249557,
+      "sha256": "1785a6ab61098bfbae54f54324aa7ef5f225f4bb895bcf5526f23e39a31e191b",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Horizontal Movement (X-axis Run) & Sprite Facing",
+      "visual_observations": "Player running rightward along X-axis at ~7.5 m/s. 2D Paladin Sprite3D faces direction of motion. Real-time directional cast shadow grounds the character onto the 3D flagstone floor with authentic shadow perspective."
+    },
+    {
+      "file_name": "03_depth_occlusion.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/03_depth_occlusion.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1241526,
+      "sha256": "d4d36baf1cd17c0fdd5ee97de6add7fb4e2d1b71cce0e5c7490f0fefa6e0bee4",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Z-depth Movement & Front/Back Lane Traversal",
+      "visual_observations": "Player moved forward to Z=+4.0 along front curb boundary. Illustrates the 2.5D belt-scrolling movement model. Demonstrates visual depth variation and potential for melee hitbox misalignment against enemies at different Z coordinates (ISSUE-V3-001-02)."
+    },
+    {
+      "file_name": "04_jump.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/04_jump.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1211909,
+      "sha256": "1d94d4c59517cc4c2b5ccfed6a189e1959e2e162a81b1afd17afd598147bc2df",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Airborne Physics & Jump Shadow Contact",
+      "visual_observations": "Player executing Space jump at peak trajectory (~3.2m above floor). Cast shadow accurately tracks vertically below the character on the 3D floor geometry. Noticeable slight tilt in billboard orientation relative to the -32 degree camera pitch (ISSUE-V3-001-04)."
+    },
+    {
+      "file_name": "05_attack_impact.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/05_attack_impact.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1224011,
+      "sha256": "5021654d00f5d2acfd6c1ceb3cd6579a53c26532cea17e845da0a00b74c9154d",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Melee 3-Combo Attack & Slash Visuals",
+      "visual_observations": "Player executing Combo Hit 3. Glowing cyan spear thrust slash arc ('SlashVisual3D') rendered with additive blending. Spark particles and screen shake trauma observed. Top-right combo chain HUD increments."
+    },
+    {
+      "file_name": "06_guard_dash.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/06_guard_dash.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1163182,
+      "sha256": "71757d0d023fa41f5cb986e032d07521e213e2a91690c3cf56d1243ac4e53635",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Guard Barrier & Evasion Dash",
+      "visual_observations": "Player activating Guard Barrier ('GuardBarrier3D'). Cyan glowing runic shield torus surrounds the Paladin sprite with high-intensity emission. Dash motion blur streak confirms responsive evasive state."
+    },
+    {
+      "file_name": "07_enemy_wave.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/07_enemy_wave.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1271063,
+      "sha256": "8ea6ddd2aa39b49c8ad41724d415c31dbd50eb0699efa7922a7efe64fa7ee403",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Wave 1 Melee Minion Encounter",
+      "visual_observations": "Player engaging two Wave 1 melee minions at X=2.0 and X=4.0. Minions display red silhouette hurtbox frames upon taking damage. Red float text popup visible. Background elements maintain high contrast against combat foreground."
+    },
+    {
+      "file_name": "08_boss_telegraph.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/08_boss_telegraph.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1396192,
+      "sha256": "57a0c73fa7e32d8f3fa67f1eb7670c855a9673786f5546f375402c76d7cbb8a9",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Wave 2 Boss Commander Spawn & Telegraph",
+      "visual_observations": "Boss Commander spawns at X > 8.0 with 24 HP winged boss health bar at screen top. Boss displays crimson aura and charging windup pose. Ground runic seal glows intensely with 2.4x bloom."
+    },
+    {
+      "file_name": "09_boss_combat.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/09_boss_combat.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1151271,
+      "sha256": "84e999fc9535c17ee95e49ea48da87f0b86dcd4518586ab3b5208b9a846a8df7",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Active Boss Combat & Foreground Occlusion Defect",
+      "visual_observations": "Active combat against Boss Commander in the far-right terrace zone. CRITICAL DEFECT OBSERVED: Massive 3D foreground stone wall and pillar structure on the camera plane completely occludes 35-40% of the screen center-right, hiding the player sprite and boss during active melee exchange (ISSUE-V3-001-07)."
+    },
+    {
+      "file_name": "10_stage_result.png",
+      "relative_path": "STUDIO_V3/evidence/V3-001/captures/originals/10_stage_result.png",
+      "resolution_width": 1280,
+      "resolution_height": 720,
+      "aspect_ratio": "16:9",
+      "byte_size": 1136048,
+      "sha256": "d67134b1844f8482bc688bc8967a95abf37805ac83165c2e10c474d850329c4f",
+      "source_git_commit": "5c25a98084ba6885e1b9b4e2bac40a9c74568473",
+      "capture_subject": "Boss Defeat & Stage 1 Cleared Transition",
+      "visual_observations": "Boss Commander defeated (HP reduced to 0). Gold 'STAGE 1 CLEARED' victory banner pulses across viewport center. Camera trauma smoothly decays. Demonstrates absence of rich victory/rewards modal before campaign progression (ISSUE-V3-001-06)."
+    }
+  ]
+}
