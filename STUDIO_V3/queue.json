@@ -1,8 +1,31 @@
 {
   "version": 3,
-  "branch": "studio/v3-001-playable-baseline",
+  "branch": "studio/v3-001-evidence-reconcile",
   "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
+    {
+      "id": "V3-001-EVIDENCE-RECONCILE",
+      "title": "Reconcile Stage 1 baseline performance semantics, 7-issue register, reviewer chronology",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -6,
+      "active_branch": "studio/v3-001-evidence-reconcile",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "External review task STUDIO_V3/tasks/V3-001-EVIDENCE-RECONCILE.md. Original screenshots/CSV/game unchanged. New QA + Director must review frozen reconciliation SHA; no retroactive evidence hashes or self approval."
+    },
     {
       "id": "V3-002-CLOSE",
       "title": "Final Studio V3 closure: fail-closed provenance, strict review output and infrastructure sign-off",
@@ -482,7 +505,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Playable baseline audit and Option C motion plane decision fully approved by PK_QALead and PK_GameDirector. V3-003 remains BLOCKED pending external review."
+      "notes": "INTERNAL Two-Key APPROVED at audited source SHA a7122361; external ChatGPT independent audit review FIX_REQUIRED for performance semantics, 7-issue register and chronological QA evidence hashes. Preserve historical approval. Follow-up V3-001-EVIDENCE-RECONCILE READY; NOT external accepted yet."
     },
     {
       "id": "V3-002",
@@ -509,7 +532,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Child V3-002-CLOSE accepted in external source/evidence review (chatgpt/v3-002-close-independent-acceptance); parent V3-002 requires separate formal QA/Director roll-up; cannot auto-approve."
+      "notes": "V3-002-CLOSE child independent code/evidence accepted, formal parent V3-002 gate still pending. No automatic milestone APPROVED."
     },
     {
       "id": "V3-003",
@@ -535,7 +558,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": ""
+      "notes": "Blocked pending separate external acceptance of V3-001 audit evidence reconciliation and formal parent V3-002 approval; game P1 backlog remains open."
     },
     {
       "id": "FIXTURE-V3-LIVE-002",
