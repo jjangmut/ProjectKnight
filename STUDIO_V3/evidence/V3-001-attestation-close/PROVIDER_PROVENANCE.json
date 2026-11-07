@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "task_id": "V3-001-ATTESTATION-CLOSE",
+  "execution_run_id": "run-v3-001-attestation-close",
+  "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+  "orchestrator_producer": "PK_Producer",
+  "working_branch": "studio/v3-001-attestation-close",
+  "reviewed_target_commit_sha": "7881e32df31353792f7ab8471c4f61bb75e22ebb",
+  "frozen_source_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+  "post_review_output_sha": "0d99e2b0da5ecd30cff8641348ba4ed3e897423b",
+  "subagent_invocations": [
+    {
+      "invocation_id": "inv-sub-pk_qalead-f61fb461",
+      "role": "PK_QALead",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "session_id": "f61fb461-3531-418a-9d50-5c5d655335a6",
+      "log_uri": "file:///C:/Users/jjang/.gemini/antigravity/brain/f61fb461-3531-418a-9d50-5c5d655335a6/.system_generated/logs/transcript.jsonl",
+      "started_at": "2026-11-07T01:52:44Z",
+      "completed_at": "2026-11-07T01:55:16Z",
+      "terminal_status": "SUCCEEDED",
+      "reviewed_commit_sha": "7881e32df31353792f7ab8471c4f61bb75e22ebb",
+      "verdict": "PASS",
+      "artifact_path": "STUDIO_V3/evidence/V3-001-attestation-close/QA_REVIEW_FINAL.json"
+    },
+    {
+      "invocation_id": "inv-sub-pk_gamedirector-8e59d355",
+      "role": "PK_GameDirector",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "session_id": "8e59d355-d31e-4f55-a23a-2005d5e13c8e",
+      "log_uri": "file:///C:/Users/jjang/.gemini/antigravity/brain/8e59d355-d31e-4f55-a23a-2005d5e13c8e/.system_generated/logs/transcript.jsonl",
+      "started_at": "2026-11-07T01:52:54Z",
+      "completed_at": "2026-11-07T01:56:01Z",
+      "terminal_status": "SUCCEEDED",
+      "reviewed_commit_sha": "7881e32df31353792f7ab8471c4f61bb75e22ebb",
+      "verdict": "PASS",
+      "artifact_path": "STUDIO_V3/evidence/V3-001-attestation-close/DIRECTOR_REVIEW_FINAL.json"
+    }
+  ],
+  "verification_summary": {
+    "git_blob_verification": "PASS (7 source files in c557, 3 post-review files in 0d99)",
+    "negative_provenance_tests": "5/5 PASS",
+    "gameplay_defects": "7 canonical issues (3 P1, 2 P2, 2 P3)",
+    "game_code_immutability": "PASS (0 lines modified in CLIENT/Game/)",
+    "historical_telemetry_immutability": "PASS (raw_frames.csv and 11 PNGs untouched)"
+  }
+}

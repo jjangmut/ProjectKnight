@@ -18,12 +18,12 @@ Baseline: `studio/v3-001-evidence-reconcile@0d99e2b0da5ecd30cff8641348ba4ed3e897
 - See `STUDIO_V3/reviews/V3-001-RECONCILE-INDEPENDENT-REVIEW.md`.
 
 ## Tasks
-- **V3-001-ATTESTATION-CLOSE READY:** only Git evidence lineage correction, accurate summary and separate new QA/Director sign-offs. Spec `STUDIO_V3/tasks/V3-001-ATTESTATION-CLOSE.md`.
-- V3-001-EVIDENCE-RECONCILE **historical internal APPROVED, external FIX_REQUIRED**.
+- **V3-001-ATTESTATION-CLOSE APPROVED internally:** 2-tier manifests isolated (7 source files in c557, 3 post-review in 0d99); 5/5 negative tests passed; canonical 7 defects verified; new independent QA/Director PASS at 7881e32df31353792f7ab8471c4f61bb75e22ebb; external review requested.
+- V3-001-EVIDENCE-RECONCILE **historical internal APPROVED, external FIX_REQUIRED superseded by attestation-close**.
 - V3-001 **historical internal APPROVED, external evidence acceptance pending**.
 - V3-002-CLOSE **child APPROVED and externally accepted**.
 - V3-002 **parent FIX_REQUIRED pending separate formal roll-up**.
-- V3-003 **BLOCKED until V3-001 external evidence acceptance AND V3-002 parent formal approval**.
+- V3-003 **STRICTLY BLOCKED until V3-001 external evidence acceptance AND V3-002 parent formal approval**.
 
 ## Rules
 No more architecture rebuild or re-benchmark by default. No edit to `CLIENT/Game/`, the prior 11 PNGs, original raw CSV or historical events. Corrected output review files are never falsely attributed to a source SHA that predates them. A correction cannot be treated as an externally accepted audit until independently verified.
