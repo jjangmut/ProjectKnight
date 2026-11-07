@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "document_id": "PROVIDER_GATE_PROVENANCE.json",
+  "task_id": "V3-002-PARENT-GATE-RECONCILE",
+  "parent_milestone": "V3-002",
+  "execution_run_id": "run-v3-002-parent-gate-reconcile",
+  "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+  "orchestrator_producer": "PK_Producer",
+  "working_branch": "studio/v3-002-parent-gate-reconcile",
+  "reviewed_commit_sha": "924641d335cc2ca308401cc659053e83e44a5136",
+  "authoritative_infra_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "subagent_invocations": [
+    {
+      "role": "PK_QALead",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "session_id": "60feba6d-0629-46dd-a481-7703f6d6cd0b",
+      "canonical_invocation_id": "inv-sub-pk_qalead-60feba6d-V3-002-PARENT-GATE-RECONCILE",
+      "provenance_summary_alias": "inv-sub-pk_qalead-60feba6d",
+      "log_uri": "file:///C:/Users/jjang/.gemini/antigravity/brain/60feba6d-0629-46dd-a481-7703f6d6cd0b/.system_generated/logs/transcript.jsonl",
+      "started_at": "2026-11-08T01:22:11Z",
+      "completed_at": "2026-11-08T01:26:45Z",
+      "terminal_status": "SUCCEEDED",
+      "reviewed_commit_sha": "924641d335cc2ca308401cc659053e83e44a5136",
+      "verdict": "PASS",
+      "artifact_path": "STUDIO_V3/evidence/V3-002-parent-gate/QA_GATE_REVIEW.json"
+    },
+    {
+      "role": "PK_GameDirector",
+      "provider": "ANTIGRAVITY_SUBAGENT",
+      "session_id": "2dac3b35-62f2-44d2-8e24-5554b32e3be1",
+      "canonical_invocation_id": "inv-sub-pk_gamedirector-2dac3b35-V3-002-PARENT-GATE-RECONCILE",
+      "provenance_summary_alias": "inv-sub-pk_gamedirector-2dac3b35",
+      "log_uri": "file:///C:/Users/jjang/.gemini/antigravity/brain/2dac3b35-62f2-44d2-8e24-5554b32e3be1/.system_generated/logs/transcript.jsonl",
+      "started_at": "2026-11-08T01:22:21Z",
+      "completed_at": "2026-11-08T01:25:00Z",
+      "terminal_status": "SUCCEEDED",
+      "reviewed_commit_sha": "924641d335cc2ca308401cc659053e83e44a5136",
+      "verdict": "PASS",
+      "milestone_verdict": "APPROVED",
+      "artifact_path": "STUDIO_V3/evidence/V3-002-parent-gate/DIRECTOR_GATE_REVIEW.json"
+    }
+  ],
+  "reconciliation_summary": {
+    "P1-01_wrapper_approval": "SUPERSEDED_AND_CORRECTED (Wrapper set to FIX_REQUIRED; Invariant Check PASS)",
+    "P1-02_runtime_discovery": "QUALIFIED_PASS (IDE-Native 6/6 Verified, Standalone CLI Not Available; Ratified via DECISION-V3-002-IDE-NATIVE-DISCOVERY)",
+    "P1-03_chronology_and_script": "EXACT_RECOVERED_SCRIPT_COMMITTED (Timeline, Retrospective Ingestion, and Alias Map Fully Documented)",
+    "infrastructure_source_immutability": "0 lines modified since 214000678186b6ebb42349eeb28336b4dcfe0e42",
+    "game_code_immutability": "0 lines modified in CLIENT/Game/",
+    "events_jsonl_preservation": "36/36 historical lines byte-for-byte preserved; append-only",
+    "python_tests": "57/57 PASS (20.28s)",
+    "game_client_release_readiness": "NOT_APPROVED (3 P1 Blockers Open)",
+    "v3_003_status": "STRICTLY BLOCKED"
+  }
+}
