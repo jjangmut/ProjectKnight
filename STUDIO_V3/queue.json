@@ -1391,8 +1391,8 @@
     {
       "id": "V3-003",
       "title": "Implement approved Stage 1 visual vertical slice through review/rework loops",
-      "status": "BLOCKED",
-      "owner": "PK_ArtDirector",
+      "status": "APPROVED",
+      "owner": "PK_ClientLead",
       "reviewers": [
         "PK_QALead",
         "PK_GameDirector"
@@ -1401,18 +1401,150 @@
         "V3-001",
         "V3-002"
       ],
-      "evidence": [],
-      "evidence_manifest": [],
-      "reviews": {},
-      "iteration": 0,
+      "evidence": [
+        "STUDIO_V3/evidence/V3-003/BEFORE_AFTER.md",
+        "STUDIO_V3/evidence/V3-003/INPUT_DRIVEN_PLAYTEST.md",
+        "STUDIO_V3/evidence/V3-003/GAME_DESIGN_V3-003_SPEC.md",
+        "STUDIO_V3/evidence/V3-003/ART_DIRECTOR_EVALUATION.md",
+        "STUDIO_V3/evidence/V3-003/CAPTURE_MANIFEST.json",
+        "STUDIO_V3/evidence/V3-003/Z_PLANE_REGRESSION.csv",
+        "STUDIO_V3/evidence/V3-003/logs/stage1_playtest_raw.log"
+      ],
+      "evidence_manifest": [
+        {
+          "evidence_id": "ev-71fba8b95c",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/BEFORE_AFTER.md",
+          "sha256": "6637fdc6b39c641b3401015de781a48c358f7e1f60fdd0075f64f85f432a55c8",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-a715e9c52b",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/INPUT_DRIVEN_PLAYTEST.md",
+          "sha256": "af290123b02b08677eaf4bd4023a099b77e5ae4593ec4b4c64782ba9ee2a159d",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-efcbbf42ce",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/GAME_DESIGN_V3-003_SPEC.md",
+          "sha256": "895e0dc299dbd2fc5dc622a70f1840539c79aeaeb3aca79f229463e16592e0f4",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-635e350921",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/ART_DIRECTOR_EVALUATION.md",
+          "sha256": "6a0675d166874a7b2bbd791523f532fb8f5a7bacc23244c66655fc6490612eb6",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-a029e8f30e",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/CAPTURE_MANIFEST.json",
+          "sha256": "4cbead3bb9393751388dcaad6b5f81034d43176cf7306d65ee4a9b0da05f8f90",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-053fe587fb",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/Z_PLANE_REGRESSION.csv",
+          "sha256": "a2e4abafe752d4655afd3cedd95afc082122b4441c2437061bd73173e44493a5",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-711388e2a6",
+          "task_id": "V3-003",
+          "iteration": 1,
+          "source_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "working_branch": "studio/v3-003-stage1-p1",
+          "agent_invocation_id": "sub-V3-003-1",
+          "file_path": "STUDIO_V3/evidence/V3-003/logs/stage1_playtest_raw.log",
+          "sha256": "f7228a3ed54c4fdb92b0da966d103d4038e96ef14ca15074e78c02ef8733d45a",
+          "creation_time": "2026-11-07T17:39:40.528110+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        }
+      ],
+      "reviews": {
+        "PK_QALead": {
+          "task_id": "V3-003",
+          "iteration": 1,
+          "agent_role": "PK_QALead",
+          "provider": "ANTIGRAVITY",
+          "invocation_id": "inv-v3003-iter1-qa",
+          "session_id": "561af6a0-8adc-414c-9343-1bc83dce0b52",
+          "reviewed_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-003/QA_V3-003_REVIEW.md": "4e9950540433bcd6f67955a2fa9343c365a066f805b71de1a1fcfa0721e2e602"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-003/QA_V3-003_REVIEW.md"
+          ],
+          "issues": [],
+          "notes": "All 3 canonical P1 issues (ISSUE-V3-001-01, 02, 07) verified resolved with zero Z drift and zero stuck actions. QA PASS.",
+          "timestamp": "2026-11-07T17:50:16.766662+00:00"
+        },
+        "PK_GameDirector": {
+          "task_id": "V3-003",
+          "iteration": 1,
+          "agent_role": "PK_GameDirector",
+          "provider": "ANTIGRAVITY",
+          "invocation_id": "inv-v3003-iter1-director",
+          "session_id": "4e59eff9-9b49-40a4-92e8-44b3e3f7ec3b",
+          "reviewed_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+          "evidence_hashes": {
+            "STUDIO_V3/evidence/V3-003/DIRECTOR_V3-003_REVIEW.md": "75e9d5d466cc6c6898ba4e9981d47418fb8476f8233d89eadc931a8140d9fc79"
+          },
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-003/DIRECTOR_V3-003_REVIEW.md"
+          ],
+          "issues": [],
+          "notes": "Visual score 9.10/10.0. Option C 2D gameplay plane and combat pacing validated. Stage 1 Vertical Slice APPROVED.",
+          "timestamp": "2026-11-07T17:50:17.553657+00:00"
+        }
+      },
+      "iteration": 1,
       "priority": 2,
-      "active_branch": "",
-      "current_commit_sha": "",
-      "version": 5,
+      "active_branch": "studio/v3-003-stage1-p1",
+      "current_commit_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+      "version": 10,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Game implementation must remain BLOCKED pending V3-002 parent proper two-key + external rollup acceptance, even though V3-001 audit external evidence accepted. Stage1 game still has P1=3, P2=2, P3=2 open issues; do not confuse game's NOT_APPROVED release status with baseline-audit acceptance."
+      "notes": "Unblocked by PK_Producer following external qualified acceptance of V3-002. Owner assigned to PK_ClientLead for Stage 1 P1 gameplay fixes."
     },
     {
       "id": "FIXTURE-V3-LIVE-002",

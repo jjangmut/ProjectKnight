@@ -1,53 +1,63 @@
-# ACTIVE NEXT PHASE — V3-003 Stage 1 Gameplay P1 Implementation (2026-11-08)
+# ProjectKnight Studio V3 — Current State & Milestone Status
 
-**Registration only; no game coding started.** Existing `V3-003` task is **BLOCKED in queue** until the native Producer verifies prereqs and performs an authorized, append-only `BLOCKED → READY` release in SQLite / queue authority. Do not hand-edit snapshot as an approval.
-
-- Working branch: `studio/v3-003-stage1-p1`, based on external V3-002 qualified acceptance `ec289184de16c1bb0d9028fb80bb441bbcdd5ede`.
-- Canonical executable work specification: `STUDIO_V3/tasks/V3-003.md` (new doc, existing task ID).
-- External V3-002 review: `STUDIO_V3/reviews/V3-002-PARENT-FINAL-EXTERNAL-REVIEW.md` — **ACCEPTED WITH QUALIFICATIONS** for IDE-native infrastructure; 2 stage content roles not yet live-verified; previous provider raw transcript hashes not independently reproducible from GitHub.
-- **No more R4/R5 infrastructure rework**; prioritize real Godot game implementation with visible play tests and exact input-driven evidence.
-- Stage 1 P1 canonical order: `ISSUE-V3-001-02` Option C plane X/Y, Z=0; `ISSUE-V3-001-01` functional touch controls; `ISSUE-V3-001-07` remove boss arena occlusion. Official source: `STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md`.
-- Existing `V3-003` queue owner `PK_ArtDirector`; Producer must formalize correct owner/worker mapping before a code-focused start. QA `PK_QALead`, Director `PK_GameDirector` remain independent reviewers.
-- `PK_GameDesign` and `PK_ArtDirector` should be invited for **real relevant** design/art work, documenting actual IDE-native sessions, not placeholder exercises.
-- Game release status is **NOT_APPROVED**, original 3 P1 + 2 P2 + 2 P3 remain until real changes and independent retest evidence.
+**Current Date:** 2026-11-08  
+**Active Milestone:** Milestone V3-003 Completed (`APPROVED`) $\rightarrow$ Transitioning to Stage 2 (`V3-004`)  
+**Working Branch:** `studio/v3-003-stage1-p1`  
+**Latest Source Implementation Commit SHA:** `48ff5ef4a2e5d71c8db632d4b684cb32d20e7df6`  
+**Evidence Freeze Commit SHA:** `5e785316d0cefc7fc0069278a75d1e4edb27f5b6`  
+**Game Release Status:** **NOT_APPROVED** (Vertical Slice Scope; Downstream Stages & Mobile Physical Hardware Certification Pending)  
+**Android Hardware Status:** **NOT_TESTED** (PC 1280×720 Landscape Mouse Touch Emulation Verified Only)  
 
 ---
 
-# LATEST EXTERNAL REVIEW GATE — 2026-11-08
+## 1. Task V3-003 Execution Summary (Stage 1 Gameplay P1 Improvement)
 
-**External status: REVIEW_REQUESTED (Final Evidence Delta Submitted).**
-- Task ID: `V3-002-PARENT-GATE-RECONCILE`
-- Working Branch: `studio/v3-002-parent-gate-reconcile`
-- Final Evidence Delta Input SHA: `99b3e7d4cbfdf92da44881513392bae20a731be7`
-- Infrastructure Source SHA: `214000678186b6ebb42349eeb28336b4dcfe0e42` (Strictly immutable, 0 lines modified)
-- Game Client Base SHA: `a71223615d0b77e36dd85edb24e138fc67ecc140` (Strictly immutable, 0 lines modified in `CLIENT/Game/`)
+- **Task ID:** `V3-003`
+- **Objective:** Implement real Godot gameplay code fixes resolving canonical P1 issues on Stage 1 (*Citadel Terrace Gate*), enforce Option C 2D gameplay plane lock, adapt mobile touch controls for 1280×720 landscape, eliminate boss arena sightline occlusion, and conduct end-to-end multi-agent verification.
+- **Queue State Transition:** `BLOCKED` $\rightarrow$ `READY` $\rightarrow$ `IN_PROGRESS` $\rightarrow$ `IN_REVIEW` $\rightarrow$ **`APPROVED`** (Authoritative state in `STUDIO_V3/queue.db` and `STUDIO_V3/queue.json`).
+- **Owner / Worker:** `PK_ClientLead`
+- **Independent Reviewers:** `PK_QALead` and `PK_GameDirector`
 
-## Final Evidence Delta Summary
+### Canonical Issue Resolution Matrix:
+1. **`ISSUE-V3-001-02` (P1 - MAJOR - Core Gameplay Plane Discrepancy):** **RESOLVED (PASS)**
+   - Option C rigid plane lock implemented across `side_qv_player.gd`, `side_qv_enemy.gd`, `side_qv_boss.gd`, and `side_qv_stage_1.gd`.
+   - Clamped $Z = 0.0000$ and $v_z = 0.0000$ before and after `move_and_slide()`.
+   - Telemetry verification across 354 continuous frames (`Z_PLANE_REGRESSION.csv`): Max $|Z|$ drift = $0.000000\text{ m}$, Max $|v_z|$ drift = $0.000000\text{ m/s}$. Melee whiffs eliminated.
+2. **`ISSUE-V3-001-01` (P1 - MAJOR - Mobile Touch Controls):** **RESOLVED (PASS)**
+   - `qv_mobile_controls.gd` instantiated under UI CanvasLayer 100 with horizontal virtual joystick ($|dir.x| > 0.35$), airborne Dive Slam ($dir.y > 0.50$, $v_y = -22.0\text{ m/s}$), and 4 tactical skill buttons (Strike, Leap, Parry, Dash).
+   - Zero stuck inputs on release (`stuck_action_count = 0`). Central combat canvas 100% unoccluded.
+3. **`ISSUE-V3-001-07` (P1 - MAJOR - Boss Arena Sightline Foreground Column Occlusion):** **RESOLVED (PASS)**
+   - Repositioned `Pillar_FrontRight` from $(10.5, 0.0, 3.0)$ to $(17.0, 0.0, 4.2)$ and `Pillar_FrontLeft` to $(-17.0, 0.0, 4.2)$.
+   - Lowered `FrontBalustrade` height to $0.42\text{m}$. Combat frustum occlusion reduced from $38.4\%$ to **$0.0\%$**.
+4. **`ISSUE-V3-001-03` (P2 - MINOR - Boot Console Error):** **RESOLVED (PASS)**
+   - Converted synchronous stage loading in `SideQVCampaign::_ready()` to `load_stage.call_deferred(1)`. Zero engine errors logged on campaign load.
+5. **`ISSUE-V3-001-05` (P3 - POLISH - Boss Charge Windup Telegraph):** **RESOLVED (PASS)**
+   - Extended windup timer to $0.42\text{s}$ with distinct eye glint and expanding danger decal for mobile reflex parrying.
 
-1. **P1-A (6-Role Runtime Discovery):**
-   - Raw native tool execution output of `manage_subagents(Action="list")` committed at `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/IDE_AGENT_LIST_RAW.txt`.
-   - Honest qualification: 4 infrastructure roles live-verified with transcript logs; 2 stage content roles (`PK_GameDesign`, `PK_ArtDirector`) schema-declared and deferred to Stage 1 production milestone V3-003.
-   - Ratified via Game Director Scoped Risk Acceptance `DECISION-V3-002-STAGE-ROLES-DEFERRED`.
-   - Score: `11/12 VERIFIED, 1/12 PARTIAL (QUALIFIED PASS)`.
+---
 
-2. **P1-B (Historical Review Output Hashes):**
-   - Transparently classified historical database `result_hash` values (`ba904d5c...` and `b812bd6e...`) as `LEGACY_PLACEHOLDER_HASH` (derived from constant strings `b"QA_PARENT_PASS"` and `b"DIRECTOR_PARENT_APPROVED"`).
-   - Retrieved authentic local subagent transcript files and published actual cryptographic SHA256 hashes:
-     * QA Session (`3aa4a1d0...`): Full transcript SHA256 `ad9e2b12374be9d758280f09228638a2f3d7051cc26a733883d1ac96c42520eb`; Message SHA256 `2a53842843ba3f4deee32b13c69a4a4611227bc804a722dff0d7851ec8440384`.
-     * Director Session (`178b4ee7...`): Full transcript SHA256 `642898555c7a60868fc03e5d63f5dc1c87f58e8a501e2b8124dc1cb1aaac92c1`; Message SHA256 `51775d27cce574eb71747cf1f687dafcff5ae44714cb6fe8ff90f333c6672ca8`.
-   - Sanitized message excerpts committed at `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/PARENT_PROVIDER_SANITIZED_EXCERPTS.md`.
-   - Audit history preserved append-only.
+## 2. Multi-Agent 6-Role Verification Records
 
-3. **P1-C (UTC Timezone Chronology):**
-   - Documented the root cause of the 9-hour offset in `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/TIMEZONE_NORMALIZATION_ADDENDUM.md`: Windows local time (KST = UTC+9) was mistakenly suffixed with `Z` in summary documentation.
-   - Verified that Antigravity transcripts internally record in UTC (`16:22:11Z` to `16:26:45Z`), proving reviews concluded before control plane events were recorded at `16:28:09Z`. Strictly monotonic timeline established.
+- **`PK_Producer`:** Orchestrated lifecycle, enforced SQLite queue transitions, monitored evidence integrity, verified deliverable commits.
+- **`PK_GameDesign` (Session `cff2a980-50bb-4b85-b550-1e21f60675be`):** Delivered `GAME_DESIGN_V3-003_SPEC.md` specifying Dive Slam kinematics, buffer timings, and touch button ergonomics. Verdict: **DESIGN PASS**.
+- **`PK_ArtDirector` (Session `4d533748-6ed3-45b1-9152-77d6f04cd60a`):** Delivered `ART_DIRECTOR_EVALUATION.md`, audited 10 visual criteria (baseline 8.29 $\rightarrow$ post-fix 9.10). Verdict: **ART PASS (9.10 / 10.0)**.
+- **`PK_ClientLead`:** Implemented Option C, mobile touch controls, boss occlusion fix, and deferred stage loading in Godot scripts.
+- **`PK_QALead` (Session `561af6a0-8adc-414c-9343-1bc83dce0b52`):** Executed independent multi-layer functional, visual, and play audit; re-ran verification harness; authored `QA_V3-003_REVIEW.md`. Verdict: **QA PASS**.
+- **`PK_GameDirector` (Session `4e59eff9-9b49-40a4-92e8-44b3e3f7ec3b`):** Conducted independent product milestone audit; authored `DIRECTOR_V3-003_REVIEW.md`. Verdict: **MILESTONE APPROVED**.
 
-4. **12 Acceptance Criteria Preservation:**
-   - Exact titles, numbering, and order of all 12 criteria preserved in `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/ORIGINAL_12_CRITERIA_DELTA.md`.
+---
 
-## Independent Gate Sign-Offs
+## 3. Honest Commercial & Technical Qualifications
 
-- **Independent QA Lead (`PK_QALead`):** `PASS` (Session `e38c82e9-581d-46bf-be00-79f4386f5603`)
-- **Product & Milestone Authority (`PK_GameDirector`):** `PASS / APPROVED` (Session `be8a6c09-c8b9-43c0-839e-41956d53a06e`)
-- **Game Client Release Readiness:** `NOT_APPROVED` (3 open P1 issues)
-- **Milestone V3-003:** `BLOCKED` pending external independent review acceptance
+- **Game Commercial Release Approval:** **`NOT_APPROVED`**. This approval is strictly scoped to the Stage 1 Vertical Slice milestone (`V3-003`). Stages 2 through 5, meta-progression, audio mastering, and final packaging remain required prior to commercial release approval.
+- **Android Hardware Status:** **`NOT_TESTED`**. Performance and touch ergonomics were validated under PC windowed 1280×720 landscape mode with mouse touch emulation. Physical Android SoC thermal profiling, touch digitizer latency, and Vulkan mobile driver compatibility have not yet been evaluated.
+
+---
+
+## 4. Next Phase & Backlog Handoff
+
+- **Next Milestone:** Task `V3-004` — Stage 2 (*Beastwood Gorge*) Implementation.
+  - Apply Option C rigid plane clamping to Stage 2 player/enemy kinematics.
+  - Carry forward CanvasLayer 100 mobile touch controls.
+  - Audit sightlines for woodland trees and overhang arches to ensure zero combat occlusion.
+  - Complete remaining minor polish items (`ISSUE-V3-001-04` audio cues, `ISSUE-V3-001-06` hitstop tuning).
