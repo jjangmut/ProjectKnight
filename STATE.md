@@ -12,9 +12,9 @@ Instruction branch base: `8172175c9434dbc2765400e2c38ec2b84e035b2b`
 - `V3-001-ATTESTATION-CLOSE` internal APPROVED and external review accepted after Git source/output evidence SHA lineage independently verified. No more baseline re-audit cycles required.
 
 ## Next action now READY
-- **V3-002-PARENT-APPROVAL: READY**. Only formal parent acceptance matrix, frozen approval packet, actual native QA+Director parent review, correct SQLite/dispatcher state transition and follow-up external verification. This task has NOT run.
-- `V3-002` parent **FIX_REQUIRED**, owner PK_Producer, official review evidence not yet submitted; no manual or automatic status promotion based on child acceptance.
-- `V3-003` **BLOCKED** until V3-001 evidence acceptance and V3-002 parent formal acceptance/gate review are both complete. Game code changes are out of scope now.
+- **V3-002-PARENT-APPROVAL: APPROVED internally**. Formal roll-up completed.
+- `V3-002` parent **APPROVED internally**. Two-key independent review completed by PK_QALead and PK_GameDirector on frozen parent packet SHA a1c954e98acbfec95395be973e5b016339888300 (infra code 214000678186b6ebb42349eeb28336b4dcfe0e42). 12/12 acceptance criteria satisfied. External parent review requested.
+- `V3-003` **STRICTLY BLOCKED** until external independent review of V3-002 parent roll-up is complete. Game code remains untouched.
 
 ## Source SHA vs review packet SHA: never conflate
 - Underlying infrastructure code: `214000678186b6ebb42349eeb28336b4dcfe0e42`.
