@@ -1,8 +1,31 @@
 {
   "version": 3,
-  "branch": "studio/v3-001-attestation-close",
+  "branch": "studio/v3-002-parent-approval",
   "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
+    {
+      "id": "V3-002-PARENT-APPROVAL",
+      "title": "Formal V3-002 parent milestone approval via frozen acceptance matrix and two fresh native reviews",
+      "status": "READY",
+      "owner": "PK_Producer",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -8,
+      "active_branch": "studio/v3-002-parent-approval",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Task instruction STUDIO_V3/tasks/V3-002-PARENT-APPROVAL.md. Prepare frozen parent acceptance packet, verify original V3-002 requirements against source 21400067, seek two new verified native QA/Director sessions on packet SHA. Parent V3-002 must be transitioned via actual dispatcher; this registration is NOT approval. Keep V3-003 BLOCKED."
+    },
     {
       "id": "V3-001-ATTESTATION-CLOSE",
       "title": "Close V3-001 frozen evidence vs post-review report SHA misattribution",
@@ -891,7 +914,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Historical internal APPROVED for baseline audit. External evidence acceptance awaits attestation-close correction. Game has 7 open issues incl 3 P1, not release approved; Option C implementation pending."
+      "notes": "Internal APPROVED and external baseline audit evidence ACCEPTED via V3-001-ATTESTATION-CLOSE independent review. This is AUDIT completeness only; game client NOT_APPROVED (3 open gameplay P1)."
     },
     {
       "id": "V3-002",
@@ -912,13 +935,13 @@
       "reviews": {},
       "iteration": 1,
       "priority": 1,
-      "active_branch": "",
+      "active_branch": "studio/v3-002-parent-approval",
       "current_commit_sha": "",
       "version": 7,
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Parent milestone roll-up separately pending despite child V3-002-CLOSE external acceptance. Do not auto approve."
+      "notes": "Formal milestone roll-up PENDING. Immutable accepted infrastructure source 214000678186b6ebb42349eeb28336b4dcfe0e42. Child V3-002-CLOSE external ACCEPTED, but parent requires new QA and Director reviews of frozen parent packet SHA via genuine dispatcher; no auto approval. See V3-002-PARENT-APPROVAL."
     },
     {
       "id": "V3-003",
@@ -944,7 +967,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Still BLOCKED until V3-001 external audit evidence accepted AND parent V3-002 formally approved. Canonical game backlog 7 issues (P1 3/P2 2/P3 2)."
+      "notes": "Game implementation must remain BLOCKED pending V3-002 parent proper two-key + external rollup acceptance, even though V3-001 audit external evidence accepted. Stage1 game still has P1=3, P2=2, P3=2 open issues; do not confuse game's NOT_APPROVED release status with baseline-audit acceptance."
     },
     {
       "id": "FIXTURE-V3-LIVE-002",
