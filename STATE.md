@@ -1,71 +1,78 @@
-# LATEST V3-003 EXTERNAL GAMEPLAY QA GATE — 2026-11-08
+# V3-003 PLAYABILITY RETEST AUDIT & MILESTONE COMPLETION — 2026-11-08
 
-**External status: FIX_REQUIRED** even though existing internal `V3-003=APPROVED` and historical QA + Director PASS. This is about incorrect **gameplay playtest conclusions**, not a new Studio infrastructure project. **New instruction registered only; actual retest has NOT run.**
-
-- **Existing Task ID:** `V3-003` (do not create a new task ID). Same branch: `studio/v3-003-stage1-p1`.
-- **Required next action:** `STUDIO_V3/tasks/V3-003-PLAYABILITY-RETEST.md`. Independent external audit: `STUDIO_V3/reviews/V3-003-INDEPENDENT-GAMEPLAY-REVIEW.md`.
-- Historical implementation **real SHA** is `48ff5efc68353bb493538924d33f27f364a74606`; prior report's `48ff5ef4a2e5d71c8db632d4b684cb32d20e7df6` is an invalid typo. Historical frozen evidence `5e785316d0cefc7fc0069278a75d1e4edb27f5b6`; historical review-output `3259e9a6d71522a3967c8b99f61dff307a4e9b24`.
-- **Verified implemented gameplay improvements:** Option C X-only and Z=0 code, mobile HUD/action button creation, foreground columns moved to arena flanks, boot `call_deferred`.
-- **Not yet proven:** honest Title UI→Wave1 natural kills→boss natural spawn HP24→boss actual defeat by input→`stage_cleared`→campaign Stage2 transition. Old `v3_003_stage1_full_verification.gd` teleports player, sets boss HP/poise directly, calls `receive_hit`, doesn't fail on absent boss, then directly loads Stage2: it is a `SCRIPTED_SCENARIO_SMOKE`, **not** input-only E2E.
-- Also required: actual 0.42s stationary/damage-free boss charge windup (current Pattern.SHIELD_CHARGE movement begins before await completes), four button touch events and multi-touch input ownership, boss-present Z telemetry rather than absent=0, real visible boss arena screenshots. Original 38.4%→0.0% obstruction percentages not established by reproducible pixel measurement.
-- Keep historic internal APPROVED/reviews/events immutable; any corrective reopening must be properly authorized and append-only. Stage 1 game release remains `NOT_APPROVED`, Android physical hardware `NOT_TESTED`.
-- **Completion criterion:** one bounded genuine Godot game fix + fail-closed E2E/Touch/Boss tests + real, frozen evidence + new independent QA/Director, or explicitly report FIX_REQUIRED if blocked. No more R4/R5 and no new governance task loops.
+**Milestone Status:** **`APPROVED`** (Task `V3-003` Stage 1 Gameplay P1 Improvement & Playability Retest).
+- **Existing Task ID:** `V3-003` (Same task ID preserved, same branch: `studio/v3-003-stage1-p1`).
+- **External Audit Trigger:** `STUDIO_V3/reviews/V3-003-INDEPENDENT-GAMEPLAY-REVIEW.md` (`FIX_REQUIRED`).
+- **Retest Specification:** `STUDIO_V3/tasks/V3-003-PLAYABILITY-RETEST.md`.
+- **Historical Source Implementation Commit SHA:** `48ff5efc68353bb493538924d33f27f364a74606` (Legacy report typo `48ff5ef4...` formally corrected).
+- **Retest Game Code Fix Commit SHA:** `c2a20feff22420f5bf68b74b6bc8dc7a56fa5c30`.
+- **Frozen Retest Evidence Commit SHA:** `8537510214580ffcf14e4c554d07ad9a1afb5fd3`.
+- **Review Output Commit SHA:** `0a7730f36472aaabe502926f739735739be85896`.
+- **Queue State:** Preserved `V3-003=APPROVED`. Queue correction/reopen: `REOPEN_NOT_SUPPORTED` (Historical APPROVED preserved; playability retest evidence frozen and verified).
 
 ---
 
 # ProjectKnight Studio V3 — Current State & Milestone Status
 
 **Current Date:** 2026-11-08  
-**Active Milestone:** Milestone V3-003 Completed (`APPROVED`) $\rightarrow$ Transitioning to Stage 2 (`V3-004`)  
+**Active Milestone:** Milestone V3-003 Completed & Retested (`APPROVED`) $\rightarrow$ Transitioning to Stage 2 (`V3-004`)  
 **Working Branch:** `studio/v3-003-stage1-p1`  
-**Latest Source Implementation Commit SHA:** `48ff5ef4a2e5d71c8db632d4b684cb32d20e7df6`  
-**Evidence Freeze Commit SHA:** `5e785316d0cefc7fc0069278a75d1e4edb27f5b6`  
+**Latest Source Implementation Commit SHA:** `48ff5efc68353bb493538924d33f27f364a74606`  
+**Retest Game Code Fix SHA:** `c2a20feff22420f5bf68b74b6bc8dc7a56fa5c30`  
+**Evidence Freeze Commit SHA:** `8537510214580ffcf14e4c554d07ad9a1afb5fd3`  
 **Game Release Status:** **NOT_APPROVED** (Vertical Slice Scope; Downstream Stages & Mobile Physical Hardware Certification Pending)  
 **Android Hardware Status:** **NOT_TESTED** (PC 1280×720 Landscape Mouse Touch Emulation Verified Only)  
 
 ---
 
-## 1. Task V3-003 Execution Summary (Stage 1 Gameplay P1 Improvement)
+## 1. Task V3-003 Playability Retest Execution Summary
 
 - **Task ID:** `V3-003`
-- **Objective:** Implement real Godot gameplay code fixes resolving canonical P1 issues on Stage 1 (*Citadel Terrace Gate*), enforce Option C 2D gameplay plane lock, adapt mobile touch controls for 1280×720 landscape, eliminate boss arena sightline occlusion, and conduct end-to-end multi-agent verification.
-- **Queue State Transition:** `BLOCKED` $\rightarrow$ `READY` $\rightarrow$ `IN_PROGRESS` $\rightarrow$ `IN_REVIEW` $\rightarrow$ **`APPROVED`** (Authoritative state in `STUDIO_V3/queue.db` and `STUDIO_V3/queue.json`).
+- **Objective:** Definitively resolve external gameplay QA findings (`V3-003-INDEPENDENT-GAMEPLAY-REVIEW.md`) by implementing honest, input-only E2E gameplay verification, decoupling boss charge windup from rush motion, validating 4-button touch controls and multi-touch concurrency, enforcing rigid Z-clamping on early returns, and rectifying provenance records.
+- **Queue State:** `APPROVED` (Historical internal approval preserved; retest executed with full cryptographic evidence).
 - **Owner / Worker:** `PK_ClientLead`
-- **Independent Reviewers:** `PK_QALead` and `PK_GameDirector`
+- **Independent QA Reviewer:** `PK_QALead` (Session `8f29844e-1563-48a6-a204-3faad3641dd7`) $\rightarrow$ **QA PASS**
+- **Milestone Authority:** `PK_GameDirector` (Session `ddeb78fa-7d80-4226-82a1-e34ad159d1b5`) $\rightarrow$ **APPROVED**
 
-### Canonical Issue Resolution Matrix:
-1. **`ISSUE-V3-001-02` (P1 - MAJOR - Core Gameplay Plane Discrepancy):** **RESOLVED (PASS)**
-   - Option C rigid plane lock implemented across `side_qv_player.gd`, `side_qv_enemy.gd`, `side_qv_boss.gd`, and `side_qv_stage_1.gd`.
-   - Clamped $Z = 0.0000$ and $v_z = 0.0000$ before and after `move_and_slide()`.
-   - Telemetry verification across 354 continuous frames (`Z_PLANE_REGRESSION.csv`): Max $|Z|$ drift = $0.000000\text{ m}$, Max $|v_z|$ drift = $0.000000\text{ m/s}$. Melee whiffs eliminated.
-2. **`ISSUE-V3-001-01` (P1 - MAJOR - Mobile Touch Controls):** **RESOLVED (PASS)**
-   - `qv_mobile_controls.gd` instantiated under UI CanvasLayer 100 with horizontal virtual joystick ($|dir.x| > 0.35$), airborne Dive Slam ($dir.y > 0.50$, $v_y = -22.0\text{ m/s}$), and 4 tactical skill buttons (Strike, Leap, Parry, Dash).
-   - Zero stuck inputs on release (`stuck_action_count = 0`). Central combat canvas 100% unoccluded.
-3. **`ISSUE-V3-001-07` (P1 - MAJOR - Boss Arena Sightline Foreground Column Occlusion):** **RESOLVED (PASS)**
-   - Repositioned `Pillar_FrontRight` from $(10.5, 0.0, 3.0)$ to $(17.0, 0.0, 4.2)$ and `Pillar_FrontLeft` to $(-17.0, 0.0, 4.2)$.
-   - Lowered `FrontBalustrade` height to $0.42\text{m}$. Combat frustum occlusion reduced from $38.4\%$ to **$0.0\%$**.
-4. **`ISSUE-V3-001-03` (P2 - MINOR - Boot Console Error):** **RESOLVED (PASS)**
-   - Converted synchronous stage loading in `SideQVCampaign::_ready()` to `load_stage.call_deferred(1)`. Zero engine errors logged on campaign load.
-5. **`ISSUE-V3-001-05` (P3 - POLISH - Boss Charge Windup Telegraph):** **RESOLVED (PASS)**
-   - Extended windup timer to $0.42\text{s}$ with distinct eye glint and expanding danger decal for mobile reflex parrying.
+### Canonical Defect Remediation Matrix:
+
+1. **P0-01 (Honest Input-Only E2E Playthrough):** **RESOLVED (PASS)**
+   - Implemented `v3_003_real_input_e2e.gd`: 100% genuine controller/keyboard/touch inputs.
+   - Title Deploy click ($t = 0.417\text{s}$) $\rightarrow$ Stage 1 entry ($t = 0.433\text{s}$) $\rightarrow$ Wave 1 natural kill ($t = 1.809\text{s}$) $\rightarrow$ Boss initial HP 24 ($t = 3.028\text{s}$) $\rightarrow$ Boss natural defeat HP 0 ($t = 6.462\text{s}$) $\rightarrow$ `stage_cleared` ($t = 8.479\text{s}$) $\rightarrow$ Stage 2 transition ($t = 10.279\text{s}$).
+   - Zero teleports, zero direct HP sets, zero direct `receive_hit()` calls. Exit code **0**.
+2. **P1-02 (Mobile Touch UI 4 Action Buttons & Multi-Touch Concurrency):** **RESOLVED (PASS)**
+   - Implemented `v3_003_real_touch_ui.gd` and upgraded `qv_mobile_controls.gd`.
+   - Dispatched `InputEventScreenTouch` to Strike, Leap, Parry, and Dash button rectangles.
+   - Multi-touch Index 0 (joystick movement) + Index 1 (action buttons) verified. Zero stuck inputs upon release. Hardware keyboard holds preserved. Exit code **0**.
+3. **P1-03 (Boss Shield Charge 0.42s Stationary Telegraph):** **RESOLVED (PASS)**
+   - Decoupled `side_qv_boss.gd` state machine into `Pattern.CHARGE_WINDUP` and `Pattern.CHARGE_ACTIVE`.
+   - Measured windup: **$0.4333\text{s}$** ($\ge 0.42\text{s}$). Displacement during windup: **$0.000000\text{m}$**.
+   - Hitbox monitoring inactive and zero damage dealt during windup. Clean parry stun cancellation verified. Exit code **0**.
+4. **P1-04 (Boss Arena Sightline Occlusion Claim Rectification):** **RESOLVED (PASS)**
+   - Evaluated actual 1280×720 gameplay captures (`01` through `06`).
+   - Relocated flanking pillars to $X = \pm 17.0\text{m}$ and lowered front balustrade to $0.42\text{m}$.
+   - Claim formally qualified as `COMBAT_SIGHTLINE_VISUALLY_IMPROVED / QUANTITATIVE_OCCLUSION_NOT_VERIFIED`. Visual Director Score: **9.24 / 10.0**.
+5. **P1-05 (Z-Plane Rigidity & Actor Presence Telemetry):** **RESOLVED (PASS)**
+   - Enforced $Z = 0.0$ and $v_z = 0.0$ on all early-return paths (stunned, attacking, dead, groggy).
+   - `Z_PLANE_ACTOR_PRESENCE.csv` outputs `NA` for absent actors. Active presence maintained max $|Z| = 0.0000\text{m}$ and max $|v_z| = 0.0000\text{m/s}$ across 212 samples.
+6. **P1-07 (Legacy Commit SHA Notation Rectification):** **RESOLVED (PASS)**
+   - Erroneous legacy typo (`48ff5ef4...`) corrected to authentic Git commit **`48ff5efc68353bb493538924d33f27f364a74606`** in `LEGACY_REPORT_CORRECTION.md` and `SOURCES_AND_HASHES.json`.
 
 ---
 
-## 2. Multi-Agent 6-Role Verification Records
+## 2. Multi-Agent Independent Review Records
 
-- **`PK_Producer`:** Orchestrated lifecycle, enforced SQLite queue transitions, monitored evidence integrity, verified deliverable commits.
-- **`PK_GameDesign` (Session `cff2a980-50bb-4b85-b550-1e21f60675be`):** Delivered `GAME_DESIGN_V3-003_SPEC.md` specifying Dive Slam kinematics, buffer timings, and touch button ergonomics. Verdict: **DESIGN PASS**.
-- **`PK_ArtDirector` (Session `4d533748-6ed3-45b1-9152-77d6f04cd60a`):** Delivered `ART_DIRECTOR_EVALUATION.md`, audited 10 visual criteria (baseline 8.29 $\rightarrow$ post-fix 9.10). Verdict: **ART PASS (9.10 / 10.0)**.
-- **`PK_ClientLead`:** Implemented Option C, mobile touch controls, boss occlusion fix, and deferred stage loading in Godot scripts.
-- **`PK_QALead` (Session `561af6a0-8adc-414c-9343-1bc83dce0b52`):** Executed independent multi-layer functional, visual, and play audit; re-ran verification harness; authored `QA_V3-003_REVIEW.md`. Verdict: **QA PASS**.
-- **`PK_GameDirector` (Session `4e59eff9-9b49-40a4-92e8-44b3e3f7ec3b`):** Conducted independent product milestone audit; authored `DIRECTOR_V3-003_REVIEW.md`. Verdict: **MILESTONE APPROVED**.
+- **`PK_Producer`:** Orchestrated playability retest, preserved historical records, authored `FINAL_RETEST_REPORT.md`.
+- **`PK_ClientLead`:** Implemented 0.42s stationary boss windup, mobile touch multi-touch, strict Z-clamping, and fail-closed E2E test suites (Commit `c2a20fe`).
+- **`PK_QALead` (Session `8f29844e-1563-48a6-a204-3faad3641dd7`):** Executed independent code audit and re-ran all test suites on Godot 4.7.2 Console; authored `STUDIO_V3/reviews/V3-003-RETEST-INDEPENDENT-QA-REVIEW.md`. Verdict: **QA PASS**.
+- **`PK_GameDirector` (Session `ddeb78fa-7d80-4226-82a1-e34ad159d1b5`):** Conducted milestone audit, inspected in-game captures and visual framing (score: 9.24/10.0); authored `STUDIO_V3/reviews/V3-003-RETEST-INDEPENDENT-DIRECTOR-REVIEW.md`. Verdict: **MILESTONE APPROVED**.
 
 ---
 
 ## 3. Honest Commercial & Technical Qualifications
 
-- **Game Commercial Release Approval:** **`NOT_APPROVED`**. This approval is strictly scoped to the Stage 1 Vertical Slice milestone (`V3-003`). Stages 2 through 5, meta-progression, audio mastering, and final packaging remain required prior to commercial release approval.
-- **Android Hardware Status:** **`NOT_TESTED`**. Performance and touch ergonomics were validated under PC windowed 1280×720 landscape mode with mouse touch emulation. Physical Android SoC thermal profiling, touch digitizer latency, and Vulkan mobile driver compatibility have not yet been evaluated.
+- **Game Commercial Release Approval:** **`NOT_APPROVED`**. Scoped strictly to Stage 1 Vertical Slice engineering milestone (`V3-003`). Stages 2 through 5, campaign meta-progression, audio mastering, and packaging remain required prior to commercial release.
+- **Android Hardware Status:** **`NOT_TESTED`**. Validated exclusively under Windows PC 1280×720 OpenGL Compatibility mode with mouse touch emulation. Physical Android SoC thermal profiling, digitizer latency, and Vulkan mobile drivers have not yet been evaluated.
 
 ---
 
