@@ -136,10 +136,9 @@ func _sync_stage_bounds() -> void:
 			var w: float = float(p.get("arena_width"))
 			stage_min_x = -w * 0.5 + 1.0
 			stage_max_x = w * 0.5 - 1.0
-		if "arena_depth" in p:
-			var d: float = float(p.get("arena_depth"))
-			stage_min_z = -d * 0.5 + 0.8
-			stage_max_z = d * 0.5 - 0.8
+		# Option C: Enforce strictly 2D gameplay plane at Z = 0.0
+		stage_min_z = 0.0
+		stage_max_z = 0.0
 
 
 func _build_components() -> void:
@@ -268,9 +267,13 @@ func _physics_process(delta: float) -> void:
 		State.HURT:
 			_process_hurt_state(delta)
 
-	# Prevent pushing into monsters: firm stop upon body contact without bouncing
+	# Option C: Enforce strict Z=0 before and after move_and_slide
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_prevent_enemy_pushing()
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_clamp_arena_bounds()
 	_update_character_animation(delta)
 
@@ -278,7 +281,9 @@ func _physics_process(delta: float) -> void:
 func _clamp_arena_bounds() -> void:
 	_sync_stage_bounds()
 	global_position.x = clampf(global_position.x, stage_min_x, stage_max_x)
-	global_position.z = clampf(global_position.z, stage_min_z, stage_max_z)
+	# Option C: Zero Z drift
+	global_position.z = 0.0
+	velocity.z = 0.0
 	if global_position.y < 0.0:
 		global_position.y = 0.0
 		if velocity.y < 0.0:
@@ -286,22 +291,21 @@ func _clamp_arena_bounds() -> void:
 
 
 func _prevent_enemy_pushing() -> void:
-	# Avoid sliding into or pushing monsters; halt clean on contact boundary
+	# Avoid sliding into or pushing monsters; halt clean on contact boundary (Option C X-only)
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
 			continue
 		var enemy_3d := enemy as Node3D
-		var diff: Vector3 = enemy_3d.global_position - global_position
-		diff.y = 0.0
-		var dist: float = diff.length()
+		var diff_x: float = enemy_3d.global_position.x - global_position.x
+		var dist_x: float = absf(diff_x)
 		var enemy_radius: float = 0.60 if enemy_3d.is_in_group("bosses") else 0.40
 		var min_dist: float = 0.35 + enemy_radius + 0.06
-		if dist < min_dist and dist > 0.001:
-			var dir: Vector3 = diff / dist
-			var vel_towards: float = velocity.dot(dir)
-			if vel_towards > 0.0:
-				velocity -= dir * vel_towards
+		if dist_x < min_dist and dist_x > 0.001:
+			var dir_x: float = signf(diff_x)
+			if velocity.x * dir_x > 0.0:
+				velocity.x = 0.0
+	velocity.z = 0.0
 
 
 func _update_timers(delta: float) -> void:
@@ -347,33 +351,25 @@ func _update_timers(delta: float) -> void:
 
 
 func _process_movement(delta: float) -> void:
-	var input_vec := Vector3.ZERO
+	var input_x := 0.0
 	if Input.is_action_pressed("move_left"):
-		input_vec.x -= 1.0
+		input_x -= 1.0
 	if Input.is_action_pressed("move_right"):
-		input_vec.x += 1.0
-	if Input.is_action_pressed("move_up"):
-		input_vec.z -= 1.0
-	if Input.is_action_pressed("move_down"):
-		input_vec.z += 1.0
+		input_x += 1.0
 
-	# Side Quarter-View Movement
-	if input_vec.x != 0.0:
-		facing_dir_x = signf(input_vec.x)
-		# Flip attack and guard offsets
+	# Option C: Fixed 2D side-scroller movement on X/Y (Z strictly locked to 0)
+	if input_x != 0.0:
+		facing_dir_x = signf(input_x)
 		attack_area_3d.position.x = 1.0 * facing_dir_x
 		guard_barrier_3d.position.x = 0.6 * facing_dir_x
 		slash_visual_3d.position.x = 1.15 * facing_dir_x
-
-	if input_vec != Vector3.ZERO:
-		var norm := input_vec.normalized()
-		velocity.x = norm.x * move_speed_x
-		velocity.z = norm.z * move_speed_z
-		move_direction = norm
+		velocity.x = input_x * move_speed_x
+		velocity.z = 0.0
+		move_direction = Vector3(facing_dir_x, 0.0, 0.0)
 		_set_state(State.MOVE)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, 45.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 45.0 * delta)
+		velocity.z = 0.0
 		move_direction = Vector3.ZERO
 		_set_state(State.IDLE)
 
@@ -384,7 +380,7 @@ func _process_movement(delta: float) -> void:
 		start_jump()
 	elif (Input.is_action_just_pressed("attack") or attack_buffer_timer > 0.0) and attack_cooldown <= 0.0:
 		attack_buffer_timer = 0.0
-		if not is_on_floor() and (Input.is_action_pressed("move_down") or move_direction.z > 0.35):
+		if not is_on_floor() and (Input.is_action_pressed("move_down") or global_position.y >= 0.35 and Input.is_action_pressed("move_down")):
 			start_dive_slam()
 		else:
 			start_attack()
@@ -407,9 +403,9 @@ func start_dash() -> void:
 	ghost_timer = 0.0
 	is_invulnerable = true
 	dash_hit_enemies.clear()
-	var dash_dir := move_direction if move_direction != Vector3.ZERO else Vector3(facing_dir_x, 0, 0)
+	var dash_dir := Vector3(facing_dir_x, 0.0, 0.0)
 	velocity.x = dash_dir.x * dash_speed
-	velocity.z = dash_dir.z * dash_speed
+	velocity.z = 0.0
 	_set_state(State.DASH)
 	_spawn_dash_ghost()
 	if has_engraving("thunder_step"):

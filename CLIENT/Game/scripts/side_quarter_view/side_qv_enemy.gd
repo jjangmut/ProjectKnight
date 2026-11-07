@@ -180,19 +180,26 @@ func _physics_process(delta: float) -> void:
 		attack_area_3d.position.x = 0.6 * signf(dir.x)
 
 	var combat_standoff_distance := 1.25 # Standoff distance: clean stop without pushing
-	if dist > combat_standoff_distance:
-		# Pursue player in 3D isometric plane
-		velocity.x = dir.x * move_speed
-		velocity.z = dir.z * (move_speed * 0.7)
+	var diff_x := target_player.global_position.x - global_position.x
+	var dist_x := absf(diff_x)
+	var dir_x := signf(diff_x) if dist_x > 0.01 else -1.0
+	if dist_x > combat_standoff_distance:
+		# Option C: Pursue player purely along horizontal X on Z=0 plane
+		velocity.x = dir_x * move_speed
+		velocity.z = 0.0
 		_prevent_player_pushing()
 	else:
 		# Firm stop in front of player (no pushing, no bouncing)
 		velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+		velocity.z = 0.0
 		if current_cooldown <= 0.0:
 			_execute_attack()
 
+	velocity.z = 0.0
+	global_position.z = 0.0
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_update_enemy_animation(delta)
 
 

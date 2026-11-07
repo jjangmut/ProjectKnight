@@ -37,7 +37,8 @@ var ui_layer: CanvasLayer
 
 func _ready() -> void:
 	_setup_ui()
-	load_stage(start_stage_index)
+	# Fix ISSUE-V3-001-03: Defer stage load to prevent 'add_child() called while parent node busy'
+	load_stage.call_deferred(start_stage_index)
 
 
 func _setup_ui() -> void:

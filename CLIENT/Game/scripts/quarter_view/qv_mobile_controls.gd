@@ -83,10 +83,10 @@ func _build_ui() -> void:
 	action_container.position = Vector2(1015.0, 535.0)
 	root_control.add_child(action_container)
 
-	btn_attack = _create_tactical_skill_button("⚔ STRIKE\n공격", Vector2(12.0, 8.0), Vector2(82.0, 82.0), Color("38141c"), Color("ff3b5c"), "attack", "S1 · COMBO")
-	btn_guard = _create_tactical_skill_button("🛡 PARRY\n방어", Vector2(-82.0, -34.0), Vector2(70.0, 70.0), Color("102638"), Color("00e5ff"), "guard", "S2 · 0.14s")
-	btn_dash = _create_tactical_skill_button("💨 DASH\n회피", Vector2(-74.0, 48.0), Vector2(70.0, 70.0), Color("0e2a24"), Color("34d399"), "dash", "S3 · EVADE")
-	btn_jump = _create_tactical_skill_button("▲ LEAP\n점프", Vector2(18.0, -76.0), Vector2(68.0, 68.0), Color("261c0c"), Color("ffb800"), "jump", "MOBILITY")
+	btn_attack = _create_tactical_skill_button("⚔ STRIKE\n공격", Vector2(65.0, 35.0), Vector2(88.0, 88.0), Color("38141c"), Color("ff3b5c"), "attack", "S1 · COMBO")
+	btn_guard = _create_tactical_skill_button("🛡 PARRY\n방어", Vector2(-95.0, -15.0), Vector2(74.0, 74.0), Color("102638"), Color("00e5ff"), "guard", "S2 · 0.14s")
+	btn_dash = _create_tactical_skill_button("💨 DASH\n회피", Vector2(-85.0, 65.0), Vector2(74.0, 74.0), Color("0e2a24"), Color("34d399"), "dash", "S3 · EVADE")
+	btn_jump = _create_tactical_skill_button("▲ LEAP\n점프", Vector2(-5.0, -55.0), Vector2(74.0, 74.0), Color("261c0c"), Color("ffb800"), "jump", "MOBILITY")
 
 	action_container.add_child(btn_attack)
 	action_container.add_child(btn_guard)
@@ -155,7 +155,7 @@ func _input(event: InputEvent) -> void:
 
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			if event.position.x < 500.0 and event.position.y > 350.0:
+			if event.position.x < 550.0 and event.position.y > 320.0:
 				is_dragging = true
 				drag_touch_index = event.index
 				_update_joystick(event.position)
@@ -165,6 +165,21 @@ func _input(event: InputEvent) -> void:
 
 	elif event is InputEventScreenDrag:
 		if is_dragging and event.index == drag_touch_index:
+			_update_joystick(event.position)
+
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if event.position.x < 550.0 and event.position.y > 320.0:
+					is_dragging = true
+					drag_touch_index = 999
+					_update_joystick(event.position)
+			else:
+				if drag_touch_index == 999:
+					_reset_joystick()
+
+	elif event is InputEventMouseMotion:
+		if is_dragging and drag_touch_index == 999:
 			_update_joystick(event.position)
 
 
@@ -184,29 +199,27 @@ func _update_joystick(touch_pos: Vector2) -> void:
 
 
 func _emulate_direction(dir: Vector2, strength: float) -> void:
-	if strength < 0.2:
+	if strength < 0.15:
 		_release_all_moves()
 		return
 
-	if dir.x < -0.38:
+	# Option C: Left / Right horizontal control
+	if dir.x < -0.35:
 		Input.action_press("move_left")
 		Input.action_release("move_right")
-	elif dir.x > 0.38:
+	elif dir.x > 0.35:
 		Input.action_press("move_right")
 		Input.action_release("move_left")
 	else:
 		Input.action_release("move_left")
 		Input.action_release("move_right")
 
-	if dir.y < -0.38:
-		Input.action_press("move_up")
-		Input.action_release("move_down")
-	elif dir.y > 0.38:
+	# Option C: Downward threshold enables airborne Dive Slam, zero ground Z drift
+	if dir.y > 0.50:
 		Input.action_press("move_down")
-		Input.action_release("move_up")
 	else:
-		Input.action_release("move_up")
 		Input.action_release("move_down")
+	Input.action_release("move_up")
 
 
 func _reset_joystick() -> void:
@@ -223,6 +236,18 @@ func _release_all_moves() -> void:
 	Input.action_release("move_down")
 
 
+func _release_all_actions() -> void:
+	_release_all_moves()
+	Input.action_release("attack")
+	Input.action_release("guard")
+	Input.action_release("dash")
+	Input.action_release("jump")
+
+
+func _exit_tree() -> void:
+	_release_all_actions()
+
+
 func _on_toggle_pressed() -> void:
 	is_controls_visible = not is_controls_visible
 	var joy = get_node_or_null("RootHUD/JoystickContainer")
@@ -233,4 +258,5 @@ func _on_toggle_pressed() -> void:
 		act.visible = is_controls_visible
 	if not is_controls_visible:
 		_reset_joystick()
+		_release_all_actions()
 	btn_toggle.text = "📱 패드 ON" if not is_controls_visible else "📱 패드 OFF"

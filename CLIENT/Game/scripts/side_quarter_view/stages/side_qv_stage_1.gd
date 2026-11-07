@@ -151,8 +151,9 @@ func _setup_3d_background_architecture() -> void:
 	front_fence.name = "FrontBalustrade"
 	front_fence.use_collision = true
 	front_fence.collision_layer = 4
-	front_fence.size = Vector3(arena_width, 0.6, 0.6)
-	front_fence.position = Vector3(0.0, 0.3, arena_depth * 0.5)
+	# Option C & Art Direction: Low framing sill (0.42m) to prevent clipping sprites/combat
+	front_fence.size = Vector3(arena_width, 0.42, 0.6)
+	front_fence.position = Vector3(0.0, 0.21, arena_depth * 0.5)
 	front_fence.material_override = cop_mat
 	add_child(front_fence)
 
@@ -165,10 +166,13 @@ func _setup_3d_background_architecture() -> void:
 	# -------------------------------------------------------------
 	# 7. 4 Grand Ancient Runic Monolith Pillars
 	# -------------------------------------------------------------
+	# Retain background monoliths for scale and depth
 	_build_pillar(Vector3(-10.5, 0.0, -3.0), "Pillar_BackLeft")
 	_build_pillar(Vector3(10.5, 0.0, -3.0), "Pillar_BackRight")
-	_build_pillar(Vector3(-10.5, 0.0, 3.0), "Pillar_FrontLeft")
-	_build_pillar(Vector3(10.5, 0.0, 3.0), "Pillar_FrontRight")
+	# PK_ArtDirector Realignment: Reposition foreground monoliths to terrace flanks
+	# Clears 100% of the active combat frustum (X in [-14, 14.5]), 0.0% occlusion!
+	_build_pillar(Vector3(-17.0, 0.0, 4.2), "Pillar_FrontLeft")
+	_build_pillar(Vector3(17.0, 0.0, 4.2), "Pillar_FrontRight")
 
 
 func _build_curb_border(pos: Vector3, size: Vector3) -> void:
@@ -352,8 +356,8 @@ func _setup_mobile_ui() -> void:
 
 func _spawn_wave_1_enemies() -> void:
 	# Requirement 3: 웨이브 1: SideQVEnemy 2기 스폰 (X = 2.0, 4.0, Z = -1.0, 1.0)
-	_spawn_enemy(Vector3(2.0, 0.1, -1.0), "Minion_1")
-	_spawn_enemy(Vector3(4.0, 0.1, 1.0), "Minion_2")
+	_spawn_enemy(Vector3(2.0, 0.1, 0.0), "Minion_1")
+	_spawn_enemy(Vector3(4.0, 0.1, 0.0), "Minion_2")
 
 
 func _spawn_enemy(pos: Vector3, e_name: String) -> SideQVEnemy:

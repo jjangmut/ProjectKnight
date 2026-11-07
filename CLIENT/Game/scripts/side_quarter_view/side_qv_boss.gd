@@ -177,13 +177,15 @@ func _physics_process(delta: float) -> void:
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
 				var boss_combat_distance := 1.85 # Reach of heavy boss blade; halt to avoid pushing
-				if dist > boss_combat_distance:
+				var dist_x: float = absf(diff.x)
+				if dist_x > boss_combat_distance:
+					# Option C: Chase strictly along horizontal X axis on Z=0
 					velocity.x = facing_dir_x * spd
-					velocity.z = diff.normalized().z * (spd * 0.7)
+					velocity.z = 0.0
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+					velocity.z = 0.0
 		Pattern.SHIELD_CHARGE:
 			velocity.x = facing_dir_x * charge_speed
 			velocity.z = 0.0
@@ -207,7 +209,11 @@ func _physics_process(delta: float) -> void:
 				current_pattern = Pattern.CHASE
 				pattern_timer = 1.2
 
+	velocity.z = 0.0
+	global_position.z = 0.0
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_update_boss_animation(delta)
 
 
@@ -374,10 +380,11 @@ func _exit_groggy_state() -> void:
 
 func _execute_shield_charge() -> void:
 	current_pattern = Pattern.SHIELD_CHARGE
-	pattern_timer = 1.15
-	_show_danger_telegraph(0.35)
+	pattern_timer = 1.25
+	# PK_GameDesign standard: 0.42s windup telegraph for mobile touch reaction
+	_show_danger_telegraph(0.42)
 	velocity = Vector3.ZERO
-	await get_tree().create_timer(0.35).timeout
+	await get_tree().create_timer(0.42).timeout
 	if not is_instance_valid(self) or is_stunned or is_groggy:
 		return
 	sprite_3d.texture = BossTextureDefense
