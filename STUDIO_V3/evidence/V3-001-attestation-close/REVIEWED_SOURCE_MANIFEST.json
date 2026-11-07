@@ -1,0 +1,67 @@
+{
+  "manifest_schema_version": "1.0",
+  "task_id": "V3-001-ATTESTATION-CLOSE",
+  "manifest_type": "REVIEWED_SOURCE_MANIFEST",
+  "description": "Cryptographically verified list of pre-review source evidence artifacts strictly committed in frozen commit c55714745ac15776d5ffa449da6058da3dd777ea.",
+  "frozen_source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+  "verification_timestamp": "2026-11-07T01:50:00Z",
+  "file_count": 7,
+  "artifacts": [
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/performance/PERFORMANCE_METHOD.md",
+      "sha256": "583ac707db071207b94c37f22b27497d7f4700393bf329a19b6ef48b67cbcf75",
+      "size_bytes": 8950,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Mathematical formulation and root-cause analysis of 60 Hz physics loop sampling vs 240 FPS engine render monitor."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/performance/analysis.py",
+      "sha256": "8f5d97fa73cf18ac0c83fc73d22e54344b51a87ffa5fa618df2548bdb75d7366",
+      "size_bytes": 7968,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Executable telemetry verification script processing all 14,404 samples from original raw_frames.csv."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/performance/analysis_output.json",
+      "sha256": "36b9131ac8185d235055d8ba320040c9901ca226688c95ab8b1d1f24c8a87ef1",
+      "size_bytes": 8808,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Machine-readable telemetry output confirming 238.34 overall mean FPS, 60.03 Hz physics rate, and sector distributions."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/performance/benchmark_source/benchmark_stage1_windowed.gd",
+      "sha256": "6ef89c7bf6d7df2adac1de9c136356bfe921e6f13c7eee8b61bf7246cee85516",
+      "size_bytes": 11483,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Authentic GDScript benchmark harness proving SceneTree._physics_process sampling cadence."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md",
+      "sha256": "b846fe4729e2fd28b85082361d1eb6e968a3280b62b4ff29d6c4c8405b614724",
+      "size_bytes": 8628,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Canonical backlog containing 7 unique defects (3 P1, 2 P2, 2 P3) with ISSUE-02 formally DECIDED / IMPLEMENTATION_PENDING."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/ISSUE_RECONCILIATION.md",
+      "sha256": "76b113a6bcaad03ba6e3a880a1a1c480312ee20f71a5c1e4ebae45a79a4f7b9a",
+      "size_bytes": 5556,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Governance report resolving 6 vs 7 discrepancy, deduplicating ISSUE-07, and articulating Option C status."
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-001-reconcile/CAPTURE_MANIFEST.json",
+      "sha256": "576fc9b65e766dede660b0f8f51cada1834b7a74cd375dcbb815920cbfb2d8aa",
+      "size_bytes": 8585,
+      "source_commit_sha": "c55714745ac15776d5ffa449da6058da3dd777ea",
+      "git_blob_verified": true,
+      "description": "Cryptographic ledger confirming existence, 1280x720 resolution, and SHA256 hashes of all 11 original PNG captures."
+    }
+  ]
+}

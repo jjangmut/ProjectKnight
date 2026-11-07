@@ -1,0 +1,74 @@
+=== ProjectKnight Studio V3 — Attestation Veracity Verification Log ===
+Execution root: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight
+Frozen source SHA: c55714745ac15776d5ffa449da6058da3dd777ea
+Post-review output SHA: 0d99e2b0da5ecd30cff8641348ba4ed3e897423b
+
+$ git diff --name-status c55714745ac15776d5ffa449da6058da3dd777ea 0d99e2b0da5ecd30cff8641348ba4ed3e897423b
+Exit code: 0
+STDOUT:
+M	STUDIO_V3/events.jsonl
+A	STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md
+A	STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md
+A	STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md
+M	STUDIO_V3/queue.json
+
+$ git ls-tree -r --name-only c55714745ac15776d5ffa449da6058da3dd777ea -- STUDIO_V3/evidence/V3-001-reconcile/
+Exit code: 0
+STDOUT:
+STUDIO_V3/evidence/V3-001-reconcile/CAPTURE_MANIFEST.json
+STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md
+STUDIO_V3/evidence/V3-001-reconcile/ISSUE_RECONCILIATION.md
+STUDIO_V3/evidence/V3-001-reconcile/performance/PERFORMANCE_METHOD.md
+STUDIO_V3/evidence/V3-001-reconcile/performance/analysis.py
+STUDIO_V3/evidence/V3-001-reconcile/performance/analysis_output.json
+STUDIO_V3/evidence/V3-001-reconcile/performance/benchmark_source/benchmark_stage1_windowed.gd
+
+--- Testing post-review files against frozen commit (MUST FAIL) ---
+$ git cat-file -e c55714745ac15776d5ffa449da6058da3dd777ea:STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md
+Exit code: 128 (Expected 128)
+STDERR:
+fatal: path 'STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md' exists on disk, but not in 'c55714745ac15776d5ffa449da6058da3dd777ea'
+
+$ git cat-file -e c55714745ac15776d5ffa449da6058da3dd777ea:STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md
+Exit code: 128 (Expected 128)
+STDERR:
+fatal: path 'STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md' exists on disk, but not in 'c55714745ac15776d5ffa449da6058da3dd777ea'
+
+$ git cat-file -e c55714745ac15776d5ffa449da6058da3dd777ea:STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md
+Exit code: 128 (Expected 128)
+STDERR:
+fatal: path 'STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md' exists on disk, but not in 'c55714745ac15776d5ffa449da6058da3dd777ea'
+
+--- Testing post-review files against output commit (MUST SUCCEED) ---
+$ git cat-file -e 0d99e2b0da5ecd30cff8641348ba4ed3e897423b:STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md
+Exit code: 0 (Expected 0)
+
+$ git cat-file -e 0d99e2b0da5ecd30cff8641348ba4ed3e897423b:STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md
+Exit code: 0 (Expected 0)
+
+$ git cat-file -e 0d99e2b0da5ecd30cff8641348ba4ed3e897423b:STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md
+Exit code: 0 (Expected 0)
+
+--- Git Blob SHA256 Verification for 7 Source Files (Frozen SHA) ---
+OK: STUDIO_V3/evidence/V3-001-reconcile/performance/PERFORMANCE_METHOD.md
+    Bytes: 8950, SHA256: 583ac707db071207b94c37f22b27497d7f4700393bf329a19b6ef48b67cbcf75
+OK: STUDIO_V3/evidence/V3-001-reconcile/performance/analysis.py
+    Bytes: 7968, SHA256: 8f5d97fa73cf18ac0c83fc73d22e54344b51a87ffa5fa618df2548bdb75d7366
+OK: STUDIO_V3/evidence/V3-001-reconcile/performance/analysis_output.json
+    Bytes: 8808, SHA256: 36b9131ac8185d235055d8ba320040c9901ca226688c95ab8b1d1f24c8a87ef1
+OK: STUDIO_V3/evidence/V3-001-reconcile/performance/benchmark_source/benchmark_stage1_windowed.gd
+    Bytes: 11483, SHA256: 6ef89c7bf6d7df2adac1de9c136356bfe921e6f13c7eee8b61bf7246cee85516
+OK: STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md
+    Bytes: 8628, SHA256: b846fe4729e2fd28b85082361d1eb6e968a3280b62b4ff29d6c4c8405b614724
+OK: STUDIO_V3/evidence/V3-001-reconcile/ISSUE_RECONCILIATION.md
+    Bytes: 5556, SHA256: 76b113a6bcaad03ba6e3a880a1a1c480312ee20f71a5c1e4ebae45a79a4f7b9a
+OK: STUDIO_V3/evidence/V3-001-reconcile/CAPTURE_MANIFEST.json
+    Bytes: 8585, SHA256: 576fc9b65e766dede660b0f8f51cada1834b7a74cd375dcbb815920cbfb2d8aa
+
+--- Git Blob SHA256 Verification for 3 Post-Review Files (Output SHA) ---
+OK: STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md
+    Bytes: 9986, SHA256: b2bf312cc7f27c13176cd473d0f43060d62bf57e41fdc8b9fe0c5cfa23971ef3
+OK: STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md
+    Bytes: 13187, SHA256: c39f09d25b41219bca5113dac1f658e557968d1db6dfdbb75e0393078d5e48c5
+OK: STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md
+    Bytes: 7701, SHA256: 2ec03ecbcd6d25e461803d817a2d00bbf017a9904933fe8c80aac24f81db4205

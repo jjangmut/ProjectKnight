@@ -1,0 +1,26 @@
+=== ProjectKnight Studio V3 — Negative Provenance Tests ===
+Execution root: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight
+Frozen source SHA: c55714745ac15776d5ffa449da6058da3dd777ea
+
+Test 1: Provenance Gate rejects post-review files asserted in frozen commit c557147
+Result: PASS. Gate successfully rejected all 3 post-review files from frozen commit.
+  - Correctly rejected: STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md
+  - Correctly rejected: STUDIO_V3/evidence/V3-001-reconcile/DIRECTOR_ADDENDUM.md
+  - Correctly rejected: STUDIO_V3/evidence/V3-001-reconcile/FINAL_RECONCILIATION_REPORT.md
+
+Test 2: Working tree existence does not bypass commit tree verification
+Result: PASS. File exists on disk, but commit tree lookup correctly returned code 128.
+  - Target file: STUDIO_V3/evidence/V3-001-reconcile/QA_ADDENDUM.md (on-disk=True, git-blob=False)
+
+Test 3: Forged SHA256 checksum or fabricated path rejection
+Result: PASS. Cryptographic hash comparison detected mismatch against forged SHA.
+  - Real SHA256:   583ac707db071207b94c37f22b27497d7f4700393bf329a19b6ef48b67cbcf75
+  - Forged SHA256: 0000000000000000000000000000000000000000000000000000000000000000
+
+Test 4: Strict immutability of CLIENT/Game/ source tree
+Result: PASS. Zero diff in CLIENT/Game/ between working tree, origin, and baseline.
+
+Test 5: Strict immutability of historical raw_frames.csv and 11 PNG captures
+Result: PASS. Zero diff in raw_frames.csv and 11 PNG captures.
+
+Summary: 5/5 Negative Provenance Tests PASSED.
