@@ -1,8 +1,31 @@
 {
   "version": 3,
-  "branch": "studio/v3-002-parent-approval",
+  "branch": "studio/v3-002-parent-gate-reconcile",
   "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
+    {
+      "id": "V3-002-PARENT-GATE-RECONCILE",
+      "title": "Reconcile wrapper review-less approval, six-agent native discovery, parent approval provenance",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -9,
+      "active_branch": "studio/v3-002-parent-gate-reconcile",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "External independent review correction. Canonical spec STUDIO_V3/tasks/V3-002-PARENT-GATE-RECONCILE.md. Parent V3-002 remains internally APPROVED but externally FIX_REQUIRED; wrapper task APPROVED reviews={} is INVALID FOR GATING until audited correction. One pass only, no game/system rebuild."
+    },
     {
       "id": "V3-002-PARENT-APPROVAL",
       "title": "Formal V3-002 parent milestone approval via frozen acceptance matrix and two fresh native reviews",
@@ -104,7 +127,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Completed. Parent milestone V3-002 officially transitioned to APPROVED via verified two-key independent reviews."
+      "notes": "HISTORICAL DATA INCONSISTENCY: marked APPROVED with reviews={} and no self-task review events; external independent review FIX_REQUIRED. This historical record must be corrected via authorized SQLite/audit migration, NOT direct JSON string editing. See task V3-002-PARENT-GATE-RECONCILE."
     },
     {
       "id": "V3-001-ATTESTATION-CLOSE",
@@ -1156,7 +1179,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Parent milestone V3-002 officially APPROVED via formal two-key independent review (PK_QALead & PK_GameDirector) on frozen review packet SHA a1c954e98acbfec95395be973e5b016339888300 (infra SHA 214000678186b6ebb42349eeb28336b4dcfe0e42). 12/12 acceptance criteria satisfied."
+      "notes": "Parent V3-002 remains historical internal APPROVED with two recorded native QA/Director PASS on a1c954e9, but EXTERNAL parent roll-up = FIX_REQUIRED pending three governance/evidence findings; do not convert parent's own proven reviews to wrapper reviews or treat as external acceptance."
     },
     {
       "id": "V3-003",
@@ -1182,7 +1205,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Game implementation must remain BLOCKED pending V3-002 parent proper two-key + external rollup acceptance, even though V3-001 audit external evidence accepted. Stage1 game still has P1=3, P2=2, P3=2 open issues; do not confuse game's NOT_APPROVED release status with baseline-audit acceptance."
+      "notes": "BLOCKED: baseline V3-001 external audit evidence accepted, but V3-002 parent external acceptance pending governance correction. Game still has three P1 issues; not a release approval. V3-003 requires explicit later authorization."
     },
     {
       "id": "FIXTURE-V3-LIVE-002",
