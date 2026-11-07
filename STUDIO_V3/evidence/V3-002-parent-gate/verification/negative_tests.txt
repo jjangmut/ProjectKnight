@@ -1,0 +1,18 @@
+=== NEGATIVE INVARIANT TEST SUITE ===
+Execution root: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight
+
+NEG-01: Task V3-002-PARENT-APPROVAL pre-correction status=APPROVED, reviews={}
+Result: ok=False, reason=INVARIANT_VIOLATION: Task V3-002-PARENT-APPROVAL is APPROVED but reviews dictionary is empty.
+VERDICT: PASS (Correctly identified approval violation on wrapper task)
+
+NEG-02: Task SYNTH-TEST-02 reviewers=['PK_QALead', 'PK_GameDirector'], reviews=['PK_QALead']
+Result: ok=False, reason=INVARIANT_VIOLATION: Task SYNTH-TEST-02 is APPROVED but lacks review for designated reviewer 'PK_GameDirector'.
+VERDICT: PASS (Correctly identified missing designated reviewer)
+
+NEG-03: Task SYNTH-TEST-03 current_commit_sha=commit_aaa, review_sha=commit_bbb
+Result: ok=False, reason=INVARIANT_VIOLATION: Task SYNTH-TEST-03 reviewer 'PK_QALead' commit SHA mismatch: commit_bbb != commit_aaa.
+VERDICT: PASS (Correctly identified commit SHA mismatch)
+
+NEG-04: Task SYNTH-TEST-04 QA session=shared_uuid_999, Director session=shared_uuid_999
+Result: ok=False, reason=INVARIANT_VIOLATION: Task SYNTH-TEST-04 reviewers share duplicate session ID 'shared_uuid_999'. Independent agents required.
+VERDICT: PASS (Correctly identified duplicate session ID between independent reviewers)

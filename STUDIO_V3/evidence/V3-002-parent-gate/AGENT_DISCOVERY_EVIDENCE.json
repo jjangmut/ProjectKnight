@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "document_id": "AGENT_DISCOVERY_EVIDENCE.json",
+  "task_reference": "V3-002-PARENT-GATE-RECONCILE",
+  "finding_addressed": "P1-02",
+  "audit_timestamp": "2026-11-08T01:19:00Z",
+  "environment": {
+    "os": "Windows 11",
+    "git_version": "git version 2.54.0.windows.1",
+    "ide_runtime": "Google Antigravity IDE (Multi-Agent Subagent Architecture)",
+    "standalone_cli_installed": false,
+    "standalone_cli_name": "agy",
+    "cli_status": "NOT_AVAILABLE (exit code 1, CommandNotFoundException)"
+  },
+  "summary": {
+    "total_roles_required": 6,
+    "ide_runtime_discoverable": 6,
+    "standalone_cli_discoverable": 0,
+    "verdict": "PARTIAL / QUALIFIED PASS (IDE-Native Verified 6/6, Standalone CLI Not Available)"
+  },
+  "roles": [
+    {
+      "role_name": "PK_Producer",
+      "title": "Studio V3 state and dispatch controller",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_Producer.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_Producer.md",
+      "sha256": "5e618734ab867b6044516b38dd8fe39b07d94aa0c634c443c1aaf5b46195c375",
+      "byte_size": 2569,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "ACTIVE_PARENT_COORDINATOR"
+    },
+    {
+      "role_name": "PK_ClientLead",
+      "title": "Lead Godot client programmer",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_ClientLead.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_ClientLead.md",
+      "sha256": "6cd17634ff228e0ce4b8839fb9bdcbae625b82b84d2b7893c933068c6581018d",
+      "byte_size": 1099,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "VERIFIED_INVOKED",
+      "sample_sessions": [
+        "08110bfb-2e50-44d8-baf9-6b0e66620127",
+        "4c4d4157-85fd-4b96-84d3-f6c317a03275",
+        "727a24d2-a989-41fe-a717-36605a315001"
+      ]
+    },
+    {
+      "role_name": "PK_QALead",
+      "title": "Independent QA Lead",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_QALead.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_QALead.md",
+      "sha256": "9dbeafb52cb56f700d1a4f092c4d8bc713e17379c50bdca3ab83570007d84930",
+      "byte_size": 1198,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "VERIFIED_INVOKED",
+      "sample_sessions": [
+        "53d225b8-dd5c-4de4-abd7-5b6357230ef3",
+        "437a514d-4678-4067-a374-9ce22713391c",
+        "3aa4a1d0-4972-4750-852f-04e2675be74f"
+      ]
+    },
+    {
+      "role_name": "PK_GameDirector",
+      "title": "Product and Milestone Authority",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_GameDirector.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_GameDirector.md",
+      "sha256": "29643381bd3b45d3294fc4e08c2a7c0cd39bf7282342cd31b5b1da8de8076947",
+      "byte_size": 1154,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "VERIFIED_INVOKED",
+      "sample_sessions": [
+        "72bc5ed2-6777-460d-b6b4-b418d34b0ffd",
+        "786a9ea1-032b-4655-83a1-ca7b990d0e03",
+        "178b4ee7-d8b6-4b9b-8310-4db576501a4b"
+      ]
+    },
+    {
+      "role_name": "PK_GameDesign",
+      "title": "Lead game designer",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_GameDesign.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_GameDesign.md",
+      "sha256": "a83a7666366d6cc9636afd3275d0743a8b026f7418561eb4b37ea0c277eeffc9",
+      "byte_size": 1067,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "CONFIGURED_READY_FOR_STAGE_PRODUCTION"
+    },
+    {
+      "role_name": "PK_ArtDirector",
+      "title": "Visual quality director",
+      "definition_path_workspace": "D:\\JUNYPAPA_STUDIO\\.agents\\agents\\PK_ArtDirector.md",
+      "definition_path_repo": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight\\.agents\\agents\\PK_ArtDirector.md",
+      "sha256": "22964cc5a8c4512eec53fc3839f2556b69b7fa1cf84acf017f2eb8dcb0503493",
+      "byte_size": 1118,
+      "runtime_schema_registered": true,
+      "ide_runtime_listed": true,
+      "cli_discoverable": false,
+      "operational_status": "CONFIGURED_READY_FOR_STAGE_PRODUCTION"
+    }
+  ]
+}
