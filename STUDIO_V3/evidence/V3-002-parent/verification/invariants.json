@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "V3-002-PARENT-APPROVAL",
+  "parent_milestone": "V3-002",
+  "infra_source_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "infra_source_ancestor_verified": true,
+  "infra_code_diff_lines": 0,
+  "infra_source_blobs_verified": "17/17",
+  "python_tests_total": 57,
+  "python_tests_status": "57/57 PASS",
+  "godot_tests_total": 74,
+  "godot_tests_status": "74/74 PASS (Isolated Stamina Fixture)",
+  "game_source_base_sha": "a71223615d0b77e36dd85edb24e138fc67ecc140",
+  "game_source_modified_lines": 0,
+  "game_client_release_readiness": "NOT_APPROVED (3 P1 Blockers Open)",
+  "canonical_gameplay_defects": 7,
+  "v3_001_audit_evidence_accepted": true,
+  "v3_002_close_child_accepted": true,
+  "live_multi_agent_workflow": "VERIFIED (IDE-Native Subagent Bridge)",
+  "standalone_headless_autonomy": "NOT_VERIFIED (Documented Architecture Boundary)",
+  "parent_v3_002_roll_up_ready": true
+}

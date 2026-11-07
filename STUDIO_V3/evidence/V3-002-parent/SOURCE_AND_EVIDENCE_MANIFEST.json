@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "task_id": "V3-002",
+  "parent_task_id": "V3-002",
+  "manifest_type": "PARENT_SOURCE_AND_EVIDENCE_MANIFEST",
+  "description": "Cryptographically verified two-tier manifest for V3-002 parent milestone roll-up: separating frozen infrastructure code from historical audit evidence.",
+  "infrastructure_source_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+  "infrastructure_source": [
+    {
+      "path": "STUDIO_V3/orchestrator/dispatcher.py",
+      "sha256": "0ad09d1dc0efb6450014516494e2de690b5d58d8faa0b359d727866e6ebb7444",
+      "size_bytes": 31038,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Task dispatch, state transitions, lease management, review validation"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/policies.py",
+      "sha256": "4814571012decbf741a3f7a75634d16f4bb27b658293afca83c33520616d23d9",
+      "size_bytes": 21167,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Approval policies, Git provenance gates, two-key verification, blocker prevention"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/queue_store.py",
+      "sha256": "43fbb11a61e9fb31425012b2903e654be7873bfd4af59f7c967159221ee1edd8",
+      "size_bytes": 32352,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "SQLite state authority, task queue, invocation registry, JSON export"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/event_log.py",
+      "sha256": "0427951544fd772c549971fda05e6ccd10867097f93e4c5d75449980e8071afa",
+      "size_bytes": 2268,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Append-only JSONL audit event logging"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/schemas.py",
+      "sha256": "1288f04862ac2e350ce39616b10aceb539543b875c20e61a982975faccfc3322",
+      "size_bytes": 8739,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Data models for Tasks, Invocations, Reviews, Issues, Severities"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/runner.py",
+      "sha256": "a1cc7da2b6e7e80eaba0ae71bf63dbec63971aceda4a60a1ab1bf17a2adc4c1c",
+      "size_bytes": 9096,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Task execution lifecycle, worktree management, iteration bounds"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/adapters/base.py",
+      "sha256": "8dc6a935c490ee178fba97507305415c39caf2d21b67ce9cc399760f9d3f0be5",
+      "size_bytes": 1154,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Abstract base agent adapter interface"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/adapters/subagent_bridge.py",
+      "sha256": "2a2bd39df34791f56bfa42b0829890bbf7f9be7fddb7e44e536d5d6b65eefadf",
+      "size_bytes": 13187,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Antigravity IDE native subagent transcript bridge and terminal state parsing"
+    },
+    {
+      "path": "STUDIO_V3/orchestrator/adapters/mock.py",
+      "sha256": "3d236e59439fc01fd172ff39855d70c37e8e4653169bba9772e17b01d42e235a",
+      "size_bytes": 3398,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Deterministic simulated mock adapter strictly isolated for testing"
+    },
+    {
+      "path": "STUDIO_V3/tests/test_v3_002_closure_gate.py",
+      "sha256": "ed13b992526c7f6be5e9bbcc05b67b128d128f798ed61b4a844394720b7ba9b2",
+      "size_bytes": 18584,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Comprehensive regression suite verifying V3-002 closure defects"
+    },
+    {
+      "path": "STUDIO_V3/docs/NATIVE_PRODUCER_RUNBOOK.md",
+      "sha256": "66795a7dca3ba02ba1e9d5d66428ff109464588a815b92924c5ad3a243c551e4",
+      "size_bytes": 8742,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Runbook for IDE-native multi-agent orchestration and review routing"
+    },
+    {
+      "path": ".agents/agents/PK_Producer.md",
+      "sha256": "5e618734ab867b6044516b38dd8fe39b07d94aa0c634c443c1aaf5b46195c375",
+      "size_bytes": 2569,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Producer agent definition"
+    },
+    {
+      "path": ".agents/agents/PK_GameDirector.md",
+      "sha256": "29643381bd3b45d3294fc4e08c2a7c0cd39bf7282342cd31b5b1da8de8076947",
+      "size_bytes": 1154,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Game Director agent definition"
+    },
+    {
+      "path": ".agents/agents/PK_QALead.md",
+      "sha256": "9dbeafb52cb56f700d1a4f092c4d8bc713e17379c50bdca3ab83570007d84930",
+      "size_bytes": 1198,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "QA Lead agent definition"
+    },
+    {
+      "path": ".agents/agents/PK_ClientLead.md",
+      "sha256": "6cd17634ff228e0ce4b8839fb9bdcbae625b82b84d2b7893c933068c6581018d",
+      "size_bytes": 1099,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Client Lead agent definition"
+    },
+    {
+      "path": ".agents/agents/PK_GameDesign.md",
+      "sha256": "a83a7666366d6cc9636afd3275d0743a8b026f7418561eb4b37ea0c277eeffc9",
+      "size_bytes": 1067,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Game Design agent definition"
+    },
+    {
+      "path": ".agents/agents/PK_ArtDirector.md",
+      "sha256": "22964cc5a8c4512eec53fc3839f2556b69b7fa1cf84acf017f2eb8dcb0503493",
+      "size_bytes": 1118,
+      "source_commit_sha": "214000678186b6ebb42349eeb28336b4dcfe0e42",
+      "role": "Art Director agent definition"
+    }
+  ],
+  "historical_evidence": [
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/python_tests_raw.log",
+      "sha256": "71a55f8968f9076f3f103873ca154374745dc52edff33665b51708ce1711888d",
+      "size_bytes": 13438,
+      "evidence_type": "AUTOMATED_UNIT_TEST_LOG",
+      "description": "Raw Python 3.11 test suite log proving 57/57 tests PASS with exit code 0"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/test_logs/godot_tests_raw.log",
+      "sha256": "92391dabbba0ff2d758e5b3f49df89f0bf9b70b040642a2ea6b52c0a94e63689",
+      "size_bytes": 7942,
+      "evidence_type": "GODOT_STAMINA_FIXTURE_TEST_LOG",
+      "description": "Raw Godot 4.7.2 test runner log proving 74/74 isolated stamina fixture checks PASS with exit code 0"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/qa_verdict.json",
+      "sha256": "7af4c6c3929fd5b8f7bbbe47402bdad9954519141aec12b0e4086fc225693bd0",
+      "size_bytes": 683,
+      "evidence_type": "INDEPENDENT_QA_VERDICT",
+      "description": "PK_QALead independent sign-off verdict for V3-002-CLOSE child task"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/director_verdict.json",
+      "sha256": "8fdb03cf32c549bd5412262b6a8470c7bbcff76d4fcaebdaafc412469e713626",
+      "size_bytes": 689,
+      "evidence_type": "INDEPENDENT_DIRECTOR_VERDICT",
+      "description": "PK_GameDirector independent sign-off verdict for V3-002-CLOSE child task"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-002-CLOSE/infrastructure_review/provider_provenance.json",
+      "sha256": "5c0184a6b63e51ede8c290980e49ab6cb25deae79dcfdc29826f791a8d35a157",
+      "size_bytes": 1298,
+      "evidence_type": "PROVIDER_PROVENANCE_RECORD",
+      "description": "Execution provenance for V3-002-CLOSE child task"
+    },
+    {
+      "path": "STUDIO_V3/reviews/V3-002-CLOSE-INDEPENDENT-REVIEW.md",
+      "sha256": "1b90686011e853d553359d9a3408c6ca7898eddbc9746a58693d400192aea48d",
+      "size_bytes": 5648,
+      "evidence_type": "EXTERNAL_INDEPENDENT_REVIEW",
+      "description": "External independent review formally accepting V3-002-CLOSE scoped implementation"
+    },
+    {
+      "path": "STUDIO_V3/reviews/V3-001-ATTESTATION-CLOSE-INDEPENDENT-REVIEW.md",
+      "sha256": "75febd68ffc70fa93d69f8b71170d4d8e7a69f7e9173abdc762d84c25e01dfc0",
+      "size_bytes": 7084,
+      "evidence_type": "EXTERNAL_INDEPENDENT_REVIEW",
+      "description": "External independent review formally accepting V3-001 audit baseline reconciliation"
+    }
+  ]
+}
