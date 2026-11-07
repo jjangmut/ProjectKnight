@@ -6,6 +6,8 @@ class_name QVMobileControls
 ## - 우측 상단: '📱 택티컬 덱 ON/OFF' 스위치
 
 var is_controls_visible: bool = true
+var _button_actions: Dictionary = {}
+var _touch_to_action: Dictionary = {}
 var joystick_base: Panel
 var joystick_knob: Panel
 var is_dragging: bool = false
@@ -144,8 +146,9 @@ func _create_tactical_skill_button(label_text: String, local_pos: Vector2, btn_s
 	sub_tag.add_theme_color_override("font_color", rim_col)
 	btn.add_child(sub_tag)
 
-	btn.button_down.connect(func(): Input.action_press(action_name))
-	btn.button_up.connect(func(): Input.action_release(action_name))
+	_button_actions[btn] = action_name
+	btn.button_down.connect(func(): _press_virtual_action(action_name))
+	btn.button_up.connect(func(): _release_virtual_action(action_name))
 	return btn
 
 
@@ -155,11 +158,25 @@ func _input(event: InputEvent) -> void:
 
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			if event.position.x < 550.0 and event.position.y > 320.0:
-				is_dragging = true
-				drag_touch_index = event.index
-				_update_joystick(event.position)
+			var hit_btn := false
+			for btn in _button_actions.keys():
+				if btn is Button and is_instance_valid(btn) and btn.is_visible_in_tree():
+					if btn.get_global_rect().has_point(event.position):
+						var act_name: String = _button_actions[btn]
+						_touch_to_action[event.index] = act_name
+						_press_virtual_action(act_name)
+						hit_btn = true
+						break
+			if not hit_btn:
+				if event.position.x < 550.0 and event.position.y > 320.0:
+					is_dragging = true
+					drag_touch_index = event.index
+					_update_joystick(event.position)
 		else:
+			if _touch_to_action.has(event.index):
+				var act_name: String = _touch_to_action[event.index]
+				_touch_to_action.erase(event.index)
+				_release_virtual_action(act_name)
 			if event.index == drag_touch_index:
 				_reset_joystick()
 
@@ -198,6 +215,38 @@ func _update_joystick(touch_pos: Vector2) -> void:
 	_emulate_direction(dir, dist / joystick_max_radius)
 
 
+var _touch_active_actions: Dictionary = {}
+
+func _press_virtual_action(action: String) -> void:
+	_touch_active_actions[action] = true
+	Input.action_press(action)
+
+func _release_virtual_action(action: String) -> void:
+	if _touch_active_actions.get(action, false):
+		_touch_active_actions[action] = false
+		if not _is_hardware_action_pressed(action):
+			Input.action_release(action)
+
+func _is_hardware_action_pressed(action: String) -> bool:
+	if not InputMap.has_action(action):
+		return false
+	for ev in InputMap.action_get_events(action):
+		if ev is InputEventKey:
+			var key_ev := ev as InputEventKey
+			if key_ev.physical_keycode != KEY_NONE and Input.is_physical_key_pressed(key_ev.physical_keycode):
+				return true
+			if key_ev.keycode != KEY_NONE and Input.is_key_pressed(key_ev.keycode):
+				return true
+		elif ev is InputEventMouseButton:
+			var mb_ev := ev as InputEventMouseButton
+			if Input.is_mouse_button_pressed(mb_ev.button_index):
+				return true
+		elif ev is InputEventJoypadButton:
+			var jb_ev := ev as InputEventJoypadButton
+			if Input.is_joy_button_pressed(0, jb_ev.button_index):
+				return true
+	return false
+
 func _emulate_direction(dir: Vector2, strength: float) -> void:
 	if strength < 0.15:
 		_release_all_moves()
@@ -205,21 +254,21 @@ func _emulate_direction(dir: Vector2, strength: float) -> void:
 
 	# Option C: Left / Right horizontal control
 	if dir.x < -0.35:
-		Input.action_press("move_left")
-		Input.action_release("move_right")
+		_press_virtual_action("move_left")
+		_release_virtual_action("move_right")
 	elif dir.x > 0.35:
-		Input.action_press("move_right")
-		Input.action_release("move_left")
+		_press_virtual_action("move_right")
+		_release_virtual_action("move_left")
 	else:
-		Input.action_release("move_left")
-		Input.action_release("move_right")
+		_release_virtual_action("move_left")
+		_release_virtual_action("move_right")
 
 	# Option C: Downward threshold enables airborne Dive Slam, zero ground Z drift
 	if dir.y > 0.50:
-		Input.action_press("move_down")
+		_press_virtual_action("move_down")
 	else:
-		Input.action_release("move_down")
-	Input.action_release("move_up")
+		_release_virtual_action("move_down")
+	_release_virtual_action("move_up")
 
 
 func _reset_joystick() -> void:
@@ -230,18 +279,19 @@ func _reset_joystick() -> void:
 
 
 func _release_all_moves() -> void:
-	Input.action_release("move_left")
-	Input.action_release("move_right")
-	Input.action_release("move_up")
-	Input.action_release("move_down")
+	_release_virtual_action("move_left")
+	_release_virtual_action("move_right")
+	_release_virtual_action("move_up")
+	_release_virtual_action("move_down")
 
 
 func _release_all_actions() -> void:
+	_touch_to_action.clear()
 	_release_all_moves()
-	Input.action_release("attack")
-	Input.action_release("guard")
-	Input.action_release("dash")
-	Input.action_release("jump")
+	_release_virtual_action("attack")
+	_release_virtual_action("guard")
+	_release_virtual_action("dash")
+	_release_virtual_action("jump")
 
 
 func _exit_tree() -> void:

@@ -247,8 +247,11 @@ func _physics_process(delta: float) -> void:
 
 	if is_dead or current_state == State.DEAD:
 		velocity.x = move_toward(velocity.x, 0.0, 40.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 40.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_clamp_arena_bounds()
 		_update_character_animation(delta)
 		return

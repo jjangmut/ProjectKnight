@@ -130,16 +130,21 @@ const ATTACK_DURATION: float = 0.28
 
 
 func _physics_process(delta: float) -> void:
+	velocity.z = 0.0
+	global_position.z = 0.0
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
 	if is_stunned:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
@@ -149,7 +154,8 @@ func _physics_process(delta: float) -> void:
 	if is_attacking:
 		attack_timer += delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		if attack_timer >= 0.08 and attack_timer < 0.22:
 			attack_area_3d.monitoring = true
 		else:
@@ -159,6 +165,8 @@ func _physics_process(delta: float) -> void:
 			is_attacking = false
 			attack_area_3d.monitoring = false
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
@@ -166,7 +174,10 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 

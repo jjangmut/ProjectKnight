@@ -13,9 +13,17 @@ enum Pattern {
 	CHASE,
 	TRIPLE_CLEAVE,
 	SHIELD_CHARGE,
+	CHARGE_WINDUP,
+	CHARGE_ACTIVE,
 	QUAKE_RING,
 	STUNNED
 }
+
+# Shield Charge Timing & State Machine Metrics
+var charge_windup_timer: float = 0.0
+var charge_windup_started_at: float = 0.0
+var charge_motion_started_at: float = 0.0
+var first_damage_at: float = 0.0
 
 @export var max_hp: int = 24
 @export var current_hp: int = 24
@@ -126,6 +134,8 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	velocity.z = 0.0
+	global_position.z = 0.0
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -136,17 +146,24 @@ func _physics_process(delta: float) -> void:
 		if groggy_timer <= 0.0:
 			_exit_groggy_state()
 		velocity = Vector3.ZERO
+		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
 	if current_pattern == Pattern.STUNNED:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 15.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 15.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -154,7 +171,10 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -186,14 +206,29 @@ func _physics_process(delta: float) -> void:
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
 					velocity.z = 0.0
-		Pattern.SHIELD_CHARGE:
+		Pattern.CHARGE_WINDUP:
+			velocity.x = 0.0
+			velocity.z = 0.0
+			attack_area_3d.monitoring = false
+			charge_windup_timer -= delta
+			if charge_windup_timer <= 0.0:
+				current_pattern = Pattern.CHARGE_ACTIVE
+				charge_motion_started_at = Time.get_ticks_msec() / 1000.0
+				pattern_timer = 0.75
+				sprite_3d.texture = BossTextureDefense
+				attack_area_3d.monitoring = true
+
+		Pattern.CHARGE_ACTIVE, Pattern.SHIELD_CHARGE:
 			velocity.x = facing_dir_x * charge_speed
 			velocity.z = 0.0
 			# Stop charge upon contact with player
 			if dist <= 0.60 + 0.35 + 0.15:
+				if first_damage_at == 0.0:
+					first_damage_at = Time.get_ticks_msec() / 1000.0
 				_execute_charge_impact()
 			if pattern_timer <= 0.0:
 				sprite_3d.texture = BossTextureNormal
+				attack_area_3d.monitoring = false
 				current_pattern = Pattern.CHASE
 				pattern_timer = 0.8
 		Pattern.TRIPLE_CLEAVE:
@@ -256,7 +291,11 @@ func _update_boss_animation(delta: float) -> void:
 			sprite_3d.texture = BossTextureNormal
 			start_frame = 4 # Row 1 Walk
 			fps = 8.0
-		Pattern.SHIELD_CHARGE:
+		Pattern.CHARGE_WINDUP:
+			sprite_3d.texture = BossTextureDefense
+			start_frame = 0
+			fps = 6.0
+		Pattern.CHARGE_ACTIVE, Pattern.SHIELD_CHARGE:
 			sprite_3d.texture = BossTextureDefense
 			start_frame = 0 # Row 0 Guard
 			fps = 10.0
@@ -333,6 +372,7 @@ func _enter_groggy_state() -> void:
 	is_groggy = true
 	groggy_timer = 3.0
 	current_pattern = Pattern.STUNNED
+	charge_windup_timer = 0.0
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 	sprite_3d.texture = BossTextureDefense
@@ -379,21 +419,16 @@ func _exit_groggy_state() -> void:
 
 
 func _execute_shield_charge() -> void:
-	current_pattern = Pattern.SHIELD_CHARGE
+	current_pattern = Pattern.CHARGE_WINDUP
+	charge_windup_timer = 0.42
 	pattern_timer = 1.25
-	# PK_GameDesign standard: 0.42s windup telegraph for mobile touch reaction
+	charge_windup_started_at = Time.get_ticks_msec() / 1000.0
+	charge_motion_started_at = 0.0
+	first_damage_at = 0.0
+	# PK_GameDesign standard: 0.42s stationary windup telegraph before any rush motion
 	_show_danger_telegraph(0.42)
 	velocity = Vector3.ZERO
-	await get_tree().create_timer(0.42).timeout
-	if not is_instance_valid(self) or is_stunned or is_groggy:
-		return
-	sprite_3d.texture = BossTextureDefense
-	attack_area_3d.monitoring = true
-
-	await get_tree().create_timer(0.7).timeout
-	if is_instance_valid(self):
-		attack_area_3d.monitoring = false
-		sprite_3d.texture = BossTextureNormal
+	attack_area_3d.monitoring = false
 
 
 func _execute_triple_cleave() -> void:
@@ -481,6 +516,7 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 			_enter_groggy_state()
 			return
 	current_pattern = Pattern.STUNNED
+	charge_windup_timer = 0.0
 	stun_timer = duration
 	velocity = Vector3.ZERO # Firm stop on clash; no slide or bounce
 	attack_area_3d.monitoring = false

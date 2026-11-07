@@ -42,9 +42,9 @@ static func ensure_manager(context: Object) -> Node:
 	var new_mgr: Node = script.new()
 	new_mgr.name = "AudioManager"
 	if context is SceneTree:
-		context.root.add_child(new_mgr)
+		context.root.add_child.call_deferred(new_mgr)
 	elif context is Node and context.get_tree() != null:
-		context.get_tree().root.add_child(new_mgr)
+		context.get_tree().root.add_child.call_deferred(new_mgr)
 	_instance = new_mgr
 	return _instance
 
