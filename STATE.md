@@ -1,3 +1,18 @@
+# LATEST V3-003 EXTERNAL GAMEPLAY QA GATE — 2026-11-08
+
+**External status: FIX_REQUIRED** even though existing internal `V3-003=APPROVED` and historical QA + Director PASS. This is about incorrect **gameplay playtest conclusions**, not a new Studio infrastructure project. **New instruction registered only; actual retest has NOT run.**
+
+- **Existing Task ID:** `V3-003` (do not create a new task ID). Same branch: `studio/v3-003-stage1-p1`.
+- **Required next action:** `STUDIO_V3/tasks/V3-003-PLAYABILITY-RETEST.md`. Independent external audit: `STUDIO_V3/reviews/V3-003-INDEPENDENT-GAMEPLAY-REVIEW.md`.
+- Historical implementation **real SHA** is `48ff5efc68353bb493538924d33f27f364a74606`; prior report's `48ff5ef4a2e5d71c8db632d4b684cb32d20e7df6` is an invalid typo. Historical frozen evidence `5e785316d0cefc7fc0069278a75d1e4edb27f5b6`; historical review-output `3259e9a6d71522a3967c8b99f61dff307a4e9b24`.
+- **Verified implemented gameplay improvements:** Option C X-only and Z=0 code, mobile HUD/action button creation, foreground columns moved to arena flanks, boot `call_deferred`.
+- **Not yet proven:** honest Title UI→Wave1 natural kills→boss natural spawn HP24→boss actual defeat by input→`stage_cleared`→campaign Stage2 transition. Old `v3_003_stage1_full_verification.gd` teleports player, sets boss HP/poise directly, calls `receive_hit`, doesn't fail on absent boss, then directly loads Stage2: it is a `SCRIPTED_SCENARIO_SMOKE`, **not** input-only E2E.
+- Also required: actual 0.42s stationary/damage-free boss charge windup (current Pattern.SHIELD_CHARGE movement begins before await completes), four button touch events and multi-touch input ownership, boss-present Z telemetry rather than absent=0, real visible boss arena screenshots. Original 38.4%→0.0% obstruction percentages not established by reproducible pixel measurement.
+- Keep historic internal APPROVED/reviews/events immutable; any corrective reopening must be properly authorized and append-only. Stage 1 game release remains `NOT_APPROVED`, Android physical hardware `NOT_TESTED`.
+- **Completion criterion:** one bounded genuine Godot game fix + fail-closed E2E/Touch/Boss tests + real, frozen evidence + new independent QA/Director, or explicitly report FIX_REQUIRED if blocked. No more R4/R5 and no new governance task loops.
+
+---
+
 # ProjectKnight Studio V3 — Current State & Milestone Status
 
 **Current Date:** 2026-11-08  
