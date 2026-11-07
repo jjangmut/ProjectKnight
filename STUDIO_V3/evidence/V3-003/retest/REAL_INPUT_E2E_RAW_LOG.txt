@@ -1,0 +1,15 @@
+[0.000s] [E2E] Starting Title Screen...
+[0.417s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/01_title_deploy_click.png
+[0.417s] Clicking Deploy 3D QV button at (971.5, 216.0)
+[0.433s] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[0.433s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/02_stage1_natural_entry.png
+[1.000s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/03_minions_natural_combat.png
+[1.809s] Wave 1 cleared naturally: Minions defeated! Awaiting boss wave...
+[3.028s] Boss Spawn Verified: Commander active with HP=24/24 at X=11.50
+[3.028s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/04_boss_spawn_full_sightline.png
+[6.462s] Boss defeated naturally with real inputs! Boss HP reached 0.
+[6.462s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/05_boss_combat_parry_strike.png
+[8.479s] Stage 1 Cleared signal verified in Campaign! Waiting for Stage 2 transition...
+[10.279s] Stage 2 Transition Verified: Loaded Beastwood Gorge (SideQVStage2)
+[10.279s] [CAPTURE] Saved screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/captures/06_stage1_clear_stage2_transition.png
+[10.279s] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 1 CLEAR & STAGE 2 TRANSITION <<<

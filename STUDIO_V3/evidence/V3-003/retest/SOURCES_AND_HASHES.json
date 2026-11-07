@@ -1,0 +1,101 @@
+{
+  "task_id": "V3-003",
+  "milestone": "V3-003 Playability Retest & Real Input Validation",
+  "branch": "studio/v3-003-stage1-p1",
+  "historical_provenance": {
+    "true_game_source_sha": "48ff5efc68353bb493538924d33f27f364a74606",
+    "erroneous_legacy_typo_sha": "48ff5ef4a2e5d71c8db632d4b684cb32d20e7df6",
+    "historical_frozen_evidence_sha": "5e785316d0cefc7fc0069278a75d1e4edb27f5b6",
+    "historical_review_output_sha": "3259e9a6d71522a3967c8b99f61dff307a4e9b24"
+  },
+  "artifacts": {
+    "CLIENT/Game/scripts/side_quarter_view/side_qv_boss.gd": {
+      "sha256": "1a5f3f5c5e5b2fc799ae733e184f41ecbc4aab244750f14380bce44fbbbebe2c",
+      "size_bytes": 18205
+    },
+    "CLIENT/Game/scripts/side_quarter_view/side_qv_enemy.gd": {
+      "sha256": "ac1b6c91bc4b45cc1bf76ad98666db13537db0d721acb3352679df45e2b5f873",
+      "size_bytes": 9292
+    },
+    "CLIENT/Game/scripts/side_quarter_view/side_qv_player.gd": {
+      "sha256": "1b88bf4bec49a3df8e4e5f4568b8b89acdd738eb9e802b6b1342d63d7a95fcba",
+      "size_bytes": 42388
+    },
+    "CLIENT/Game/scripts/quarter_view/qv_mobile_controls.gd": {
+      "sha256": "deb1a6c70e50ffa5872383fed031f81144ca0e560e158fa2f3fe349c24178a91",
+      "size_bytes": 11264
+    },
+    "CLIENT/Game/scripts/audio/audio_manager.gd": {
+      "sha256": "8a5acd5c35392baa10441f13dea798cc4ee8496611f3ea37e196899ef00fa132",
+      "size_bytes": 8368
+    },
+    "CLIENT/Game/tests/v3_003_boss_charge_timing.gd": {
+      "sha256": "769fe8109fa9c6f6fb798d845d89346eb2b7274e6792c87e0842e22c3251f455",
+      "size_bytes": 6544
+    },
+    "CLIENT/Game/tests/v3_003_real_touch_ui.gd": {
+      "sha256": "f345d2f3cc14911744de9b9a27496ad9926d9b017fec84c51e84c27a9724a1a1",
+      "size_bytes": 9845
+    },
+    "CLIENT/Game/tests/v3_003_real_input_e2e.gd": {
+      "sha256": "f659fb9eadc622866bd3ce3ea669d9e552f32b7c98f84fa5319b02ff6ff296c5",
+      "size_bytes": 13418
+    },
+    "STUDIO_V3/evidence/V3-003/retest/REAL_INPUT_E2E_RESULT.json": {
+      "sha256": "2774ab459e71c42811fc73e21687cd106822185480c652655a3f51ca9a66c697",
+      "size_bytes": 311
+    },
+    "STUDIO_V3/evidence/V3-003/retest/REAL_INPUT_E2E_RAW_LOG.txt": {
+      "sha256": "657cf5a8ceae7e34a9d363caa2632fe5eca257d24ac152972e6e631dd95ac3e1",
+      "size_bytes": 1673
+    },
+    "STUDIO_V3/evidence/V3-003/retest/TOUCH_UI_TEST_RESULT.json": {
+      "sha256": "96fa0d2ff2ba117b032491004cd409fa3d217f5a13cfa5fef5ddddf6daf3bf26",
+      "size_bytes": 309
+    },
+    "STUDIO_V3/evidence/V3-003/retest/BOSS_WINDUP_TIMELINE.csv": {
+      "sha256": "4e4aab89a0e28a2f829093a72bbb8a03f1941f1485ce7e683df86705fb5f52e4",
+      "size_bytes": 2207
+    },
+    "STUDIO_V3/evidence/V3-003/retest/Z_PLANE_ACTOR_PRESENCE.csv": {
+      "sha256": "5ecf85d857ddacf55affa4c367d1df19888f01c3ae8efd970af22f6e45c943a5",
+      "size_bytes": 16979
+    },
+    "STUDIO_V3/evidence/V3-003/retest/BOSS_SIGHTLINE_VISUAL_REVIEW.md": {
+      "sha256": "7cb854978c608fdbd4378205dba8fd4f5e453c536286ac4c93cf2ec4fa850e9b",
+      "size_bytes": 3723
+    },
+    "STUDIO_V3/evidence/V3-003/retest/RESULT_MATRIX.md": {
+      "sha256": "e728aa563bf4bd932882d2daf3ba8642311e8b7184ef7e80fb35a7b422ba4b19",
+      "size_bytes": 4763
+    },
+    "STUDIO_V3/evidence/V3-003/retest/LEGACY_REPORT_CORRECTION.md": {
+      "sha256": "ac5e9bc0f514fd97507092936749a82bc40b2ecd1a845a3c76f9b797656c379d",
+      "size_bytes": 3221
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/01_title_deploy_click.png": {
+      "sha256": "c6a7987c7aee665aa9e14600ebb92990b5b3f79949f869798c2a868b9bd3acc9",
+      "size_bytes": 159142
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/02_stage1_natural_entry.png": {
+      "sha256": "560b8b401504e84223b155b220c61fd75189d827e6fb1e15ed6e98b543503aa0",
+      "size_bytes": 58379
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/03_minions_natural_combat.png": {
+      "sha256": "0b60910edaf3b2721bf4d2eaff2629e0aa715ec5388430775f7b2daa9b168d85",
+      "size_bytes": 1301986
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/04_boss_spawn_full_sightline.png": {
+      "sha256": "52ff07aa4f3c4ff0d40db32493a2ba17bde81c6117e91a8fe92834ed3afb06be",
+      "size_bytes": 1233364
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/05_boss_combat_parry_strike.png": {
+      "sha256": "f73639491116b60994291c4c01e948044fa85cd1089906737eb6b91a98c70c8f",
+      "size_bytes": 1283958
+    },
+    "STUDIO_V3/evidence/V3-003/retest/captures/06_stage1_clear_stage2_transition.png": {
+      "sha256": "7995a9b987ee713948cece6a2489016de7d08add7d6d331b6ce0b59bda5e32d3",
+      "size_bytes": 16391
+    }
+  }
+}

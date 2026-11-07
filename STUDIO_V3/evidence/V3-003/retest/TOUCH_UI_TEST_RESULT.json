@@ -1,0 +1,11 @@
+{
+  "all_checks_passed": true,
+  "dash_button_touch": true,
+  "keyboard_hold_touch_release_ownership": true,
+  "leap_button_touch": true,
+  "multitouch_move_and_attack": true,
+  "multitouch_move_and_jump": true,
+  "parry_button_touch": true,
+  "strike_button_touch": true,
+  "touch_release_zero_stuck": true
+}

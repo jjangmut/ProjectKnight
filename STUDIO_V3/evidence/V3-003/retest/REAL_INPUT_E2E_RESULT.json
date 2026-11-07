@@ -1,0 +1,12 @@
+{
+  "all_checks_passed": true,
+  "boss_initial_hp_24": true,
+  "boss_natural_defeat": true,
+  "boss_spawn_verified": true,
+  "stage1_entry": true,
+  "stage2_transition_verified": true,
+  "stage_cleared_signal": true,
+  "title_navigation": true,
+  "wave1_minions_defeated": true,
+  "zero_cheats_enforced": true
+}
