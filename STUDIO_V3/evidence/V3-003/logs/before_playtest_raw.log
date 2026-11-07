@@ -1,0 +1,10 @@
+[0.000] === V3-003 BEFORE-STATE BASELINE CAPTURE START ===
+[0.000] Captured screenshot: 00_title.png err=0
+[0.000] Loaded Stage 1 into campaign: stage=SideQVStage1:<Node3D#48972695007> player=SideQVPlayer:<CharacterBody3D#51187287716>
+[0.000] Captured screenshot: 01_stage_entry.png err=0
+[0.500] Captured screenshot: 02_movement_plane_depth.png err=0
+[0.500] Captured screenshot: 03_touch_controls_check.png err=0
+[0.500] Captured screenshot: 04_wave1_combat.png err=0
+[0.500] Captured screenshot: 05_boss_arena_occlusion.png err=0
+[0.500] Found Pillar_FrontRight at: (10.5, 0.0, 3.0)
+[0.500] === BEFORE-STATE BASELINE CAPTURE COMPLETE ===

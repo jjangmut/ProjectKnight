@@ -1,0 +1,117 @@
+{
+  "task_id": "V3-003",
+  "resolution": "1280x720",
+  "renderer": "OpenGL 3.3.0 Compatibility (NVIDIA RTX 5060 Laptop GPU)",
+  "before_captures": [
+    {
+      "filename": "00_title.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/00_title.png",
+      "file_size": 158727,
+      "sha256": "6224e8cd95dc3a547f65bb1333d9b9a6c1bdb0c751375545f0a0945c7d26e800"
+    },
+    {
+      "filename": "01_stage_entry.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/01_stage_entry.png",
+      "file_size": 1326501,
+      "sha256": "231b98629b53cd83a999551ef9e5dd9af26663dd115b24f6461e122db39f2498"
+    },
+    {
+      "filename": "02_movement_plane_depth.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/02_movement_plane_depth.png",
+      "file_size": 1312248,
+      "sha256": "540dcda3ba15e11f04f0290e4ae6fc280f65494e3256af7c1851e59eb307630a"
+    },
+    {
+      "filename": "03_touch_controls_check.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/03_touch_controls_check.png",
+      "file_size": 1309405,
+      "sha256": "461810b951fff849c5bf977e17fddc11c1a164ffdd029edc84c591b96a07946a"
+    },
+    {
+      "filename": "04_wave1_combat.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/04_wave1_combat.png",
+      "file_size": 1311370,
+      "sha256": "4fa7d07142a3a0d6162d93a57f0dfa35eafb36aef3eb7732b3da1adb0290d6b7"
+    },
+    {
+      "filename": "05_boss_arena_occlusion.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/before/05_boss_arena_occlusion.png",
+      "file_size": 1374526,
+      "sha256": "7a8e20697b539840ca162ffdce431feebd8e4f3f344ab121492c144e3e99680b"
+    }
+  ],
+  "after_captures": [
+    {
+      "filename": "00_title_flow.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/00_title_flow.png",
+      "file_size": 159116,
+      "sha256": "f84d0c7683a03a2d3294c2eada1484de976523cf9bee880a00632f015d0a5a35"
+    },
+    {
+      "filename": "01_stage1_entry_hud.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/01_stage1_entry_hud.png",
+      "file_size": 1295454,
+      "sha256": "3450a436f9ba00e2cae2ee0627a40a956e8594a6430c279be8fe343c479eec77"
+    },
+    {
+      "filename": "02_option_c_plane_lock.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/02_option_c_plane_lock.png",
+      "file_size": 1299102,
+      "sha256": "7f80795d75cbcd3b992359566ce831608360bcf731158385fc3a892c06929e15"
+    },
+    {
+      "filename": "03_dive_slam_execution.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/03_dive_slam_execution.png",
+      "file_size": 1235897,
+      "sha256": "87a53532a8600dc9b44719ff382d37a90bfac625a37c23562bf2a5931ef75945"
+    },
+    {
+      "filename": "04_combat_combo_parry.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/04_combat_combo_parry.png",
+      "file_size": 1291421,
+      "sha256": "d985f81968a723b14d5b5a563dd15ae1f34193a1f1379112dee33d1add754e98"
+    },
+    {
+      "filename": "05_touch_controls_interaction.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/05_touch_controls_interaction.png",
+      "file_size": 1302257,
+      "sha256": "11703d33befeb41fab6331ae2d066d1dca73d3524d26b46aa7119b6b1a2fc235"
+    },
+    {
+      "filename": "06_wave1_cleared.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/06_wave1_cleared.png",
+      "file_size": 1313883,
+      "sha256": "8bfa7e0006cb7cfc36169ac336cd74f0dc97e527b958eafe8b3661ed13d02cbc"
+    },
+    {
+      "filename": "07_boss_arena_sightline_after.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/07_boss_arena_sightline_after.png",
+      "file_size": 1308191,
+      "sha256": "62978d97e625fb9c4d8fed6bc692e639d8c0760483be35f89266b5655eeabae1"
+    },
+    {
+      "filename": "08_boss_combat_parry.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/08_boss_combat_parry.png",
+      "file_size": 1323907,
+      "sha256": "7ea237a82850b828b470862a7c34fa225b9df5b72726be177a23ad33567501a3"
+    },
+    {
+      "filename": "09_boss_stagger_groggy.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/09_boss_stagger_groggy.png",
+      "file_size": 1324653,
+      "sha256": "35b60e872fca39f13d43b8d1832850b785c89a21a236a66c852a4c20f6a473cf"
+    },
+    {
+      "filename": "10_stage1_cleared_victory.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/10_stage1_cleared_victory.png",
+      "file_size": 1319156,
+      "sha256": "a423239c7e3c5991e43fd1b16d523e0da3bac763fad45c12eb8c2a93afa2e112"
+    },
+    {
+      "filename": "11_stage2_regression_check.png",
+      "relative_path": "STUDIO_V3/evidence/V3-003/captures/after/11_stage2_regression_check.png",
+      "file_size": 1750914,
+      "sha256": "cb7a5b809dc32651c19bf48cd47c92b72887e51ff48f74b57be8ff5e67e4a5f6"
+    }
+  ]
+}

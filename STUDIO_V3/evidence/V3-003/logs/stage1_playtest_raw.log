@@ -1,0 +1,46 @@
+[00.000] ================================================================================
+[00.000] ProjectKnight Studio V3 — V3-003 Real Playable Verification Harness
+[00.000] Renderer: NVIDIA GeForce RTX 5060 Laptop GPU | Device: NVIDIA
+[00.000] Target Resolution: 1280x720 Landscape | Option C: Fixed Z=0 Plane
+[00.000] ================================================================================
+[00.000] --- STEP 1: Main Title Screen Verification ---
+[00.000] CAP[01]: Title Screen Lobby (Saved 00_title_flow.png, err=0)
+[00.000] --- STEP 2: Campaign Boot & Stage 1 Load ---
+[00.000] Stage 1 successfully instantiated: SideQVStage1
+[00.000] Player initialized at: (-8.0, 0.000039, 0.0)
+[00.000] CAP[02]: Stage 1 Entry with Visible Mobile Touch Controls (Saved 01_stage1_entry_hud.png, err=0)
+[00.000] --- STEP 3: Option C Motion Plane Lock Verification (Z=0.000) ---
+[01.083] CAP[03]: Option C Plane Lock: X Motion with Z=0 (Saved 02_option_c_plane_lock.png, err=0)
+[01.083] Option C Z-drift during movement: max|Z| = 0.0000 m, max|Vz| = 0.0000 m/s
+[01.083] --- STEP 4: Jump & Dive Slam Kinematics ---
+[01.700] CAP[04]: Airborne Dive Slam Plunge & Ground Impact (Saved 03_dive_slam_execution.png, err=0)
+[01.700] Dive slam executed successfully. Landing floor Y = 0.001
+[01.700] --- STEP 5: Melee 3-Combo & Guard / Dash Execution ---
+[02.650] CAP[05]: Radiant Spear Combo, Cyan Parry Barrier & Dash Trail (Saved 04_combat_combo_parry.png, err=0)
+[02.650] --- STEP 6: Mobile Touch Virtual Joystick & Buttons Verification ---
+[02.650] Mobile Controls Component located: MobileControlsHUD:<CanvasLayer#52948895548>
+[02.817] CAP[06]: Mobile Virtual Joystick & Skill Deck Multi-Touch (Saved 05_touch_controls_interaction.png, err=0)
+[02.817] Stuck action count after touch release: 0 (PASS if 0)
+[02.817] --- STEP 7: Wave 1 Minion Combat ---
+[03.817] CAP[07]: Wave 1 Minion Defeat & Advance Banner Notification (Saved 06_wave1_cleared.png, err=0)
+[03.817] --- STEP 8: Boss Arena Sightline Verification (ISSUE-V3-001-07 Resolution) ---
+[04.150] Pillar_FrontRight coordinates: (17.0, 0.0, 4.2) (Expected: 17.0, 0.0, 4.2)
+[04.150] Pillar_FrontLeft coordinates: (-17.0, 0.0, 4.2) (Expected: -17.0, 0.0, 4.2)
+[04.150] FrontBalustrade position: (0.0, 0.21, 6.0), size: (38.0, 0.42, 0.6)
+[04.150] CAP[08]: Unobstructed Boss Arena Sightline (Pillars Realigned to Flanks) (Saved 07_boss_arena_sightline_after.png, err=0)
+[04.150] --- STEP 9: Boss Commander Combat Engagement ---
+[05.150] CAP[09]: Boss Commander Melee Clash & Telegraph Readability (Saved 08_boss_combat_parry.png, err=0)
+[05.400] CAP[10]: Boss Groggy Stagger Halo & Vulnerability Window (Saved 09_boss_stagger_groggy.png, err=0)
+[05.900] CAP[11]: Stage 1 Cleared Victory Fanfare & Reward Transition (Saved 10_stage1_cleared_victory.png, err=0)
+[05.900] --- STEP 10: Stage 2 Regression Loading Check ---
+[05.900] Stage 2 loaded cleanly without crashing: SideQVStage2
+[05.900] CAP[12]: Stage 2 Beastwood Gorge Regression Check (Saved 11_stage2_regression_check.png, err=0)
+[05.900] ================================================================================
+[05.900] V3-003 VERIFICATION SUMMARY:
+[05.900]   Total Captured Frames: 354
+[05.900]   Max Absolute Z Drift: 0.000000 m (Must be 0.000000)
+[05.900]   Max Absolute Vz Drift: 0.000000 m/s (Must be 0.000000)
+[05.900]   Stuck Input Actions: 0 (Must be 0)
+[05.900]   Screenshots Saved: 12 in D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-003/captures/after
+[05.900]   Z-Plane CSV Telemetry: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-003/Z_PLANE_REGRESSION.csv
+[05.900] ================================================================================
