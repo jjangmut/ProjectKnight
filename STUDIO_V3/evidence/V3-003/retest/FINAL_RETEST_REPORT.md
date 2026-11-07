@@ -34,7 +34,7 @@ Real-run Godot stdout/stderr and exit code: Exit code 0 (clean completion, 0 err
 Frozen new evidence commit SHA: 8537510214580ffcf14e4c554d07ad9a1afb5fd3
 New QA session/result: 8f29844e-1563-48a6-a204-3faad3641dd7 / QA PASS
 New Director session/result: ddeb78fa-7d80-4226-82a1-e34ad159d1b5 / APPROVED
-Review output commit SHA: 0a7730f36472aaabe502926f739735739be85896
+Review output commit SHA: cdd07cf5c69933398fdec2a0ecef32d2982e3aee
 V3-003: APPROVED
 Game release: NOT_APPROVED
 ```
