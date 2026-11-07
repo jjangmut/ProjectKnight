@@ -1,3 +1,18 @@
+# LATEST EXTERNAL REVIEW GATE — 2026-11-08
+
+**External status: FIX_REQUIRED — final evidence provenance addendum requested.** The historic internal status `V3-002=APPROVED` and `V3-002-PARENT-GATE-RECONCILE=APPROVED` are **not external approval**.
+
+- Latest review: `STUDIO_V3/reviews/V3-002-PARENT-GATE-INDEPENDENT-REVIEW.md`, review commit `c156704dd73f9f028d2282083b983829e77f4688`.
+- Existing task ID retained: `V3-002-PARENT-GATE-RECONCILE`. No new workflow task or architecture cycle.
+- Focused next instruction: `STUDIO_V3/tasks/V3-002-PARENT-GATE-FINAL-EVIDENCE-ADDENDUM.md`; **instruction only, not yet executed**.
+- Already accepted in latest external delta: wrapper correction `FIX_REQUIRED/SUPERSEDED`, preserved 36 historic + 6 append-only events, 10/10 frozen evidence hashes and separate new QA/Director record existence.
+- Still unproven: native raw **six-role** discovery enumeration (hand-written `ide_runtime_listed=true` is not raw provider evidence); old parent QA/Director invocation `result_hash` values were computed from literal `QA_PARENT_PASS` and `DIRECTOR_PARENT_APPROVED`, not transcript bytes; new reviewer metadata labeled local 01:22–01:26 times as UTC `Z` while event approval was `2026-11-07T16:28Z`; and original 12 acceptance criterion names must be maintained.
+- Do NOT change old Git evidence, QA reviews, events or queue statuses without governed append-only correction. No new task IDs or game source edits.
+- `V3-003=BLOCKED` until genuine external parent acceptance plus explicit authorized unblocking; game release itself NOT_APPROVED (3 P1).
+- One evidence-only delta: raw genuine listing or clear NOT_VERIFIED; original private provider payload hash or clearly identified placeholder / risk acceptance; timezone-origin proof or explicit unknown; true 12-row same-identity matrix. No extra fixture run, no R4, no fabricated data.
+
+---
+
 # ProjectKnight Studio V3 — Parent Approval Governance Evidence Reconciliation
 
 Updated: 2026-11-08
