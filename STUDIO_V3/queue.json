@@ -1,8 +1,31 @@
 {
   "version": 3,
-  "branch": "studio/v3-001-evidence-reconcile",
+  "branch": "studio/v3-001-attestation-close",
   "agent_dispatch": "IDE_NATIVE_MULTI_AGENT_RECORDED_FINAL_INFRASTRUCTURE_APPROVAL_PENDING",
   "tasks": [
+    {
+      "id": "V3-001-ATTESTATION-CLOSE",
+      "title": "Close V3-001 frozen evidence vs post-review report SHA misattribution",
+      "status": "READY",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [],
+      "evidence": [],
+      "evidence_manifest": [],
+      "reviews": {},
+      "iteration": 0,
+      "priority": -7,
+      "active_branch": "studio/v3-001-attestation-close",
+      "current_commit_sha": "",
+      "version": 1,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Narrow one-pass correction only. Read STUDIO_V3/tasks/V3-001-ATTESTATION-CLOSE.md. Separate 7 frozen c557 evidence files from 3 post-review 0d99 report files; append correction event; new native reviewers only for corrected frozen commit. No gameplay edits."
+    },
     {
       "id": "V3-001-EVIDENCE-RECONCILE",
       "title": "Reconcile Stage 1 baseline performance semantics, 7-issue register, reviewer chronology",
@@ -231,7 +254,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Reconciled Stage 1 baseline performance semantics, 7-issue register, reviewer chronology fully approved by PK_QALead and PK_GameDirector. V3-003 remains BLOCKED pending external review."
+      "notes": "Internal APPROVED preserved as historical fact. External independent verification FIX_REQUIRED: QA/Director evidence hashes incorrectly include 3 post-frozen review output files under c557147 source SHA. No silent retrospective approval; correction task V3-001-ATTESTATION-CLOSE READY."
     },
     {
       "id": "V3-002-CLOSE",
@@ -712,7 +735,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "INTERNAL Two-Key APPROVED at audited source SHA a7122361; external ChatGPT independent audit review FIX_REQUIRED for performance semantics, 7-issue register and chronological QA evidence hashes. Preserve historical approval. Follow-up V3-001-EVIDENCE-RECONCILE READY; NOT external accepted yet."
+      "notes": "Historical internal APPROVED for baseline audit. External evidence acceptance awaits attestation-close correction. Game has 7 open issues incl 3 P1, not release approved; Option C implementation pending."
     },
     {
       "id": "V3-002",
@@ -739,7 +762,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "V3-002-CLOSE child independent code/evidence accepted, formal parent V3-002 gate still pending. No automatic milestone APPROVED."
+      "notes": "Parent milestone roll-up separately pending despite child V3-002-CLOSE external acceptance. Do not auto approve."
     },
     {
       "id": "V3-003",
@@ -765,7 +788,7 @@
       "lease_owner": null,
       "lease_expires_at": null,
       "issues": [],
-      "notes": "Blocked pending separate external acceptance of V3-001 audit evidence reconciliation and formal parent V3-002 approval; game P1 backlog remains open."
+      "notes": "Still BLOCKED until V3-001 external audit evidence accepted AND parent V3-002 formally approved. Canonical game backlog 7 issues (P1 3/P2 2/P3 2)."
     },
     {
       "id": "FIXTURE-V3-LIVE-002",
