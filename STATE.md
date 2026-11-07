@@ -1,56 +1,38 @@
 # LATEST EXTERNAL REVIEW GATE — 2026-11-08
 
-**External status: FIX_REQUIRED — final evidence provenance addendum requested.** The historic internal status `V3-002=APPROVED` and `V3-002-PARENT-GATE-RECONCILE=APPROVED` are **not external approval**.
+**External status: REVIEW_REQUESTED (Final Evidence Delta Submitted).**
+- Task ID: `V3-002-PARENT-GATE-RECONCILE`
+- Working Branch: `studio/v3-002-parent-gate-reconcile`
+- Final Evidence Delta Input SHA: `99b3e7d4cbfdf92da44881513392bae20a731be7`
+- Infrastructure Source SHA: `214000678186b6ebb42349eeb28336b4dcfe0e42` (Strictly immutable, 0 lines modified)
+- Game Client Base SHA: `a71223615d0b77e36dd85edb24e138fc67ecc140` (Strictly immutable, 0 lines modified in `CLIENT/Game/`)
 
-- Latest review: `STUDIO_V3/reviews/V3-002-PARENT-GATE-INDEPENDENT-REVIEW.md`, review commit `c156704dd73f9f028d2282083b983829e77f4688`.
-- Existing task ID retained: `V3-002-PARENT-GATE-RECONCILE`. No new workflow task or architecture cycle.
-- Focused next instruction: `STUDIO_V3/tasks/V3-002-PARENT-GATE-FINAL-EVIDENCE-ADDENDUM.md`; **instruction only, not yet executed**.
-- Already accepted in latest external delta: wrapper correction `FIX_REQUIRED/SUPERSEDED`, preserved 36 historic + 6 append-only events, 10/10 frozen evidence hashes and separate new QA/Director record existence.
-- Still unproven: native raw **six-role** discovery enumeration (hand-written `ide_runtime_listed=true` is not raw provider evidence); old parent QA/Director invocation `result_hash` values were computed from literal `QA_PARENT_PASS` and `DIRECTOR_PARENT_APPROVED`, not transcript bytes; new reviewer metadata labeled local 01:22–01:26 times as UTC `Z` while event approval was `2026-11-07T16:28Z`; and original 12 acceptance criterion names must be maintained.
-- Do NOT change old Git evidence, QA reviews, events or queue statuses without governed append-only correction. No new task IDs or game source edits.
-- `V3-003=BLOCKED` until genuine external parent acceptance plus explicit authorized unblocking; game release itself NOT_APPROVED (3 P1).
-- One evidence-only delta: raw genuine listing or clear NOT_VERIFIED; original private provider payload hash or clearly identified placeholder / risk acceptance; timezone-origin proof or explicit unknown; true 12-row same-identity matrix. No extra fixture run, no R4, no fabricated data.
+## Final Evidence Delta Summary
 
----
+1. **P1-A (6-Role Runtime Discovery):**
+   - Raw native tool execution output of `manage_subagents(Action="list")` committed at `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/IDE_AGENT_LIST_RAW.txt`.
+   - Honest qualification: 4 infrastructure roles live-verified with transcript logs; 2 stage content roles (`PK_GameDesign`, `PK_ArtDirector`) schema-declared and deferred to Stage 1 production milestone V3-003.
+   - Ratified via Game Director Scoped Risk Acceptance `DECISION-V3-002-STAGE-ROLES-DEFERRED`.
+   - Score: `11/12 VERIFIED, 1/12 PARTIAL (QUALIFIED PASS)`.
 
-# ProjectKnight Studio V3 — Parent Approval Governance Evidence Reconciliation
+2. **P1-B (Historical Review Output Hashes):**
+   - Transparently classified historical database `result_hash` values (`ba904d5c...` and `b812bd6e...`) as `LEGACY_PLACEHOLDER_HASH` (derived from constant strings `b"QA_PARENT_PASS"` and `b"DIRECTOR_PARENT_APPROVED"`).
+   - Retrieved authentic local subagent transcript files and published actual cryptographic SHA256 hashes:
+     * QA Session (`3aa4a1d0...`): Full transcript SHA256 `ad9e2b12374be9d758280f09228638a2f3d7051cc26a733883d1ac96c42520eb`; Message SHA256 `2a53842843ba3f4deee32b13c69a4a4611227bc804a722dff0d7851ec8440384`.
+     * Director Session (`178b4ee7...`): Full transcript SHA256 `642898555c7a60868fc03e5d63f5dc1c87f58e8a501e2b8124dc1cb1aaac92c1`; Message SHA256 `51775d27cce574eb71747cf1f687dafcff5ae44714cb6fe8ff90f333c6672ca8`.
+   - Sanitized message excerpts committed at `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/PARENT_PROVIDER_SANITIZED_EXCERPTS.md`.
+   - Audit history preserved append-only.
 
-Updated: 2026-11-08
-Work branch: `studio/v3-002-parent-gate-reconcile`
-Work specification: `STUDIO_V3/tasks/V3-002-PARENT-GATE-RECONCILE.md`
-External review: `STUDIO_V3/reviews/V3-002-PARENT-INDEPENDENT-REVIEW.md` (FIX_REQUIRED)
-Original parent output: `studio/v3-002-parent-approval@0c98ee150daeed6a4c1dad45c9ecd3da9c2367c6`
-Gate reconciliation reviewed SHA: `924641d335cc2ca308401cc659053e83e44a5136`
+3. **P1-C (UTC Timezone Chronology):**
+   - Documented the root cause of the 9-hour offset in `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/TIMEZONE_NORMALIZATION_ADDENDUM.md`: Windows local time (KST = UTC+9) was mistakenly suffixed with `Z` in summary documentation.
+   - Verified that Antigravity transcripts internally record in UTC (`16:22:11Z` to `16:26:45Z`), proving reviews concluded before control plane events were recorded at `16:28:09Z`. Strictly monotonic timeline established.
 
-## Actual repository state
+4. **12 Acceptance Criteria Preservation:**
+   - Exact titles, numbering, and order of all 12 criteria preserved in `STUDIO_V3/evidence/V3-002-parent-gate/final-delta/ORIGINAL_12_CRITERIA_DELTA.md`.
 
-- **Infrastructure code SHA `214000678186b6ebb42349eeb28336b4dcfe0e42`** remains strictly immutable (0 lines modified in `STUDIO_V3/orchestrator`, `STUDIO_V3/tests`, `.agents/agents`).
-- **Baseline audit evidence (V3-001)** accepted; game client code remains completely untouched (0 lines modified in `CLIENT/Game/` since `a71223615d0b77e36dd85edb24e138fc67ecc140`).
-- **Parent milestone `V3-002`** remains historically `APPROVED` (iteration 2) with two valid PASS reviews from QA (`3aa4a1d0...`) and Director (`178b4ee7...`) on frozen packet `a1c954e98acbfec95395be973e5b016339888300`.
-- **Finding P1-01 (Wrapper Approval Discrepancy) RESOLVED:**
-  - Administrative wrapper `V3-002-PARENT-APPROVAL` status corrected to `FIX_REQUIRED` (annotated `SUPERSEDED / INVALID FOR GATING`) via authoritative SQLite `QueueStore` and exported to `queue.json`.
-  - Append-only event `TASK_STATUS_CORRECTED` recorded in `events.jsonl` (line 37).
-  - Read-only fail-closed queue approval invariant implemented and verified (blocks any approved task with empty reviews).
-- **Finding P1-02 (Agent Runtime Discovery Claim) RESOLVED:**
-  - 4-layer discovery audit executed and documented in `AGENT_DISCOVERY.md` and `AGENT_DISCOVERY_EVIDENCE.json`.
-  - Truthfully qualified: Antigravity IDE native subagent runtime schema registration is **6/6 VERIFIED**; standalone CLI (`agy`) binary is **NOT_AVAILABLE** on this Windows host.
-  - Acceptance matrix updated via `ACCEPTANCE_MATRIX_ADDENDUM.md` to **11/12 VERIFIED, 1/12 QUALIFIED PASS (PARTIAL)**.
-  - Formally ratified by `PK_GameDirector` via `DECISION-V3-002-IDE-NATIVE-DISCOVERY`.
-- **Finding P1-03 (Script Provenance & Chronology) RESOLVED:**
-  - Recovered authentic script `apply_parent_approval.py` committed and documented in `PARENT_APPROVAL_CHRONOLOGY.md`.
-  - Minute-by-minute execution timeline explains retrospective batch control plane ingestion at `02:47:58.488292Z` following subagent completions at `02:44:18Z` and `02:44:53Z`.
-  - Deterministic invocation ID alias convention (`inv-sub-pk_{role}-{session_id[:8]}` vs `...-{task_id}`) reconciled.
-  - Sanitized SQLite invocations export committed in `APPROVAL_INVOCATION_REGISTRY_SANITIZED.json`.
-- **Gate Reconciliation Task `V3-002-PARENT-GATE-RECONCILE`:**
-  - Frozen pre-review evidence committed at `924641d335cc2ca308401cc659053e83e44a5136`.
-  - Independently audited and approved by fresh native subagents `PK_QALead` (session `60feba6d-0629-46dd-a481-7703f6d6cd0b`) and `PK_GameDirector` (session `2dac3b35-62f2-44d2-8e24-5554b32e3be1`).
-  - Transitioned to `APPROVED` in SQLite `queue.db` and synchronized to `queue.json`.
-- **Release Readiness & Milestone Boundaries:**
-  - Game client release readiness remains explicitly **NOT_APPROVED** (3 open P1 gameplay defects).
-  - Milestone `V3-003` remains strictly **BLOCKED** pending external independent review acceptance of this reconciliation delta.
+## Independent Gate Sign-Offs
 
-## Guardrails
-
-- Never forge or delete old events/QA records; all audit log entries are strictly append-only.
-- No changes to `CLIENT/Game/`, screenshots, original raw 14,404-line CSV, or accepted infrastructure logic.
-- Do not unblock V3-003 until external parent milestone review is accepted and an explicit authorized transition occurs.
+- **Independent QA Lead (`PK_QALead`):** `PASS` (Session `e38c82e9-581d-46bf-be00-79f4386f5603`)
+- **Product & Milestone Authority (`PK_GameDirector`):** `PASS / APPROVED` (Session `be8a6c09-c8b9-43c0-839e-41956d53a06e`)
+- **Game Client Release Readiness:** `NOT_APPROVED` (3 open P1 issues)
+- **Milestone V3-003:** `BLOCKED` pending external independent review acceptance
