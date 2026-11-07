@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "document_id": "PARENT_PROVIDER_OUTPUT_HASHES.json",
+  "task_reference": "V3-002-PARENT-GATE-RECONCILE",
+  "finding_addressed": "P1-B",
+  "parent_milestone": "V3-002",
+  "parent_reviewed_sha": "a1c954e98acbfec95395be973e5b016339888300",
+  "sessions": [
+    {
+      "role": "PK_QALead",
+      "session_id": "3aa4a1d0-4972-4750-852f-04e2675be74f",
+      "task_id": "V3-002",
+      "iteration": 2,
+      "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+      "started_at": "2026-11-07T02:41:56Z",
+      "completed_at": "2026-11-07T02:44:18Z",
+      "terminal_status": "SUCCEEDED",
+      "verdict": "PASS",
+      "legacy_placeholder_string": "QA_PARENT_PASS",
+      "legacy_result_hash_in_db": "ba904d5c8027627a49591c2f8567086e836025256cc108f08ce244eae646a57b",
+      "legacy_hash_status": "LEGACY_PLACEHOLDER_HASH",
+      "actual_full_transcript_bytes": 73499,
+      "actual_full_transcript_sha256": "ad9e2b12374be9d758280f09228638a2f3d7051cc26a733883d1ac96c42520eb",
+      "actual_final_message_utf8_bytes": 2070,
+      "actual_final_message_sha256": "2a53842843ba3f4deee32b13c69a4a4611227bc804a722dff0d7851ec8440384"
+    },
+    {
+      "role": "PK_GameDirector",
+      "session_id": "178b4ee7-d8b6-4b9b-8310-4db576501a4b",
+      "task_id": "V3-002",
+      "iteration": 2,
+      "parent_conversation_id": "c1845c39-fd7b-445c-9a68-644aaac576ff",
+      "started_at": "2026-11-07T02:42:05Z",
+      "completed_at": "2026-11-07T02:44:53Z",
+      "terminal_status": "SUCCEEDED",
+      "verdict": "PASS",
+      "milestone_verdict": "APPROVED",
+      "legacy_placeholder_string": "DIRECTOR_PARENT_APPROVED",
+      "legacy_result_hash_in_db": "b812bd6e1fc71ff5b1ee60c976c33d58afce07b1431fedb389549c21a110d29d",
+      "legacy_hash_status": "LEGACY_PLACEHOLDER_HASH",
+      "actual_full_transcript_bytes": 81641,
+      "actual_full_transcript_sha256": "642898555c7a60868fc03e5d63f5dc1c87f58e8a501e2b8124dc1cb1aaac92c1",
+      "actual_final_message_utf8_bytes": 2071,
+      "actual_final_message_sha256": "51775d27cce574eb71747cf1f687dafcff5ae44714cb6fe8ff90f333c6672ca8"
+    }
+  ]
+}

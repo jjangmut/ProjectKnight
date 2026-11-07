@@ -1,0 +1,63 @@
+=== ProjectKnight Studio V3 — Final Evidence Delta Commands & Results Log ===
+Execution Root: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight
+Date: 2026-11-08
+
+--- 1. Infrastructure Immutability Check ---
+$ git diff --name-status 214000678186b6ebb42349eeb28336b4dcfe0e42 HEAD -- STUDIO_V3/orchestrator STUDIO_V3/tests .agents/agents
+Exit code: 0
+Output: CLEAN (0 lines modified)
+
+--- 2. Game Client Immutability Check ---
+$ git diff --stat a71223615d0b77e36dd85edb24e138fc67ecc140 HEAD -- CLIENT/Game/
+Exit code: 0
+Output: CLEAN (0 lines modified)
+
+--- 3. Python Orchestrator Unit Test Suite ---
+$ python -m unittest discover -s STUDIO_V3/tests -p "test_*.py"
+Exit code: 0
+Output:
+.........................................................
+----------------------------------------------------------------------
+Ran 57 tests in 20.472s
+
+OK
+
+--- 4. Raw Transcript File & Payload Cryptographic Hashes ---
+Parent QA Session: 3aa4a1d0-4972-4750-852f-04e2675be74f
+- Full Transcript Bytes: 73,499
+- Full Transcript SHA256: ad9e2b12374be9d758280f09228638a2f3d7051cc26a733883d1ac96c42520eb
+- Final Review Payload UTF-8 Bytes: 2,070
+- Final Review Payload SHA256: 2a53842843ba3f4deee32b13c69a4a4611227bc804a722dff0d7851ec8440384
+- Legacy Placeholder String: b"QA_PARENT_PASS"
+- Legacy Placeholder SHA256: ba904d5c8027627a49591c2f8567086e836025256cc108f08ce244eae646a57b
+
+Parent Director Session: 178b4ee7-d8b6-4b9b-8310-4db576501a4b
+- Full Transcript Bytes: 81,641
+- Full Transcript SHA256: 642898555c7a60868fc03e5d63f5dc1c87f58e8a501e2b8124dc1cb1aaac92c1
+- Final Review Payload UTF-8 Bytes: 2,071
+- Final Review Payload SHA256: 51775d27cce574eb71747cf1f687dafcff5ae44714cb6fe8ff90f333c6672ca8
+- Legacy Placeholder String: b"DIRECTOR_PARENT_APPROVED"
+- Legacy Placeholder SHA256: b812bd6e1fc71ff5b1ee60c976c33d58afce07b1431fedb389549c21a110d29d
+
+--- 5. New Subagent Session UTC Timestamps ---
+New QA Session: 60feba6d-0629-46dd-a481-7703f6d6cd0b
+- Step 0 created_at: 2026-11-07T16:22:11Z (Local: 2026-11-08T01:22:11+09:00)
+- Step 83 send_message: 2026-11-07T16:26:11Z (Local: 2026-11-08T01:26:11+09:00)
+- Step 85 terminal: 2026-11-07T16:26:45Z (Local: 2026-11-08T01:26:45+09:00)
+
+New Director Session: 2dac3b35-62f2-44d2-8e24-5554b32e3be1
+- Step 0 created_at: 2026-11-07T16:22:21Z (Local: 2026-11-08T01:22:21+09:00)
+- Step 55 send_message: 2026-11-07T16:24:31Z (Local: 2026-11-08T01:24:31+09:00)
+- Step 57 terminal: 2026-11-07T16:25:00Z (Local: 2026-11-08T01:25:00+09:00)
+
+Event Log Append (STUDIO_V3/events.jsonl):
+- Lines 37-42: 2026-11-07T16:28:09Z (Local: 2026-11-08T01:28:09+09:00)
+Sequence: Reviews completed BEFORE events logged (Monotonic UTC timeline verified).
+
+--- 6. Native Tool Execution: manage_subagents(Action="list") ---
+Tool: manage_subagents(Action="list")
+Exit status: SUCCESS
+Output saved: STUDIO_V3/evidence/V3-002-parent-gate/final-delta/IDE_AGENT_LIST_RAW.txt
+Active subagent sessions returned: 22
+
+=== ALL COMMANDS EXECUTED SUCCESSFULLY ===
