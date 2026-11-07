@@ -1,29 +1,32 @@
-# ProjectKnight Studio V3 — Evidence Attestation Closure
+# ProjectKnight Studio V3 — V3-002 Parent Approval Preparation
 
 Updated: 2026-11-07
-Branch: `studio/v3-001-attestation-close`
-Baseline: `studio/v3-001-evidence-reconcile@0d99e2b0da5ecd30cff8641348ba4ed3e897423b`
+Current task branch: `studio/v3-002-parent-approval`
+Task specification: `STUDIO_V3/tasks/V3-002-PARENT-APPROVAL.md`
+Instruction branch base: `8172175c9434dbc2765400e2c38ec2b84e035b2b`
 
-## Confirmed progress
-- Godot Stage 1 baseline artifacts: 11 original PNG captures, 14,404 raw physics-tick samples, input and startup logs. `CLIENT/Game/` unchanged by baseline/reconciliation work.
-- Benchmark script was recovered: ~60Hz is physics sampling cadence, engine monitor data shows about 240 FPS in steady sectors; combat/boss differential load `NOT_VERIFIED`, Android `NOT_TESTED`.
-- Official gameplay defect backlog: 7 unique (3 P1, 2 P2, 2 P3). Option C gameplay Z=0 plan selected **but not implemented**.
-- `V3-001-EVIDENCE-RECONCILE` is **internally APPROVED**. External independent review still **FIX_REQUIRED**, specifically because three post-review files were tied to pre-review frozen SHA.
+## Accepted underlying evidence (not a parent milestone auto-approval)
+- `V3-001` baseline **audit evidence**: external review ACCEPTED, as verified by `STUDIO_V3/reviews/V3-001-ATTESTATION-CLOSE-INDEPENDENT-REVIEW.md`; the game itself remains NOT_APPROVED for release with 3 open P1 defects.
+- `V3-002-CLOSE` infrastructure closure child: internal APPROVED, external independent code/evidence review ACCEPTED. Frozen implementation source SHA `214000678186b6ebb42349eeb28336b4dcfe0e42`, with Python 57/57 and isolated Godot stamina fixture 74/74 PASS logs on GitHub.
+- Antigravity IDE-native Worker → QA rejection → Worker revision → QA retest → Director acceptance chain is historically recorded; **standalone Python headless native agent launching is NOT independently established**.
+- `V3-001-ATTESTATION-CLOSE` internal APPROVED and external review accepted after Git source/output evidence SHA lineage independently verified. No more baseline re-audit cycles required.
 
-## One remaining evidence problem
-- Frozen SHA `c55714745ac15776d5ffa449da6058da3dd777ea` contains 7 pre-review evidence files.
-- SHA `0d99e2b0da5ecd30cff8641348ba4ed3e897423b` first adds `QA_ADDENDUM.md`, `DIRECTOR_ADDENDUM.md`, and `FINAL_RECONCILIATION_REPORT.md`.
-- The old queue attests all 10 as source evidence at c557; this is inaccurate and requires append-only corrective lineage, not retroactive fake hashes.
-- Producer's pasted completion summary also misnamed several canonical gameplay defects; GitHub `GAMEPLAY_ISSUE_BACKLOG.md` is authoritative.
-- See `STUDIO_V3/reviews/V3-001-RECONCILE-INDEPENDENT-REVIEW.md`.
+## Next action now READY
+- **V3-002-PARENT-APPROVAL: READY**. Only formal parent acceptance matrix, frozen approval packet, actual native QA+Director parent review, correct SQLite/dispatcher state transition and follow-up external verification. This task has NOT run.
+- `V3-002` parent **FIX_REQUIRED**, owner PK_Producer, official review evidence not yet submitted; no manual or automatic status promotion based on child acceptance.
+- `V3-003` **BLOCKED** until V3-001 evidence acceptance and V3-002 parent formal acceptance/gate review are both complete. Game code changes are out of scope now.
 
-## Tasks
-- **V3-001-ATTESTATION-CLOSE APPROVED internally:** 2-tier manifests isolated (7 source files in c557, 3 post-review in 0d99); 5/5 negative tests passed; canonical 7 defects verified; new independent QA/Director PASS at 7881e32df31353792f7ab8471c4f61bb75e22ebb; external review requested.
-- V3-001-EVIDENCE-RECONCILE **historical internal APPROVED, external FIX_REQUIRED superseded by attestation-close**.
-- V3-001 **historical internal APPROVED, external evidence acceptance pending**.
-- V3-002-CLOSE **child APPROVED and externally accepted**.
-- V3-002 **parent FIX_REQUIRED pending separate formal roll-up**.
-- V3-003 **STRICTLY BLOCKED until V3-001 external evidence acceptance AND V3-002 parent formal approval**.
+## Source SHA vs review packet SHA: never conflate
+- Underlying infrastructure code: `214000678186b6ebb42349eeb28336b4dcfe0e42`.
+- Parent review packet: new `PARENT_REVIEWED_SHA` only after source evidence matrix and logs have been committed, not yet created.
+- Reviewer outputs: future separate `PARENT_REVIEW_OUTPUT_SHA` after QA/Director completion. These do not exist inside the frozen parent review commit.
 
-## Rules
-No more architecture rebuild or re-benchmark by default. No edit to `CLIENT/Game/`, the prior 11 PNGs, original raw CSV or historical events. Corrected output review files are never falsely attributed to a source SHA that predates them. A correction cannot be treated as an externally accepted audit until independently verified.
+## Game defects held for V3-003
+1. ISSUE-V3-001-02 P1: implement Option C Z=0 gameplay plane, while preserving 2.5D rendered setting.
+2. ISSUE-V3-001-01 P1: mobile left/right, jump, attack, guard/parry, dash UI.
+3. ISSUE-V3-001-07 P1: eliminate boss fight foreground wall/pillar occlusion.
+4. Two P2 and two P3 remain in the canonical `STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md`.
+These are **gameplay release blockers**, not reasons to retroactively fail a valid audit-only baseline.
+
+## Safety
+Do not modify `CLIENT/Game/`, main/integration, original screenshot PNGs or raw performance CSV. No R4 redesign. Parent QA/Director must be real separate sessions with verified identity and frozen packet SHA. No self-approval, no destructive history rewrite, no speculative performance or CLI capability claims.
