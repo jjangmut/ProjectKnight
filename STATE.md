@@ -1,3 +1,18 @@
+# ACTIVE NEXT PHASE — V3-003 Stage 1 Gameplay P1 Implementation (2026-11-08)
+
+**Registration only; no game coding started.** Existing `V3-003` task is **BLOCKED in queue** until the native Producer verifies prereqs and performs an authorized, append-only `BLOCKED → READY` release in SQLite / queue authority. Do not hand-edit snapshot as an approval.
+
+- Working branch: `studio/v3-003-stage1-p1`, based on external V3-002 qualified acceptance `ec289184de16c1bb0d9028fb80bb441bbcdd5ede`.
+- Canonical executable work specification: `STUDIO_V3/tasks/V3-003.md` (new doc, existing task ID).
+- External V3-002 review: `STUDIO_V3/reviews/V3-002-PARENT-FINAL-EXTERNAL-REVIEW.md` — **ACCEPTED WITH QUALIFICATIONS** for IDE-native infrastructure; 2 stage content roles not yet live-verified; previous provider raw transcript hashes not independently reproducible from GitHub.
+- **No more R4/R5 infrastructure rework**; prioritize real Godot game implementation with visible play tests and exact input-driven evidence.
+- Stage 1 P1 canonical order: `ISSUE-V3-001-02` Option C plane X/Y, Z=0; `ISSUE-V3-001-01` functional touch controls; `ISSUE-V3-001-07` remove boss arena occlusion. Official source: `STUDIO_V3/evidence/V3-001-reconcile/GAMEPLAY_ISSUE_BACKLOG.md`.
+- Existing `V3-003` queue owner `PK_ArtDirector`; Producer must formalize correct owner/worker mapping before a code-focused start. QA `PK_QALead`, Director `PK_GameDirector` remain independent reviewers.
+- `PK_GameDesign` and `PK_ArtDirector` should be invited for **real relevant** design/art work, documenting actual IDE-native sessions, not placeholder exercises.
+- Game release status is **NOT_APPROVED**, original 3 P1 + 2 P2 + 2 P3 remain until real changes and independent retest evidence.
+
+---
+
 # LATEST EXTERNAL REVIEW GATE — 2026-11-08
 
 **External status: REVIEW_REQUESTED (Final Evidence Delta Submitted).**
