@@ -1,0 +1,16 @@
+{
+  "all_checks_passed": true,
+  "android_device_status": "NOT_TESTED",
+  "dash_button_touch": true,
+  "direct_hud_input_bypassed": false,
+  "engine_routed_events": true,
+  "keyboard_hold_touch_release_ownership": true,
+  "keyboard_ownership_hardware_scope": "SIMULATED_KEY_ROUTE_ONLY",
+  "leap_button_touch": true,
+  "multitouch_move_and_attack_rel_0_then_1": true,
+  "multitouch_move_and_jump_rel_1_then_0": true,
+  "parry_button_touch": true,
+  "physical_hardware_ownership": "PHYSICAL_HARDWARE_NOT_VERIFIED",
+  "strike_button_touch": true,
+  "touch_release_zero_stuck": true
+}

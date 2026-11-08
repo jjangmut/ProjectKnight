@@ -1,0 +1,80 @@
+[
+  {
+    "active_scene": "TitleScreen",
+    "boss_hp": null,
+    "boss_pos_x": null,
+    "boss_visible": false,
+    "file_size_bytes": 158664,
+    "filename": "01_title_deploy_click.png",
+    "player_pos_x": null,
+    "player_visible": false,
+    "sim_frame": 25,
+    "sim_time_s": 0.416666666666667,
+    "step_name": "01_title_deploy_click"
+  },
+  {
+    "active_scene": "SideQVCampaign",
+    "boss_hp": null,
+    "boss_pos_x": null,
+    "boss_visible": false,
+    "file_size_bytes": 1299817,
+    "filename": "02_stage1_natural_entry.png",
+    "player_pos_x": -7.5,
+    "player_visible": true,
+    "sim_frame": 32,
+    "sim_time_s": 0.533333333333333,
+    "step_name": "02_stage1_natural_entry"
+  },
+  {
+    "active_scene": "SideQVCampaign",
+    "boss_hp": null,
+    "boss_pos_x": null,
+    "boss_visible": false,
+    "file_size_bytes": 1302295,
+    "filename": "03_minions_natural_combat.png",
+    "player_pos_x": -4.0,
+    "player_visible": true,
+    "sim_frame": 60,
+    "sim_time_s": 1.0,
+    "step_name": "03_minions_natural_combat"
+  },
+  {
+    "active_scene": "SideQVCampaign",
+    "boss_hp": 24,
+    "boss_pos_x": 11.5,
+    "boss_visible": true,
+    "file_size_bytes": 1259790,
+    "filename": "04_boss_spawn_full_sightline.png",
+    "player_pos_x": -1.6556202173233,
+    "player_visible": true,
+    "sim_frame": 188,
+    "sim_time_s": 3.04133333333333,
+    "step_name": "04_boss_spawn_full_sightline"
+  },
+  {
+    "active_scene": "SideQVCampaign",
+    "boss_hp": 0,
+    "boss_pos_x": 1.26250767707825,
+    "boss_visible": true,
+    "file_size_bytes": 1286196,
+    "filename": "05_boss_combat_parry_strike.png",
+    "player_pos_x": 0.262382239103317,
+    "player_visible": true,
+    "sim_frame": 405,
+    "sim_time_s": 6.47599999999998,
+    "step_name": "05_boss_combat_parry_strike"
+  },
+  {
+    "active_scene": "SideQVCampaign",
+    "boss_hp": null,
+    "boss_pos_x": null,
+    "boss_visible": false,
+    "file_size_bytes": 1394980,
+    "filename": "06_stage1_clear_stage2_transition.png",
+    "player_pos_x": null,
+    "player_visible": false,
+    "sim_frame": 648,
+    "sim_time_s": 10.4086666666668,
+    "step_name": "06_stage1_clear_stage2_transition"
+  }
+]

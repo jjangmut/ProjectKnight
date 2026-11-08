@@ -1,0 +1,130 @@
+﻿================================================================================
+ProjectKnight V3-003 Final Real Input & Viewport Verification Shell Transcript
+Timestamp: 2026-11-08 21:12:22 +09:00
+Host OS: Windows 11 / PowerShell
+Godot Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+Project Path: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game
+Rendering Engine: GL Compatibility (1280x720 windowed)
+================================================================================
+
+>>> COMMAND 1: REAL MOBILE TOUCH EVENT ROUTING & OWNERSHIP TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_real_touch_ui.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[t=0.000s, step=0] [TOUCH UI TEST] Initializing scene tree with 3D ground, Player and Mobile HUD...
+[t=0.000s, step=0] [TOUCH UI TEST] Setup complete. Starting engine-routed touch tests...
+[t=0.183s, step=1] Sent touch press to Strike button at (1080.0, 570.0)
+[t=0.200s, step=2] Strike touch confirmed: Player State.ATTACK, attack action=true
+[t=0.467s, step=3] Sent touch press to Leap button at (1010.0, 480.0)
+[t=0.483s, step=4] Leap touch confirmed: Player velocity.y=0.00, jump action=true
+[t=1.267s, step=5] Sent touch press to Parry button at (925.5, 520.0)
+[t=1.283s, step=6] Parry touch confirmed: Guard barrier active, guard action=true
+[t=1.500s, step=7] Sent touch press to Dash button at (932.0, 600.0)
+[t=1.517s, step=8] Dash touch confirmed: Player State.DASH, dash action=true
+[t=1.833s, step=9] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Strike
+[t=1.850s, step=10] Multi-touch move+attack active! Testing release order 0 then 1...
+[t=1.867s, step=11] Index 0 released safely without stuck move. Now releasing Index 1 (attack)...
+[t=2.183s, step=12] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Leap
+[t=2.200s, step=13] Multi-touch move+jump active! Testing release order 1 then 0...
+[t=2.217s, step=14] Index 1 released safely while Index 0 remained active. Now releasing Index 0...
+[t=2.983s, step=15] Touch release safety verified: stuck_count = 0 across all 8 actions
+[t=3.000s, step=16] Dispatching keyboard Key Down for KEY_A (move_left)...
+[t=3.017s, step=17] Keyboard move_left active. Now starting virtual joystick touch left (index 0)...
+[t=3.033s, step=18] Releasing virtual joystick touch (index 0)...
+[t=3.050s, step=19] Ownership check immediately after touch release: move_left=true
+[t=3.050s, step=19] OWNERSHIP CONFIRMED: Touch release did not extinguish held keyboard action!
+[t=3.067s, step=20] Keyboard key up verified: move_left cleanly released
+[t=3.067s, step=20] >>> ALL CHECKS PASSED: Real Engine-Routed Touch & Multitouch Verification <<<
+[t=3.067s, step=20]   Strike Button Touch: PASS
+[t=3.067s, step=20]   Leap Button Touch: PASS
+[t=3.067s, step=20]   Parry Button Touch: PASS
+[t=3.067s, step=20]   Dash Button Touch: PASS
+[t=3.067s, step=20]   Multi-Touch Move+Attack (rel 0 then 1): PASS
+[t=3.067s, step=20]   Multi-Touch Move+Jump (rel 1 then 0): PASS
+[t=3.067s, step=20]   Release Safety Zero Stuck: PASS
+[t=3.067s, step=20]   Keyboard/Touch Ownership: PASS (Scope: SIMULATED_KEY_ROUTE_ONLY)
+[t=3.067s, step=20] Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/TOUCH_EVENT_ROUTE_RESULT.json
+[t=3.067s, step=20] Saved raw log to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/TOUCH_EVENT_ROUTE_LOG.txt
+
+--- STDERR ---
+
+--------------------------------------------------------------------------------
+
+>>> COMMAND 2: BOSS CHARGE TIMING & TELEGRAPH ISOLATED FIXTURE
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_boss_charge_timing.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[BOSS TIMING TEST] Initialized. Starting charge windup test sequence...
+[BOSS TIMING TEST] Charge triggered at t=0.0833s (initial X=8.0000)
+[BOSS TIMING TEST] Boss entered CHARGE_ACTIVE at t=0.5167s (measured windup=0.4333s)
+[BOSS TIMING TEST] Applying parry stun to test charge cancellation...
+
+[BOSS TIMING TEST] >>> PASSED <<<
+  Windup Start: 0.0833s | Motion Start: 0.5167s | Measured Windup: 0.4333s (Requirement: >= 0.42s)
+  Max Windup Displacement: 0.000000m (Requirement: ~0.0m)
+  Active Charge Motion & Hitbox Engagement: VERIFIED
+  Parry Stun Cancellation & Hitbox Cleanup: VERIFIED
+[BOSS TIMING TEST] Saved timeline to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/BOSS_WINDUP_TIMELINE.csv
+
+--- STDERR ---
+
+--------------------------------------------------------------------------------
+
+>>> COMMAND 3: REAL INPUT-ONLY E2E (TITLE -> STAGE 1 -> BOSS -> STAGE 2)
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_real_input_e2e.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[0.000s, p=0] [E2E] Initializing V3-003 Real Input-Only E2E Playthrough...
+[0.000s, p=0] [E2E] Source integrity self-audit PASSED: Zero direct cheats, zero signal emits, zero facing mutations.
+[0.000s, p=0] [E2E] Loading Title Screen instance...
+[0.417s, p=0] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s, p=0] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/01_title_deploy_click.png
+[0.433s, p=0] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s, p=0] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s, p=0] Real GUI input verified: title_click_count == 1! Transitioning to Phase 1 (Campaign load)...
+>>> [CAMPAIGN] Loaded Stage 1: ?깅Ц ?멸낸 (Citadel Terrace Gate) <<<
+[0.467s, p=1] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[0.533s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/02_stage1_natural_entry.png
+[1.000s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/03_minions_natural_combat.png
+[1.838s, p=2] Wave 1 cleared naturally: Minions defeated! Awaiting boss wave...
+[3.041s, p=3] Boss Spawn Verified: Commander active with HP=24/24 at X=11.50
+[3.041s, p=4] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/04_boss_spawn_full_sightline.png
+[4.577s, p=4] Boss HP progress: 22/24
+[4.862s, p=4] Boss HP progress: 20/24
+[5.146s, p=4] Boss HP progress: 16/24
+[5.434s, p=4] Boss HP progress: 14/24
+[5.719s, p=4] Boss HP progress: 12/24
+[6.003s, p=4] Boss HP progress: 6/24
+[6.241s, p=4] Boss HP progress: 3/24
+[6.474s, p=4] [OBSERVATION] boss.boss_defeated callback received! count=1
+[6.476s, p=4] Boss HP progress: 0/24
+[6.476s, p=4] Boss defeated naturally with real inputs! Boss HP reached 0.
+[6.476s, p=5] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/05_boss_combat_parry_strike.png
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+[8.475s, p=5] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[8.492s, p=5] Stage 1 Cleared signal verified (count=1)! Waiting for Stage 2 transition...
+>>> [CAMPAIGN] Loaded Stage 2: ?쇱닔??(Beastwood Forest Gorge) <<<
+[10.292s, p=6] Stage 2 Transition Verified: Loaded Beastwood Gorge (SideQVStage2)
+[10.409s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/06_stage1_clear_stage2_transition.png
+[10.425s, p=6] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 1 CLEAR & STAGE 2 TRANSITION <<<
+[10.425s, p=6]   Title Button GUI Click: PASS (count=1)
+[10.425s, p=6]   Stage 1 Entry: PASS
+[10.425s, p=6]   Wave 1 Minions Defeated: PASS
+[10.425s, p=6]   Boss Initial HP 24 & Natural Defeat: PASS (min_hp=0, signal_count=1)
+[10.425s, p=6]   Stage Cleared Signal: PASS (count=1)
+[10.425s, p=6]   Stage 2 Transition: PASS
+[10.425s, p=6]   Source Integrity Audit: PASS
+[10.425s, p=6] [E2E EVIDENCE] Written all evidence files to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input
+
+--- STDERR ---
+
+================================================================================

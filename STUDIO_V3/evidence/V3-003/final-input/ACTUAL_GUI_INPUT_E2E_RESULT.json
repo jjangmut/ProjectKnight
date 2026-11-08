@@ -1,0 +1,17 @@
+{
+  "all_checks_passed": true,
+  "boss_defeated_signal_count": 1,
+  "boss_initial_hp_24": true,
+  "boss_min_hp_recorded": 0,
+  "boss_natural_defeat": true,
+  "boss_spawn_verified": true,
+  "source_integrity_audit_passed": true,
+  "stage1_entry": true,
+  "stage2_transition_verified": true,
+  "stage_cleared_signal_count": 1,
+  "stage_cleared_signal_verified": true,
+  "title_button_gui_routed_click": true,
+  "title_button_pressed_signal_count": 1,
+  "wave1_minions_defeated": true,
+  "zero_cheats_enforced": true
+}

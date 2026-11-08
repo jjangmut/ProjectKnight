@@ -1,0 +1,33 @@
+[t=0.000s, step=0] [TOUCH UI TEST] Initializing scene tree with 3D ground, Player and Mobile HUD...
+[t=0.000s, step=0] [TOUCH UI TEST] Setup complete. Starting engine-routed touch tests...
+[t=0.183s, step=1] Sent touch press to Strike button at (1080.0, 570.0)
+[t=0.200s, step=2] Strike touch confirmed: Player State.ATTACK, attack action=true
+[t=0.467s, step=3] Sent touch press to Leap button at (1010.0, 480.0)
+[t=0.483s, step=4] Leap touch confirmed: Player velocity.y=0.00, jump action=true
+[t=1.267s, step=5] Sent touch press to Parry button at (925.5, 520.0)
+[t=1.283s, step=6] Parry touch confirmed: Guard barrier active, guard action=true
+[t=1.500s, step=7] Sent touch press to Dash button at (932.0, 600.0)
+[t=1.517s, step=8] Dash touch confirmed: Player State.DASH, dash action=true
+[t=1.833s, step=9] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Strike
+[t=1.850s, step=10] Multi-touch move+attack active! Testing release order 0 then 1...
+[t=1.867s, step=11] Index 0 released safely without stuck move. Now releasing Index 1 (attack)...
+[t=2.183s, step=12] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Leap
+[t=2.200s, step=13] Multi-touch move+jump active! Testing release order 1 then 0...
+[t=2.217s, step=14] Index 1 released safely while Index 0 remained active. Now releasing Index 0...
+[t=2.983s, step=15] Touch release safety verified: stuck_count = 0 across all 8 actions
+[t=3.000s, step=16] Dispatching keyboard Key Down for KEY_A (move_left)...
+[t=3.017s, step=17] Keyboard move_left active. Now starting virtual joystick touch left (index 0)...
+[t=3.033s, step=18] Releasing virtual joystick touch (index 0)...
+[t=3.050s, step=19] Ownership check immediately after touch release: move_left=true
+[t=3.050s, step=19] OWNERSHIP CONFIRMED: Touch release did not extinguish held keyboard action!
+[t=3.067s, step=20] Keyboard key up verified: move_left cleanly released
+[t=3.067s, step=20] >>> ALL CHECKS PASSED: Real Engine-Routed Touch & Multitouch Verification <<<
+[t=3.067s, step=20]   Strike Button Touch: PASS
+[t=3.067s, step=20]   Leap Button Touch: PASS
+[t=3.067s, step=20]   Parry Button Touch: PASS
+[t=3.067s, step=20]   Dash Button Touch: PASS
+[t=3.067s, step=20]   Multi-Touch Move+Attack (rel 0 then 1): PASS
+[t=3.067s, step=20]   Multi-Touch Move+Jump (rel 1 then 0): PASS
+[t=3.067s, step=20]   Release Safety Zero Stuck: PASS
+[t=3.067s, step=20]   Keyboard/Touch Ownership: PASS (Scope: SIMULATED_KEY_ROUTE_ONLY)
+[t=3.067s, step=20] Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/TOUCH_EVENT_ROUTE_RESULT.json
