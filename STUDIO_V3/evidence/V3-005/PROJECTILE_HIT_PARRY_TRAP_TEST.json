@@ -1,0 +1,13 @@
+{
+  "all_checks_passed": true,
+  "backstep_shot_2d_leap": true,
+  "bolt_single_hit_and_parry_verified": true,
+  "boss_initial_hp_30": true,
+  "boss_spawn_z_zero": true,
+  "caltrop_slow_and_recovery_verified": true,
+  "caltrop_traps_in_lane_z_zero": true,
+  "fan_volley_3_bolts_xy": true,
+  "minion_spawn_z_zero": true,
+  "phase2_transition_hp_15": true,
+  "rapid_barrage_5_bolts_xy": true
+}

@@ -1,0 +1,59 @@
+[0.000s, p=0] [E2E] Initializing V3-005 Real Input-Only Stage 3 Playthrough...
+[0.000s, p=0] [E2E] Source integrity self-audit PASSED: Zero direct cheats, zero signal emits, zero facing mutations.
+[0.000s, p=0] [E2E] Loading Title Screen instance...
+[0.417s, p=0] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s, p=0] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/01_title_deploy_click.png
+[0.433s, p=0] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s, p=0] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s, p=0] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+[0.467s, p=1] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[1.755s, p=2] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[6.228s, p=3] Stage 1 Commander boss defeated naturally!
+[8.228s, p=4] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[8.245s, p=4] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+[10.045s, p=5] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[11.800s, p=6] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[22.320s, p=7] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+[24.323s, p=8] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[24.340s, p=8] Stage 2 Cleared verified! Awaiting Stage 3 Ruined Crossbow Bastion transition...
+[26.140s, p=9] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded. Player at X=-8.00, Z=0.00
+[26.140s, p=10] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/01_stage3_natural_entry.png
+[26.273s, p=10] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/02_stage3_both_ranged_minions.png
+[27.156s, p=10] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/03_stage3_minion_aim_and_bolts.png
+[27.692s, p=10] [OBSERVATION] RangedMinion_1 enemy_defeated callback received! count=1
+[27.692s, p=10] [OBSERVATION] RangedMinion_2 enemy_defeated callback received! count=1
+[27.694s, p=10] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated! Kills: m1=1, m2=1. Advancing to Crossbow Commander...
+[28.377s, p=11] Stage 3 Boss Spawn Verified: Crossbow Commander active with HP=30/30 at X=12.05, Z=0.00
+[28.377s, p=12] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/04_stage3_boss_spawn.png
+[29.179s, p=12] Crossbow Commander HP progress: 28/30 (Phase 1)
+[29.396s, p=12] Observed Crossbow Commander pattern: BACKSTEP_SHOT (2D leap)
+[29.396s, p=12] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/08_stage3_boss_backstep_shot.png
+[29.948s, p=12] Crossbow Commander HP progress: 26/30 (Phase 1)
+[30.182s, p=12] Crossbow Commander HP progress: 22/30 (Phase 1)
+[30.419s, p=12] Crossbow Commander HP progress: 20/30 (Phase 1)
+[30.655s, p=12] Crossbow Commander HP progress: 18/30 (Phase 1)
+[30.888s, p=12] [OBSERVATION] boss.phase_changed callback received! phase=2 count=1
+[30.889s, p=12] Crossbow Commander HP progress: 12/30 (Phase 2)
+[31.126s, p=12] Crossbow Commander HP progress: 9/30 (Phase 2)
+[31.362s, p=12] Crossbow Commander HP progress: 6/30 (Phase 2)
+[31.595s, p=12] [OBSERVATION] boss.boss_defeated callback received! count=1
+[31.596s, p=12] Crossbow Commander HP progress: 0/30 (Phase 2)
+[31.596s, p=12] Crossbow Commander defeated naturally with real inputs! HP reached 0
+[31.596s, p=13] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/10_stage3_boss_natural_defeat.png
+[33.604s, p=13] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[33.621s, p=13] Stage 3 Cleared signal verified (count=1)! Awaiting Stage 4 transition...
+[35.421s, p=14] Stage 4 Transition Verified: Loaded Stage 4 (SideQVStage4)
+[35.421s, p=14] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/11_stage3_clear_stage4_transition.png
+[35.437s, p=14] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 3 CROSSBOW BASTION CLEAR & STAGE 4 TRANSITION <<<
+[35.437s, p=14]   Title Button GUI Click: PASS (count=1)
+[35.437s, p=14]   Stage 1 Entry & Clear: PASS
+[35.437s, p=14]   Stage 2 Natural Entry & Clear: PASS
+[35.437s, p=14]   Stage 3 Natural Entry: PASS
+[35.437s, p=14]   Stage 3 Wave 1 Minion Defeated Callbacks: PASS (m1=1, m2=1, total=2/2)
+[35.437s, p=14]   Stage 3 Boss Initial HP 30/30 & Defeat (HP 30->0): PASS (min_hp=0, signal_count=1)
+[35.437s, p=14]   Stage 3 Boss Phase 2 & Rapid Barrage: PASS (phase=2)
+[35.437s, p=14]   Stage 3 Stage Cleared Signal: PASS (count=1)
+[35.437s, p=14]   Stage 4 Transition: PASS (Campaign Index 3 Loaded)
+[35.437s, p=14]   Option C Plane Z Lock (Z=0.0): PASS
+[35.437s, p=14]   Source Integrity Audit: PASS
+[35.437s, p=14] Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/STAGE3_REAL_INPUT_E2E_RESULT.json

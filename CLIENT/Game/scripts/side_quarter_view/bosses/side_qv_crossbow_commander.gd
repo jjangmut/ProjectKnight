@@ -120,6 +120,10 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Option C: 엄격한 Z=0.0 평면 고정
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -176,6 +180,8 @@ func _physics_process(delta: float) -> void:
 			_process_movement_and_spacing(diff, dist, delta)
 
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	if not is_acting:
 		_update_movement_animation(delta)
 
@@ -185,34 +191,34 @@ func _process_movement_and_spacing(diff: Vector3, dist: float, delta: float) -> 
 	var optimal_min := 4.2
 	var optimal_max := 7.0
 
-	if dist < optimal_min:
-		# 플레이어가 너무 가까우면 뒤로 후퇴하여 사격 거리 확보
-		var retreat_dir := -diff.normalized()
-		velocity.x = retreat_dir.x * retreat_speed
-		velocity.z = retreat_dir.z * (retreat_speed * 0.6)
-	elif dist > optimal_max:
-		# 너무 멀면 접근
-		var advance_dir := diff.normalized()
-		velocity.x = advance_dir.x * spd
-		velocity.z = advance_dir.z * (spd * 0.7)
+	var dx := target_player.global_position.x - global_position.x
+	var h_dist := absf(dx)
+	var dir_x := signf(dx) if absf(dx) > 0.001 else facing_dir_x
+
+	if h_dist < optimal_min:
+		# 플레이어가 너무 가까우면 뒤로 후퇴하여 사격 거리 확보 (1D 수평)
+		velocity.x = -dir_x * retreat_speed
+		velocity.z = 0.0
+	elif h_dist > optimal_max:
+		# 너무 멀면 접근 (1D 수평)
+		velocity.x = dir_x * spd
+		velocity.z = 0.0
 		_prevent_player_pushing()
 	else:
 		# 최적 거리에서는 좌우 견제 기동
 		velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+		velocity.z = 0.0
 
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
-		var min_dist: float = 0.60 + 0.35 + 0.15 # 사령관 + 플레이어 캡슐 여유 마진
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
-			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+		var dx := target_player.global_position.x - global_position.x
+		var h_dist := absf(dx)
+		var min_dist: float = 0.60 + 0.35 + 0.15
+		if h_dist < min_dist and h_dist > 0.001:
+			var dir_x := signf(dx)
+			if velocity.x * dir_x > 0.0:
+				velocity.x = 0.0
 
 
 func _pick_next_pattern(dist: float) -> void:
@@ -260,15 +266,17 @@ func _execute_fan_volley() -> void:
 	# 2. 발사 (Row 2 Frame 9: 머즐 플래시 발사 반동)
 	sprite_3d.texture = BossTextureMain
 	sprite_3d.frame = 9
-	var base_dir := (target_player.global_position - global_position).normalized()
-	base_dir.y = 0.0
-	if base_dir.length_squared() < 0.001:
-		base_dir = Vector3(facing_dir_x, 0.0, 0.0)
-	base_dir = base_dir.normalized()
+	var base_dir := Vector3(facing_dir_x, 0.0, 0.0)
+	if target_player != null and is_instance_valid(target_player):
+		var dy := (target_player.global_position.y + 0.8) - (global_position.y + 1.35)
+		base_dir = Vector3(facing_dir_x * 2.0, dy, 0.0).normalized()
 
-	var angles: Array[float] = [-22.0, 0.0, 22.0]
+	var angles: Array[float] = [-18.0, 0.0, 18.0]
 	for ang: float in angles:
-		var dir: Vector3 = base_dir.rotated(Vector3.UP, deg_to_rad(ang))
+		# Option C: 2D X/Y 평면 회전 (Vector3(0, 0, 1) 기준 회전으로 Z 이탈 방지)
+		var dir: Vector3 = base_dir.rotated(Vector3(0.0, 0.0, 1.0), deg_to_rad(ang * facing_dir_x))
+		dir.z = 0.0
+		dir = dir.normalized()
 		_spawn_bolt(dir, 17.0, 2, true)
 
 	await get_tree().create_timer(0.35).timeout
@@ -285,10 +293,11 @@ func _execute_backstep_shot() -> void:
 	is_acting = true
 	current_pattern = Pattern.BACKSTEP_SHOT
 
-	# 뒤로 높이 도약 (공중 백스텝 회피)
+	# 뒤로 높이 도약 (순수 2D X/Y 포물선 도약, Z 속도 완전 배제)
 	velocity.x = -facing_dir_x * 8.5
 	velocity.y = 8.0
-	velocity.z = randf_range(-1.5, 1.5)
+	velocity.z = 0.0
+	global_position.z = 0.0
 	sprite_3d.texture = BossTextureSkills
 	sprite_3d.frame = 6 # Jump / Backstep airborne frame
 
@@ -299,13 +308,13 @@ func _execute_backstep_shot() -> void:
 		is_acting = false
 		return
 
-	# 공중 저격 볼트 사출 (BossTextureMain Frame 9)
+	# 공중 저격 볼트 사출 (순수 X/Y 조준)
 	sprite_3d.texture = BossTextureMain
 	sprite_3d.frame = 9
 	if target_player != null and is_instance_valid(target_player):
 		var target_pos := target_player.global_position + Vector3(0.0, 0.8, 0.0)
 		var muzzle_pos := global_position + Vector3(muzzle_point_3d.position.x, 1.35, 0.0)
-		var shoot_dir := (target_pos - muzzle_pos).normalized()
+		var shoot_dir := Vector3(target_pos.x - muzzle_pos.x, target_pos.y - muzzle_pos.y, 0.0).normalized()
 		_spawn_bolt(shoot_dir, 22.0, 2, false)
 
 	# 착지 대기
@@ -335,11 +344,12 @@ func _execute_caltrop_trap() -> void:
 
 	sprite_3d.texture = BossTextureSkills
 	sprite_3d.frame = 5 # 마름쇠 살포 모션
+	# Option C: 플레이어 전투 경로(Z=0.0)를 따라 X축 순차 살포
 	var offsets: Array[Vector3] = [
-		Vector3(facing_dir_x * 2.2, 0.05, -1.4),
+		Vector3(facing_dir_x * 2.0, 0.05, 0.0),
 		Vector3(facing_dir_x * 3.2, 0.05, 0.0),
-		Vector3(facing_dir_x * 2.2, 0.05, 1.4),
-		Vector3(facing_dir_x * 4.2, 0.05, -0.6 * facing_dir_x)
+		Vector3(facing_dir_x * 4.4, 0.05, 0.0),
+		Vector3(facing_dir_x * 5.6, 0.05, 0.0)
 	]
 
 	for off: Vector3 in offsets:
@@ -463,9 +473,11 @@ func _execute_rapid_barrage() -> void:
 		sprite_3d.texture = BossTextureMain
 		sprite_3d.frame = 9 if (shot % 2 == 0) else 8
 		if target_player != null and is_instance_valid(target_player):
-			var aim_dir := (target_player.global_position + Vector3(0.0, 0.8, 0.0) - global_position).normalized()
-			# 약간의 탄착군 편차(Spread) 적용
-			aim_dir.z += randf_range(-0.06, 0.06)
+			var dy := (target_player.global_position.y + 0.8) - (global_position.y + 1.35)
+			var aim_dir := Vector3(target_player.global_position.x - global_position.x, dy, 0.0).normalized()
+			# Option C: Y축 수직 편차만 허용하고 Z축은 완전 0 고정
+			aim_dir.y += randf_range(-0.10, 0.10)
+			aim_dir.z = 0.0
 			aim_dir = aim_dir.normalized()
 			_spawn_bolt(aim_dir, 20.0, 1, false)
 
@@ -484,12 +496,16 @@ func _execute_rapid_barrage() -> void:
 func _spawn_bolt(dir: Vector3, spd: float, dmg: int, explosive: bool) -> void:
 	var bolt := CrossbowBoltScene.new()
 	var spawn_pos := global_position + Vector3(muzzle_point_3d.position.x, 1.35, 0.0)
+	spawn_pos.z = 0.0
+	dir.z = 0.0
+	dir = dir.normalized()
 	get_parent().add_child(bolt)
 	bolt.launch(spawn_pos, dir, self, spd, dmg, explosive)
 
 
 func _spawn_caltrop(pos: Vector3) -> void:
 	var trap := CaltropTrapScene.new()
+	pos.z = 0.0
 	get_parent().add_child(trap)
 	trap.setup(pos, self)
 
@@ -608,6 +624,8 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
+	velocity = Vector3.ZERO
+	global_position.z = 0.0
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null

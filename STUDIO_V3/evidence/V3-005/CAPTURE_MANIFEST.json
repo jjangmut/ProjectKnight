@@ -1,0 +1,98 @@
+[
+  {
+    "file_name": "01_title_deploy_click.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/01_title_deploy_click.png",
+    "id": "01_title_deploy_click",
+    "phase": 0.0,
+    "resolution": "1280x720",
+    "timestamp_s": 0.416666666666667
+  },
+  {
+    "file_name": "01_stage3_natural_entry.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/01_stage3_natural_entry.png",
+    "id": "01_stage3_natural_entry",
+    "phase": 10.0,
+    "resolution": "1280x720",
+    "timestamp_s": 26.1396666666665
+  },
+  {
+    "file_name": "02_stage3_both_ranged_minions.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/02_stage3_both_ranged_minions.png",
+    "id": "02_stage3_both_ranged_minions",
+    "phase": 10.0,
+    "resolution": "1280x720",
+    "timestamp_s": 26.2729999999998
+  },
+  {
+    "file_name": "03_stage3_minion_aim_and_bolts.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/03_stage3_minion_aim_and_bolts.png",
+    "id": "03_stage3_minion_aim_and_bolts",
+    "phase": 10.0,
+    "resolution": "1280x720",
+    "timestamp_s": 27.1563333333331
+  },
+  {
+    "file_name": "04_stage3_boss_spawn.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/04_stage3_boss_spawn.png",
+    "id": "04_stage3_boss_spawn",
+    "phase": 12.0,
+    "resolution": "1280x720",
+    "timestamp_s": 28.3769999999997
+  },
+  {
+    "file_name": "08_stage3_boss_backstep_shot.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/08_stage3_boss_backstep_shot.png",
+    "id": "08_stage3_boss_backstep_shot",
+    "phase": 12.0,
+    "resolution": "1280x720",
+    "timestamp_s": 29.3956666666663
+  },
+  {
+    "file_name": "10_stage3_boss_natural_defeat.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/10_stage3_boss_natural_defeat.png",
+    "id": "10_stage3_boss_natural_defeat",
+    "phase": 13.0,
+    "resolution": "1280x720",
+    "timestamp_s": 31.5959999999995
+  },
+  {
+    "file_name": "11_stage3_clear_stage4_transition.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/11_stage3_clear_stage4_transition.png",
+    "id": "11_stage3_clear_stage4_transition",
+    "phase": 14.0,
+    "resolution": "1280x720",
+    "timestamp_s": 35.420666666666
+  },
+  {
+    "file_name": "05_stage3_fan_volley_spread.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/05_stage3_fan_volley_spread.png",
+    "id": "05_stage3_fan_volley_spread",
+    "phase": 12.0,
+    "resolution": "1280x720",
+    "timestamp_s": 1.63333333333333
+  },
+  {
+    "file_name": "07_stage3_caltrop_traps_in_lane.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/07_stage3_caltrop_traps_in_lane.png",
+    "id": "07_stage3_caltrop_traps_in_lane",
+    "phase": 12.0,
+    "resolution": "1280x720",
+    "timestamp_s": 2.26666666666666
+  },
+  {
+    "file_name": "06_stage3_player_guard_vs_bolt.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/06_stage3_player_guard_vs_bolt.png",
+    "id": "06_stage3_player_guard_vs_bolt",
+    "phase": 12.0,
+    "resolution": "1280x720",
+    "timestamp_s": 2.26666666666666
+  },
+  {
+    "file_name": "09_stage3_phase2_rapid_barrage.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-005/captures/09_stage3_phase2_rapid_barrage.png",
+    "id": "09_stage3_phase2_rapid_barrage",
+    "phase": 12,
+    "resolution": "1280x720",
+    "timestamp_s": 2.4
+  }
+]

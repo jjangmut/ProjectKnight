@@ -31,13 +31,16 @@ func _ready() -> void:
 
 func launch(start_pos: Vector3, dir: Vector3, shooter: Node, spd: float = 18.0, dmg: int = 2, explosive: bool = false) -> void:
 	global_position = start_pos
-	direction = dir.normalized()
+	global_position.z = 0.0 # Option C Z=0 고정
+	direction = dir
+	direction.z = 0.0
+	direction = direction.normalized()
 	speed = spd
 	damage = dmg
 	shooter_ref = shooter
 	is_explosive = explosive
 
-	# 방향 정렬
+	# 방향 정렬 (X/Y 평면)
 	if direction != Vector3.ZERO:
 		look_at(global_position + direction, Vector3.UP)
 
@@ -90,9 +93,20 @@ func _physics_process(delta: float) -> void:
 	if not is_active:
 		return
 
+	var prev_pos := global_position
 	var step := speed * delta
 	global_position += direction * step
+	global_position.z = 0.0
 	traveled_distance += step
+
+	# 고속 이동 시 터널링 방지용 레이캐스트 검증
+	var space_state := get_world_3d().direct_space_state
+	if space_state != null:
+		var query := PhysicsRayQueryParameters3D.create(prev_pos, global_position, 1 | 4)
+		var result := space_state.intersect_ray(query)
+		if not result.is_empty() and result.collider != shooter_ref:
+			_on_body_entered(result.collider)
+			return
 
 	if traveled_distance >= max_range:
 		_impact_and_vanish(false)
@@ -106,8 +120,9 @@ func _on_body_entered(body: Node3D) -> void:
 		return
 
 	if body.is_in_group("player") and is_instance_valid(body):
+		is_active = false
 		if body.has_method("receive_incoming_attack"):
-			# 플레이어 피격 / 패링 판정 처리
+			# 플레이어 피격 / 패링 판정 처리 (단일 히트 보장)
 			body.receive_incoming_attack(damage, shooter_ref, direction)
 		_impact_and_vanish(true)
 		return

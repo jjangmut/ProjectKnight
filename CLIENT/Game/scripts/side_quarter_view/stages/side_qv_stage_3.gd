@@ -213,8 +213,8 @@ func _build_ruined_pillars() -> void:
 	fallen.material_override = col_mat
 	add_child(fallen)
 
-	# 기둥 4: 우측 전방 - 비스듬히 균열된 기둥 (높이 3.2m)
-	_create_pillar_instance(Vector3(11.0, 1.6, 3.2), Vector3(1.1, 3.2, 1.1), col_mat)
+	# 기둥 4: 우측 전방 - 파괴된 석재 밑동 기둥 (높이 1.1m, 시야 가림 방지)
+	_create_pillar_instance(Vector3(11.0, 0.55, 3.2), Vector3(1.1, 1.1, 1.1), col_mat)
 
 
 func _create_pillar_instance(pos: Vector3, size: Vector3, mat: Material) -> void:
@@ -309,8 +309,8 @@ func _spawn_wave_1_enemies() -> void:
 	enemies.clear()
 
 	var spawn_points := [
-		Vector3(6.0, 0.1, -1.8),
-		Vector3(8.5, 0.1, 1.8)
+		Vector3(6.0, 0.1, 0.0),
+		Vector3(8.5, 0.1, 0.0)
 	]
 
 	for i in range(spawn_points.size()):

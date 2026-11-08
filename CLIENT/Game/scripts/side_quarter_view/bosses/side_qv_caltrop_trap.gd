@@ -27,6 +27,7 @@ func _ready() -> void:
 func setup(pos: Vector3, owner_node: Node) -> void:
 	global_position = pos
 	global_position.y = 0.04 # 지면 살짝 위에 배치
+	global_position.z = 0.0  # Option C: 전투 레인 Z=0.0 고정
 	owner_ref = owner_node
 
 
@@ -104,19 +105,21 @@ func _on_body_entered(body: Node3D) -> void:
 
 func _apply_slow_to_player(player: Node3D) -> void:
 	if "move_speed_x" in player:
-		var orig_speed_x: float = player.move_speed_x
-		var orig_speed_z: float = player.move_speed_z if "move_speed_z" in player else 4.2
-		player.move_speed_x = orig_speed_x * slow_ratio
-		if "move_speed_z" in player:
-			player.move_speed_z = orig_speed_z * slow_ratio
+		if not player.has_meta("base_move_speed_x"):
+			player.set_meta("base_move_speed_x", player.move_speed_x)
+		var base_speed: float = player.get_meta("base_move_speed_x", player.move_speed_x)
+		var slow_count: int = player.get_meta("active_caltrop_slow_count", 0) + 1
+		player.set_meta("active_caltrop_slow_count", slow_count)
+		player.move_speed_x = base_speed * slow_ratio
 
-		# 타이머 후 원복
+		# 2초 둔화 후 복원 (중첩 카운트 관리로 안전한 속도 복원)
 		var timer := get_tree().create_timer(slow_duration)
 		timer.timeout.connect(func():
 			if is_instance_valid(player):
-				player.move_speed_x = orig_speed_x
-				if "move_speed_z" in player:
-					player.move_speed_z = orig_speed_z
+				var cur_count: int = player.get_meta("active_caltrop_slow_count", 1) - 1
+				player.set_meta("active_caltrop_slow_count", cur_count)
+				if cur_count <= 0:
+					player.move_speed_x = base_speed
 		)
 
 

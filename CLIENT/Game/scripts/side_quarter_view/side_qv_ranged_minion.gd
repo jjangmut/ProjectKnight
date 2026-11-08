@@ -107,17 +107,23 @@ func _update_hp_bar() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Option C: 엄격한 Z=0.0 평면 고정
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
 	if is_stunned:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+		velocity.z = 0.0
 		sprite_3d.frame = 4 # Hurt frame
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		return
 
 	if target_player == null or not is_instance_valid(target_player):
@@ -125,54 +131,54 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		return
 
-	var diff := target_player.global_position - global_position
-	diff.y = 0.0
-	var dist := diff.length()
-	var dir_x := signf(diff.x)
+	# 1D 수평 거리 및 방향 계산 (Z 성분 완전 배제)
+	var dx := target_player.global_position.x - global_position.x
+	var dist := absf(dx)
+	var dir_x := signf(dx) if absf(dx) > 0.001 else facing_dir_x
 
 	if not is_aiming and dir_x != 0.0:
 		facing_dir_x = dir_x
 		sprite_3d.flip_h = (facing_dir_x < 0.0)
 
-	# 원거리 사격 사거리 조율 (너무 가까우면 후퇴, 멀면 전진)
+	# 원거리 사격 사거리 조율 (1D 수평 이동)
 	if not is_aiming:
 		if dist < standoff_dist - 0.8:
-			var retreat := -diff.normalized()
-			velocity.x = retreat.x * move_speed
-			velocity.z = retreat.z * (move_speed * 0.6)
+			velocity.x = -dir_x * move_speed
+			velocity.z = 0.0
 		elif dist > standoff_dist + 1.2:
-			var advance := diff.normalized()
-			velocity.x = advance.x * move_speed
-			velocity.z = advance.z * (move_speed * 0.6)
+			velocity.x = dir_x * move_speed
+			velocity.z = 0.0
 			_prevent_player_pushing()
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+			velocity.z = 0.0
 
 		shoot_timer -= delta
 		if shoot_timer <= 0.0 and dist <= 12.0:
 			_execute_shoot()
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
+		velocity.z = 0.0
 
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_update_animation(delta)
 
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
+		var dx := target_player.global_position.x - global_position.x
+		var dist := absf(dx)
 		var min_dist: float = 0.38 + 0.35 + 0.10
 		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
-			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+			var dir_x := signf(dx)
+			if velocity.x * dir_x > 0.0:
+				velocity.x = 0.0
 
 
 func _execute_shoot() -> void:
@@ -187,7 +193,8 @@ func _execute_shoot() -> void:
 
 	sprite_3d.frame = 2 # Fire frame
 	if target_player != null and is_instance_valid(target_player):
-		var aim_dir := (target_player.global_position + Vector3(0, 0.7, 0) - (global_position + Vector3(0, 0.8, 0))).normalized()
+		var dy := (target_player.global_position.y + 0.7) - (global_position.y + 0.8)
+		var aim_dir := Vector3(target_player.global_position.x - global_position.x, dy, 0.0).normalized()
 		var bolt := CrossbowBoltScene.new()
 		get_parent().add_child(bolt)
 		bolt.launch(global_position + Vector3(facing_dir_x * 0.5, 0.8, 0.0), aim_dir, self, 15.0, 1, false)
@@ -241,6 +248,8 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 
 
 func _die() -> void:
+	velocity = Vector3.ZERO
+	global_position.z = 0.0
 	emit_signal("enemy_defeated", self)
 	set_physics_process(false)
 	var bar := get_node_or_null("OverheadHPBar") as Node3D
