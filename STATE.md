@@ -1,3 +1,17 @@
+# NEXT PHASE: V3-005 Stage 3 Ruined Crossbow Bastion — 2026-11-08
+
+**Instructions registered, no gameplay source code changed, V3-005 not yet officially registered in queue.** Do not treat GitHub Markdown creation as completed game implementation or a new queue approval.
+
+- Development branch: studio/v3-005-stage3-crossbow-bastion, derived from externally reviewed Stage2 baseline f4a5b9790a33fe2378dd19ef1206378843d071fa.
+- Next executable task spec: STUDIO_V3/tasks/V3-005.md (single new milestone V3-005). Code owner PK_ClientLead; independent QA PK_QALead and GameDirector PK_GameDirector.
+- Source of truth: Stage3 SideQV (side_qv_stage_3.gd, side_qv_ranged_minion.gd, side_qv_crossbow_commander.gd, side_qv_crossbow_bolt.gd, side_qv_caltrop_trap.gd). The legacy 2D ThirdStage.tscn / old graphics tests are a DIFFERENT game architecture; must not count as Stage3 SideQV completion.
+- Actual P0 game defects: crossbow minions spawn Z=-1.8/+1.8, minion and Commander AI Z movement, Commander backstep random Z, Fan Volley rotates bolts around UP into Z, Rapid Barrage random Z, most caltrops off-lane, bolt high-speed hit-tunneling risk.
+- V3-004 desktop game external verdict ACCEPTED WITH QUALIFICATIONS; internal V3-004 queue APPROVED is recorded but protected invocation-bound review was not independently proven. Check once read-only at kickoff, disclose result, no new governance loop and no rewriting historical event records. User authorized Stage3 development under qualified precedent, not fake retrospective approval.
+- Official V3-005 task registration/start must go through SQLite QueueStore/TaskDispatcher, not manual queue.json changes. No V3-005 task was present in committed snapshot at instruction creation.
+- Required milestone outcome: genuine Godot input Title→Stage1→Stage2→Stage3 ranged combat/boss HP30 Phase2→Stage3 clear→actual Stage4 scene, fresh captures/console logs/telemetry and independent same-source-SHA two-key reviews. Official APPROVED only through real trusted provider identities and dispatcher. Android NOT_TESTED / commercial game release NOT_APPROVED.
+
+---
+
 # ProjectKnight Studio V3 — Current State & Milestone Status
 
 **Current Date:** 2026-11-08  
