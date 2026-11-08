@@ -1,3 +1,18 @@
+# NEXT PHASE — V3-004 Stage 2 Beastwood Forest Gorge (2026-11-08)
+
+**Planning/implementation instructions registered, not executed.** This branch inherits Stage 1 `ACCEPTED WITH QUALIFICATIONS` from `chatgpt/v3-003-final-input-acceptance@8f1dea1b5d8094703f952a80eaf56858c03be869`. Stage 1 input code and previous audit evidence have not been changed by task registration.
+
+- Work branch: `studio/v3-004-stage2-beastwood`.
+- Next real game development task: **`V3-004`** in `STUDIO_V3/tasks/V3-004.md`.
+- **Queue status:** `V3-004` is **NOT YET REGISTERED** in the committed `STUDIO_V3/queue.json` (13 existing tasks). Before the first source change, PK_Producer must verify actual SQLite authority, register exactly one `V3-004`, formally authorize `READY`, and start via the existing TaskDispatcher. Do not pretend a Git Markdown task file means an official TaskDispatcher status.
+- The current Stage2 is NOT EMPTY: `SideQVStage2.tscn`, `side_qv_stage_2.gd`, `side_qv_beast_minion.gd` and `side_qv_beast_chieftain.gd` already contain forest scenery, two minions and a Chieftain HP28 boss. **No actual Stage2 full-clear evidence yet**. Stage1 E2E proved only Stage2 scene entry.
+- Confirmed Stage2 source inconsistency: minions start at **Z=-1.6 and +1.6**, and their AI plus the Chieftain still change `velocity.z` (including boss pounce). This violates the accepted gameplay Option C **Z=0** plane and must be the first gameplay source repair.
+- V3-004 expected result: continuous real-input Title→Stage1→Stage2 beast wave→Chieftain two phases→natural clear→Stage3, fresh Godot tests/PNG/telemetry, scene/visual QA and two authentic **same-SHA** reviewers.
+- The Stage1 external report specifically does not attest same-final-SHA native QA/Director approval, raw private provider transcripts, physical keyboard ownership or Android device quality. Carry these as bounded limitations; the Stage2 task must not claim Android or game release READY.
+- **No new infrastructure review cycle or docs-only rework**. Stage2 actual gameplay code and input-driven playability are the purpose. Commercial release remains `NOT_APPROVED`.
+
+---
+
 # V3-003 FINAL REAL INPUT-PATH VERIFICATION & STAGE 1 ACCEPTANCE — 2026-11-08
 
 **Milestone Status:** **`APPROVED`** (Task `V3-003` Stage 1 Final Real Input-Path Verification & Stage 1 Exit Gate).
