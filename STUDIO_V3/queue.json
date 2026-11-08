@@ -1488,6 +1488,98 @@
       "notes": "Officially registered by PK_Producer for Stage 2 Beastwood gameplay development"
     },
     {
+      "id": "V3-005",
+      "title": "Stage 3 Ruined Crossbow Bastion real-play content implementation",
+      "status": "IN_REVIEW",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [
+        "V3-004"
+      ],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-005/STAGE3_REAL_INPUT_E2E_RESULT.json",
+        "STUDIO_V3/evidence/V3-005/GODOT_SHELL_COMMANDS_STDOUT_STDERR_EXIT.txt",
+        "STUDIO_V3/evidence/V3-005/CAPTURE_MANIFEST.json",
+        "STUDIO_V3/evidence/V3-005/ACTOR_PROJECTILE_Z_PRESENCE.csv",
+        "STUDIO_V3/evidence/V3-005/PROJECTILE_HIT_PARRY_TRAP_TEST.json"
+      ],
+      "evidence_manifest": [
+        {
+          "evidence_id": "ev-6238b1412f",
+          "task_id": "V3-005",
+          "iteration": 1,
+          "source_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+          "working_branch": "studio/v3-005-stage3-crossbow-bastion",
+          "agent_invocation_id": "sub-V3-005-1",
+          "file_path": "STUDIO_V3/evidence/V3-005/STAGE3_REAL_INPUT_E2E_RESULT.json",
+          "sha256": "723149d9b7f6a557d7a6840d68db055af01fccb5fa824acddb2f4c5830cce5b9",
+          "creation_time": "2026-11-08T14:42:07.101131+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-8c27b2645f",
+          "task_id": "V3-005",
+          "iteration": 1,
+          "source_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+          "working_branch": "studio/v3-005-stage3-crossbow-bastion",
+          "agent_invocation_id": "sub-V3-005-1",
+          "file_path": "STUDIO_V3/evidence/V3-005/GODOT_SHELL_COMMANDS_STDOUT_STDERR_EXIT.txt",
+          "sha256": "17dd7175de4fc199745949074fe791ab9d8d4f364462a203093caef634338c3d",
+          "creation_time": "2026-11-08T14:42:07.101131+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-3b690968e4",
+          "task_id": "V3-005",
+          "iteration": 1,
+          "source_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+          "working_branch": "studio/v3-005-stage3-crossbow-bastion",
+          "agent_invocation_id": "sub-V3-005-1",
+          "file_path": "STUDIO_V3/evidence/V3-005/CAPTURE_MANIFEST.json",
+          "sha256": "ce3769f398ef51c9ff02eae9bbeae4296af8d533478b1f7a6f9c853fe56b2981",
+          "creation_time": "2026-11-08T14:42:07.101131+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-1f43349e6c",
+          "task_id": "V3-005",
+          "iteration": 1,
+          "source_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+          "working_branch": "studio/v3-005-stage3-crossbow-bastion",
+          "agent_invocation_id": "sub-V3-005-1",
+          "file_path": "STUDIO_V3/evidence/V3-005/ACTOR_PROJECTILE_Z_PRESENCE.csv",
+          "sha256": "a73f193c0855d30a3d4efe90dfcbb9b405c09ecef6b647d4024db9d4b6727abc",
+          "creation_time": "2026-11-08T14:42:07.101131+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-ae2068b580",
+          "task_id": "V3-005",
+          "iteration": 1,
+          "source_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+          "working_branch": "studio/v3-005-stage3-crossbow-bastion",
+          "agent_invocation_id": "sub-V3-005-1",
+          "file_path": "STUDIO_V3/evidence/V3-005/PROJECTILE_HIT_PARRY_TRAP_TEST.json",
+          "sha256": "963ddecd34ca46722b1ceabea94f3a9b88ff36014e37d96b3214eae1130e8cfc",
+          "creation_time": "2026-11-08T14:42:07.101131+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        }
+      ],
+      "reviews": {},
+      "iteration": 1,
+      "priority": 1,
+      "active_branch": "studio/v3-005-stage3-crossbow-bastion",
+      "current_commit_sha": "efa9b82b02fa3efc5a8ae0f8042d5de8c9802cd7",
+      "version": 3,
+      "lease_owner": "lease-PK_ClientLead-V3-005",
+      "lease_expires_at": "2026-11-08T14:33:24.993461+00:00",
+      "issues": [],
+      "notes": "Registered legitimate V3-005 task for Stage 3 real-play content implementation."
+    },
+    {
       "id": "V3-003",
       "title": "Implement approved Stage 1 visual vertical slice through review/rework loops",
       "status": "APPROVED",
