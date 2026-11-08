@@ -159,12 +159,11 @@ func _physics_process(delta: float) -> bool:
 		0:
 			# Phase 0: Title Screen Displayed -> Click Deploy Button via Real Viewport Input
 			if sim_time > 0.4:
-				var btn: Button = title_instance.btn_new_game
-				if btn == null or not is_instance_valid(btn):
-					_fail("TitleScreen btn_new_game not found")
-					return true
-
 				if phase_step == 0:
+					if not is_instance_valid(title_instance) or title_instance.btn_new_game == null:
+						_fail("TitleScreen btn_new_game not found")
+						return true
+					var btn: Button = title_instance.btn_new_game
 					_capture_screen("01_title_deploy_click")
 					# Connect observation callback to verify natural pressed signal
 					btn.pressed.connect(func():
@@ -183,6 +182,10 @@ func _physics_process(delta: float) -> bool:
 					phase_step = 1
 
 				elif phase_step == 1:
+					if not is_instance_valid(title_instance) or title_instance.btn_new_game == null:
+						_fail("TitleScreen btn_new_game not found in step 1")
+						return true
+					var btn: Button = title_instance.btn_new_game
 					# Release mouse click on next frame
 					var center := btn.get_global_rect().get_center()
 					_log("Dispatching real InputEventMouseButton RELEASE to Deploy button center: " + str(center))
@@ -196,7 +199,7 @@ func _physics_process(delta: float) -> bool:
 					phase_step = 2
 
 				elif phase_step == 2:
-					# Assert click count == 1
+					# Assert click count == 1 (Do NOT access title_instance since change_scene_to_file frees it)
 					if title_click_count == 1:
 						e2e_results["title_button_gui_routed_click"] = true
 						e2e_results["title_button_pressed_signal_count"] = title_click_count

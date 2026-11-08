@@ -7,31 +7,31 @@
 [0.433s, p=0] [OBSERVATION] btn_new_game.pressed callback received! count=1
 [0.450s, p=0] Real GUI input verified: title_click_count == 1! Transitioning to Phase 1 (Campaign load)...
 [0.467s, p=1] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
-[0.533s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/02_stage1_natural_entry.png
+[0.517s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/02_stage1_natural_entry.png
 [1.000s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/03_minions_natural_combat.png
 [1.838s, p=2] Wave 1 cleared naturally: Minions defeated! Awaiting boss wave...
-[3.041s, p=3] Boss Spawn Verified: Commander active with HP=24/24 at X=11.50
-[3.041s, p=4] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/04_boss_spawn_full_sightline.png
-[4.577s, p=4] Boss HP progress: 22/24
-[4.862s, p=4] Boss HP progress: 20/24
-[5.146s, p=4] Boss HP progress: 16/24
-[5.434s, p=4] Boss HP progress: 14/24
-[5.719s, p=4] Boss HP progress: 12/24
-[6.003s, p=4] Boss HP progress: 6/24
-[6.241s, p=4] Boss HP progress: 3/24
-[6.474s, p=4] [OBSERVATION] boss.boss_defeated callback received! count=1
-[6.476s, p=4] Boss HP progress: 0/24
-[6.476s, p=4] Boss defeated naturally with real inputs! Boss HP reached 0.
-[6.476s, p=5] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/05_boss_combat_parry_strike.png
-[8.475s, p=5] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
-[8.492s, p=5] Stage 1 Cleared signal verified (count=1)! Waiting for Stage 2 transition...
-[10.292s, p=6] Stage 2 Transition Verified: Loaded Beastwood Gorge (SideQVStage2)
-[10.409s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/06_stage1_clear_stage2_transition.png
-[10.425s, p=6] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 1 CLEAR & STAGE 2 TRANSITION <<<
-[10.425s, p=6]   Title Button GUI Click: PASS (count=1)
-[10.425s, p=6]   Stage 1 Entry: PASS
-[10.425s, p=6]   Wave 1 Minions Defeated: PASS
-[10.425s, p=6]   Boss Initial HP 24 & Natural Defeat: PASS (min_hp=0, signal_count=1)
-[10.425s, p=6]   Stage Cleared Signal: PASS (count=1)
-[10.425s, p=6]   Stage 2 Transition: PASS
-[10.425s, p=6]   Source Integrity Audit: PASS
+[3.057s, p=3] Boss Spawn Verified: Commander active with HP=24/24 at X=11.50
+[3.057s, p=4] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/04_boss_spawn_full_sightline.png
+[4.592s, p=4] Boss HP progress: 22/24
+[4.878s, p=4] Boss HP progress: 20/24
+[5.162s, p=4] Boss HP progress: 16/24
+[5.451s, p=4] Boss HP progress: 14/24
+[5.737s, p=4] Boss HP progress: 12/24
+[6.021s, p=4] Boss HP progress: 6/24
+[6.258s, p=4] Boss HP progress: 3/24
+[6.492s, p=4] [OBSERVATION] boss.boss_defeated callback received! count=1
+[6.494s, p=4] Boss HP progress: 0/24
+[6.494s, p=4] Boss defeated naturally with real inputs! Boss HP reached 0.
+[6.494s, p=5] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/05_boss_combat_parry_strike.png
+[8.493s, p=5] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[8.510s, p=5] Stage 1 Cleared signal verified (count=1)! Waiting for Stage 2 transition...
+[10.326s, p=6] Stage 2 Transition Verified: Loaded Beastwood Gorge (SideQVStage2)
+[10.443s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/captures/06_stage1_clear_stage2_transition.png
+[10.460s, p=6] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 1 CLEAR & STAGE 2 TRANSITION <<<
+[10.460s, p=6]   Title Button GUI Click: PASS (count=1)
+[10.460s, p=6]   Stage 1 Entry: PASS
+[10.460s, p=6]   Wave 1 Minions Defeated: PASS
+[10.460s, p=6]   Boss Initial HP 24 & Natural Defeat: PASS (min_hp=0, signal_count=1)
+[10.460s, p=6]   Stage Cleared Signal: PASS (count=1)
+[10.460s, p=6]   Stage 2 Transition: PASS
+[10.460s, p=6]   Source Integrity Audit: PASS

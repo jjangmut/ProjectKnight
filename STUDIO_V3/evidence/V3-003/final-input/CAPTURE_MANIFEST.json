@@ -17,12 +17,12 @@
     "boss_hp": null,
     "boss_pos_x": null,
     "boss_visible": false,
-    "file_size_bytes": 1299817,
+    "file_size_bytes": 1300066,
     "filename": "02_stage1_natural_entry.png",
-    "player_pos_x": -7.5,
+    "player_pos_x": -7.625,
     "player_visible": true,
-    "sim_frame": 32,
-    "sim_time_s": 0.533333333333333,
+    "sim_frame": 31,
+    "sim_time_s": 0.516666666666667,
     "step_name": "02_stage1_natural_entry"
   },
   {
@@ -30,7 +30,7 @@
     "boss_hp": null,
     "boss_pos_x": null,
     "boss_visible": false,
-    "file_size_bytes": 1302295,
+    "file_size_bytes": 1302539,
     "filename": "03_minions_natural_combat.png",
     "player_pos_x": -4.0,
     "player_visible": true,
@@ -43,12 +43,12 @@
     "boss_hp": 24,
     "boss_pos_x": 11.5,
     "boss_visible": true,
-    "file_size_bytes": 1259790,
+    "file_size_bytes": 1263713,
     "filename": "04_boss_spawn_full_sightline.png",
     "player_pos_x": -1.6556202173233,
     "player_visible": true,
     "sim_frame": 188,
-    "sim_time_s": 3.04133333333333,
+    "sim_time_s": 3.05699999999999,
     "step_name": "04_boss_spawn_full_sightline"
   },
   {
@@ -56,12 +56,12 @@
     "boss_hp": 0,
     "boss_pos_x": 1.26250767707825,
     "boss_visible": true,
-    "file_size_bytes": 1286196,
+    "file_size_bytes": 1285576,
     "filename": "05_boss_combat_parry_strike.png",
     "player_pos_x": 0.262382239103317,
     "player_visible": true,
-    "sim_frame": 405,
-    "sim_time_s": 6.47599999999998,
+    "sim_frame": 407,
+    "sim_time_s": 6.49366666666665,
     "step_name": "05_boss_combat_parry_strike"
   },
   {
@@ -69,12 +69,12 @@
     "boss_hp": null,
     "boss_pos_x": null,
     "boss_visible": false,
-    "file_size_bytes": 1394980,
+    "file_size_bytes": 1396699,
     "filename": "06_stage1_clear_stage2_transition.png",
     "player_pos_x": null,
     "player_visible": false,
-    "sim_frame": 648,
-    "sim_time_s": 10.4086666666668,
+    "sim_frame": 651,
+    "sim_time_s": 10.4430000000001,
     "step_name": "06_stage1_clear_stage2_transition"
   }
 ]
