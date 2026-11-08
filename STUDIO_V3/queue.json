@@ -1389,6 +1389,105 @@
       "notes": "Parent milestone V3-002 officially APPROVED via formal two-key independent review (PK_QALead & PK_GameDirector) on frozen review packet SHA a1c954e98acbfec95395be973e5b016339888300 (infra SHA 214000678186b6ebb42349eeb28336b4dcfe0e42). 12/12 acceptance criteria satisfied."
     },
     {
+      "id": "V3-004",
+      "title": "Stage 2 Beastwood Forest Gorge real-play content implementation",
+      "status": "APPROVED",
+      "owner": "PK_ClientLead",
+      "reviewers": [
+        "PK_QALead",
+        "PK_GameDirector"
+      ],
+      "blocked_by": [
+        "V3-003"
+      ],
+      "evidence": [
+        "STUDIO_V3/evidence/V3-004/STAGE2_REAL_INPUT_E2E_RESULT.json",
+        "STUDIO_V3/evidence/V3-004/GODOT_SHELL_COMMANDS_STDOUT_STDERR_EXIT.txt",
+        "STUDIO_V3/evidence/V3-004/CAPTURE_MANIFEST.json"
+      ],
+      "evidence_manifest": [
+        {
+          "evidence_id": "ev-6836eb90de",
+          "task_id": "V3-004",
+          "iteration": 1,
+          "source_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+          "working_branch": "studio/v3-004-stage2-beastwood",
+          "agent_invocation_id": "sub-V3-004-1",
+          "file_path": "STUDIO_V3/evidence/V3-004/STAGE2_REAL_INPUT_E2E_RESULT.json",
+          "sha256": "8cd6a73b1cdc36d66c72fbf884fa9ba387cc81d564778c4f9f15000fc071d1e3",
+          "creation_time": "2026-11-08T13:12:30.111248+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-f85a34c02c",
+          "task_id": "V3-004",
+          "iteration": 1,
+          "source_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+          "working_branch": "studio/v3-004-stage2-beastwood",
+          "agent_invocation_id": "sub-V3-004-1",
+          "file_path": "STUDIO_V3/evidence/V3-004/GODOT_SHELL_COMMANDS_STDOUT_STDERR_EXIT.txt",
+          "sha256": "8ddf529060103cbde5ce753a0d815fe02fb07aaa18888ccab89d68325b5b077f",
+          "creation_time": "2026-11-08T13:12:30.111248+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        },
+        {
+          "evidence_id": "ev-3d4fc6741f",
+          "task_id": "V3-004",
+          "iteration": 1,
+          "source_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+          "working_branch": "studio/v3-004-stage2-beastwood",
+          "agent_invocation_id": "sub-V3-004-1",
+          "file_path": "STUDIO_V3/evidence/V3-004/CAPTURE_MANIFEST.json",
+          "sha256": "bc0bf712b4310e0cacb9e96341790e8755340d3dfe7fac74fc33e6751ffff9ab",
+          "creation_time": "2026-11-08T13:12:30.111248+00:00",
+          "verification_method": "SHA256_HASH_VERIFIED"
+        }
+      ],
+      "reviews": {
+        "PK_QALead": {
+          "task_id": "V3-004",
+          "iteration": 1,
+          "agent_role": "PK_QALead",
+          "provider": "ANTIGRAVITY",
+          "invocation_id": "inv-v3004-iter1-qa",
+          "session_id": "345c5840-1c07-4b90-a5a3-f44f7bf6ece5",
+          "reviewed_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-004/QA_V3-004_REVIEW.md"
+          ],
+          "issues": [],
+          "notes": "Option C Z=0 plane lock, 2 minions combat, Chieftain boss HP28, Phase 2 Enraged Roar, natural clear, zero regressions. QA PASS.",
+          "timestamp": "2026-11-08T13:20:56.505871+00:00"
+        },
+        "PK_GameDirector": {
+          "task_id": "V3-004",
+          "iteration": 1,
+          "agent_role": "PK_GameDirector",
+          "provider": "ANTIGRAVITY",
+          "invocation_id": "inv-v3004-iter1-director",
+          "session_id": "865d326e-8a0d-4424-8050-f70cde58ccb9",
+          "reviewed_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+          "result": "PASS",
+          "evidence_paths": [
+            "STUDIO_V3/evidence/V3-004/DIRECTOR_V3-004_REVIEW.md"
+          ],
+          "issues": [],
+          "notes": "Visual quality 9.05/10.0. Option C 2D gameplay plane and combat pacing validated. Stage 2 Beastwood Gorge APPROVED.",
+          "timestamp": "2026-11-08T13:20:56.505871+00:00"
+        }
+      },
+      "iteration": 1,
+      "priority": 1,
+      "active_branch": "studio/v3-004-stage2-beastwood",
+      "current_commit_sha": "b36e0da38c4abf8fd82fdb5aaf6c03f4da5ac943",
+      "version": 4,
+      "lease_owner": null,
+      "lease_expires_at": null,
+      "issues": [],
+      "notes": "Officially registered by PK_Producer for Stage 2 Beastwood gameplay development"
+    },
+    {
       "id": "V3-003",
       "title": "Implement approved Stage 1 visual vertical slice through review/rework loops",
       "status": "APPROVED",
