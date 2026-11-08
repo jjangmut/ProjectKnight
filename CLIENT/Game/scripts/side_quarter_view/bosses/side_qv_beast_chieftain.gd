@@ -1,8 +1,9 @@
 extends CharacterBody3D
 class_name SideQVBeastChieftain
-## 사이드 쿼터뷰 스테이지 2 보스: 심연의 야수 우두머리 (Side QV Beast Chieftain)
+## 사이드 쿼터뷰 스테이지 2 보스: 심연의 야수 우두머리 (Side QV Beast Chieftain - Option C Z=0 Plane Lock)
 ## - 2D 고해상도 야수 보스 스프라이트 (Sprite3D, 4x3 시트, ~2.5m 높이) 및 실시간 3D 그림자 투영
-## - 패턴 1: 맹수 도약 덮치기 (Pounce Leap: 플레이어를 향해 9.0m/s 포물선 도약 강습 및 착지 충격파)
+## - Option C: Z=0.0 평면 완전 고정, X축 수평 도약/포물선 점프 및 착지 충격파 (Pounce Leap)
+## - 패턴 1: 맹수 도약 덮치기 (Pounce Leap: 9.0~11.5m/s X축 포물선 도약 강습 및 착지 충격파)
 ## - 패턴 2: 3단 야수 발톱 참격 (Triple Claw Strike: 전진 3연격 근접 콤보)
 ## - 패턴 3: 분노 포효 (Enraged Roar: HP 50% 이하 2페이즈 돌입, 3D 에메랄드 쇼크웨이브 및 광폭화)
 ## - 피격/그로기/저스트 패링 스턴/상호 밀림 방지/플레이어 정면 응시 회전 완비
@@ -48,6 +49,7 @@ var facing_dir_x: float = -1.0 # 1.0 = Right, -1.0 = Left
 
 var is_leap_airborne: bool = false
 var leap_has_landed: bool = false
+var has_hit_in_current_leap: bool = false
 
 var sprite_3d: Sprite3D
 var aura_ring_3d: MeshInstance3D
@@ -66,6 +68,9 @@ func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("bosses")
 
+	global_position.z = 0.0
+	velocity.z = 0.0
+
 	_build_components()
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
@@ -83,6 +88,7 @@ func _build_components() -> void:
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.position.y = 1.25
+	sprite_3d.position.z = 0.0
 	sprite_3d.flip_h = true # Initially face Left towards the player on the left
 	add_child(sprite_3d)
 
@@ -101,6 +107,7 @@ func _build_components() -> void:
 	amat.emission_energy_multiplier = 4.2
 	aura_ring_3d.material_override = amat
 	aura_ring_3d.position.y = 0.15
+	aura_ring_3d.position.z = 0.0
 	aura_ring_3d.visible = false
 	add_child(aura_ring_3d)
 
@@ -111,6 +118,7 @@ func _build_components() -> void:
 	cap.height = 2.45
 	col.shape = cap
 	col.position.y = 1.22
+	col.position.z = 0.0
 	add_child(col)
 
 	# 4. Attack Area 3D
@@ -134,6 +142,10 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Option C: Enforce strict Z=0.0 at frame start
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -145,6 +157,8 @@ func _physics_process(delta: float) -> void:
 			_exit_groggy_state()
 		velocity = Vector3.ZERO
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -152,11 +166,14 @@ func _physics_process(delta: float) -> void:
 	if current_pattern == Pattern.STUNNED:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 			pattern_timer = 0.6
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -165,55 +182,61 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
-	var diff := target_player.global_position - global_position
-	diff.y = 0.0
-	var dist := diff.length()
-	var dir_x := signf(diff.x)
+	# Option C: 2D Horizontal distance and direction
+	var diff_x := target_player.global_position.x - global_position.x
+	var dist_x := absf(diff_x)
+	var dir_x := signf(diff_x)
 
 	# Face towards player (if not mid-leap)
 	if dir_x != 0.0 and current_pattern != Pattern.POUNCE_LEAP:
 		facing_dir_x = dir_x
 		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		attack_area_3d.position.x = 1.3 * facing_dir_x
+		attack_area_3d.position.z = 0.0
 
 	pattern_timer -= delta
 
 	match current_pattern:
 		Pattern.IDLE, Pattern.CHASE:
 			if pattern_timer <= 0.0:
-				_pick_next_pattern(dist, diff)
+				_pick_next_pattern(dist_x, dir_x)
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
 				var combat_distance := 2.0
-				if dist > combat_distance:
+				if dist_x > combat_distance:
 					velocity.x = facing_dir_x * spd
-					velocity.z = diff.normalized().z * (spd * 0.7)
+					velocity.z = 0.0
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+					velocity.z = 0.0
 					if pattern_timer <= 0.35:
-						_pick_next_pattern(dist, diff)
+						_pick_next_pattern(dist_x, dir_x)
 
 		Pattern.POUNCE_LEAP:
 			if is_leap_airborne:
+				velocity.z = 0.0
+				global_position.z = 0.0
 				# Check landing
 				if is_on_floor() and velocity.y <= 0.1:
 					_on_pounce_landed()
 			else:
 				velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-				velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+				velocity.z = 0.0
 				if pattern_timer <= 0.0:
 					current_pattern = Pattern.CHASE
 					pattern_timer = 0.8
 
 		Pattern.TRIPLE_CLAW_STRIKE:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				current_pattern = Pattern.CHASE
 				pattern_timer = 0.9
@@ -225,24 +248,30 @@ func _physics_process(delta: float) -> void:
 				current_pattern = Pattern.CHASE
 				pattern_timer = 0.6
 
+	# Option C: Enforce strict Z=0.0 before and after move_and_slide
+	velocity.z = 0.0
+	global_position.z = 0.0
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	_update_boss_animation(delta)
 
 
-func _pick_next_pattern(dist: float, diff: Vector3) -> void:
-	if dist >= 4.0:
-		_execute_pounce_leap(diff)
-	elif dist <= 2.8:
+func _pick_next_pattern(dist_x: float, dir_x: float) -> void:
+	if dist_x >= 4.0:
+		_execute_pounce_leap(dir_x)
+	elif dist_x <= 2.8:
 		_execute_triple_claw()
 	else:
 		if randf() > 0.45:
-			_execute_pounce_leap(diff)
+			_execute_pounce_leap(dir_x)
 		else:
 			_execute_triple_claw()
 
 
 # ==============================================================================
-# 패턴 1: 맹수 도약 덮치기 (Pounce Leap)
+# 패턴 1: 맹수 도약 덮치기 (Pounce Leap - Option C 2D Parabolic Jump)
 # ==============================================================================
 func _show_danger_telegraph(duration: float = 0.35) -> void:
 	var p := get_parent()
@@ -263,7 +292,7 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
+	ring.global_position = Vector3(global_position.x, 0.08, 0.0)
 	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
 	var tw := ring.create_tween()
 	if tw:
@@ -272,7 +301,7 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
 		tw.chain().tween_callback(ring.queue_free)
 
-	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.7, 0.0), "!", Color(3.8, 0.3, 0.2), true)
+	GameFeelManager.damage_popup_3d(p, Vector3(global_position.x, 2.7, 0.0), "!", Color(3.8, 0.3, 0.2), true)
 
 
 func _enter_groggy_state() -> void:
@@ -280,12 +309,12 @@ func _enter_groggy_state() -> void:
 	groggy_timer = 3.0
 	current_pattern = Pattern.STUNNED
 	velocity = Vector3.ZERO
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
 	sprite_3d.texture = BossTextureSkills
 	sprite_3d.frame = 8 # Hurt frame
 	var p := get_parent()
 	if p != null:
-		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.7, 0.0), "GROGGY!", Color(1.0, 0.7, 0.1), true)
+		GameFeelManager.damage_popup_3d(p, Vector3(global_position.x, 2.7, 0.0), "GROGGY!", Color(1.0, 0.7, 0.1), true)
 		_spawn_groggy_halo()
 
 
@@ -321,12 +350,19 @@ func _exit_groggy_state() -> void:
 	pattern_timer = 0.8
 	var p := get_parent()
 	if p != null:
-		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.5, 0.0), "RECOVER!", Color(0.4, 0.8, 1.2), false)
+		GameFeelManager.damage_popup_3d(p, Vector3(global_position.x, 2.5, 0.0), "RECOVER!", Color(0.4, 0.8, 1.2), false)
 
 
-func _execute_pounce_leap(diff: Vector3) -> void:
+func _execute_pounce_leap(dir_x: float) -> void:
 	current_pattern = Pattern.POUNCE_LEAP
 	pattern_timer = 2.5
+	has_hit_in_current_leap = false
+	if dir_x != 0.0:
+		facing_dir_x = dir_x
+		sprite_3d.flip_h = (facing_dir_x < 0.0)
+		attack_area_3d.position.x = 1.3 * facing_dir_x
+		attack_area_3d.position.z = 0.0
+
 	_show_danger_telegraph(0.35)
 	velocity = Vector3.ZERO
 	await get_tree().create_timer(0.35).timeout
@@ -341,7 +377,8 @@ func _execute_pounce_leap(diff: Vector3) -> void:
 	var spd := leap_speed * (1.25 if current_phase == 2 else 1.0)
 	velocity.y = 7.2
 	velocity.x = facing_dir_x * spd
-	velocity.z = clampf(diff.z * 1.5, -4.5, 4.5)
+	velocity.z = 0.0
+	global_position.z = 0.0
 	attack_area_3d.monitoring = true
 
 
@@ -349,8 +386,9 @@ func _on_pounce_landed() -> void:
 	is_leap_airborne = false
 	leap_has_landed = true
 	velocity = Vector3.ZERO
+	global_position.z = 0.0
 	pattern_timer = 0.55
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
 
 	# Skills Row 0 Frame 2 (Ground Impact Slam)
 	sprite_3d.texture = BossTextureSkills
@@ -360,6 +398,10 @@ func _on_pounce_landed() -> void:
 
 
 func _spawn_ground_slam_shockwave() -> void:
+	var p := get_parent()
+	if p == null:
+		return
+
 	# 3D Ground Shockwave Area
 	var slam_area := Area3D.new()
 	slam_area.collision_layer = 0
@@ -371,8 +413,8 @@ func _spawn_ground_slam_shockwave() -> void:
 	cyl.height = 1.0
 	col.shape = cyl
 	slam_area.add_child(col)
-	get_parent().add_child(slam_area)
-	slam_area.global_position = global_position
+	p.add_child(slam_area)
+	slam_area.global_position = Vector3(global_position.x, 0.1, 0.0)
 
 	# Emerald Shockwave Visual Mesh
 	var slam_mesh := MeshInstance3D.new()
@@ -400,10 +442,13 @@ func _spawn_ground_slam_shockwave() -> void:
 	await get_tree().process_frame
 	if is_instance_valid(slam_area):
 		for body in slam_area.get_overlapping_bodies():
-			if body.is_in_group("player") and is_instance_valid(body):
+			if body.is_in_group("player") and is_instance_valid(body) and not has_hit_in_current_leap:
 				if body.has_method("receive_incoming_attack"):
-					var push := (body.global_position - global_position).normalized()
-					body.receive_incoming_attack(leap_damage, self, push)
+					has_hit_in_current_leap = true
+					var push_dir := Vector3(signf(body.global_position.x - global_position.x), 0.0, 0.0)
+					if push_dir.x == 0.0:
+						push_dir.x = facing_dir_x
+					body.receive_incoming_attack(leap_damage, self, push_dir)
 
 	await get_tree().create_timer(0.4).timeout
 	if is_instance_valid(slam_area):
@@ -430,11 +475,13 @@ func _execute_triple_claw() -> void:
 
 		sprite_3d.frame = 9
 		velocity.x = facing_dir_x * (4.2 + swing * 0.8)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		attack_area_3d.monitoring = true
 
 		await get_tree().create_timer(0.20).timeout
 		if is_instance_valid(self):
-			attack_area_3d.monitoring = false
+			attack_area_3d.set_deferred("monitoring", false)
 			await get_tree().create_timer(0.08).timeout
 
 	if is_instance_valid(self) and current_pattern != Pattern.STUNNED:
@@ -450,6 +497,7 @@ func _trigger_phase_2() -> void:
 	current_pattern = Pattern.ENRAGED_ROAR
 	pattern_timer = 1.4
 	velocity = Vector3.ZERO
+	global_position.z = 0.0
 
 	aura_ring_3d.visible = true
 	move_speed = 5.6
@@ -465,6 +513,10 @@ func _trigger_phase_2() -> void:
 
 
 func _spawn_roar_emerald_shockwave() -> void:
+	var p := get_parent()
+	if p == null:
+		return
+
 	var roar_area := Area3D.new()
 	roar_area.collision_layer = 0
 	roar_area.collision_mask = 1 # Player
@@ -475,8 +527,8 @@ func _spawn_roar_emerald_shockwave() -> void:
 	cyl.height = 1.2
 	col.shape = cyl
 	roar_area.add_child(col)
-	get_parent().add_child(roar_area)
-	roar_area.global_position = global_position
+	p.add_child(roar_area)
+	roar_area.global_position = Vector3(global_position.x, 0.1, 0.0)
 
 	# Emerald Wave Torus Visual
 	var wave_mesh := MeshInstance3D.new()
@@ -505,8 +557,10 @@ func _spawn_roar_emerald_shockwave() -> void:
 		for body in roar_area.get_overlapping_bodies():
 			if body.is_in_group("player") and is_instance_valid(body):
 				if body.has_method("receive_incoming_attack"):
-					var push := (body.global_position - global_position).normalized()
-					body.receive_incoming_attack(2, self, push)
+					var push_dir := Vector3(signf(body.global_position.x - global_position.x), 0.0, 0.0)
+					if push_dir.x == 0.0:
+						push_dir.x = facing_dir_x
+					body.receive_incoming_attack(2, self, push_dir)
 
 	await get_tree().create_timer(0.5).timeout
 	if is_instance_valid(roar_area):
@@ -559,15 +613,13 @@ func _update_boss_animation(delta: float) -> void:
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
+		var diff_x := target_player.global_position.x - global_position.x
+		var dist_x := absf(diff_x)
 		var min_dist: float = 0.70 + 0.35 + 0.10
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
-			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+		if dist_x < min_dist and dist_x > 0.001:
+			var dir_x := signf(diff_x)
+			if (velocity.x * dir_x) > 0.0:
+				velocity.x = 0.0
 
 
 func _find_player() -> void:
@@ -578,9 +630,13 @@ func _find_player() -> void:
 
 func _on_attack_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player") and is_instance_valid(body):
+		if current_pattern == Pattern.POUNCE_LEAP:
+			if has_hit_in_current_leap:
+				return
+			has_hit_in_current_leap = true
 		if body.has_method("receive_incoming_attack"):
-			var dmg := claw_damage
-			body.receive_incoming_attack(dmg, self, Vector3(facing_dir_x, 0, 0))
+			var dmg := leap_damage if current_pattern == Pattern.POUNCE_LEAP else claw_damage
+			body.receive_incoming_attack(dmg, self, Vector3(facing_dir_x, 0.0, 0.0))
 
 
 func apply_parry_stun(duration: float = 2.0) -> void:
@@ -592,7 +648,8 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	current_pattern = Pattern.STUNNED
 	stun_timer = duration
 	velocity = Vector3.ZERO
-	attack_area_3d.monitoring = false
+	global_position.z = 0.0
+	attack_area_3d.set_deferred("monitoring", false)
 	sprite_3d.texture = BossTextureSkills
 	sprite_3d.frame = 8
 
@@ -602,7 +659,7 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
 		if p != null:
-			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.3, 0.0), "SHATTER +1", Color(1.0, 0.8, 0.2), true)
+			GameFeelManager.damage_popup_3d(p, Vector3(global_position.x, 2.3, 0.0), "SHATTER +1", Color(1.0, 0.8, 0.2), true)
 	else:
 		current_poise = maxi(0, current_poise - maxi(1, amount))
 		if current_poise <= 0:
@@ -612,6 +669,7 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
 	velocity = Vector3.ZERO
+	global_position.z = 0.0
 
 	var tween := create_tween()
 	if tween:

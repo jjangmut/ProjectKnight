@@ -1,9 +1,9 @@
 extends CharacterBody3D
 class_name SideQVBeastMinion
-## 사이드 쿼터뷰 숲의 맹수 미니언 (Beast Minion in 3D Space)
+## 사이드 쿼터뷰 숲의 맹수 미니언 (Beast Minion in 3D Space - Option C Z=0 Plane Lock)
 ## - 2D 고해상도 맹수 스프라이트 (beast_v2.png, 3x2 프레임) 탑재 & 실시간 3D 그림자 투영
-## - 3D 필드 추적 및 8.8m/s 저돌적 도약 돌진 공격 (Feral Charge Pounce)
-## - 플레이어 상호 밀림 방지 및 저스트 패링 스턴 지원
+## - Option C: Z=0.0 전투 평면 엄격 고정, X축 수평 추적 및 8.8m/s 도약 돌진 공격 (Feral Charge Pounce)
+## - 플레이어 상호 밀림 방지 및 저스트 패링 스턴 지원, 다중 피격 중복 방지
 
 signal enemy_defeated(enemy_node: Node)
 
@@ -34,6 +34,7 @@ var is_stunned: bool:
 
 var charge_dir: Vector3 = Vector3.LEFT
 var facing_dir_x: float = -1.0
+var has_hit_in_current_charge: bool = false
 
 var sprite_3d: Sprite3D
 var attack_area_3d: Area3D
@@ -49,6 +50,9 @@ func _ready() -> void:
 	collision_layer = 2 # Enemy Layer (2)
 	collision_mask = 1 | 4 # Player (1) & World (4)
 	add_to_group("enemies")
+
+	global_position.z = 0.0
+	velocity.z = 0.0
 
 	_build_components()
 
@@ -66,6 +70,7 @@ func _build_components() -> void:
 	sprite_3d.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	sprite_3d.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	sprite_3d.position.y = 0.65
+	sprite_3d.position.z = 0.0
 	sprite_3d.flip_h = true # Faces Left towards player initially
 	add_child(sprite_3d)
 
@@ -76,6 +81,7 @@ func _build_components() -> void:
 	cap.height = 1.3
 	col.shape = cap
 	col.position.y = 0.65
+	col.position.z = 0.0
 	add_child(col)
 
 	# 3. Attack Area 3D
@@ -142,6 +148,10 @@ func _update_hp_bar() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Option C: Enforce strict Z=0.0 at frame start
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -151,10 +161,13 @@ func _physics_process(delta: float) -> void:
 	if current_state == State.STUNNED:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
 		if stun_timer <= 0.0:
 			current_state = State.CHASE
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_beast_animation(delta)
 		return
 
@@ -162,47 +175,51 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
+		global_position.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_beast_animation(delta)
 		return
 
-	var diff := target_player.global_position - global_position
-	diff.y = 0.0
-	var dist := diff.length()
-	var dir_x := signf(diff.x)
+	# Pure 2D Horizontal distance and direction
+	var diff_x := target_player.global_position.x - global_position.x
+	var dist_x := absf(diff_x)
+	var dir_x := signf(diff_x)
 
 	if dir_x != 0.0 and current_state != State.CHARGING:
 		facing_dir_x = dir_x
 		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		attack_area_3d.position.x = 0.5 * facing_dir_x
+		attack_area_3d.position.z = 0.0
 
 	match current_state:
 		State.IDLE, State.CHASE:
 			state_timer += delta
-			if cooldown_timer <= 0.0 and dist >= 2.4 and dist <= 7.0:
-				_start_charge_windup(diff)
-			elif dist > 1.3:
-				var dir := diff.normalized()
-				velocity.x = dir.x * move_speed
-				velocity.z = dir.z * (move_speed * 0.7)
+			if cooldown_timer <= 0.0 and dist_x >= 2.4 and dist_x <= 7.0:
+				_start_charge_windup(dir_x)
+			elif dist_x > 1.3:
+				velocity.x = dir_x * move_speed
+				velocity.z = 0.0
 				_prevent_player_pushing()
 			else:
 				velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-				velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+				velocity.z = 0.0
 				if cooldown_timer <= 0.0:
-					_start_charge_windup(diff)
+					_start_charge_windup(dir_x)
 
 		State.WINDUP:
 			state_timer -= delta
 			velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+			velocity.z = 0.0
 			if state_timer <= 0.0:
 				_execute_charge()
 
 		State.CHARGING:
 			state_timer -= delta
-			velocity = charge_dir * charge_speed
-			if dist <= 0.45 + 0.35 + 0.1:
+			velocity.x = charge_dir.x * charge_speed
+			velocity.z = 0.0
+			if dist_x <= 0.9 and not has_hit_in_current_charge:
 				_execute_impact()
 			if state_timer <= 0.0:
 				_enter_recovery()
@@ -210,18 +227,28 @@ func _physics_process(delta: float) -> void:
 		State.RECOVERY:
 			state_timer -= delta
 			velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+			velocity.z = 0.0
 			if state_timer <= 0.0:
 				current_state = State.CHASE
 
+	# Option C: Enforce strict Z=0.0 before and after move_and_slide
+	velocity.z = 0.0
+	global_position.z = 0.0
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	_update_beast_animation(delta)
 
 
-func _start_charge_windup(diff: Vector3) -> void:
+func _start_charge_windup(dir_x: float) -> void:
 	current_state = State.WINDUP
 	state_timer = 0.32
-	charge_dir = diff.normalized()
+	var d := -1.0 if dir_x < 0.0 else 1.0
+	charge_dir = Vector3(d, 0.0, 0.0)
+	facing_dir_x = d
+	has_hit_in_current_charge = false
+	attack_area_3d.monitoring = false
 	velocity = Vector3.ZERO
 	# Telegraph flash
 	var tween := create_tween()
@@ -233,13 +260,16 @@ func _start_charge_windup(diff: Vector3) -> void:
 func _execute_charge() -> void:
 	current_state = State.CHARGING
 	state_timer = 0.42
+	has_hit_in_current_charge = false
 	attack_area_3d.monitoring = true
 
 
 func _execute_impact() -> void:
-	if target_player != null and is_instance_valid(target_player):
-		if target_player.has_method("receive_incoming_attack"):
-			target_player.receive_incoming_attack(attack_damage, self, charge_dir)
+	if not has_hit_in_current_charge:
+		has_hit_in_current_charge = true
+		if target_player != null and is_instance_valid(target_player):
+			if target_player.has_method("receive_incoming_attack"):
+				target_player.receive_incoming_attack(attack_damage, self, charge_dir)
 	_enter_recovery()
 
 
@@ -253,15 +283,13 @@ func _enter_recovery() -> void:
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
+		var diff_x := target_player.global_position.x - global_position.x
+		var dist_x := absf(diff_x)
 		var min_dist: float = 0.45 + 0.35 + 0.08
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
-			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+		if dist_x < min_dist and dist_x > 0.001:
+			var dir_x := signf(diff_x)
+			if (velocity.x * dir_x) > 0.0:
+				velocity.x = 0.0
 
 
 func _update_beast_animation(delta: float) -> void:
@@ -287,7 +315,7 @@ func _update_beast_animation(delta: float) -> void:
 		return
 
 	# Idle or Chase: Row 0 Frames 0..2
-	if velocity.length() > 0.3:
+	if absf(velocity.x) > 0.3:
 		sprite_3d.frame = int(anim_timer * 8.0) % 3
 	else:
 		sprite_3d.frame = 0
@@ -300,23 +328,27 @@ func _find_player() -> void:
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
-	if body.is_in_group("player") and is_instance_valid(body):
-		if body.has_method("receive_incoming_attack"):
-			var atk_dir := Vector3(facing_dir_x, 0, 0)
-			body.receive_incoming_attack(attack_damage, self, atk_dir)
+	if current_state == State.CHARGING and not has_hit_in_current_charge:
+		if body.is_in_group("player") and is_instance_valid(body):
+			has_hit_in_current_charge = true
+			if body.has_method("receive_incoming_attack"):
+				var atk_dir := Vector3(facing_dir_x, 0.0, 0.0)
+				body.receive_incoming_attack(attack_damage, self, atk_dir)
 
 
 func apply_parry_stun(duration: float = 2.0) -> void:
 	current_state = State.STUNNED
 	stun_timer = duration
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
 	velocity = Vector3.ZERO
+	global_position.z = 0.0
 
 
 func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	current_hp -= amount
 	_update_hp_bar()
 	velocity = Vector3.ZERO
+	global_position.z = 0.0
 
 	var tween := create_tween()
 	if tween:

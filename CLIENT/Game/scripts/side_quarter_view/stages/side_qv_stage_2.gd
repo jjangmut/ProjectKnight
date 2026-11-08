@@ -277,14 +277,14 @@ func _spawn_wave_1_enemies() -> void:
 
 	var beast1 := SideQVBeastMinionClass.new()
 	beast1.name = "SideQVBeastMinion_1"
-	beast1.position = Vector3(4.5, 0.1, -1.6)
+	beast1.position = Vector3(4.5, 0.1, 0.0)
 	add_child(beast1)
 	enemies.append(beast1)
 	beast1.enemy_defeated.connect(_on_enemy_defeated)
 
 	var beast2 := SideQVBeastMinionClass.new()
 	beast2.name = "SideQVBeastMinion_2"
-	beast2.position = Vector3(8.0, 0.1, 1.6)
+	beast2.position = Vector3(8.0, 0.1, 0.0)
 	add_child(beast2)
 	enemies.append(beast2)
 	beast2.enemy_defeated.connect(_on_enemy_defeated)

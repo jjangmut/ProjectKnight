@@ -1,0 +1,82 @@
+[
+  {
+    "file_name": "01_title_deploy_click.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/01_title_deploy_click.png",
+    "id": "01_title_deploy_click",
+    "phase": 0,
+    "resolution": "1280x720",
+    "timestamp_s": 0.416666666666667
+  },
+  {
+    "file_name": "02_stage1_entry.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/02_stage1_entry.png",
+    "id": "02_stage1_entry",
+    "phase": 2,
+    "resolution": "1280x720",
+    "timestamp_s": 0.516666666666667
+  },
+  {
+    "file_name": "03_stage1_boss_defeat.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/03_stage1_boss_defeat.png",
+    "id": "03_stage1_boss_defeat",
+    "phase": 4,
+    "resolution": "1280x720",
+    "timestamp_s": 6.59366666666665
+  },
+  {
+    "file_name": "04_stage2_natural_entry.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/04_stage2_natural_entry.png",
+    "id": "04_stage2_natural_entry",
+    "phase": 6,
+    "resolution": "1280x720",
+    "timestamp_s": 10.4263333333334
+  },
+  {
+    "file_name": "05_stage2_beast_minions_combat.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/05_stage2_beast_minions_combat.png",
+    "id": "05_stage2_beast_minions_combat",
+    "phase": 6,
+    "resolution": "1280x720",
+    "timestamp_s": 10.6096666666668
+  },
+  {
+    "file_name": "06_stage2_boss_spawn_full_sightline.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/06_stage2_boss_spawn_full_sightline.png",
+    "id": "06_stage2_boss_spawn_full_sightline",
+    "phase": 8,
+    "resolution": "1280x720",
+    "timestamp_s": 14.1333333333336
+  },
+  {
+    "file_name": "07_stage2_boss_pounce_leap.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/07_stage2_boss_pounce_leap.png",
+    "id": "07_stage2_boss_pounce_leap",
+    "phase": 8,
+    "resolution": "1280x720",
+    "timestamp_s": 14.266666666667
+  },
+  {
+    "file_name": "08_stage2_boss_phase2_roar.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/08_stage2_boss_phase2_roar.png",
+    "id": "08_stage2_boss_phase2_roar",
+    "phase": 8,
+    "resolution": "1280x720",
+    "timestamp_s": 18.1790000000003
+  },
+  {
+    "file_name": "09_stage2_boss_natural_defeat.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/09_stage2_boss_natural_defeat.png",
+    "id": "09_stage2_boss_natural_defeat",
+    "phase": 9,
+    "resolution": "1280x720",
+    "timestamp_s": 18.9363333333335
+  },
+  {
+    "file_name": "10_stage2_clear_stage3_transition.png",
+    "global_path": "D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/10_stage2_clear_stage3_transition.png",
+    "id": "10_stage2_clear_stage3_transition",
+    "phase": 10,
+    "resolution": "1280x720",
+    "timestamp_s": 22.869
+  }
+]

@@ -1,0 +1,53 @@
+[0.000s, p=0] [E2E] Initializing V3-004 Real Input-Only Stage 2 Playthrough...
+[0.000s, p=0] [E2E] Source integrity self-audit PASSED: Zero direct cheats, zero signal emits, zero facing mutations.
+[0.000s, p=0] [E2E] Loading Title Screen instance...
+[0.417s, p=0] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s, p=0] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/01_title_deploy_click.png
+[0.433s, p=0] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s, p=0] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s, p=0] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+[0.467s, p=1] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[0.517s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/02_stage1_entry.png
+[1.824s, p=2] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[6.594s, p=3] Stage 1 Commander boss defeated naturally!
+[6.594s, p=4] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/03_stage1_boss_defeat.png
+[8.593s, p=4] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[8.610s, p=4] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+[10.410s, p=5] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[10.426s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/04_stage2_natural_entry.png
+[10.610s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/05_stage2_beast_minions_combat.png
+[12.917s, p=6] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Boss Sanctuary...
+[14.133s, p=7] Stage 2 Boss Spawn Verified: Beast Chieftain active with HP=28/28 at X=12.00, Z=0.00
+[14.133s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/06_stage2_boss_spawn_full_sightline.png
+[14.167s, p=8] Observed Beast Chieftain pattern: POUNCE_LEAP
+[14.267s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/07_stage2_boss_pounce_leap.png
+[16.302s, p=8] Beast Chieftain HP progress: 26/28 (Phase 1)
+[16.371s, p=8] Observed Beast Chieftain pattern: TRIPLE_CLAW_STRIKE
+[17.671s, p=8] Beast Chieftain HP progress: 20/28 (Phase 1)
+[17.925s, p=8] Beast Chieftain HP progress: 15/28 (Phase 1)
+[18.177s, p=8] [OBSERVATION] boss.phase_changed callback received! phase=2 count=1
+[18.179s, p=8] Beast Chieftain HP progress: 12/28 (Phase 2)
+[18.179s, p=8] Observed Beast Chieftain Phase 2 ENRAGED_ROAR!
+[18.179s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/08_stage2_boss_phase2_roar.png
+[18.430s, p=8] Beast Chieftain HP progress: 9/28 (Phase 2)
+[18.681s, p=8] Beast Chieftain HP progress: 3/28 (Phase 2)
+[18.934s, p=8] [OBSERVATION] boss.boss_defeated callback received! count=1
+[18.936s, p=8] Beast Chieftain HP progress: 0/28 (Phase 2)
+[18.936s, p=8] Beast Chieftain defeated naturally with real inputs! HP reached 0
+[18.936s, p=9] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/09_stage2_boss_natural_defeat.png
+[20.936s, p=9] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[20.952s, p=9] Stage 2 Cleared signal verified (count=1)! Awaiting Stage 3 transition...
+[22.752s, p=10] Stage 3 Transition Verified: Loaded Stage 3 (SideQVStage3)
+[22.869s, p=10] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/10_stage2_clear_stage3_transition.png
+[22.886s, p=10] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 2 BEASTWOOD CLEAR & STAGE 3 TRANSITION <<<
+[22.886s, p=10]   Title Button GUI Click: PASS (count=1)
+[22.886s, p=10]   Stage 1 Entry & Clear: PASS
+[22.886s, p=10]   Stage 2 Natural Entry: PASS
+[22.886s, p=10]   Stage 2 Beast Minions Defeated: PASS
+[22.886s, p=10]   Stage 2 Boss Initial HP 28 & Natural Defeat: PASS (min_hp=0, signal_count=1)
+[22.886s, p=10]   Stage 2 Boss Phase 2 Enraged Roar Triggered: PASS
+[22.886s, p=10]   Stage 2 Stage Cleared Signal: PASS (count=1)
+[22.886s, p=10]   Stage 3 Transition: PASS
+[22.886s, p=10]   Option C Plane Z Lock (Z=0.0): PASS
+[22.886s, p=10]   Source Integrity Audit: PASS
+[22.886s, p=10] Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/STAGE2_REAL_INPUT_E2E_RESULT.json

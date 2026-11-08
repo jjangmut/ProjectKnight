@@ -1,0 +1,168 @@
+================================================================================
+ProjectKnight V3-004 Stage 2 Beastwood Real Play & Regression Shell Transcript
+Timestamp: 2026-11-08 22:10:00 +09:00
+Host OS: Windows 11 / PowerShell
+Godot Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+Project Path: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game
+Rendering Engine: GL Compatibility (1280x720 windowed)
+Target: Godot 4.7.2 stable / Desktop Real-Input Playthrough
+Scope Limitation: Android Physical Device NOT_TESTED; Commercial Release NOT_APPROVED
+================================================================================
+
+>>> COMMAND 1: REGRESSION — REAL MOBILE TOUCH EVENT ROUTING & OWNERSHIP TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_real_touch_ui.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[t=0.000s, step=0] [TOUCH UI TEST] Initializing scene tree with 3D ground, Player and Mobile HUD...
+[t=0.000s, step=0] [TOUCH UI TEST] Setup complete. Starting engine-routed touch tests...
+[t=0.183s, step=1] Sent touch press to Strike button at (1080.0, 570.0)
+[t=0.200s, step=2] Strike touch confirmed: Player State.ATTACK, attack action=true
+[t=0.467s, step=3] Sent touch press to Leap button at (1010.0, 480.0)
+[t=0.483s, step=4] Leap touch confirmed: Player velocity.y=0.00, jump action=true
+[t=1.267s, step=5] Sent touch press to Parry button at (925.5, 520.0)
+[t=1.283s, step=6] Parry touch confirmed: Guard barrier active, guard action=true
+[t=1.500s, step=7] Sent touch press to Dash button at (932.0, 600.0)
+[t=1.517s, step=8] Dash touch confirmed: Player State.DASH, dash action=true
+[t=1.833s, step=9] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Strike
+[t=1.850s, step=10] Multi-touch move+attack active! Testing release order 0 then 1...
+[t=1.867s, step=11] Index 0 released safely without stuck move. Now releasing Index 1 (attack)...
+[t=2.183s, step=12] Multi-touch dispatched: Index 0 Joystick Right + Index 1 Leap
+[t=2.200s, step=13] Multi-touch move+jump active! Testing release order 1 then 0...
+[t=2.217s, step=14] Index 1 released safely while Index 0 remained active. Now releasing Index 0...
+[t=2.983s, step=15] Touch release safety verified: stuck_count = 0 across all 8 actions
+[t=3.000s, step=16] Dispatching keyboard Key Down for KEY_A (move_left)...
+[t=3.017s, step=17] Keyboard move_left active. Now starting virtual joystick touch left (index 0)...
+[t=3.033s, step=18] Releasing virtual joystick touch (index 0)...
+[t=3.050s, step=19] Ownership check immediately after touch release: move_left=true
+[t=3.050s, step=19] OWNERSHIP CONFIRMED: Touch release did not extinguish held keyboard action!
+[t=3.067s, step=20] Keyboard key up verified: move_left cleanly released
+[t=3.067s, step=20] >>> ALL CHECKS PASSED: Real Engine-Routed Touch & Multitouch Verification <<<
+  Strike Button Touch: PASS
+  Leap Button Touch: PASS
+  Parry Button Touch: PASS
+  Dash Button Touch: PASS
+  Multi-Touch Move+Attack (rel 0 then 1): PASS
+  Multi-Touch Move+Jump (rel 1 then 0): PASS
+  Release Safety Zero Stuck: PASS
+  Keyboard/Touch Ownership: PASS (Scope: SIMULATED_KEY_ROUTE_ONLY)
+Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/TOUCH_EVENT_ROUTE_RESULT.json
+Saved raw log to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/final-input/TOUCH_EVENT_ROUTE_LOG.txt
+--- STDERR ---
+(clean - no errors)
+--------------------------------------------------------------------------------
+
+>>> COMMAND 2: REGRESSION — BOSS CHARGE TIMING & TELEGRAPH ISOLATED FIXTURE
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_boss_charge_timing.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[BOSS TIMING TEST] Initialized. Starting charge windup test sequence...
+[BOSS TIMING TEST] Charge triggered at t=0.0833s (initial X=8.0000)
+[BOSS TIMING TEST] Boss entered CHARGE_ACTIVE at t=0.5167s (measured windup=0.4333s)
+[BOSS TIMING TEST] Applying parry stun to test charge cancellation...
+
+[BOSS TIMING TEST] >>> PASSED <<<
+  Windup Start: 0.0833s | Motion Start: 0.5167s | Measured Windup: 0.4333s (Requirement: >= 0.42s)
+  Max Windup Displacement: 0.000000m (Requirement: ~0.0m)
+  Active Charge Motion & Hitbox Engagement: VERIFIED
+  Parry Stun Cancellation & Hitbox Cleanup: VERIFIED
+[BOSS TIMING TEST] Saved timeline to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-003/retest/BOSS_WINDUP_TIMELINE.csv
+--- STDERR ---
+(clean - no errors)
+--------------------------------------------------------------------------------
+
+>>> COMMAND 3: STAGE 2 OPTION C PLANE LOCK & ISOLATED COMBAT MECHANICS TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_004_stage2_plane_and_combat.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[V3-004 PLANE TEST] Initializing Stage 2 isolated plane and mechanics test...
+[V3-004 PLANE TEST] Minion 1 spawn Z: 0.0000, Minion 2 spawn Z: 0.0000
+[V3-004 PLANE TEST] Boss Chieftain spawned: HP=28/28 at Z=0.0000
+[V3-004 PLANE TEST] Boss leap landed safely. Max airborne |vz|: 0.0000
+[V3-004 PLANE TEST] phase_changed signal received: 2
+>>> [V3-004 PLANE TEST] ALL CHECKS PASSED: Stage 2 Option C Plane & Boss Mechanics <<<
+--- STDERR ---
+(clean - no errors)
+--------------------------------------------------------------------------------
+
+>>> COMMAND 4: V3-004 FULL REAL-INPUT E2E (TITLE -> STAGE 1 -> STAGE 2 -> STAGE 3)
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_004_stage2_real_input_e2e.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+[0.000s, p=0] [E2E] Initializing V3-004 Real Input-Only Stage 2 Playthrough...
+[0.000s, p=0] [E2E] Source integrity self-audit PASSED: Zero direct cheats, zero signal emits, zero facing mutations.
+[0.000s, p=0] [E2E] Loading Title Screen instance...
+[0.417s, p=0] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s, p=0] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/01_title_deploy_click.png
+[0.433s, p=0] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s, p=0] [OBSERVATION] btn_new_game.pressed callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[0.450s, p=0] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+[0.467s, p=1] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[0.517s, p=2] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/02_stage1_entry.png
+[1.824s, p=2] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[6.594s, p=3] Stage 1 Commander boss defeated naturally!
+[6.594s, p=4] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/03_stage1_boss_defeat.png
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+[8.593s, p=4] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[8.610s, p=4] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[10.410s, p=5] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[10.426s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/04_stage2_natural_entry.png
+[10.610s, p=6] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/05_stage2_beast_minions_combat.png
+[12.917s, p=6] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Boss Sanctuary...
+[14.133s, p=7] Stage 2 Boss Spawn Verified: Beast Chieftain active with HP=28/28 at X=12.00, Z=0.00
+[14.133s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/06_stage2_boss_spawn_full_sightline.png
+[14.167s, p=8] Observed Beast Chieftain pattern: POUNCE_LEAP
+[14.267s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/07_stage2_boss_pounce_leap.png
+[16.302s, p=8] Beast Chieftain HP progress: 26/28 (Phase 1)
+[16.371s, p=8] Observed Beast Chieftain pattern: TRIPLE_CLAW_STRIKE
+[17.671s, p=8] Beast Chieftain HP progress: 20/28 (Phase 1)
+[17.925s, p=8] Beast Chieftain HP progress: 15/28 (Phase 1)
+[18.177s, p=8] [OBSERVATION] boss.phase_changed callback received! phase=2 count=1
+[18.179s, p=8] Beast Chieftain HP progress: 12/28 (Phase 2)
+[18.179s, p=8] Observed Beast Chieftain Phase 2 ENRAGED_ROAR!
+[18.179s, p=8] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/08_stage2_boss_phase2_roar.png
+[18.430s, p=8] Beast Chieftain HP progress: 9/28 (Phase 2)
+[18.681s, p=8] Beast Chieftain HP progress: 3/28 (Phase 2)
+[18.934s, p=8] [OBSERVATION] boss.boss_defeated callback received! count=1
+[18.936s, p=8] Beast Chieftain HP progress: 0/28 (Phase 2)
+[18.936s, p=8] Beast Chieftain defeated naturally with real inputs! HP reached 0
+[18.936s, p=9] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/09_stage2_boss_natural_defeat.png
+>>> [CAMPAIGN] Stage 2 CLEARED! <<<
+[20.936s, p=9] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[20.952s, p=9] Stage 2 Cleared signal verified (count=1)! Awaiting Stage 3 transition...
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+>>> [CAMPAIGN] Loaded Stage 3: 무너진 성벽 (Ruined Crossbow Bastion) <<<
+[22.752s, p=10] Stage 3 Transition Verified: Loaded Stage 3 (SideQVStage3)
+[22.869s, p=10] [CAPTURE] Saved synchronized screenshot: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/captures/10_stage2_clear_stage3_transition.png
+[22.886s, p=10] >>> ALL CHECKS PASSED: 100% REAL INPUT-ONLY STAGE 2 BEASTWOOD CLEAR & STAGE 3 TRANSITION <<<
+  Title Button GUI Click: PASS (count=1)
+  Stage 1 Entry & Clear: PASS
+  Stage 2 Natural Entry: PASS
+  Stage 2 Beast Minions Defeated: PASS
+  Stage 2 Boss Initial HP 28 & Natural Defeat: PASS (min_hp=0, signal_count=1)
+  Stage 2 Boss Phase 2 Enraged Roar Triggered: PASS
+  Stage 2 Stage Cleared Signal: PASS (count=1)
+  Stage 3 Transition: PASS
+  Option C Plane Z Lock (Z=0.0): PASS
+  Source Integrity Audit: PASS
+Saved result JSON to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/STAGE2_REAL_INPUT_E2E_RESULT.json
+Saved raw log to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/STAGE2_REAL_INPUT_E2E_LOG.txt
+Saved Z presence telemetry to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/Z_ACTOR_PRESENCE.csv
+Saved boss phase timeline to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/BOSS_PHASE_TIMELINE.csv
+Saved capture manifest to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-004/CAPTURE_MANIFEST.json
+--- STDERR ---
+(clean - no errors)
+================================================================================
