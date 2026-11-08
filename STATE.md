@@ -1,3 +1,16 @@
+# NEXT EXECUTION — V3-003 Final Engine-Routed Input Verification (2026-11-08)
+
+**Instructions registered only; actual gameplay/test repairs not yet executed.** The external independent review of `V3-003` retest is **FIX_REQUIRED on the real GUI/touch input path**, while acknowledging substantial implemented game progress (Option C Z=0, boss 0.42s windup, combat progression and current engine-side input-handler behavior).
+
+- Existing task ID **`V3-003`**; no new task ID, no branch change: `studio/v3-003-stage1-p1`.
+- **Next instruction:** `STUDIO_V3/tasks/V3-003-FINAL-INPUT-ROUTING-VERIFY.md`.
+- **Source review:** `STUDIO_V3/reviews/V3-003-RETEST-EXTERNAL-INDEPENDENT-REVIEW.md`; original audit report and evidence remain preserved.
+- Four precise mismatches: E2E invokes `btn.pressed.emit()` instead of actual viewport GUI event; bot directly changes `player.facing_dir_x`; touch suite calls `hud._input(ev)` instead of actual Godot viewport input dispatch; keyboard-hold safety is set true without checking held state before release. `stage_cleared` must be signal counted (not merely campaign bool). Capture true shell stdout/stderr/exit and render-complete visual frames.
+- Existing queue `V3-003=APPROVED` iteration 1 refers to **old** reviewed SHA `5e785316...`; subsequent QA/Director PASS reports are not an official new queue iteration. Do not overwrite old approval/reviews/events. A bounded addendum review with a new immutable source SHA is required.
+- No more V3-002 infrastructure cycles. No game release permission; Android hardware `NOT_TESTED`. Start V3-004 only after explicit authorization, not via assumed UI verification.
+
+---
+
 # V3-003 PLAYABILITY RETEST AUDIT & MILESTONE COMPLETION — 2026-11-08
 
 **Milestone Status:** **`APPROVED`** (Task `V3-003` Stage 1 Gameplay P1 Improvement & Playability Retest).
