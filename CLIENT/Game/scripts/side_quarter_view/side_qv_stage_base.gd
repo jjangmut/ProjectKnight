@@ -608,6 +608,28 @@ func _on_player_died() -> void:
 	if is_stage_finished:
 		return
 	is_stage_finished = true
+
+	# Release virtual actions and hide touch controls deck during defeat
+	if touch_controls != null and is_instance_valid(touch_controls):
+		touch_controls._release_all_actions()
+		touch_controls.visible = false
+
+	# Neutralize remaining enemy attacks to prevent phantom damage
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			if "attack_area_3d" in enemy and enemy.attack_area_3d != null and is_instance_valid(enemy.attack_area_3d):
+				enemy.attack_area_3d.set_deferred("monitoring", false)
+				enemy.attack_area_3d.set_deferred("monitorable", false)
+			if "is_attacking" in enemy:
+				enemy.is_attacking = false
+			enemy.set_physics_process(false)
+
+	if active_boss != null and is_instance_valid(active_boss):
+		if "attack_area_3d" in active_boss and active_boss.attack_area_3d != null and is_instance_valid(active_boss.attack_area_3d):
+			active_boss.attack_area_3d.set_deferred("monitoring", false)
+			active_boss.attack_area_3d.set_deferred("monitorable", false)
+		active_boss.set_physics_process(false)
+
 	stage_failed.emit()
 
 

@@ -1,0 +1,15 @@
+{
+  "all_checks_passed": true,
+  "defeat_overlay_verified": true,
+  "fresh_stage1_respawn_verified": true,
+  "option_c_plane_z_lock_pass": true,
+  "player_defeat_verified": true,
+  "retry_button_clicked_via_gui": true,
+  "stage1_boss_defeated": true,
+  "stage1_cleared_after_retry": true,
+  "stage1_initial_entry": true,
+  "stage1_wave1_cleared": true,
+  "stage2_transition_verified": true,
+  "task_id": "V3-013",
+  "title_deploy_clicked": true
+}

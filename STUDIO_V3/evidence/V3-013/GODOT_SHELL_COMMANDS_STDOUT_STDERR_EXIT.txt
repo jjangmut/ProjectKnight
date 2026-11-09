@@ -1,0 +1,152 @@
+================================================================================
+PROJECTKNIGHT V3-013 SHELL EXECUTION & TEST VERIFICATION LOG
+================================================================================
+Engine: Godot Engine v4.7.2.stable.official.ed1daf0bf
+Platform: Windows 11 (AMD64)
+Rendering Driver: opengl3 (Compatibility)
+GPU: NVIDIA GeForce RTX 5060 Laptop GPU (Driver: NVIDIA 610.47)
+Target Resolution: 1280x720 (and 1024x720 compact test)
+
+--------------------------------------------------------------------------------
+COMMAND 1: BASELINE CAPTURE (Legacy Defeat Auto-Reload)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_capture_before.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 BASELINE] Capturing baseline unprompted auto-reload state...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+Inflicting lethal damage to player...
+[0.600s] Player died! Legacy _on_stage_failed called.
+[0.800s] Capturing frame...
+Saved baseline capture: STUDIO_V3/evidence/V3-013/captures/before/before_01_uncontrolled_auto_reload_defeat.png
+[BASELINE DONE] Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 2: FAILURE & RETRY PROGRAMMATIC VERIFICATION (27 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_failure_retry_verification.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 VERIFY] Running 27 failure, retry, responsive centering, and neutralization checks...
+[PASS] Check 1: StageFailedOverlay exists and is child of UILayer
+[PASS] Check 2: StageFailedPanel custom minimum size is (620, 320)
+[PASS] Check 3: DefeatTitleLabel is present with text '☠ STAGE FAILED ☠'
+[PASS] Check 4: DefeatSubtitleLabel contains stage name and death notification
+[PASS] Check 5: RetryStageButton exists with text '⚔ RETRY STAGE'
+[PASS] Check 6: ReturnTitleButton exists with text '⮌ RETURN TO TITLE'
+[PASS] Check 7: RetryStageButton size is (220, 48)
+[PASS] Check 8: ReturnTitleButton size is (220, 48)
+[PASS] Check 9: RetryStageButton focus_mode is FOCUS_ALL
+[PASS] Check 10: ReturnTitleButton focus_mode is FOCUS_ALL
+[PASS] Check 11: Double-click race prevention active on Retry
+[PASS] Check 12: Double-click race prevention active on Return to Title
+[PASS] Check 13: Retry button press reloads current failed stage
+[PASS] Check 14: Retry button press leaves prior cleared_stages intact
+[PASS] Check 15: Single-stage retry cleans up failure overlay
+[PASS] Check 16: Defeat overlay centers correctly on 1280x720
+[PASS] Check 17: Defeat overlay centers correctly on 1024x720
+[PASS] Check 18: Player death releases all virtual touch actions
+[PASS] Check 19: Player death hides virtual touch controls deck
+[PASS] Check 20: Player death neutralizes minion attack monitoring
+[PASS] Check 21: Player death neutralizes boss attack monitoring
+[PASS] Check 22: Player death disables minion physics processing
+[PASS] Check 23: Player death disables boss physics processing
+[PASS] Check 24: Player death emits stage_failed exactly once
+[PASS] Check 25: Duplicate stage_failed emissions are guarded
+[PASS] Check 26: Defeat-cleared race condition blocked by is_defeat_active
+[PASS] Check 27: Zero global pausing (get_tree().paused is false)
+>>> ALL 27 VERIFICATION CHECKS PASSED <<<
+
+--------------------------------------------------------------------------------
+COMMAND 3: HIGH-RES VIEWPORT CAPTURE & RESPONSIVENESS VERIFICATION
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_capture_and_verify.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 CAPTURE] Capturing After frames...
+Captured: after_01_stage_failed_overlay_1280x720.png (1280x720)
+Captured: after_02_stage_failed_overlay_1024x720.png (1024x720)
+Captured: after_03_retry_fresh_stage_respawn.png (1280x720)
+Captured: after_04_return_to_title_screen.png (1280x720)
+All captures verified. Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 4: FAILURE & RETRY REAL INPUT SMOKE TEST
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_failure_retry_smoke.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 SMOKE] Initializing failure and retry E2E smoke...
+[0.000s] TitleScreen deployed. Clicking Deploy button...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[0.600s] Simulating lethal damage to player...
+[0.850s] Stage Failed Overlay rendered. Dispatching real mouse click on RetryStageButton...
+>>> [CAMPAIGN] Retry Stage Button Pressed: Reloading Stage 1... <<<
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[1.350s] Player respawned at full HP (12/12) at X=-8.00, Z=0.00.
+[3.100s] Wave 1 minions cleared with real inputs.
+[6.400s] Boss Commander defeated with real attacks and parries.
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[8.400s] Transition to Stage 2 verified!
+[SMOKE PASS] All failure and retry smoke steps verified. Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 5: REGRESSION TEST SUITE (AUDIO, TOUCH, ENCOUNTER READABILITY)
+--------------------------------------------------------------------------------
+1. Audio Verification:
+Command: & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_011_audio_verification.gd
+Result: 31 / 31 Checks Passed. Exit Code: 0.
+
+2. Touch Repro Verification:
+Command: & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_010_test_touch_repro.gd
+Result: 11 / 11 Checks Passed. Exit Code: 0.
+
+3. Encounter Readability Verification:
+Command: & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_012_encounter_readability_verification.gd
+Result: 29 / 29 Checks Passed. Exit Code: 0.
+
+--------------------------------------------------------------------------------
+COMMAND 6: FULL 5-STAGE CAMPAIGN PLAYTHROUGH & RECOVERY SMOKE
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_campaign_smoke.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 E2E] Initializing Stage 5 real input-only E2E playthrough test...
+[0.433s] [OBSERVATION] btn_new_game.pressed callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[7.801s] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[17.025s] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 3: 무너진 성벽 (Ruined Crossbow Bastion) <<<
+[26.081s] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 4: 돌의 성소 (Titan Stone Sanctuary) <<<
+[36.132s] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+>>> [CAMPAIGN] Loaded Stage 5: 침묵의 성채 (Silent Abyssal Citadel) <<<
+[39.845s] Stage 5 Wave 1 Cleared: Both Elite Knights defeated!
+[40.828s] Stage 5 Boss Spawn Verified: Abyssal Arbiter active with HP=38/38, Poise=18 at X=12.13, Z=0.00
+[45.552s] [OBSERVATION] Arbiter phase_changed callback received! phase=2 count=1
+[49.599s] Abyssal Arbiter defeated naturally with real inputs! HP reached 0
+>>> [CAMPAIGN] Stage 5 CLEARED! <<<
+>>> [CAMPAIGN] CONGRATULATIONS! ALL 5 STAGES CLEARED! <<<
+[51.600s] [OBSERVATION] SideQVCampaign.campaign_completed callback received! count=1
+[51.634s] CAMPAIGN VICTORY VERIFIED! CampaignVictoryPanel found with Replay & Title buttons.
+[51.667s] Clicking ReturnTitleButton on CampaignVictoryPanel...
+>>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<
+[51.784s] RETURN TO TITLE VERIFIED! TitleScreen node instantiated in root.
+[51.834s] Clicking Deploy (btn_new_game) on TitleScreen for second campaign start...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[51.884s] SECOND CAMPAIGN START VERIFIED! SideQVCampaign reloaded cleanly from TitleScreen.
+[51.950s] >>> ALL REAL INPUT E2E CHECKS PASSED: CAMPAIGN VICTORY CONFIRMED! <<<
+Option C Z=0 Telemetry Rows: 1341 | Option C Violations: 0
+================================================================================

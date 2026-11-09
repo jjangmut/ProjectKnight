@@ -30,9 +30,11 @@ const STAGE_NAMES: Array[String] = [
 var current_stage_index: int = 0
 var current_stage_instance: Node3D = null
 var is_transitioning: bool = false
+var is_defeat_active: bool = false
 var cleared_stages: Array[bool] = [false, false, false, false, false]
 
 var ui_layer: CanvasLayer
+var failure_overlay: Control = null
 
 
 func _ready() -> void:
@@ -54,6 +56,12 @@ func load_stage(idx: int) -> void:
 
 	is_transitioning = true
 	current_stage_index = idx
+
+	# Clean up any active defeat overlay
+	if failure_overlay != null and is_instance_valid(failure_overlay):
+		failure_overlay.queue_free()
+		failure_overlay = null
+	is_defeat_active = false
 
 	# Clean up previous stage
 	if current_stage_instance != null and is_instance_valid(current_stage_instance):
@@ -86,7 +94,7 @@ func load_stage(idx: int) -> void:
 
 
 func _on_stage_cleared() -> void:
-	if is_transitioning:
+	if is_transitioning or is_defeat_active:
 		return
 	is_transitioning = true
 
@@ -104,20 +112,138 @@ func _on_stage_cleared() -> void:
 
 
 func _on_stage_failed() -> void:
-	print(">>> [CAMPAIGN] Stage %d FAILED! Restarting... <<<" % [current_stage_index + 1])
-	await get_tree().create_timer(2.0).timeout
-	load_stage(current_stage_index)
+	if is_transitioning or is_defeat_active:
+		return
+	is_defeat_active = true
+	print(">>> [CAMPAIGN] Stage %d FAILED! Displaying Stage Failed Overlay... <<<" % [current_stage_index + 1])
+	_show_stage_failed()
+
+
+func _show_stage_failed() -> void:
+	AudioManager.play("player_hurt")
+
+	if failure_overlay != null and is_instance_valid(failure_overlay):
+		failure_overlay.queue_free()
+		failure_overlay = null
+
+	var overlay_root := Control.new()
+	overlay_root.name = "StageFailedOverlay"
+	overlay_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	failure_overlay = overlay_root
+
+	var center := CenterContainer.new()
+	center.name = "CenterContainer"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay_root.add_child(center)
+
+	var fail_panel := PanelContainer.new()
+	fail_panel.name = "StageFailedPanel"
+	fail_panel.custom_minimum_size = Vector2(620, 320)
+
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.08, 0.04, 0.05, 0.94)
+	panel_style.border_color = Color(0.95, 0.25, 0.25, 0.9)
+	panel_style.set_border_width_all(2)
+	panel_style.set_corner_radius_all(8)
+	panel_style.content_margin_top = 24
+	panel_style.content_margin_bottom = 24
+	panel_style.content_margin_left = 32
+	panel_style.content_margin_right = 32
+	fail_panel.add_theme_stylebox_override("panel", panel_style)
+
+	var vbox := VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 14)
+
+	var title := Label.new()
+	title.name = "DefeatTitleLabel"
+	title.text = "☠ STAGE FAILED ☠"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(0.95, 0.25, 0.25))
+	vbox.add_child(title)
+
+	var sub := Label.new()
+	sub.name = "DefeatSubtitleLabel"
+	sub.text = "STAGE %d — %s\nThe Paladin has fallen in combat." % [current_stage_index + 1, STAGE_NAMES[current_stage_index]]
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 18)
+	sub.add_theme_color_override("font_color", Color(0.90, 0.92, 0.96))
+	vbox.add_child(sub)
+
+	# Action Button Row (Retry Stage & Return to Title)
+	var hbox_btns := HBoxContainer.new()
+	hbox_btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox_btns.add_theme_constant_override("separation", 24)
+
+	var btn_retry := Button.new()
+	btn_retry.name = "RetryStageButton"
+	btn_retry.text = "⚔ RETRY STAGE"
+	btn_retry.custom_minimum_size = Vector2(220, 48)
+	btn_retry.add_theme_font_size_override("font_size", 16)
+	btn_retry.focus_mode = Control.FOCUS_ALL
+	btn_retry.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
+		print(">>> [CAMPAIGN] Retry Stage Button Pressed: Reloading Stage %d... <<<" % [current_stage_index + 1])
+		AudioManager.stop_sfx()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
+			failure_overlay = null
+		is_defeat_active = false
+		load_stage(current_stage_index)
+	)
+	hbox_btns.add_child(btn_retry)
+
+	var btn_title := Button.new()
+	btn_title.name = "ReturnTitleButton"
+	btn_title.text = "⮌ RETURN TO TITLE"
+	btn_title.custom_minimum_size = Vector2(220, 48)
+	btn_title.add_theme_font_size_override("font_size", 16)
+	btn_title.focus_mode = Control.FOCUS_ALL
+	btn_title.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
+		print(">>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<")
+		AudioManager.reset_all()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
+			failure_overlay = null
+		is_defeat_active = false
+		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+	)
+	hbox_btns.add_child(btn_title)
+
+	vbox.add_child(hbox_btns)
+	fail_panel.add_child(vbox)
+	center.add_child(fail_panel)
+	ui_layer.add_child(overlay_root)
 
 
 func _show_campaign_victory() -> void:
 	print(">>> [CAMPAIGN] CONGRATULATIONS! ALL 5 STAGES CLEARED! <<<")
 	AudioManager.play("campaign_victory_fanfare")
 	campaign_completed.emit()
+	is_transitioning = false
+
+	var overlay_root := Control.new()
+	overlay_root.name = "CampaignVictoryOverlay"
+	overlay_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var center := CenterContainer.new()
+	center.name = "CenterContainer"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay_root.add_child(center)
 
 	var vic_panel := PanelContainer.new()
 	vic_panel.name = "CampaignVictoryPanel"
 	vic_panel.custom_minimum_size = Vector2(640, 340)
-	vic_panel.position = Vector2(320, 190)
 
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.06, 0.09, 0.14, 0.94)
@@ -160,12 +286,14 @@ func _show_campaign_victory() -> void:
 	btn_replay.add_theme_font_size_override("font_size", 16)
 	btn_replay.focus_mode = Control.FOCUS_ALL
 	btn_replay.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
 		print(">>> [CAMPAIGN] Replay Campaign Button Pressed: Reloading Stage 1... <<<")
 		AudioManager.stop_sfx()
-		if is_instance_valid(vic_panel):
-			vic_panel.queue_free()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
 		cleared_stages = [false, false, false, false, false]
-		is_transitioning = false
 		load_stage(0)
 	)
 	hbox_btns.add_child(btn_replay)
@@ -177,15 +305,18 @@ func _show_campaign_victory() -> void:
 	btn_title.add_theme_font_size_override("font_size", 16)
 	btn_title.focus_mode = Control.FOCUS_ALL
 	btn_title.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
 		print(">>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<")
-
 		AudioManager.reset_all()
-		if is_instance_valid(vic_panel):
-			vic_panel.queue_free()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
 		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
 	)
 	hbox_btns.add_child(btn_title)
 
 	vbox.add_child(hbox_btns)
 	vic_panel.add_child(vbox)
-	ui_layer.add_child(vic_panel)
+	center.add_child(vic_panel)
+	ui_layer.add_child(overlay_root)

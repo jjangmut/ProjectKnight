@@ -1,0 +1,144 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "info": "",
+      "name": "stage_1_loaded",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "initial_defeat_flag_false",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "initial_overlay_null",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "player_spawned_with_full_hp",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_overlay_instantiated",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "is_defeat_active_true",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "center_container_exists",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_panel_exists",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_title_label_readable",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_subtitle_has_stage_name",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "retry_stage_button_exists",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "return_title_button_exists",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "touch_controls_hidden_on_death",
+      "status": "PASS"
+    },
+    {
+      "info": "Overlay remained active for 2.2s",
+      "name": "no_auto_reload_after_2_seconds",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "player_still_dead_awaiting_input",
+      "status": "PASS"
+    },
+    {
+      "info": "Retry ignored while transitioning",
+      "name": "double_tap_prevented_while_transitioning",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "overlay_cleaned_up_on_retry",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "is_defeat_active_reset_to_false",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "fresh_stage_instance_loaded",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "player_respawned_with_full_hp",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "earlier_cleared_stages_preserved",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "viewport_scaled_to_1024x720",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_overlay_present_at_1024x720",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "defeat_panel_present_at_1024x720",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "panel_fits_within_1024_bounds",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "return_title_button_clickable",
+      "status": "PASS"
+    },
+    {
+      "info": "Found TitleScreen node in root",
+      "name": "return_to_title_loaded_successfully",
+      "status": "PASS"
+    }
+  ],
+  "passed_checks": 27,
+  "task_id": "V3-013",
+  "timestamp": "2026-11-09T22:27:07",
+  "total_checks": 27
+}
