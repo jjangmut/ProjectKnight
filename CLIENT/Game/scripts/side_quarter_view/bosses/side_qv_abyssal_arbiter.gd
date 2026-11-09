@@ -354,7 +354,8 @@ func _execute_dark_crescent_wave() -> void:
 	velocity = Vector3.ZERO
 	sprite_3d.texture = TexSkills
 
-	# Wind-up charge
+	# Wind-up charge with high-contrast danger telegraph
+	_show_danger_telegraph(0.32, "DANGER! CRESCENT WAVE!")
 	await get_tree().create_timer(0.32).timeout
 	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 		return
@@ -420,13 +421,13 @@ func _execute_shadow_blink_strike() -> void:
 		teleported.emit(global_position)
 
 	# Telegraph cue upon reappearing before the slash
-	_show_danger_telegraph(0.20)
+	_show_danger_telegraph(0.32, "DANGER! BLINK STRIKE!")
 
 	# Fade in
 	var tween_in := create_tween()
 	if tween_in:
-		tween_in.tween_property(sprite_3d, "modulate:a", 1.0, 0.12)
-	await get_tree().create_timer(0.18).timeout
+		tween_in.tween_property(sprite_3d, "modulate:a", 1.0, 0.16)
+	await get_tree().create_timer(0.30).timeout
 
 	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 		return
@@ -588,35 +589,35 @@ func _on_attack_body_entered(body: Node3D) -> void:
 			var dmg := blink_strike_damage if current_pattern == Pattern.SHADOW_BLINK_STRIKE else cleave_damage
 			body.receive_incoming_attack(dmg, self, Vector3(facing_dir_x, 0.0, 0.0))
 
-func _show_danger_telegraph(duration: float = 0.35) -> void:
+func _show_danger_telegraph(duration: float = 0.35, cue_text: String = "!") -> void:
 	var p := get_parent()
 	if p == null:
 		return
 	var ring := MeshInstance3D.new()
 	ring.name = "DangerTelegraphRing3D"
 	var torus := TorusMesh.new()
-	torus.inner_radius = 0.65
-	torus.outer_radius = 1.05
+	torus.inner_radius = 0.75
+	torus.outer_radius = 1.15
 	ring.mesh = torus
 	var rmat := StandardMaterial3D.new()
-	rmat.albedo_color = Color(3.8, 0.4, 0.2, 0.9)
+	rmat.albedo_color = Color(4.5, 0.8, 0.15, 0.95)
 	rmat.emission_enabled = true
-	rmat.emission = Color(3.8, 0.4, 0.2, 1.0)
-	rmat.emission_energy_multiplier = 4.5
+	rmat.emission = Color(4.5, 0.8, 0.15, 1.0)
+	rmat.emission_energy_multiplier = 4.8
 	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
+	ring.global_position = global_position + Vector3(0.0, 0.12, 0.0)
 	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
 	var tw := ring.create_tween()
 	if tw:
 		tw.set_parallel(true)
-		tw.tween_property(ring, "scale", Vector3(2.5, 2.5, 2.5), duration)
+		tw.tween_property(ring, "scale", Vector3(2.6, 2.6, 2.6), duration)
 		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
 		tw.chain().tween_callback(ring.queue_free)
 
-	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.8, 0.0), "!", Color(3.8, 0.3, 0.2), true)
+	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.8, 0.0), cue_text, Color(4.5, 0.8, 0.15), true)
 
 
 func _enter_groggy_state() -> void:

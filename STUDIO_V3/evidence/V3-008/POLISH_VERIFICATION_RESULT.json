@@ -1,0 +1,11 @@
+{
+  "all_checks_passed": true,
+  "arbiter_cue_popup_verified": true,
+  "arbiter_danger_telegraph_verified": true,
+  "campaign_victory_panel_styled": true,
+  "option_c_plane_z_lock_pass": true,
+  "player_just_parry_hit_stop_verified": true,
+  "replay_button_action_functional": true,
+  "replay_button_verified": true,
+  "return_title_button_verified": true
+}

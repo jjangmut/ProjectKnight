@@ -821,6 +821,9 @@ func _enter_death_state() -> void:
 
 
 func _trigger_parry_flash() -> void:
+	# Heavy Just Parry impact freeze-frame (Game Feel Juice)
+	GameFeelManager.hit_stop_3d(0.08, 0.04)
+
 	var tween := create_tween()
 	if tween:
 		guard_barrier_3d.scale = Vector3(1.6, 1.6, 1.6)

@@ -115,25 +115,73 @@ func _show_campaign_victory() -> void:
 
 	var vic_panel := PanelContainer.new()
 	vic_panel.name = "CampaignVictoryPanel"
-	vic_panel.custom_minimum_size = Vector2(600, 300)
-	vic_panel.position = Vector2(340, 210)
+	vic_panel.custom_minimum_size = Vector2(640, 340)
+	vic_panel.position = Vector2(320, 190)
+
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.06, 0.09, 0.14, 0.94)
+	panel_style.border_color = Color(1.0, 0.85, 0.2, 0.9)
+	panel_style.set_border_width_all(2)
+	panel_style.set_corner_radius_all(8)
+	panel_style.content_margin_top = 24
+	panel_style.content_margin_bottom = 24
+	panel_style.content_margin_left = 32
+	panel_style.content_margin_right = 32
+	vic_panel.add_theme_stylebox_override("panel", panel_style)
 
 	var vbox := VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 14)
 
 	var title := Label.new()
 	title.text = "★ CAMPAIGN VICTORY ★"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", 36)
 	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	vbox.add_child(title)
 
 	var sub := Label.new()
 	sub.text = "All 5 Side Quarter-View Stages Cleared!\nThe Silent Citadel has been liberated."
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.add_theme_font_size_override("font_size", 20)
+	sub.add_theme_font_size_override("font_size", 18)
 	sub.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
 	vbox.add_child(sub)
 
+	# Action Button Row (Replay & Return to Title)
+	var hbox_btns := HBoxContainer.new()
+	hbox_btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox_btns.add_theme_constant_override("separation", 24)
+
+	var btn_replay := Button.new()
+	btn_replay.name = "ReplayCampaignButton"
+	btn_replay.text = "⚔ REPLAY CAMPAIGN"
+	btn_replay.custom_minimum_size = Vector2(220, 48)
+	btn_replay.add_theme_font_size_override("font_size", 16)
+	btn_replay.focus_mode = Control.FOCUS_ALL
+	btn_replay.pressed.connect(func():
+		print(">>> [CAMPAIGN] Replay Campaign Button Pressed: Reloading Stage 1... <<<")
+		if is_instance_valid(vic_panel):
+			vic_panel.queue_free()
+		cleared_stages = [false, false, false, false, false]
+		is_transitioning = false
+		load_stage(0)
+	)
+	hbox_btns.add_child(btn_replay)
+
+	var btn_title := Button.new()
+	btn_title.name = "ReturnTitleButton"
+	btn_title.text = "⮌ RETURN TO TITLE"
+	btn_title.custom_minimum_size = Vector2(220, 48)
+	btn_title.add_theme_font_size_override("font_size", 16)
+	btn_title.focus_mode = Control.FOCUS_ALL
+	btn_title.pressed.connect(func():
+		print(">>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<")
+		if is_instance_valid(vic_panel):
+			vic_panel.queue_free()
+		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+	)
+	hbox_btns.add_child(btn_title)
+
+	vbox.add_child(hbox_btns)
 	vic_panel.add_child(vbox)
 	ui_layer.add_child(vic_panel)

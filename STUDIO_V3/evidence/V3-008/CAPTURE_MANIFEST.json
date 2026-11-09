@@ -1,0 +1,74 @@
+[
+  {
+    "file": "captures/before/before_01_campaign_victory_panel.png",
+    "stage": 5,
+    "category": "before",
+    "description": "Baseline CampaignVictoryPanel: static text labels without interactive buttons, dead-ending player flow"
+  },
+  {
+    "file": "captures/after/after_01_campaign_victory_panel.png",
+    "stage": 5,
+    "category": "after",
+    "description": "Polished CampaignVictoryPanel: radiant gold border, Replay Campaign and Return to Title interactive buttons"
+  },
+  {
+    "file": "captures/before/before_02_arbiter_blink_telegraph.png",
+    "stage": 5,
+    "category": "before",
+    "description": "Baseline Abyssal Arbiter shadow blink telegraph: dim ring and generic '!' marker with narrow 0.18s window"
+  },
+  {
+    "file": "captures/after/after_02_arbiter_blink_telegraph.png",
+    "stage": 5,
+    "category": "after",
+    "description": "Polished Abyssal Arbiter telegraph: high-contrast crimson-gold danger torus and explicit 'DANGER! BLINK STRIKE!' text with 0.32s reaction window"
+  },
+  {
+    "file": "captures/before/before_03_parry_hit_stop.png",
+    "stage": 5,
+    "category": "before",
+    "description": "Baseline Player Just Parry clash: visual ring and camera shake but no hit-stop freeze-frame"
+  },
+  {
+    "file": "captures/after/after_03_parry_hit_stop.png",
+    "stage": 5,
+    "category": "after",
+    "description": "Polished Player Just Parry clash: verified 80ms hit-stop freeze-frame (GameFeelManager.hit_stop_3d)"
+  },
+  {
+    "file": "captures/01_title_deploy_click.png",
+    "stage": 0,
+    "category": "e2e",
+    "description": "Title Screen Deploy button real InputEventMouseButton GUI click"
+  },
+  {
+    "file": "captures/01_stage5_natural_entry.png",
+    "stage": 5,
+    "category": "e2e",
+    "description": "Natural entry into Stage 5 Silent Abyssal Citadel"
+  },
+  {
+    "file": "captures/02_stage5_both_elite_knights.png",
+    "stage": 5,
+    "category": "e2e",
+    "description": "Stage 5 Wave 1 Elite Knights engaging on Option C Z=0 plane"
+  },
+  {
+    "file": "captures/03_stage5_boss_spawn.png",
+    "stage": 5,
+    "category": "e2e",
+    "description": "Abyssal Arbiter boss spawn (HP=38/38, Poise=18)"
+  },
+  {
+    "file": "captures/09_stage5_boss_natural_defeat.png",
+    "stage": 5,
+    "category": "e2e",
+    "description": "Abyssal Arbiter natural defeat at HP=0 through real attacks and parries"
+  },
+  {
+    "file": "captures/10_stage5_clear_campaign_victory.png",
+    "stage": 5,
+    "category": "e2e",
+    "description": "Final Campaign Victory Panel displayed with interactive Replay and Title buttons verified"
+  }
+]
