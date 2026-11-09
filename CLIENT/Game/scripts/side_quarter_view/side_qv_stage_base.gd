@@ -42,6 +42,7 @@ var active_boss: Node3D = null
 
 var current_wave: int = 0
 var is_stage_finished: bool = false
+var last_earned_shards: int = 0
 
 # Comprehensive HUD Elements
 var boss_health_bar: BossHealthBar = null
@@ -587,8 +588,24 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 	SaveManagerClass.mark_stage_cleared(stage_index)
 	var shard_rewards := { 1: 20, 2: 25, 3: 30, 4: 35, 5: 50 }
 	var earned_shards: int = int(shard_rewards.get(stage_index, 20))
+	last_earned_shards = earned_shards
 	SaveManagerClass.add_shards(earned_shards)
-	
+
+	# Release virtual actions and hide touch controls deck during clear
+	if touch_controls != null and is_instance_valid(touch_controls):
+		touch_controls._release_all_actions()
+		touch_controls.visible = false
+
+	# Neutralize remaining enemy attacks to prevent phantom damage
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			if "attack_area_3d" in enemy and enemy.attack_area_3d != null and is_instance_valid(enemy.attack_area_3d):
+				enemy.attack_area_3d.set_deferred("monitoring", false)
+				enemy.attack_area_3d.set_deferred("monitorable", false)
+			if "is_attacking" in enemy:
+				enemy.is_attacking = false
+			enemy.set_physics_process(false)
+
 	# 클리어 팡파르 연출
 	var clear_lbl := Label.new()
 	clear_lbl.text = "STAGE CLEARED!\n+ %d SOUL SHARDS" % earned_shards
@@ -601,6 +618,8 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 		mobile_controls.add_child(clear_lbl)
 
 	await get_tree().create_timer(clear_fanfare_delay).timeout
+	if is_instance_valid(clear_lbl):
+		clear_lbl.queue_free()
 	stage_cleared.emit()
 
 

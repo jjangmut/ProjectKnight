@@ -1,0 +1,215 @@
+{
+  "all_passed": true,
+  "details": [
+    {
+      "check": "Campaign initialized with Stage 1",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Current stage instance active",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage has last_earned_shards property",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 1 recorded as cleared in campaign",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Zero global pause during clear",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearOverlay instantiated in CampaignUILayer",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearOverlay is full rect",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearOverlay ignores mouse filter on root",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "CenterContainer child exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "CenterContainer is full rect",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearPanel exists in CenterContainer",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearPanel custom minimum size is (640, 360)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ClearTitleLabel exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ClearTitleLabel text is '★ STAGE COMPLETED ★'",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ClearSubtitleLabel exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ClearSubtitleLabel contains stage name and progress",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "RewardLabel exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "RewardLabel displays earned soul shards (+ 20)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ContinueStageButton exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ContinueStageButton min size is at least (220, 48)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ContinueStageButton has FOCUS_ALL",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ContinueStageButton text mentions Stage 2",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ReturnTitleButton exists",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ReturnTitleButton min size is at least (210, 48)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "ReturnTitleButton has FOCUS_ALL",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Touch controls deck hidden on stage clear",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "No automatic stage advance after 2.2s (awaits player click)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "is_transitioning remains false during player decision",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Shards awarded exactly once (+20 shards)",
+      "detail": "shards=110, expected=110",
+      "status": "PASS"
+    },
+    {
+      "check": "Continue button disabled immediately on click",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Title button disabled immediately on continue click",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Successfully advanced to Stage 2 (index 1)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 1 remains marked cleared in campaign",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "StageClearOverlay cleanly freed after transition",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Old overlay node no longer in CampaignUILayer",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Shard count unchanged after advancing (+20 total)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 5 loaded",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 5 marked cleared",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 5 does NOT show StageClearOverlay (intermission suppressed for final stage)",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 5 shows CampaignVictoryPanel",
+      "detail": "",
+      "status": "PASS"
+    },
+    {
+      "check": "Stage 5 shards (+50) awarded exactly once (+70 total)",
+      "detail": "",
+      "status": "PASS"
+    }
+  ],
+  "failed_checks": 0,
+  "passed_checks": 41,
+  "task_id": "V3-014",
+  "timestamp": "2026-11-09T23:16:06",
+  "total_checks": 41
+}

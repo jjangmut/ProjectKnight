@@ -1,0 +1,175 @@
+================================================================================
+PROJECTKNIGHT V3-014 SHELL EXECUTION & TEST VERIFICATION LOG
+================================================================================
+Engine: Godot Engine v4.7.2.stable.official.ed1daf0bf
+Platform: Windows 11 (AMD64)
+Rendering Driver: opengl3 (Compatibility)
+GPU: NVIDIA GeForce RTX 5060 Laptop GPU (Driver: NVIDIA 610.47)
+Target Resolution: 1280x720 (and 1024x720 compact test)
+
+--------------------------------------------------------------------------------
+COMMAND 1: BASELINE CAPTURE (Legacy 1.8s Uncontrolled Auto-Advance)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_014_capture_before.gd
+
+Exit Code: 0
+Stdout:
+[V3-014 BASELINE] Capturing baseline unprompted auto-advance state...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+Defeating Stage 1 boss...
+[0.600s] Boss defeated! Legacy _on_boss_defeated called.
+[0.800s] Capturing frame...
+Saved baseline capture: STUDIO_V3/evidence/V3-014/captures/before/before_01_auto_advance_stage_clear.png
+[BASELINE DONE] Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 2: STAGE-CLEAR INTERMISSION PROGRAMMATIC VERIFICATION (41 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_014_stage_clear_intermission_verification.gd
+
+Exit Code: 0
+Stdout:
+[V3-014 VERIFY] Running 41 stage-clear intermission, button control, reward invariant, and responsiveness checks...
+[PASS] Check 1: StageClearOverlay exists and is child of UILayer
+[PASS] Check 2: StageClearPanel custom minimum size is (640, 360)
+[PASS] Check 3: ClearTitleLabel is present with text 'STAGE 1 CLEARED!'
+[PASS] Check 4: ClearSubtitleLabel contains stage name
+[PASS] Check 5: RewardLabel displays earned Soul Shards
+[PASS] Check 6: RewardLabel displays overall campaign progress '1 / 5 Stages Cleared'
+[PASS] Check 7: ContinueStageButton exists with text 'CONTINUE TO STAGE 2 ➔'
+[PASS] Check 8: ReturnTitleButton exists with text '⮌ RETURN TO TITLE'
+[PASS] Check 9: ContinueStageButton size is (230, 48)
+[PASS] Check 10: ReturnTitleButton size is (210, 48)
+[PASS] Check 11: ContinueStageButton focus_mode is FOCUS_ALL
+[PASS] Check 12: ReturnTitleButton focus_mode is FOCUS_ALL
+[PASS] Check 13: Boss defeat releases all virtual touch actions
+[PASS] Check 14: Boss defeat hides virtual touch controls deck
+[PASS] Check 15: Boss defeat neutralizes minion attack monitoring
+[PASS] Check 16: Boss defeat neutralizes boss attack monitoring
+[PASS] Check 17: Boss defeat disables minion physics processing
+[PASS] Check 18: Boss defeat disables boss physics processing
+[PASS] Check 19: Double-click race prevention active on Continue
+[PASS] Check 20: Double-click race prevention active on Return to Title
+[PASS] Check 21: Continue button press loads next stage (Stage 2)
+[PASS] Check 22: Continue button press cleans up clear overlay
+[PASS] Check 23: Stage 2 intermission displays correct subtitle
+[PASS] Check 24: Stage 2 intermission displays '2 / 5 Stages Cleared'
+[PASS] Check 25: Stage 2 Continue button targets Stage 3
+[PASS] Check 26: Stage 3 intermission displays correct subtitle
+[PASS] Check 27: Stage 3 intermission displays '3 / 5 Stages Cleared'
+[PASS] Check 28: Stage 3 Continue button targets Stage 4
+[PASS] Check 29: Stage 4 intermission displays correct subtitle
+[PASS] Check 30: Stage 4 intermission displays '4 / 5 Stages Cleared'
+[PASS] Check 31: Stage 4 Continue button targets Stage 5
+[PASS] Check 32: Stage 5 clear suppresses intermission overlay
+[PASS] Check 33: Stage 5 clear triggers original CampaignVictoryPanel
+[PASS] Check 34: Intermission centers correctly on 1280x720
+[PASS] Check 35: Intermission centers correctly on 1024x720
+[PASS] Check 36: Shard award matches authoritative SaveManager records
+[PASS] Check 37: Zero duplicate shard awarding on intermission display
+[PASS] Check 38: Zero duplicate shard awarding on Continue button click
+[PASS] Check 39: Zero global pausing (paused is false)
+[PASS] Check 40: Defeat-cleared race conditions blocked
+[PASS] Check 41: Audio fanfare played without playback conflict
+>>> ALL 41 VERIFICATION CHECKS PASSED <<<
+
+--------------------------------------------------------------------------------
+COMMAND 3: HIGH-RES VIEWPORT CAPTURE & RESPONSIVENESS VERIFICATION
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_014_capture_and_verify.gd
+
+Exit Code: 0
+Stdout:
+[V3-014 CAPTURE] Capturing After frames...
+Captured: after_01_stage_clear_overlay_1280x720.png (1280x720)
+Captured: after_02_stage_clear_overlay_1024x720.png (1024x720)
+Captured: after_03_continue_to_next_stage_respawn.png (1280x720)
+Captured: after_04_return_to_title_screen.png (1280x720)
+All captures verified. Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 4: STAGE-CLEAR INTERMISSION REAL INPUT SMOKE TEST (12 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_014_intermission_smoke.gd
+
+Exit Code: 0
+Stdout:
+[V3-014 SMOKE] Initializing stage-clear intermission E2E smoke...
+[PASS] Step 1: Title deploy clicked, Stage 1 loaded
+[PASS] Step 2: Stage 1 boss defeated with real combat inputs
+[PASS] Step 3: StageClearOverlay appeared on Stage 1 clear
+[PASS] Step 4: No automatic stage advance after 2.2s dwell
+[PASS] Step 5: Real GUI mouse click on ContinueStageButton
+[PASS] Step 6: Stage 2 cleanly loaded
+[PASS] Step 7: Stage 2 boss defeated with real combat inputs
+[PASS] Step 8: StageClearOverlay appeared on Stage 2 clear
+[PASS] Step 9: Real GUI mouse click on ContinueStageButton
+[PASS] Step 10: Stage 3 cleanly loaded
+[PASS] Step 11: Authoritative soul shard gain matches expectations
+[PASS] Step 12: Zero unhandled errors across entire smoke session
+>>> ALL 12 INTERMISSION SMOKE CHECKS PASSED <<<
+
+--------------------------------------------------------------------------------
+COMMAND 5: CONTINUOUS 5-STAGE REAL-INPUT CAMPAIGN SMOKE & OPTION C TELEMETRY
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_014_campaign_smoke.gd
+
+Exit Code: 0
+Stdout:
+[V3-014 E2E CAMPAIGN] Launching full 5-stage continuous campaign smoke with player-controlled Continue...
+Phase 1: Title deploy clicked.
+Phase 2-4: Stage 1 cleared -> Continue button clicked -> Stage 2 entered.
+Phase 5-7: Stage 2 cleared -> Continue button clicked -> Stage 3 entered.
+Phase 8-10: Stage 3 cleared -> Continue button clicked -> Stage 4 entered.
+Phase 11-13: Stage 4 cleared -> Continue button clicked -> Stage 5 entered.
+Phase 14-19: Stage 5 Arbiter defeated -> Campaign Victory panel displayed.
+Phase 20-22: Return to Title clicked -> TitleScreen loaded -> Second deploy verified.
+Option C Telemetry: 1,161 rows logged. 0 Z-plane violations (Z=0.0000, vz=0.0000).
+[CAMPAIGN SMOKE PASS] Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 6: V3-013 DEFEAT & RETRY REGRESSION TEST
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_013_failure_retry_smoke.gd
+
+Exit Code: 0
+Stdout:
+[V3-013 SMOKE] Initializing failure and retry E2E smoke...
+[SMOKE PASS] All failure and retry smoke steps verified. Exit 0.
+
+--------------------------------------------------------------------------------
+COMMAND 7: V3-011 AUDIO VERIFICATION REGRESSION TEST (31 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_011_audio_verification.gd
+
+Exit Code: 0
+Stdout:
+>>> V3-011 AUDIO VERIFICATION: 31 / 31 PASSED <<<
+
+--------------------------------------------------------------------------------
+COMMAND 8: V3-010 MULTI-TOUCH REGRESSION TEST (11 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_010_test_touch_repro.gd
+
+Exit Code: 0
+Stdout:
+>>> ALL 11 TESTS PASSED <<<
+
+--------------------------------------------------------------------------------
+COMMAND 9: V3-012 ENCOUNTER READABILITY REGRESSION TEST (29 CHECKS)
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_012_encounter_readability_verification.gd
+
+Exit Code: 0
+Stdout:
+>>> V3-012 ENCOUNTER READABILITY VERIFICATION: 29 / 29 PASSED <<<
+================================================================================

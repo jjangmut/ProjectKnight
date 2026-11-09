@@ -35,6 +35,7 @@ var cleared_stages: Array[bool] = [false, false, false, false, false]
 
 var ui_layer: CanvasLayer
 var failure_overlay: Control = null
+var clear_overlay: Control = null
 
 
 func _ready() -> void:
@@ -62,6 +63,11 @@ func load_stage(idx: int) -> void:
 		failure_overlay.queue_free()
 		failure_overlay = null
 	is_defeat_active = false
+
+	# Clean up any active clear intermission overlay
+	if clear_overlay != null and is_instance_valid(clear_overlay):
+		clear_overlay.queue_free()
+		clear_overlay = null
 
 	# Clean up previous stage
 	if current_stage_instance != null and is_instance_valid(current_stage_instance):
@@ -102,13 +108,144 @@ func _on_stage_cleared() -> void:
 	print(">>> [CAMPAIGN] Stage %d CLEARED! <<<" % [current_stage_index + 1])
 
 	if current_stage_index < STAGE_SCENE_PATHS.size() - 1:
-		# Next Stage Transition
-		var next_idx := current_stage_index + 1
-		await get_tree().create_timer(transition_delay).timeout
-		load_stage(next_idx)
+		# Stages 1 to 4: Show Stage Clear Intermission Overlay with player agency
+		_show_stage_clear_intermission()
 	else:
 		# Full Campaign Victory!
 		_show_campaign_victory()
+
+
+func _show_stage_clear_intermission() -> void:
+	var earned_shards: int = 20
+	if current_stage_instance != null and "last_earned_shards" in current_stage_instance and current_stage_instance.last_earned_shards > 0:
+		earned_shards = current_stage_instance.last_earned_shards
+	else:
+		var shard_rewards := { 0: 20, 1: 25, 2: 30, 3: 35, 4: 50 }
+		earned_shards = shard_rewards.get(current_stage_index, 20)
+
+	print(">>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage %d, Earned Shards=%d <<<" % [current_stage_index + 1, earned_shards])
+	AudioManager.play("stage_clear_stinger")
+	is_transitioning = false
+
+	if clear_overlay != null and is_instance_valid(clear_overlay):
+		clear_overlay.queue_free()
+		clear_overlay = null
+
+	var overlay_root := Control.new()
+	overlay_root.name = "StageClearOverlay"
+	overlay_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clear_overlay = overlay_root
+
+	var center := CenterContainer.new()
+	center.name = "CenterContainer"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay_root.add_child(center)
+
+	var clear_panel := PanelContainer.new()
+	clear_panel.name = "StageClearPanel"
+	clear_panel.custom_minimum_size = Vector2(640, 360)
+
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.06, 0.09, 0.14, 0.94)
+	panel_style.border_color = Color(1.0, 0.85, 0.22, 0.95)
+	panel_style.set_border_width_all(2)
+	panel_style.set_corner_radius_all(8)
+	panel_style.content_margin_top = 24
+	panel_style.content_margin_bottom = 24
+	panel_style.content_margin_left = 32
+	panel_style.content_margin_right = 32
+	clear_panel.add_theme_stylebox_override("panel", panel_style)
+
+	var vbox := VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 14)
+
+	var title := Label.new()
+	title.name = "ClearTitleLabel"
+	title.text = "★ STAGE COMPLETED ★"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.22))
+	vbox.add_child(title)
+
+	var sub := Label.new()
+	sub.name = "ClearSubtitleLabel"
+	sub.text = "STAGE %d — %s\nCampaign Progress: %d / %d Stages Cleared" % [
+		current_stage_index + 1,
+		STAGE_NAMES[current_stage_index],
+		current_stage_index + 1,
+		STAGE_SCENE_PATHS.size()
+	]
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 18)
+	sub.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98))
+	vbox.add_child(sub)
+
+	# Reward Section
+	var reward_lbl := Label.new()
+	reward_lbl.name = "RewardLabel"
+	reward_lbl.text = "💎 + %d SOUL SHARDS EARNED" % earned_shards
+	reward_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reward_lbl.add_theme_font_size_override("font_size", 22)
+	reward_lbl.add_theme_color_override("font_color", Color(0.35, 0.85, 1.0))
+	vbox.add_child(reward_lbl)
+
+	# Action Button Row (Continue to Next Stage & Return to Title)
+	var hbox_btns := HBoxContainer.new()
+	hbox_btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox_btns.add_theme_constant_override("separation", 24)
+
+	var next_idx := current_stage_index + 1
+	var btn_continue := Button.new()
+	var btn_title := Button.new()
+
+	btn_continue.name = "ContinueStageButton"
+	btn_continue.text = "CONTINUE TO STAGE %d ➔" % [next_idx + 1]
+	btn_continue.custom_minimum_size = Vector2(230, 48)
+	btn_continue.add_theme_font_size_override("font_size", 16)
+	btn_continue.focus_mode = Control.FOCUS_ALL
+	btn_continue.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
+		btn_continue.disabled = true
+		btn_title.disabled = true
+		print(">>> [CAMPAIGN] Continue Button Pressed: Advancing to Stage %d... <<<" % [next_idx + 1])
+		AudioManager.stop_sfx()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
+			clear_overlay = null
+		load_stage(next_idx)
+	)
+	hbox_btns.add_child(btn_continue)
+
+	btn_title.name = "ReturnTitleButton"
+	btn_title.text = "⮌ RETURN TO TITLE"
+	btn_title.custom_minimum_size = Vector2(210, 48)
+	btn_title.add_theme_font_size_override("font_size", 16)
+	btn_title.focus_mode = Control.FOCUS_ALL
+	btn_title.pressed.connect(func():
+		if is_transitioning:
+			return
+		is_transitioning = true
+		btn_continue.disabled = true
+		btn_title.disabled = true
+		print(">>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<")
+		AudioManager.reset_all()
+		if is_instance_valid(overlay_root):
+			overlay_root.queue_free()
+			clear_overlay = null
+		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+	)
+	hbox_btns.add_child(btn_title)
+
+	vbox.add_child(hbox_btns)
+	clear_panel.add_child(vbox)
+	center.add_child(clear_panel)
+	ui_layer.add_child(overlay_root)
+	btn_continue.grab_focus()
 
 
 func _on_stage_failed() -> void:
@@ -125,6 +262,10 @@ func _show_stage_failed() -> void:
 	if failure_overlay != null and is_instance_valid(failure_overlay):
 		failure_overlay.queue_free()
 		failure_overlay = null
+
+	if clear_overlay != null and is_instance_valid(clear_overlay):
+		clear_overlay.queue_free()
+		clear_overlay = null
 
 	var overlay_root := Control.new()
 	overlay_root.name = "StageFailedOverlay"
@@ -229,6 +370,10 @@ func _show_campaign_victory() -> void:
 	AudioManager.play("campaign_victory_fanfare")
 	campaign_completed.emit()
 	is_transitioning = false
+
+	if clear_overlay != null and is_instance_valid(clear_overlay):
+		clear_overlay.queue_free()
+		clear_overlay = null
 
 	var overlay_root := Control.new()
 	overlay_root.name = "CampaignVictoryOverlay"

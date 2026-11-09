@@ -1,0 +1,58 @@
+[
+  {
+    "description": "Stage 5 real input E2E capture: 01_title_deploy_click",
+    "file": "01_title_deploy_click.png",
+    "phase": 0,
+    "sim_time": 0.416666666666667,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 01_stage5_natural_entry",
+    "file": "01_stage5_natural_entry.png",
+    "phase": 18,
+    "sim_time": 31.0619999999995,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 02_stage5_both_elite_knights",
+    "file": "02_stage5_both_elite_knights.png",
+    "phase": 18,
+    "sim_time": 31.0619999999995,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 03_stage5_boss_spawn",
+    "file": "03_stage5_boss_spawn.png",
+    "phase": 20,
+    "sim_time": 33.9103333333327,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 09_stage5_boss_natural_defeat",
+    "file": "09_stage5_boss_natural_defeat.png",
+    "phase": 21,
+    "sim_time": 41.1876666666656,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 10_stage5_clear_campaign_victory",
+    "file": "10_stage5_clear_campaign_victory.png",
+    "phase": 22,
+    "sim_time": 43.2123333333321,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 11_return_to_title_screen",
+    "file": "11_return_to_title_screen.png",
+    "phase": 23,
+    "sim_time": 43.4789999999988,
+    "stage": 5
+  },
+  {
+    "description": "Stage 5 real input E2E capture: 12_second_campaign_start",
+    "file": "12_second_campaign_start.png",
+    "phase": 23,
+    "sim_time": 43.7456666666655,
+    "stage": 5
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "all_checks_passed": true,
+  "shard_invariance_verified": true,
+  "stage1_combat_cleared": true,
+  "stage1_continue_gui_clicked": true,
+  "stage1_entered": true,
+  "stage1_intermission_overlay_verified": true,
+  "stage1_no_auto_advance_verified": true,
+  "stage2_combat_cleared": true,
+  "stage2_continue_gui_clicked": true,
+  "stage2_entered": true,
+  "stage2_intermission_overlay_verified": true,
+  "stage3_entered": true,
+  "title_deploy_clicked": true
+}
