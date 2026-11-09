@@ -1,0 +1,107 @@
+[
+  {
+    "path": "captures/before/before_01_duplicate_stage1_deck.png",
+    "resolution": "1280x720",
+    "description": "Baseline Defect: Stage 1 instantiating two duplicate QVMobileControls instances simultaneously causing double dispatch",
+    "category": "before",
+    "stage": 1
+  },
+  {
+    "path": "captures/before/before_02_missing_onboarding_guide.png",
+    "resolution": "1280x720",
+    "description": "Baseline Defect: Stage 1 lacking any non-blocking onboarding or tactical action guidance for first-time players",
+    "category": "before",
+    "stage": 1
+  },
+  {
+    "path": "captures/before/before_03_narrow_viewport_uncentered.png",
+    "resolution": "1280x720",
+    "description": "Baseline Defect: Emulated mouse event clobbering active touch pointer drag index resulting in stuck joystick",
+    "category": "before",
+    "stage": 1
+  },
+  {
+    "path": "captures/after/after_01_single_owner_touch_deck.png",
+    "resolution": "1280x720",
+    "description": "Improvement: Single-owner QVMobileControls architecture with per-pointer ownership and duplicate deck eliminated",
+    "category": "after",
+    "stage": 1
+  },
+  {
+    "path": "captures/after/after_02_stage1_onboarding_guide.png",
+    "resolution": "1280x720",
+    "description": "Improvement: Sleek non-blocking tactical action guide card centered at lower-third in Stage 1",
+    "category": "after",
+    "stage": 1
+  },
+  {
+    "path": "captures/after/after_03_narrow_viewport_responsive.png",
+    "resolution": "1024x720",
+    "description": "Improvement: Responsive layout recalculation dynamically centering guide and anchoring skill buttons on 1024px narrow viewport",
+    "category": "after",
+    "stage": 1
+  },
+  {
+    "path": "captures/after/after_04_onboarding_dismissed.png",
+    "resolution": "1280x720",
+    "description": "Improvement: Smooth dismiss and fade-out of onboarding guide upon player combat interaction, leaving combat lane unobstructed",
+    "category": "after",
+    "stage": 1
+  },
+  {
+    "path": "captures/01_title_deploy_click.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Title screen DEPLOY CAMPAIGN button interaction via GuiInput",
+    "category": "e2e_campaign",
+    "stage": 0
+  },
+  {
+    "path": "captures/01_stage5_natural_entry.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Natural entry into Stage 5 Silent Citadel after clearing Stages 1-4",
+    "category": "e2e_campaign",
+    "stage": 5
+  },
+  {
+    "path": "captures/02_stage5_both_elite_knights.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Combat encounter against both Stage 5 Elite Citadel Knights",
+    "category": "e2e_campaign",
+    "stage": 5
+  },
+  {
+    "path": "captures/03_stage5_boss_spawn.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Boss Abyssal Arbiter arena spawn and intro animation",
+    "category": "e2e_campaign",
+    "stage": 5
+  },
+  {
+    "path": "captures/09_stage5_boss_natural_defeat.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Boss Arbiter HP reduced to 0 through natural combat mechanics",
+    "category": "e2e_campaign",
+    "stage": 5
+  },
+  {
+    "path": "captures/10_stage5_clear_campaign_victory.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Campaign Victory panel rendered with REPLAY and RETURN TO TITLE buttons",
+    "category": "e2e_campaign",
+    "stage": 5
+  },
+  {
+    "path": "captures/11_return_to_title_screen.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Successful transition to Title Screen upon pressing Return to Title button",
+    "category": "e2e_campaign",
+    "stage": 0
+  },
+  {
+    "path": "captures/12_second_campaign_start.png",
+    "resolution": "1280x720",
+    "description": "E2E Campaign Smoke: Fresh second campaign started cleanly from Title Screen, resetting state",
+    "category": "e2e_campaign",
+    "stage": 1
+  }
+]

@@ -830,6 +830,10 @@ func _enter_death_state() -> void:
 	is_dead = true
 	is_attacking = false
 	is_guarding = false
+	dash_buffer_timer = 0.0
+	attack_buffer_timer = 0.0
+	jump_buffer_timer = 0.0
+	can_air_dash = true
 	slash_visual_3d.visible = false
 	guard_barrier_3d.visible = false
 	velocity = Vector3.ZERO

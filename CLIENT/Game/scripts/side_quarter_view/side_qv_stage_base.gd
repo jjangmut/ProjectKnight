@@ -36,6 +36,7 @@ var player: SideQVPlayer
 var camera: SideQVCamera
 var mobile_controls: CanvasLayer
 var touch_controls: QVMobileControls = null
+var onboarding_guide: Control = null
 var enemies: Array[Node3D] = []
 var active_boss: Node3D = null
 
@@ -363,6 +364,10 @@ func _setup_mobile_ui() -> void:
 	ax_btn.pressed.connect(open_ax_data_viewer)
 	mobile_controls.add_child(ax_btn)
 
+	# 6. Stage 1 First-Play Tactical Onboarding Guide (Non-blocking, Dismissible)
+	if stage_index == 1:
+		_setup_onboarding_guide()
+
 	# 6. Dynamic Combat Combo Counter & Rank HUD (Right side, tactical style)
 	combo_hud = Control.new()
 	combo_hud.name = "ComboHUD"
@@ -479,6 +484,11 @@ func _on_player_dive_slammed(_p: Node, hit_count: int) -> void:
 
 
 func _process(delta: float) -> void:
+	# Dismiss onboarding guide upon player combat/movement interaction
+	if onboarding_guide != null and is_instance_valid(onboarding_guide):
+		if Input.is_action_just_pressed("attack") or Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("dash") or Input.is_action_just_pressed("guard") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"):
+			_dismiss_onboarding_guide()
+
 	# Combo decay timer
 	if combo_fade_timer > 0.0:
 		combo_fade_timer -= delta
@@ -598,3 +608,76 @@ func _on_player_died() -> void:
 		return
 	is_stage_finished = true
 	stage_failed.emit()
+
+
+func _setup_onboarding_guide() -> void:
+	if mobile_controls == null:
+		return
+
+	onboarding_guide = Control.new()
+	onboarding_guide.name = "OnboardingGuideHUD"
+	onboarding_guide.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mobile_controls.add_child(onboarding_guide)
+
+	var panel := Panel.new()
+	panel.name = "GuidePlate"
+	panel.size = Vector2(530.0, 52.0)
+	panel.position = Vector2(375.0, 642.0)
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var pstyle := StyleBoxFlat.new()
+	pstyle.bg_color = Color(0.04, 0.08, 0.14, 0.84)
+	pstyle.border_color = Color("00e5ff")
+	pstyle.set_border_width_all(1)
+	pstyle.border_width_left = 4
+	pstyle.corner_radius_top_left = 6
+	pstyle.corner_radius_top_right = 6
+	pstyle.corner_radius_bottom_left = 6
+	pstyle.corner_radius_bottom_right = 6
+	panel.add_theme_stylebox_override("panel", pstyle)
+	onboarding_guide.add_child(panel)
+
+	var lbl_title := Label.new()
+	lbl_title.name = "GuideTitle"
+	lbl_title.text = "⚔ TACTICAL ACTION GUIDE"
+	lbl_title.position = Vector2(14.0, 4.0)
+	lbl_title.add_theme_font_size_override("font_size", 11)
+	lbl_title.add_theme_color_override("font_color", Color("ffb800"))
+	panel.add_child(lbl_title)
+
+	var lbl_guide := Label.new()
+	lbl_guide.name = "GuideText"
+	lbl_guide.text = "[A/D or 스틱] 이동 · [SPACE or ▲] 점프 · [J or ⚔] 공격 · [K or 🛡] 방어 · [SHIFT or 💨] 대시"
+	lbl_guide.position = Vector2(14.0, 24.0)
+	lbl_guide.add_theme_font_size_override("font_size", 12)
+	lbl_guide.add_theme_color_override("font_color", Color("f1f5f9"))
+	panel.add_child(lbl_guide)
+
+	if get_viewport() != null:
+		get_viewport().size_changed.connect(_update_onboarding_guide_layout)
+	_update_onboarding_guide_layout()
+
+	var timer := get_tree().create_timer(7.5)
+	timer.timeout.connect(_dismiss_onboarding_guide)
+
+
+func _update_onboarding_guide_layout() -> void:
+	if onboarding_guide == null or not is_instance_valid(onboarding_guide):
+		return
+	var panel = onboarding_guide.get_node_or_null("GuidePlate") as Panel
+	if panel == null:
+		return
+	var win := get_tree().root if get_tree() != null else null
+	var vp_size: Vector2 = Vector2(win.size) if win != null else (get_viewport().get_visible_rect().size if get_viewport() != null else Vector2(1280, 720))
+	panel.position = Vector2(maxf(160.0, (vp_size.x - panel.size.x) * 0.5), vp_size.y - 74.0)
+
+
+func _dismiss_onboarding_guide() -> void:
+	if onboarding_guide != null and is_instance_valid(onboarding_guide):
+		var tw := create_tween()
+		if tw:
+			tw.tween_property(onboarding_guide, "modulate:a", 0.0, 0.35)
+			tw.tween_callback(onboarding_guide.queue_free)
+		else:
+			onboarding_guide.queue_free()
+		onboarding_guide = null

@@ -1,0 +1,13 @@
+{
+  "all_checks_passed": true,
+  "emulated_mouse_immunity_verified": true,
+  "multi_touch_dual_pointer_verified": true,
+  "option_c_plane_z_lock_pass": true,
+  "single_owner_button_architecture_verified": true,
+  "slide_transition_and_drift_release_verified": true,
+  "stage1_duplicate_deck_eliminated": true,
+  "stage1_onboarding_dismiss_on_input_verified": true,
+  "stage1_onboarding_guide_verified": true,
+  "stage1_onboarding_responsive_1024x720_verified": true,
+  "window_focus_loss_cleanup_verified": true
+}

@@ -342,12 +342,6 @@ func _build_torch(pos: Vector3, index: int) -> void:
 	torch_root.add_child(torch_light)
 
 
-func _setup_mobile_ui() -> void:
-	super._setup_mobile_ui()
-	# Optional mobile touch controls (analog stick & action buttons)
-	var touch_controls := QVMobileControlsClass.new()
-	touch_controls.name = "MobileControlsHUD"
-	add_child(touch_controls)
 
 
 # ==============================================================================
