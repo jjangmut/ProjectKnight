@@ -79,6 +79,9 @@ var counter_buff_timer: float = 0.0
 # Dash & Invulnerability & Death
 var dash_time_remaining: float = 0.0
 const DASH_DURATION: float = 0.22
+var dash_buffer_timer: float = 0.0
+const DASH_BUFFER_TIME: float = 0.16
+var can_air_dash: bool = true
 var ghost_timer: float = 0.0
 const GHOST_INTERVAL: float = 0.045
 var is_invulnerable: bool = false
@@ -329,6 +332,10 @@ func _update_timers(delta: float) -> void:
 		jump_buffer_timer = JUMP_BUFFER_TIME
 	if Input.is_action_just_pressed("attack"):
 		attack_buffer_timer = ATTACK_BUFFER_TIME
+	if dash_buffer_timer > 0.0:
+		dash_buffer_timer = maxf(0.0, dash_buffer_timer - delta)
+	if Input.is_action_just_pressed("dash"):
+		dash_buffer_timer = DASH_BUFFER_TIME
 
 	if invuln_timer > 0.0:
 		invuln_timer -= delta
@@ -387,7 +394,8 @@ func _process_movement(delta: float) -> void:
 			start_dive_slam()
 		else:
 			start_attack()
-	elif Input.is_action_just_pressed("dash") and is_on_floor():
+	elif (Input.is_action_just_pressed("dash") or dash_buffer_timer > 0.0) and (is_on_floor() or can_air_dash):
+		dash_buffer_timer = 0.0
 		start_dash()
 	elif Input.is_action_pressed("guard") and is_on_floor():
 		start_guard()
@@ -402,6 +410,8 @@ func start_jump() -> void:
 func start_dash() -> void:
 	if is_dead:
 		return
+	if not is_on_floor() or global_position.y > 0.35:
+		can_air_dash = false
 	dash_time_remaining = DASH_DURATION
 	ghost_timer = 0.0
 	is_invulnerable = true
@@ -713,6 +723,20 @@ func _process_attack_state(delta: float) -> void:
 	velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 	attack_duration_remaining -= delta
 
+	# Attack Recovery Cancel into Dash or Guard (fluid high-tier combat responsiveness)
+	if attack_duration_remaining <= 0.14:
+		if (Input.is_action_just_pressed("dash") or dash_buffer_timer > 0.0) and (is_on_floor() or can_air_dash):
+			dash_buffer_timer = 0.0
+			slash_visual_3d.visible = false
+			is_attacking = false
+			start_dash()
+			return
+		elif Input.is_action_pressed("guard") and is_on_floor():
+			slash_visual_3d.visible = false
+			is_attacking = false
+			start_guard()
+			return
+
 	if attack_duration_remaining <= 0.0:
 		slash_visual_3d.visible = false
 		is_attacking = false
@@ -931,6 +955,7 @@ func _spawn_pogo_shockwave_vfx(pos: Vector3) -> void:
 
 
 func _on_landed_on_floor() -> void:
+	can_air_dash = true
 	# Air-to-ground buffered attack execution
 	if attack_buffer_timer > 0.0 and attack_cooldown <= 0.0 and not is_dead:
 		attack_buffer_timer = 0.0

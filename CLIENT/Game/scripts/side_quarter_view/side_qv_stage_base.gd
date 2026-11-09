@@ -35,6 +35,7 @@ signal boss_encountered(boss_node: Node3D)
 var player: SideQVPlayer
 var camera: SideQVCamera
 var mobile_controls: CanvasLayer
+var touch_controls: QVMobileControls = null
 var enemies: Array[Node3D] = []
 var active_boss: Node3D = null
 
@@ -205,6 +206,11 @@ func _setup_mobile_ui() -> void:
 	mobile_controls = CanvasLayer.new()
 	mobile_controls.name = "SideQVMobileUI"
 	add_child(mobile_controls)
+
+	# Dedicated Mobile Tactical Virtual Controls Deck (Joystick & Action Buttons)
+	touch_controls = QVMobileControlsClass.new()
+	touch_controls.name = "TouchControlsDeck"
+	mobile_controls.add_child(touch_controls)
 
 	# 1. Top-Left Heroes War Tactical Unit HUD (Plate, Avatar, SSR Rank, Stage Title, Soul Gems, HP text)
 	player_hud = Control.new()

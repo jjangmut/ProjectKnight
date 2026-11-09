@@ -1,0 +1,17 @@
+{
+  "air_dash_execution_verified": true,
+  "air_dash_landing_refresh_verified": true,
+  "all_checks_passed": true,
+  "attack_recovery_dash_cancel_verified": true,
+  "attack_recovery_guard_cancel_verified": true,
+  "boss_threat_window_arbiter_blink_ms": 300,
+  "boss_threat_window_arbiter_crescent_ms": 320,
+  "boss_threat_window_golem_slam_ms": 420,
+  "dash_input_buffer_verified": true,
+  "mobile_ui_responsive_1024x720_verified": true,
+  "mobile_ui_responsive_1280x720_verified": true,
+  "option_c_plane_z_lock_pass": true,
+  "stage_touch_buttons_verified": true,
+  "stage_touch_controls_deck_attached": true,
+  "threat_windows_exceed_human_reaction": true
+}

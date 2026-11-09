@@ -26,6 +26,23 @@ var btn_toggle: Button
 func _ready() -> void:
 	layer = 100
 	_build_ui()
+	if get_viewport() != null:
+		get_viewport().size_changed.connect(_update_layout)
+	_update_layout()
+
+
+func _update_layout() -> void:
+	var win := get_tree().root if get_tree() != null else null
+	var vp_size: Vector2 = Vector2(win.size) if win != null else (get_viewport().get_visible_rect().size if get_viewport() != null else Vector2(1280, 720))
+	var joy_container = get_node_or_null("RootHUD/JoystickContainer")
+	var action_container = get_node_or_null("RootHUD/ActionContainer")
+	if joy_container != null:
+		joy_container.position = Vector2(145.0, vp_size.y - 185.0)
+		joystick_center = joy_container.global_position
+	if action_container != null:
+		action_container.position = Vector2(maxf(680.0, vp_size.x - 265.0), vp_size.y - 185.0)
+	if btn_toggle != null:
+		btn_toggle.position = Vector2(maxf(720.0, vp_size.x - 242.0), 14.0)
 
 
 func _build_ui() -> void:
