@@ -1,0 +1,154 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "info": "",
+      "name": "zero_damage_no_reaction",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "confirmed_hit_hp_reduced",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "confirmed_hit_micro_recoil_activated",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "confirmed_hit_option_c_z_zero",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "counter_hit_enhanced_recoil",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "counter_hit_option_c_z_zero",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_minion_recoil_activated",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_is_dead_flag_set",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_collision_disabled",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_attack_monitoring_disabled",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_defeated_signal_emitted_once",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "beast_no_duplicate_defeat_signal",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "ranged_minion_recoil_activated",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "ranged_is_dead_flag_set",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "ranged_collision_disabled",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "ranged_defeated_signal_emitted_once",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "ranged_no_duplicate_defeat_signal",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_physics_body_stationary",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_option_c_plane_locked",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_is_dead_flag_set",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_collision_disabled",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_defeated_signal_emitted_once",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "boss_no_duplicate_defeat_signal",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "fan_aim_marker_instantiated",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "fan_aim_marker_has_3_trajectory_beams",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "fan_aim_marker_coplanar_z_zero",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "golem_telegraph_ring_spawned",
+      "status": "PASS"
+    },
+    {
+      "info": "dist=0.0000",
+      "name": "golem_telegraph_ring_matches_slam_origin",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "golem_telegraph_ring_coplanar_z_zero",
+      "status": "PASS"
+    }
+  ],
+  "passed_checks": 29,
+  "task_id": "V3-012",
+  "timestamp": "2026-11-09T21:27:36",
+  "total_checks": 29
+}

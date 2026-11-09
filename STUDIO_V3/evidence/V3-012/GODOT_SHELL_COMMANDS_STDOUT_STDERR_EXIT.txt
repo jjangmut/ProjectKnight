@@ -1,0 +1,205 @@
+================================================================================
+PROJECT KNIGHT STUDIO V3 - MILESTONE V3-012 SHELL COMMAND EXECUTION LOG
+================================================================================
+
+[COMMAND 1] Encounter Readability & Enemy Reaction Verification Suite
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --headless -s res://tests/v3_012_encounter_readability_verification.gd
+
+Exit Code: 0
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+  >>> [V3-012 VERIFICATION] Initializing verification runner... <<<
+  >>> [V3-012 VERIFICATION] Executing test suite with live SceneTree... <<<
+
+  --- 1. Miss / Zero Damage Integrity ---
+   [PASS] zero_damage_no_reaction 
+
+  --- 2. Confirmed Damage Flash & Micro-Recoil ---
+   [PASS] confirmed_hit_hp_reduced 
+   [PASS] confirmed_hit_micro_recoil_activated 
+   [PASS] confirmed_hit_option_c_z_zero 
+
+  --- 3. Counter Hit Distinct Reaction ---
+   [PASS] counter_hit_enhanced_recoil 
+   [PASS] counter_hit_option_c_z_zero 
+
+  --- 4. Beast Minion Reaction & Death Guard ---
+   [PASS] beast_minion_recoil_activated 
+   [PASS] beast_is_dead_flag_set 
+   [PASS] beast_collision_disabled 
+   [PASS] beast_attack_monitoring_disabled 
+   [PASS] beast_defeated_signal_emitted_once 
+   [PASS] beast_no_duplicate_defeat_signal 
+
+  --- 5. Ranged Minion Reaction & Death Guard ---
+   [PASS] ranged_minion_recoil_activated 
+   [PASS] ranged_is_dead_flag_set 
+   [PASS] ranged_collision_disabled 
+   [PASS] ranged_defeated_signal_emitted_once 
+   [PASS] ranged_no_duplicate_defeat_signal 
+
+  --- 6. Boss Hit Reaction & Poise Preservation ---
+   [PASS] boss_physics_body_stationary 
+   [PASS] boss_option_c_plane_locked 
+   [PASS] boss_is_dead_flag_set 
+   [PASS] boss_collision_disabled 
+   [PASS] boss_defeated_signal_emitted_once 
+   [PASS] boss_no_duplicate_defeat_signal 
+
+  --- 7. Stage 3 Fan Volley Telegraph Inspection ---
+   [PASS] fan_aim_marker_instantiated 
+   [PASS] fan_aim_marker_has_3_trajectory_beams 
+   [PASS] fan_aim_marker_coplanar_z_zero 
+
+  --- 8. Stage 4 Ground Slam Telegraph Alignment ---
+   [PASS] golem_telegraph_ring_spawned 
+   [PASS] golem_telegraph_ring_matches_slam_origin (dist=0.0000)
+   [PASS] golem_telegraph_ring_coplanar_z_zero 
+
+  ==================================================
+  >>> V3-012 ENCOUNTER READABILITY VERIFICATION: 29 / 29 PASSED <<<
+  ==================================================
+  Saved verification result: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-012/ENCOUNTER_READABILITY_VERIFICATION_RESULT.json
+Stderr: (none)
+
+--------------------------------------------------------------------------------
+
+[COMMAND 2] After Captures Fixture (OpenGL3, 1280x720)
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_012_capture_and_verify.gd
+
+Exit Code: 0
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+  >>> [V3-012 CAPTURE AFTER] Initializing after capture fixture... <<<
+  [CAPTURE OK] Saved frame -> D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-012/captures/after/after_01_hit_reaction_flash_and_recoil.png
+  [CAPTURE OK] Saved frame -> D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-012/captures/after/after_02_death_clarity_dissolve_and_burst.png
+  >>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+  [CAPTURE OK] Saved frame -> D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-012/captures/after/after_03_stage3_fan_volley_3_lasers.png
+  [CAPTURE OK] Saved frame -> D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-012/captures/after/after_04_stage4_ground_slam_aligned_ring.png
+  >>> [V3-012 CAPTURE AFTER COMPLETE] Captured 4 frames. <<<
+Stderr: (none)
+
+--------------------------------------------------------------------------------
+
+[COMMAND 3] V3-011 Combat Audio Regression Suite
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --headless -s res://tests/v3_011_audio_verification.gd
+
+Exit Code: 0
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+  >>> [V3-011 AUDIO VERIFY] Starting focused audio verification suite... <<<
+
+  --- 1. Audio Stream Inventory & Registration ---
+   [PASS] manager_instantiated
+   [PASS] pool_size_minimum_16 (Pool size: 16)
+   [PASS] all_required_audio_streams_registered (Missing: [])
+   [PASS] total_streams_count_adequate (Total streams: 31)
+
+  --- 2. Core Player Combat Audio Event Wiring ---
+   [PASS] slash_combo1_fired
+   [PASS] slash_combo2_fired
+   [PASS] slash_combo3_fired
+   [PASS] normal_hit_impact_fired
+   [PASS] counter_hit_impact_fired
+   [PASS] guard_block_fired
+   [PASS] parry_clash_fired
+   [PASS] dash_fired
+   [PASS] dive_slam_fired
+   [PASS] player_hurt_fired
+
+  --- 3. Boss Telegraph & Impact Audio Cues ---
+   [PASS] stage2_beast_tell_fired
+   [PASS] stage3_crossbow_tell_fired
+   [PASS] stage3_crossbow_fire_fired
+   [PASS] stage4_golem_tell_fired
+   [PASS] stage4_golem_fissure_fired
+   [PASS] stage5_abyssal_tell_fired
+   [PASS] stage5_abyssal_strike_fired
+
+  --- 4. Reward & Victory Audio Stingers ---
+   [PASS] stage_clear_stinger_fired
+   [PASS] campaign_victory_fanfare_fired
+
+  --- 5. Voice Concurrency Capping & Retrigger Throttling ---
+   [PASS] rapid_burst_throttled (Recorded calls: 1 (expected 1 due to 35ms throttle))
+   [PASS] active_concurrency_capped (Active count: 1)
+
+  --- 6. State Cleanup & Stop All SFX ---
+   [PASS] all_sfx_stopped_cleanly
+   [PASS] event_history_cleared
+   [PASS] event_counts_cleared
+
+  --- 7. Gain Headroom & Volume Controls ---
+   [PASS] master_bus_valid
+   [PASS] master_bus_attenuation_applied (Volume DB: -1.94)
+   [PASS] master_bus_restored_safely (Restored DB: 0.00)
+
+  ==================================================
+  >>> V3-011 AUDIO VERIFICATION COMPLETED: 31 / 31 PASSED <<<
+  ==================================================
+Stderr: (none)
+
+--------------------------------------------------------------------------------
+
+[COMMAND 4] V3-010 Multi-Touch Regression Suite
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --headless -s res://tests/v3_010_test_touch_repro.gd
+
+Exit Code: 0
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+  >>> [V3-010 TEST] Running multi-touch & controls verification... <<<
+
+  --- TEST 1: Dual Touch (Joystick Move + Skill Button Hold) ---
+    [PASS] Test 1.1: Joystick drag right activates move_right
+    [PASS] Test 1.2: Finger 1 on Attack activates attack
+    [PASS] Test 1.3: Releasing Finger 1 releases attack while maintaining move_right (Independent pointers)
+
+  --- TEST 2: Emulated Mouse Event Immunity while Touch Dragging ---
+  drag_touch_index after mouse event: 0
+    [PASS] Test 2.1: drag_touch_index retained active touch index 0 against mouse clobbering
+    [PASS] Test 2.2: Touch 0 release cleanly resets joystick and releases move_right
+
+  --- TEST 3: Slide / Drag Off Button into Empty Space & Transition to Another Button ---
+    [PASS] Test 3.1: Guard pressed on touch down
+    [PASS] Test 3.2: Dragging out of Guard button into empty space immediately releases guard action
+    [PASS] Test 3.3: Sliding pointer 2 into Dash button activates dash action (Slide Transition)
+    [PASS] Test 3.4: Releasing pointer at Dash button releases dash
+
+  --- TEST 4: Window Focus Loss & Pause Notification ---
+    [PASS] Test 4: Focus out notification properly clears all virtual actions and joystick
+
+  --- TEST 5: Single-Owner Input Architecture (No Redundant Button Signals) ---
+    [PASS] Test 5: Single-owner architecture verified: No redundant button_down signals, mouse_filter=IGNORE
+
+  ==================================================
+  AUDIT SUMMARY: Passed=11, Failed=0
+  ==================================================
+Stderr: (none)
+
+--------------------------------------------------------------------------------
+
+[COMMAND 5] V3-012 Full 5-Stage Campaign E2E Smoke & Victory Playthrough
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" --rendering-driver opengl3 -s res://tests/v3_012_campaign_smoke.gd
+
+Exit Code: 0
+Stdout Summary:
+  - Title deploy click dispatched and verified
+  - Stage 1 Citadel Terrace Gate naturally cleared (Minions + Commander)
+  - Stage 2 Beastwood Forest Gorge naturally cleared (Beasts + Chieftain)
+  - Stage 3 Ruined Crossbow Bastion naturally cleared (Crossbow Minions + Crossbow Commander)
+  - Stage 4 Titan Stone Sanctuary naturally cleared (Golems + Golem Guardian)
+  - Stage 5 Silent Abyssal Citadel naturally cleared (Elite Knights + Abyssal Arbiter HP 38->0)
+  - Full Campaign Victory verified, CampaignVictoryPanel confirmed
+  - Return to Title screen and second campaign start verified
+  - 0 Option C violations across entire run in ACTOR_Z_PRESENCE.csv
+Stderr: (none)

@@ -507,7 +507,7 @@ func _execute_dive_slam_landing() -> void:
 				enemy.current_poise = maxi(0, enemy.current_poise - 4)
 				if enemy.current_poise <= 0 and enemy.has_method("_enter_groggy_state"):
 					enemy._enter_groggy_state()
-			enemy.receive_hit(slam_dmg, push)
+			enemy.receive_hit(slam_dmg, push, true)
 			_spawn_hit_impact_vfx(e3d.global_position + Vector3(0.0, 0.85, 0.0), true)
 			GameFeelManager.damage_popup_3d(get_parent(), e3d.global_position + Vector3(0.0, 1.4, 0.0), "%d STOMP!" % slam_dmg, Color(1.4, 0.9, 0.2), true)
 			enemy_hit.emit(enemy, slam_dmg, true)
@@ -678,7 +678,7 @@ func _check_melee_hit() -> void:
 	for id in hit_targets.keys():
 		var target_node: Node = hit_targets[id]
 		if is_instance_valid(target_node):
-			target_node.receive_hit(dmg, Vector3(facing_dir_x, 0, 0))
+			target_node.receive_hit(dmg, Vector3(facing_dir_x, 0, 0), was_counter)
 			if target_node is Node3D:
 				var t3d := target_node as Node3D
 				_spawn_hit_impact_vfx(t3d.global_position + Vector3(0.0, 0.95, 0.0), was_counter)
@@ -809,7 +809,7 @@ func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) 
 			if has_engraving("aegis_reflect") and attacker != null and is_instance_valid(attacker) and attacker is Node3D:
 				if attacker.has_method("receive_hit"):
 					var ref_push: Vector3 = ((attacker as Node3D).global_position - global_position).normalized()
-					attacker.receive_hit(2, ref_push)
+					attacker.receive_hit(2, ref_push, true)
 					_spawn_aegis_reflect_vfx((attacker as Node3D).global_position + Vector3(0.0, 0.9, 0.0))
 					GameFeelManager.damage_popup_3d(get_parent(), (attacker as Node3D).global_position + Vector3(0.0, 1.3, 0.0), "REFLECT 2", Color(1.0, 0.85, 0.2), true)
 			return false

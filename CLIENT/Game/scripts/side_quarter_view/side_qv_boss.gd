@@ -32,6 +32,8 @@ var current_poise: int = 12
 var is_groggy: bool = false
 var groggy_timer: float = 0.0
 var groggy_halo_3d: MeshInstance3D = null
+var is_dead: bool = false
+var _defeated_signaled: bool = false
 @export var move_speed: float = 3.8
 @export var charge_speed: float = 12.0
 @export var charge_damage: int = 2
@@ -527,7 +529,9 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 		stw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.25)
 
 
-func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
+	if is_dead or current_hp <= 0 or amount <= 0:
+		return
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
@@ -542,11 +546,27 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
 	velocity = Vector3.ZERO # Stand firm like a boss; no knockback slide
+	global_position.z = 0.0
 
+	# 1. Distinct visual hit confirmation flash
 	var tween := create_tween()
 	if tween:
-		sprite_3d.modulate = Color(2.5, 0.4, 0.4, 1.0)
-		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.15)
+		if is_counter:
+			sprite_3d.modulate = Color(1.5, 3.2, 4.0, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.18)
+		else:
+			sprite_3d.modulate = Color(3.5, 0.8, 0.8, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
+
+	# 2. Boss sprite micro-recoil shake
+	var push_x := hit_dir.x
+	if push_x == 0.0:
+		push_x = -facing_dir_x
+	var offset_x: float = push_x * (0.08 if is_counter else 0.04)
+	sprite_3d.position.x = offset_x
+	var rtw := create_tween()
+	if rtw:
+		rtw.tween_property(sprite_3d, "position:x", 0.0, 0.08)
 
 	if current_phase == 1 and current_hp <= int(max_hp * 0.5):
 		_trigger_phase_2()
@@ -568,10 +588,20 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	collision_layer = 0
+	collision_mask = 0
+	if attack_area_3d != null and is_instance_valid(attack_area_3d):
+		attack_area_3d.set_deferred("monitoring", false)
+		attack_area_3d.set_deferred("monitorable", false)
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
-	emit_signal("boss_defeated", self)
+	if not _defeated_signaled:
+		_defeated_signaled = true
+		emit_signal("boss_defeated", self)
 	set_physics_process(false)
 	var tween := create_tween()
 	if tween:

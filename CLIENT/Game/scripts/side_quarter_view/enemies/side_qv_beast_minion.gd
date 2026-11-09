@@ -35,6 +35,10 @@ var is_stunned: bool:
 var charge_dir: Vector3 = Vector3.LEFT
 var facing_dir_x: float = -1.0
 var has_hit_in_current_charge: bool = false
+var is_dead: bool = false
+var _death_signaled: bool = false
+var is_recoiling: bool = false
+var recoil_timer: float = 0.0
 
 var sprite_3d: Sprite3D
 var attack_area_3d: Area3D
@@ -157,6 +161,19 @@ func _physics_process(delta: float) -> void:
 
 	if cooldown_timer > 0.0:
 		cooldown_timer -= delta
+
+	if is_recoiling:
+		recoil_timer -= delta
+		velocity.x = move_toward(velocity.x, 0.0, 32.0 * delta)
+		velocity.z = 0.0
+		global_position.z = 0.0
+		if recoil_timer <= 0.0:
+			is_recoiling = false
+		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
+		_update_beast_animation(delta)
+		return
 
 	if current_state == State.STUNNED:
 		stun_timer -= delta
@@ -295,8 +312,8 @@ func _prevent_player_pushing() -> void:
 func _update_beast_animation(delta: float) -> void:
 	anim_timer += delta
 
-	if current_state == State.STUNNED:
-		# Stunned: Row 1 Frame 3 (recoil)
+	if is_recoiling or current_state == State.STUNNED:
+		# Stunned or Recoiling: Row 1 Frame 3 (recoil)
 		sprite_3d.frame = 3
 		return
 
@@ -344,30 +361,114 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	global_position.z = 0.0
 
 
-func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
+	if is_dead or current_hp <= 0 or amount <= 0:
+		return
 	current_hp -= amount
 	_update_hp_bar()
+
+	# 1. Distinct visual hit confirmation flash
+	if sprite_3d != null:
+		var tween := create_tween()
+		if tween:
+			if is_counter:
+				sprite_3d.modulate = Color(1.5, 3.2, 4.0, 1.0) # Radiant cyan/gold counter resonance
+				tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.18)
+			else:
+				sprite_3d.modulate = Color(3.5, 1.0, 1.0, 1.0) # Sharp white-hot damage flash
+				tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
+
+	# 2. Confirmed damage micro-recoil (clamped, pure X impulse, Z=0 locked)
+	var push_x := hit_dir.x
+	if push_x == 0.0:
+		push_x = -1.0 if (sprite_3d == null or not sprite_3d.flip_h) else 1.0
+	var impulse: float = 3.6 if is_counter else 2.2
+	velocity.x = push_x * impulse
+	velocity.z = 0.0
+	global_position.z = 0.0
+	is_recoiling = true
+	recoil_timer = 0.09
+
+	if current_hp <= 0:
+		_die(is_counter)
+
+
+func _die(is_counter: bool = false) -> void:
+	if is_dead:
+		return
+	is_dead = true
+	is_recoiling = false
+	current_state = State.IDLE
+
+	# Immediate collision de-registration & attack prevention
+	collision_layer = 0
+	collision_mask = 0
+	if attack_area_3d != null and is_instance_valid(attack_area_3d):
+		attack_area_3d.set_deferred("monitoring", false)
+		attack_area_3d.set_deferred("monitorable", false)
+
+	# Atomic single reward/progress dispatch
+	if not _death_signaled:
+		_death_signaled = true
+		emit_signal("enemy_defeated", self)
+
+	set_physics_process(false)
 	velocity = Vector3.ZERO
 	global_position.z = 0.0
 
-	var tween := create_tween()
-	if tween:
-		sprite_3d.modulate = Color(2.5, 0.4, 0.4, 1.0)
-		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.15)
-
-	if current_hp <= 0:
-		_die()
-
-
-func _die() -> void:
-	emit_signal("enemy_defeated", self)
-	set_physics_process(false)
 	var bar := get_node_or_null("OverheadHPBar") as Node3D
 	if bar != null:
 		bar.visible = false
-	var tween := create_tween()
-	if tween:
-		tween.tween_property(sprite_3d, "modulate:a", 0.0, 0.3)
-		tween.tween_callback(queue_free)
+
+	# Readable visual defeat transition: defeat stagger frame + upward dissolve + spark ring
+	if sprite_3d != null:
+		sprite_3d.frame = 3 # Stagger recoil frame
+	_spawn_defeat_burst(is_counter)
+
+	if sprite_3d != null:
+		var tween := create_tween()
+		if tween:
+			tween.set_parallel(true)
+			var dissolve_color := Color(1.0, 2.8, 3.5, 0.0) if is_counter else Color(3.2, 0.8, 0.3, 0.0)
+			tween.tween_property(sprite_3d, "modulate", dissolve_color, 0.28)
+			tween.tween_property(sprite_3d, "position:y", sprite_3d.position.y + 0.20, 0.28)
+			tween.tween_property(sprite_3d, "scale", sprite_3d.scale * 0.85, 0.28)
+			tween.chain().tween_callback(queue_free)
+		else:
+			queue_free()
 	else:
 		queue_free()
+
+
+func _spawn_defeat_burst(is_counter: bool = false) -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var ring := MeshInstance3D.new()
+	ring.name = "DefeatBurstRing"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.25
+	torus.outer_radius = 0.45
+	ring.mesh = torus
+
+	var mat := StandardMaterial3D.new()
+	var burst_col := Color(0.8, 2.6, 3.8, 1.0) if is_counter else Color(3.5, 1.2, 0.3, 1.0)
+	mat.albedo_color = burst_col
+	mat.emission_enabled = true
+	mat.emission = burst_col
+	mat.emission_energy_multiplier = 3.5
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ring.material_override = mat
+
+	p.add_child(ring)
+	ring.global_position = global_position + Vector3(0.0, 0.65, 0.0)
+	ring.global_position.z = 0.0
+	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+
+	var tw := ring.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(ring, "scale", Vector3(2.2, 2.2, 2.2), 0.26)
+		tw.tween_property(mat, "albedo_color:a", 0.0, 0.26)
+		tw.chain().tween_callback(ring.queue_free)

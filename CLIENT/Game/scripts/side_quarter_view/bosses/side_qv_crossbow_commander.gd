@@ -56,6 +56,8 @@ var muzzle_point_3d: Marker3D
 
 var is_acting: bool = false
 var anim_timer: float = 0.0
+var is_dead: bool = false
+var _defeated_signaled: bool = false
 
 
 func _ready() -> void:
@@ -250,11 +252,16 @@ func _execute_fan_volley() -> void:
 	velocity.x = 0.0
 	velocity.z = 0.0
 
-	# 1. 조준 텔레그래프 (Row 2 Frame 8: 석궁 조준 자세)
+	var base_dir := Vector3(facing_dir_x, 0.0, 0.0)
+	if target_player != null and is_instance_valid(target_player):
+		var dy := (target_player.global_position.y + 0.8) - (global_position.y + 1.35)
+		base_dir = Vector3(facing_dir_x * 2.0, dy, 0.0).normalized()
+
+	# 1. 3방향 부채꼴 조준 텔레그래프 (Row 2 Frame 8: 석궁 조준 자세)
 	sprite_3d.texture = BossTextureMain
 	sprite_3d.frame = 8
 	AudioManager.play("boss_tell_crossbow")
-	var aim_marker := _create_aim_line()
+	var aim_marker := _create_fan_aim_lines(base_dir)
 
 	await get_tree().create_timer(0.40).timeout
 	if is_instance_valid(aim_marker):
@@ -267,10 +274,6 @@ func _execute_fan_volley() -> void:
 	# 2. 발사 (Row 2 Frame 9: 머즐 플래시 발사 반동)
 	sprite_3d.texture = BossTextureMain
 	sprite_3d.frame = 9
-	var base_dir := Vector3(facing_dir_x, 0.0, 0.0)
-	if target_player != null and is_instance_valid(target_player):
-		var dy := (target_player.global_position.y + 0.8) - (global_position.y + 1.35)
-		base_dir = Vector3(facing_dir_x * 2.0, dy, 0.0).normalized()
 
 	var angles: Array[float] = [-18.0, 0.0, 18.0]
 	for ang: float in angles:
@@ -514,25 +517,57 @@ func _spawn_caltrop(pos: Vector3) -> void:
 
 
 func _create_aim_line() -> Node3D:
-	var indicator := MeshInstance3D.new()
-	indicator.name = "VolleyAimIndicator"
-	var quad := QuadMesh.new()
-	quad.size = Vector2(0.3, 6.0)
-	indicator.mesh = quad
+	return _create_fan_aim_lines(Vector3(facing_dir_x, 0.0, 0.0))
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(2.5, 0.4, 0.2, 0.4)
-	mat.emission_enabled = true
-	mat.emission = Color(2.5, 0.4, 0.2, 1.0)
-	mat.emission_energy_multiplier = 3.0
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	indicator.material_override = mat
 
-	indicator.position = Vector3(muzzle_point_3d.position.x, 0.05, 0.0)
-	indicator.rotation_degrees = Vector3(90.0, 0.0, 90.0 if facing_dir_x < 0.0 else -90.0)
-	add_child(indicator)
-	return indicator
+func _create_fan_aim_lines(base_dir: Vector3) -> Node3D:
+	var root_indicator := Node3D.new()
+	root_indicator.name = "VolleyAimIndicator"
+	root_indicator.position = Vector3(muzzle_point_3d.position.x, 1.35, 0.0)
+
+	var angles: Array[float] = [-18.0, 0.0, 18.0]
+	var beam_length: float = 9.0
+	var beam_thickness: float = 0.05
+
+	for i in range(angles.size()):
+		var ang: float = angles[i]
+		var dir: Vector3 = base_dir.rotated(Vector3(0.0, 0.0, 1.0), deg_to_rad(ang * facing_dir_x))
+		dir.z = 0.0
+		dir = dir.normalized()
+
+		# Laser tracer quad facing camera in X/Y plane
+		var beam := MeshInstance3D.new()
+		beam.name = "AimBeam_%d" % i
+		var quad := QuadMesh.new()
+		quad.size = Vector2(beam_thickness if i != 1 else beam_thickness * 1.4, beam_length)
+		beam.mesh = quad
+
+		var mat := StandardMaterial3D.new()
+		var col := Color(4.2, 0.45, 0.15, 0.85) if i == 1 else Color(3.6, 0.75, 0.2, 0.72)
+		mat.albedo_color = col
+		mat.emission_enabled = true
+		mat.emission = col
+		mat.emission_energy_multiplier = 4.2
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		beam.material_override = mat
+
+		var angle_rad := atan2(dir.y, dir.x) - PI * 0.5
+		beam.rotation = Vector3(0.0, 0.0, angle_rad)
+		beam.position = dir * (beam_length * 0.5)
+		beam.position.z = 0.0
+		root_indicator.add_child(beam)
+
+	add_child(root_indicator)
+
+	var tw := root_indicator.create_tween()
+	if tw:
+		tw.set_loops(3)
+		tw.tween_property(root_indicator, "scale", Vector3(1.05, 1.05, 1.0), 0.06)
+		tw.tween_property(root_indicator, "scale", Vector3(0.96, 0.96, 1.0), 0.06)
+
+	return root_indicator
 
 
 # ==============================================================================
@@ -584,7 +619,9 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.22)
 
 
-func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
+	if is_dead or current_hp <= 0 or amount <= 0:
+		return
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
@@ -598,12 +635,28 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	current_hp -= amount
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
-	velocity = Vector3.ZERO # 피격 시 넉백 밀림 없이 사령관다운 단단한 지탱
+	velocity = Vector3.ZERO
+	global_position.z = 0.0
 
+	# 1. Distinct visual hit confirmation flash
 	var tween := create_tween()
 	if tween:
-		sprite_3d.modulate = Color(2.5, 0.3, 0.3, 1.0)
-		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.16)
+		if is_counter:
+			sprite_3d.modulate = Color(1.5, 3.2, 4.0, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.18)
+		else:
+			sprite_3d.modulate = Color(3.5, 0.8, 0.8, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
+
+	# 2. Boss sprite micro-recoil shake
+	var push_x := hit_dir.x
+	if push_x == 0.0:
+		push_x = -facing_dir_x
+	var offset_x: float = push_x * (0.08 if is_counter else 0.04)
+	sprite_3d.position.x = offset_x
+	var rtw := create_tween()
+	if rtw:
+		rtw.tween_property(sprite_3d, "position:x", 0.0, 0.08)
 
 	if current_phase == 1 and current_hp <= int(max_hp * 0.5):
 		_trigger_phase_2()
@@ -627,12 +680,17 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
-	velocity = Vector3.ZERO
-	global_position.z = 0.0
+	if is_dead:
+		return
+	is_dead = true
+	collision_layer = 0
+	collision_mask = 0
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
-	emit_signal("boss_defeated", self)
+	if not _defeated_signaled:
+		_defeated_signaled = true
+		emit_signal("boss_defeated", self)
 	set_physics_process(false)
 	is_acting = true
 	sprite_3d.texture = BossTextureSkills

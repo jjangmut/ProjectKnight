@@ -48,6 +48,8 @@ var stun_timer: float = 0.0
 var target_player: Node3D = null
 var facing_dir_x: float = -1.0 # Naturally faces left towards player
 var has_hit_player_in_current_lariat: bool = false
+var is_dead: bool = false
+var _defeated_signaled: bool = false
 
 var sprite_3d: Sprite3D
 var magma_aura_ring: MeshInstance3D
@@ -385,33 +387,38 @@ func _pick_next_pattern(dist_x: float) -> void:
 			_execute_spinning_lariat()
 
 
-func _show_danger_telegraph(duration: float = 0.35) -> void:
+func _show_danger_telegraph(duration: float = 0.35, custom_origin: Vector3 = Vector3.ZERO, target_radius: float = 2.75) -> void:
 	AudioManager.play("boss_tell_golem")
 	var p := get_parent()
 	if p == null:
 		return
+	var origin := custom_origin if custom_origin != Vector3.ZERO else global_position
+	origin.z = 0.0
+
 	var ring := MeshInstance3D.new()
 	ring.name = "DangerTelegraphRing3D"
 	var torus := TorusMesh.new()
-	torus.inner_radius = 0.7
-	torus.outer_radius = 1.1
+	torus.inner_radius = target_radius * 0.88
+	torus.outer_radius = target_radius
 	ring.mesh = torus
 	var rmat := StandardMaterial3D.new()
-	rmat.albedo_color = Color(3.8, 0.4, 0.2, 0.9)
+	rmat.albedo_color = Color(3.8, 0.55, 0.15, 0.9)
 	rmat.emission_enabled = true
-	rmat.emission = Color(3.8, 0.4, 0.2, 1.0)
+	rmat.emission = Color(3.8, 0.55, 0.15, 1.0)
 	rmat.emission_energy_multiplier = 4.5
 	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
+	ring.global_position = origin + Vector3(0.0, 0.08, 0.0)
 	ring.global_position.z = 0.0
 	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+
+	ring.scale = Vector3(0.15, 0.15, 0.15)
 	var tw := ring.create_tween()
 	if tw:
 		tw.set_parallel(true)
-		tw.tween_property(ring, "scale", Vector3(2.5, 2.5, 2.5), duration)
+		tw.tween_property(ring, "scale", Vector3(1.0, 1.0, 1.0), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
 		tw.chain().tween_callback(ring.queue_free)
 
@@ -475,7 +482,9 @@ func _exit_groggy_state() -> void:
 func _execute_ground_slam() -> void:
 	current_pattern = Pattern.GROUND_SLAM
 	pattern_timer = 1.75
-	_show_danger_telegraph(0.35)
+	var slam_origin := global_position + Vector3(facing_dir_x * 1.5, 0.0, 0.0)
+	slam_origin.z = 0.0
+	_show_danger_telegraph(0.35, slam_origin, 4.5)
 	sprite_3d.texture = GolemTextureNormal
 	sprite_3d.frame = 8 # Arms raised high in windup
 	attack_performed.emit("GROUND_SLAM")
@@ -487,8 +496,6 @@ func _execute_ground_slam() -> void:
 
 	# Impact strike!
 	sprite_3d.frame = 10
-	var slam_origin := global_position + Vector3(facing_dir_x * 1.5, 0.0, 0.0)
-	slam_origin.z = 0.0
 
 	# 1. 3D Sharp Rock Shard Pillars Eruption (Kept at Z<=0 to prevent foreground occlusion)
 	_spawn_rock_pillars(slam_origin)
@@ -772,7 +779,9 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.25)
 
 
-func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
+	if is_dead or current_hp <= 0 or amount <= 0:
+		return
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
@@ -789,11 +798,25 @@ func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
 	velocity = Vector3.ZERO # Heavy colossus stands firm; zero knockback flinch
 	global_position.z = 0.0
 
-	# Hit flash
+	# 1. Distinct visual hit confirmation flash
 	var tween := create_tween()
 	if tween:
-		sprite_3d.modulate = Color(2.8, 0.4, 0.4, 1.0)
-		tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.15)
+		if is_counter:
+			sprite_3d.modulate = Color(1.5, 3.2, 4.0, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.18)
+		else:
+			sprite_3d.modulate = Color(3.5, 0.8, 0.8, 1.0)
+			tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
+
+	# 2. Boss sprite micro-recoil shake
+	var push_x := hit_dir.x
+	if push_x == 0.0:
+		push_x = -facing_dir_x
+	var offset_x: float = push_x * (0.08 if is_counter else 0.04)
+	sprite_3d.position.x = offset_x
+	var rtw := create_tween()
+	if rtw:
+		rtw.tween_property(sprite_3d, "position:x", 0.0, 0.08)
 
 	if current_phase == 1 and current_hp <= int(max_hp * 0.5):
 		_trigger_phase_2()
@@ -813,13 +836,21 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	collision_layer = 0
+	collision_mask = 0
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
 	_cleanup_hazards()
-	boss_defeated.emit(self)
+	if not _defeated_signaled:
+		_defeated_signaled = true
+		boss_defeated.emit(self)
 	set_physics_process(false)
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
+	attack_area_3d.set_deferred("monitorable", false)
 	lariat_dust_particles.emitting = false
 	ember_particles.emitting = false
 	velocity = Vector3.ZERO
