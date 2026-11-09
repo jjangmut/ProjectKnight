@@ -16,6 +16,8 @@ func _ready() -> void:
 	attack_cooldown = 1.0
 
 	super._ready()
+	position.z = 0.0
+	velocity.z = 0.0
 	_apply_elite_visuals()
 
 

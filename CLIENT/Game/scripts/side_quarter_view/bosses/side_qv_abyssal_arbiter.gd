@@ -57,6 +57,8 @@ var facing_dir_x: float = -1.0 # 1.0 = Right, -1.0 = Left
 var is_invulnerable: bool = false
 var has_used_initial_storm: bool = false
 var storm_cooldown: float = 0.0
+var is_dead: bool = false
+var has_hit_player_in_current_swing: bool = false
 
 var sprite_3d: Sprite3D
 var aura_ring_3d: MeshInstance3D
@@ -73,6 +75,8 @@ func _ready() -> void:
 	add_to_group("bosses")
 
 	_build_components()
+	position.z = 0.0
+	velocity.z = 0.0
 	boss_hp_changed.emit(current_hp, max_hp)
 
 
@@ -142,6 +146,9 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	velocity.z = 0.0
+	global_position.z = 0.0
+
 	if not is_on_floor() and current_pattern != Pattern.JUDGMENT_STORM:
 		velocity.y -= 18.0 * delta
 
@@ -156,17 +163,21 @@ func _physics_process(delta: float) -> void:
 			_exit_groggy_state()
 		velocity = Vector3.ZERO
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_arbiter_animation(delta)
 		return
 
 	if current_pattern == Pattern.STUNNED:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+		velocity.z = 0.0
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 			pattern_timer = 0.5
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_arbiter_animation(delta)
 		return
 
@@ -175,13 +186,14 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
+		velocity.z = 0.0
+		global_position.z = 0.0
 		_update_arbiter_animation(delta)
 		return
 
-	var diff := target_player.global_position - global_position
-	diff.y = 0.0
-	var dist := diff.length()
-	var dir_x: float = signf(diff.x)
+	var diff_x := target_player.global_position.x - global_position.x
+	var dist_x := absf(diff_x)
+	var dir_x: float = signf(diff_x) if dist_x > 0.01 else -1.0
 
 	# Mutual facing alignment towards player
 	if dir_x != 0.0 and current_pattern != Pattern.JUDGMENT_STORM:
@@ -194,21 +206,21 @@ func _physics_process(delta: float) -> void:
 	match current_pattern:
 		Pattern.IDLE, Pattern.CHASE:
 			if pattern_timer <= 0.0:
-				_pick_next_pattern(dist)
+				_pick_next_pattern(dist_x)
 			else:
 				var spd := move_speed * (1.30 if current_phase == 2 else 1.0)
 				var combat_standoff := 2.2 # Heavy greatsword reach
-				if dist > combat_standoff:
+				if dist_x > combat_standoff:
 					velocity.x = facing_dir_x * spd
-					velocity.z = diff.normalized().z * (spd * 0.75)
+					velocity.z = 0.0
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+					velocity.z = 0.0
 
 		Pattern.MELEE_CLEAVE:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				sprite_3d.texture = TexNormal
 				current_pattern = Pattern.CHASE
@@ -216,7 +228,7 @@ func _physics_process(delta: float) -> void:
 
 		Pattern.DARK_CRESCENT_WAVE:
 			velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				sprite_3d.texture = TexNormal
 				current_pattern = Pattern.CHASE
@@ -224,7 +236,7 @@ func _physics_process(delta: float) -> void:
 
 		Pattern.SHADOW_BLINK_STRIKE:
 			velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-			velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
+			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				sprite_3d.texture = TexNormal
 				current_pattern = Pattern.CHASE
@@ -238,20 +250,21 @@ func _physics_process(delta: float) -> void:
 				pattern_timer = 1.2
 
 	move_and_slide()
+	velocity.z = 0.0
+	global_position.z = 0.0
 	_update_arbiter_animation(delta)
 
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
+		var diff_x := target_player.global_position.x - global_position.x
+		var dist_x := absf(diff_x)
 		var min_dist: float = 0.65 + 0.35 + 0.12 # Collision radius sum
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
+		if dist_x < min_dist and dist_x > 0.001:
+			var dir_x := signf(diff_x)
+			var forward_speed := velocity.x * dir_x
 			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+				velocity.x -= dir_x * forward_speed
 
 
 func _update_arbiter_animation(delta: float) -> void:
@@ -343,11 +356,11 @@ func _execute_dark_crescent_wave() -> void:
 
 	# Wind-up charge
 	await get_tree().create_timer(0.32).timeout
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 		return
 
 	# Fire Dark Crescent Wave projectile
-	var spawn_pos := global_position + Vector3(facing_dir_x * 1.3, 1.3, 0.0)
+	var spawn_pos := Vector3(global_position.x + facing_dir_x * 1.3, 1.3, 0.0)
 	var fire_dir := Vector3(facing_dir_x, 0.0, 0.0)
 
 	var wave := DarkCrescentWaveClass.new()
@@ -357,9 +370,11 @@ func _execute_dark_crescent_wave() -> void:
 
 	# Slight recoil step
 	velocity.x = -facing_dir_x * 2.5
+	velocity.z = 0.0
 	await get_tree().create_timer(0.25).timeout
 	if is_instance_valid(self):
 		velocity.x = 0.0
+		velocity.z = 0.0
 
 
 # ==============================================================================
@@ -367,8 +382,9 @@ func _execute_dark_crescent_wave() -> void:
 # ==============================================================================
 func _execute_shadow_blink_strike() -> void:
 	current_pattern = Pattern.SHADOW_BLINK_STRIKE
-	pattern_timer = 1.25
+	pattern_timer = 1.35
 	velocity = Vector3.ZERO
+	has_hit_player_in_current_swing = false
 
 	# Fade out into shadows
 	var tween_out := create_tween()
@@ -376,46 +392,56 @@ func _execute_shadow_blink_strike() -> void:
 		tween_out.tween_property(sprite_3d, "modulate:a", 0.05, 0.16)
 	await get_tree().create_timer(0.18).timeout
 
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 		if is_instance_valid(sprite_3d):
 			sprite_3d.modulate.a = 1.0
 		return
 
-	# Calculate position behind player
+	# Calculate position behind player strictly on Z = 0
 	if target_player != null and is_instance_valid(target_player):
 		var p_facing: float = 1.0
 		if target_player.has_method("get") and target_player.get("facing_dir_x") != null:
 			p_facing = float(target_player.get("facing_dir_x"))
-		
-		# Behind player is opposite of player's facing direction
-		var behind_x: float = target_player.global_position.x - p_facing * 2.2
-		behind_x = clampf(behind_x, -16.0, 16.0) # Within arena bounds
-		var target_z: float = clampf(target_player.global_position.z, -4.5, 4.5)
+		elif target_player.get("sprite_3d") != null:
+			p_facing = -1.0 if target_player.sprite_3d.flip_h else 1.0
 
-		global_position = Vector3(behind_x, 0.1, target_z)
+		var behind_x: float = target_player.global_position.x - p_facing * 2.2
+		if behind_x < -16.0 or behind_x > 16.0:
+			behind_x = target_player.global_position.x + p_facing * 2.2
+		behind_x = clampf(behind_x, -16.0, 16.0)
+
+		global_position = Vector3(behind_x, 0.1, 0.0)
+		velocity = Vector3.ZERO
 		facing_dir_x = signf(target_player.global_position.x - global_position.x)
+		if facing_dir_x == 0.0:
+			facing_dir_x = 1.0
 		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		attack_area_3d.position.x = 1.4 * facing_dir_x
 		teleported.emit(global_position)
 
-	# Fade in and immediately strike
+	# Telegraph cue upon reappearing before the slash
+	_show_danger_telegraph(0.20)
+
+	# Fade in
 	var tween_in := create_tween()
 	if tween_in:
 		tween_in.tween_property(sprite_3d, "modulate:a", 1.0, 0.12)
-	await get_tree().create_timer(0.12).timeout
+	await get_tree().create_timer(0.18).timeout
 
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 		return
 
 	# Downward shadow cleave attack window
+	has_hit_player_in_current_swing = false
 	attack_area_3d.monitoring = true
-	velocity.x = facing_dir_x * 5.0 # Swift forward dash slash
+	velocity.x = facing_dir_x * 5.0
+	velocity.z = 0.0
 	await get_tree().create_timer(0.24).timeout
 
 	if is_instance_valid(self):
-		attack_area_3d.monitoring = false
+		attack_area_3d.set_deferred("monitoring", false)
 		velocity.x = 0.0
-
+		velocity.z = 0.0
 
 # ==============================================================================
 # 패턴 3: 2페이즈 심연의 심판 폭풍 (Abyssal Judgment Storm)
@@ -438,37 +464,42 @@ func _execute_judgment_storm() -> void:
 		tween_pos.tween_property(self, "global_position", center_pos, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(0.40).timeout
 
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
 		global_position.y = 0.1
+		global_position.z = 0.0
 		return
 
 	_show_danger_telegraph(0.40)
 	await get_tree().create_timer(0.40).timeout
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
 		global_position.y = 0.1
+		global_position.z = 0.0
 		return
 
 	# Pulse 2 consecutive void shockwave rings
 	for pulse_idx in range(2):
-		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
+		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
 			break
 		_spawn_void_shockwave_pulse(pulse_idx + 1)
 		await get_tree().create_timer(0.65).timeout
 
 	# Descend back to ground
-	if is_instance_valid(self) and current_pattern != Pattern.STUNNED:
+	if is_instance_valid(self) and current_pattern != Pattern.STUNNED and not is_dead:
 		var tween_down := create_tween()
 		if tween_down:
 			tween_down.tween_property(self, "global_position:y", 0.1, 0.30)
 		await get_tree().create_timer(0.32).timeout
+	if is_instance_valid(self):
+		global_position.z = 0.0
 
 
 func _spawn_void_shockwave_pulse(pulse_num: int) -> void:
-	# Expanding 360-degree cylindrical shockwave pulse on floor
+	# Expanding cylindrical shockwave pulse on floor (Option C Z=0.0)
 	var pulse_area := Area3D.new()
 	pulse_area.name = "VoidPulse_%d" % pulse_num
 	pulse_area.collision_layer = 0
 	pulse_area.collision_mask = 1 # Player
+	pulse_area.add_to_group("stage_hazards")
 
 	var col := CollisionShape3D.new()
 	var cyl := CylinderShape3D.new()
@@ -495,7 +526,7 @@ func _spawn_void_shockwave_pulse(pulse_num: int) -> void:
 	pulse_area.add_child(vmesh)
 
 	get_parent().add_child(pulse_area)
-	pulse_area.global_position = Vector3(global_position.x, 0.1, global_position.z)
+	pulse_area.global_position = Vector3(global_position.x, 0.1, 0.0)
 
 	# Expand outward rapidly across the hall
 	var expand_tween := create_tween()
@@ -505,46 +536,57 @@ func _spawn_void_shockwave_pulse(pulse_num: int) -> void:
 		expand_tween.tween_property(mat, "albedo_color:a", 0.0, 0.55)
 		expand_tween.chain().tween_callback(pulse_area.queue_free)
 
-	# Check player contact during expansion
+	# Check player contact during expansion (single damage gate)
+	var has_damaged: bool = false
 	pulse_area.body_entered.connect(func(body: Node3D):
+		if has_damaged:
+			return
 		if body.is_in_group("player") and is_instance_valid(body):
-			# Damage if player is on ground (can be avoided by jumping or parrying!)
 			var is_grounded: bool = true
 			if body.has_method("is_on_floor"):
 				is_grounded = body.is_on_floor()
+			if body.global_position.y > 0.85:
+				is_grounded = false
 			if is_grounded and body.has_method("receive_incoming_attack"):
-				var push_dir := (body.global_position - global_position).normalized()
-				push_dir.y = 0.0
+				has_damaged = true
+				var push_dir := Vector3(signf(body.global_position.x - global_position.x), 0.0, 0.0)
+				if push_dir.x == 0.0:
+					push_dir.x = 1.0
 				body.receive_incoming_attack(storm_damage, self, push_dir)
 	)
-
 
 # ==============================================================================
 # 기본 근접 공격: 심연 대검 2연격 (Melee Cleave Combo)
 # ==============================================================================
 func _execute_melee_cleave() -> void:
 	current_pattern = Pattern.MELEE_CLEAVE
-	pattern_timer = 1.15
+	pattern_timer = 1.25
 	sprite_3d.texture = TexNormal
+	velocity = Vector3.ZERO
 
 	for swing in range(2):
-		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED:
+		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_dead:
 			break
+		has_hit_player_in_current_swing = false
 		attack_area_3d.monitoring = true
 		velocity.x = facing_dir_x * 4.0
+		velocity.z = 0.0
 		await get_tree().create_timer(0.24).timeout
 		if is_instance_valid(self):
-			attack_area_3d.monitoring = false
+			attack_area_3d.set_deferred("monitoring", false)
 			velocity.x = 0.0
+			velocity.z = 0.0
 			await get_tree().create_timer(0.12).timeout
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
+	if has_hit_player_in_current_swing:
+		return
 	if body.is_in_group("player") and is_instance_valid(body):
+		has_hit_player_in_current_swing = true
 		if body.has_method("receive_incoming_attack"):
 			var dmg := blink_strike_damage if current_pattern == Pattern.SHADOW_BLINK_STRIKE else cleave_damage
 			body.receive_incoming_attack(dmg, self, Vector3(facing_dir_x, 0.0, 0.0))
-
 
 func _show_danger_telegraph(duration: float = 0.35) -> void:
 	var p := get_parent()
@@ -634,11 +676,14 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	current_pattern = Pattern.STUNNED
 	stun_timer = duration
 	velocity = Vector3.ZERO # Firm stop on clash
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
+	has_hit_player_in_current_swing = false
 	sprite_3d.texture = TexNormal
 
 
 func receive_hit(amount: int, _hit_dir: Vector3 = Vector3.ZERO) -> void:
+	if is_dead or current_hp <= 0:
+		return
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
@@ -679,12 +724,22 @@ func _trigger_phase_2() -> void:
 
 
 func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	# Clean up all stage hazards
+	if get_tree() != null:
+		for hazard in get_tree().get_nodes_in_group("stage_hazards"):
+			if is_instance_valid(hazard):
+				hazard.queue_free()
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
 	boss_defeated.emit(self)
 	set_physics_process(false)
-	attack_area_3d.monitoring = false
+	collision_layer = 0
+	collision_mask = 0
+	attack_area_3d.set_deferred("monitoring", false)
 
 	var tween := create_tween()
 	if tween:
@@ -692,3 +747,10 @@ func _die() -> void:
 		tween.tween_callback(queue_free)
 	else:
 		queue_free()
+
+
+func _exit_tree() -> void:
+	if get_tree() != null:
+		for hazard in get_tree().get_nodes_in_group("stage_hazards"):
+			if is_instance_valid(hazard):
+				hazard.queue_free()

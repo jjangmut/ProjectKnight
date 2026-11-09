@@ -22,23 +22,28 @@ var trail_particles: CPUParticles3D
 var beam_light: OmniLight3D
 
 
+var has_hit: bool = false
+
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 1 # Player (Layer 1)
 	monitoring = true
 	monitorable = false
+	add_to_group("stage_hazards")
 
 	_build_visuals()
 	body_entered.connect(_on_body_entered)
 
 
 func initialize(start_pos: Vector3, dir: Vector3, owner_boss: Node3D, dmg: int = 2) -> void:
+	start_pos.z = 0.0
 	global_position = start_pos
 	boss_ref = owner_boss
 	damage = dmg
 
 	direction = dir.normalized()
 	direction.y = 0.0
+	direction.z = 0.0
 	direction = direction.normalized()
 
 	# Flight facing orientation
@@ -51,6 +56,7 @@ func initialize(start_pos: Vector3, dir: Vector3, owner_boss: Node3D, dmg: int =
 func _physics_process(delta: float) -> void:
 	var move_step := speed * delta
 	global_position += direction * move_step
+	global_position.z = 0.0
 	traveled_distance += move_step
 
 	if traveled_distance >= max_range:
@@ -203,7 +209,10 @@ func _generate_crescent_mesh(r_out: float, r_in: float, thickness: float, segmen
 
 
 func _on_body_entered(body: Node3D) -> void:
+	if has_hit:
+		return
 	if body.is_in_group("player") and is_instance_valid(body):
+		has_hit = true
 		emit_signal("wave_hit_target", body)
 		if body.has_method("receive_incoming_attack"):
 			var atk_dir := Vector3(direction.x, 0.0, 0.0)
@@ -211,4 +220,5 @@ func _on_body_entered(body: Node3D) -> void:
 			if not damage_dealt and boss_ref != null and boss_ref.has_method("apply_parry_stun"):
 				# Parry clash success!
 				boss_ref.apply_parry_stun(2.0)
+		set_deferred("monitoring", false)
 		queue_free()

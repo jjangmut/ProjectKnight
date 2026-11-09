@@ -16,6 +16,7 @@ var target_player: Node3D = null
 var current_cooldown: float = 0.0
 var is_stunned: bool = false
 var stun_timer: float = 0.0
+var is_dead: bool = false
 
 var sprite_3d: Sprite3D
 var attack_area_3d: Area3D
@@ -216,15 +217,14 @@ func _physics_process(delta: float) -> void:
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff := target_player.global_position - global_position
-		diff.y = 0.0
-		var dist := diff.length()
+		var diff_x := target_player.global_position.x - global_position.x
+		var dist_x := absf(diff_x)
 		var min_dist: float = 0.40 + 0.35 + 0.06
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
+		if dist_x < min_dist and dist_x > 0.001:
+			var dir_x := signf(diff_x)
+			var forward_speed := velocity.x * dir_x
 			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
+				velocity.x -= dir_x * forward_speed
 
 
 func _update_enemy_animation(delta: float) -> void:
@@ -289,6 +289,8 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 
 
 func receive_hit(amount: int, _hit_dir: Vector3) -> void:
+	if is_dead or current_hp <= 0:
+		return
 	current_hp -= amount
 	_update_hp_bar()
 	velocity = Vector3.ZERO # Hold ground firmly; no bounce
@@ -304,6 +306,13 @@ func receive_hit(amount: int, _hit_dir: Vector3) -> void:
 
 
 func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	collision_layer = 0
+	collision_mask = 0
+	if attack_area_3d != null and is_instance_valid(attack_area_3d):
+		attack_area_3d.set_deferred("monitoring", false)
 	emit_signal("enemy_defeated", self)
 	set_physics_process(false)
 	var bar := get_node_or_null("OverheadHPBar") as Node3D

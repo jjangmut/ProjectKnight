@@ -1,0 +1,79 @@
+[
+  {
+    "file": "01_title_deploy_click.png",
+    "stage": 0,
+    "phase": "Title",
+    "sim_time": 0.417,
+    "description": "Title screen Deploy GUI button real click event dispatch"
+  },
+  {
+    "file": "01_stage5_natural_entry.png",
+    "stage": 5,
+    "phase": "Entry",
+    "sim_time": 37.122,
+    "description": "Stage 5 Silent Citadel obsidian throne hall natural transition"
+  },
+  {
+    "file": "02_stage5_both_elite_knights.png",
+    "stage": 5,
+    "phase": "Wave 1",
+    "sim_time": 37.255,
+    "description": "Wave 1 Two Elite Abyssal Knights spawned coplanar on Z = 0.0"
+  },
+  {
+    "file": "03_stage5_boss_spawn.png",
+    "stage": 5,
+    "phase": "Wave 2 Spawn",
+    "sim_time": 40.166,
+    "description": "Wave 2 Final Boss Abyssal Arbiter emergence (HP 38/38, Poise 18) at Z = 0.0"
+  },
+  {
+    "file": "04_stage5_dark_crescent_wave.png",
+    "stage": 5,
+    "phase": "Special Pattern 1",
+    "sim_time": 40.85,
+    "description": "Dark Crescent Wave horizontal void projectile launch at Z = 0.0"
+  },
+  {
+    "file": "05_stage5_shadow_blink_strike.png",
+    "stage": 5,
+    "phase": "Special Pattern 2",
+    "sim_time": 41.5,
+    "description": "Shadow Blink Strike teleportation behind player on Z = 0.0"
+  },
+  {
+    "file": "06_stage5_parry_stun_clash.png",
+    "stage": 5,
+    "phase": "Combat Mechanic",
+    "sim_time": 41.95,
+    "description": "Just parry clash against boss cleave breaking poise into stun"
+  },
+  {
+    "file": "07_stage5_phase2_judgment_storm.png",
+    "stage": 5,
+    "phase": "Phase 2 Ultimate",
+    "sim_time": 42.316,
+    "description": "Phase 2 Judgment Storm expanding void shockwave pulses (Y > 0.85 jump evasion)"
+  },
+  {
+    "file": "08_stage5_arbiter_defeat.png",
+    "stage": 5,
+    "phase": "Boss Defeat",
+    "sim_time": 45.5,
+    "description": "Abyssal Arbiter defeat and complete hazard cleanup"
+  },
+  {
+    "file": "09_stage5_boss_natural_defeat.png",
+    "stage": 5,
+    "phase": "E2E Defeat",
+    "sim_time": 46.079,
+    "description": "Natural continuous E2E boss collapse at HP 0"
+  },
+  {
+    "file": "10_stage5_clear_campaign_victory.png",
+    "stage": 5,
+    "phase": "Campaign Victory",
+    "sim_time": 48.111,
+    "description": "Full Campaign Victory panel visible in CampaignUILayer after clearing all 5 stages"
+  }
+]

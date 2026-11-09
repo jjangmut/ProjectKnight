@@ -334,14 +334,14 @@ func _build_balustrades() -> void:
 func _spawn_wave_1_enemies() -> void:
 	var minion1 := SideQVEliteKnightClass.new()
 	minion1.name = "EliteAbyssalKnight_1"
-	minion1.position = Vector3(4.0, 0.1, -1.8)
+	minion1.position = Vector3(4.0, 0.1, 0.0)
 	add_child(minion1)
 	enemies.append(minion1)
 	minion1.enemy_defeated.connect(_on_enemy_defeated)
 
 	var minion2 := SideQVEliteKnightClass.new()
 	minion2.name = "EliteAbyssalKnight_2"
-	minion2.position = Vector3(7.5, 0.1, 1.8)
+	minion2.position = Vector3(8.5, 0.1, 0.0)
 	add_child(minion2)
 	enemies.append(minion2)
 	minion2.enemy_defeated.connect(_on_enemy_defeated)

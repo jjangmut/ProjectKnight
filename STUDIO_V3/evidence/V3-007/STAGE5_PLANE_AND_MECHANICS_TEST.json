@@ -1,0 +1,13 @@
+{
+  "all_checks_passed": true,
+  "boss_initial_hp_38": true,
+  "boss_spawn_z_zero": true,
+  "dark_crescent_wave_mechanics_and_z_verified": true,
+  "hazard_cleanup_on_defeat": true,
+  "judgment_storm_mechanics_and_z_verified": true,
+  "minion_initial_hp_6": true,
+  "minion_spawns_z_zero": true,
+  "phase2_transition_hp_19": true,
+  "shadow_blink_strike_mechanics_and_z_verified": true,
+  "stage5_entry_verified": true
+}

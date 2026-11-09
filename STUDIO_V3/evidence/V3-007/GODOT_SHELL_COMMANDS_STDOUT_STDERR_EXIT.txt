@@ -1,0 +1,117 @@
+================================================================================
+ProjectKnight V3-007 Stage 5 Silent Citadel Real Play & Regression Shell Transcript
+Timestamp: 2026-11-09 12:28:00 +09:00
+Host OS: Windows 11 / PowerShell
+Godot Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+Project Path: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game
+Rendering Engine: GL Compatibility (1280x720 windowed)
+Target: Godot 4.7.2 stable / Desktop Real-Input Playthrough & Full 5-Stage Campaign Completion
+Scope Limitation: Android Physical Device NOT_TESTED; Commercial Release NOT_APPROVED
+================================================================================
+
+>>> COMMAND 1: STAGE 5 OPTION C PLANE & MECHANICS ISOLATED FIXTURE
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_007_stage5_arbiter_and_plane.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[V3-007 PLANE TEST] Initializing Stage 5 isolated arbiter, mechanics & plane test...
+[V3-007 PLANE TEST] Knight 1 spawn Z: 0.0000, Knight 2 spawn Z: 0.0000
+[V3-007 PLANE TEST] Abyssal Arbiter spawned: HP=38/38, Poise=18 at Z=0.0000
+[V3-007 PLANE TEST] dark_crescent_fired signal received!
+[V3-007 PLANE TEST] Dark Crescent Wave mechanics and Z=0 verified: fired=true
+[V3-007 PLANE TEST] teleported signal received at: (-10.2, 0.1, 0.0)
+[V3-007 PLANE TEST] Shadow Blink Strike and Parry Stun clash verified: teleported=true
+[V3-007 PLANE TEST] phase_changed signal received: 2
+[V3-007 PLANE TEST] judgment_storm_triggered signal received!
+[V3-007 PLANE TEST] Boss Phase 2 transition confirmed: signal=true, aura=visible
+[V3-007 PLANE TEST] Judgment Storm mechanics and Z=0 verified: emitted=true
+[V3-007 PLANE TEST] boss_defeated signal received!
+[V3-007 PLANE TEST] ALL CHECKS PASSED. Written to D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-007/STAGE5_PLANE_AND_MECHANICS_TEST.json
+
+
+>>> COMMAND 2: FULL 5-STAGE CONTINUOUS REAL-INPUT END-TO-END VERIFICATION
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_007_stage5_real_input_e2e.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[V3-007 E2E] Initializing Stage 5 real input-only E2E playthrough test...
+[0.000s] TitleScreen successfully instantiated into root scene tree.
+[0.417s] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.433s] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[0.483s] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[1.788s] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[5.643s] Stage 1 Commander boss defeated naturally!
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+[7.628s] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[7.645s] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[9.445s] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[11.183s] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[14.837s] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+>>> [CAMPAIGN] Stage 2 CLEARED! <<<
+[16.839s] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[16.856s] Stage 2 Cleared verified! Awaiting Stage 3 Ruined Crossbow Bastion transition...
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+>>> [CAMPAIGN] Loaded Stage 3: 무너진 성벽 (Ruined Crossbow Bastion) <<<
+[18.656s] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded.
+[20.210s] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated naturally! Advancing to Crossbow Commander...
+>>> [STAGE 3] Wave 2 Started: SideQVCrossbowCommander Emerged! <<<
+[23.546s] Crossbow Commander defeated naturally! Awaiting Stage 3 clear...
+>>> [CAMPAIGN] Stage 3 CLEARED! <<<
+[25.548s] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[25.564s] Stage 3 Cleared verified! Awaiting Stage 4 Titan Stone Sanctuary transition...
+>>> [CAMPAIGN] Loaded Stage 4: 돌의 성소 (Titan Stone Sanctuary) <<<
+[27.364s] Stage 4 Natural Entry Verified: Titan Stone Sanctuary loaded. Player at X=-8.00, Z=0.00
+[29.843s] Stage 4 Wave 1 Cleared: Both Heavy Golems defeated! Advancing to Golem Guardian...
+[33.305s] Golem Guardian defeated naturally! Awaiting Stage 4 clear...
+>>> [CAMPAIGN] Stage 4 CLEARED! <<<
+[35.305s] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+[35.322s] Stage 4 Cleared signal verified! Awaiting Stage 5 Silent Citadel transition...
+>>> [CAMPAIGN] Loaded Stage 5: 침묵의 성채 (Silent Abyssal Citadel) <<<
+[37.122s] Stage 5 Natural Entry Verified: Silent Citadel active. Player at X=-8.00, Z=0.00
+[38.509s] [OBSERVATION] EliteAbyssalKnight_1 defeated callback received! instance_id=120275863195, count=1
+[39.148s] [OBSERVATION] EliteAbyssalKnight_2 defeated callback received! instance_id=120561075855, count=1
+[39.150s] Stage 5 Wave 1 Cleared: Both Elite Knights defeated! Unique IDs: [120275863195, 120561075855]. Advancing to Abyssal Arbiter...
+[40.166s] Stage 5 Boss Spawn Verified: Abyssal Arbiter active with HP=38/38, Poise=18 at X=12.12, Z=0.00
+[42.316s] [OBSERVATION] Arbiter phase_changed callback received! phase=2 count=1
+[42.316s] [OBSERVATION] Arbiter judgment_storm_triggered
+[46.077s] [OBSERVATION] Arbiter boss_defeated callback received! count=1
+[46.079s] Abyssal Arbiter HP progress: 0/38 (Phase 2)
+[46.079s] Abyssal Arbiter defeated naturally with real inputs! HP reached 0
+>>> [CAMPAIGN] Stage 5 CLEARED! <<<
+>>> [CAMPAIGN] CONGRATULATIONS! ALL 5 STAGES CLEARED! <<<
+[48.078s] [OBSERVATION] SideQVCampaign.campaign_completed callback received! count=1
+[48.078s] [OBSERVATION] Stage 5 stage_cleared callback received! count=1
+[48.095s] Stage 5 Cleared signal verified (count=1)! Awaiting Full Campaign Victory...
+[48.111s] CAMPAIGN VICTORY VERIFIED! CampaignVictoryPanel found and visible.
+[48.128s] >>> ALL REAL INPUT E2E CHECKS PASSED: CAMPAIGN VICTORY CONFIRMED! <<<
+
+
+>>> COMMAND 3: REGRESSION — REAL MOBILE TOUCH EVENT ROUTING
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_real_touch_ui.gd"
+Exit Code: 0
+
+
+>>> COMMAND 4: REGRESSION — STAGE 1 BOSS CHARGE TIMING
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_boss_charge_timing.gd"
+Exit Code: 0
+
+
+>>> COMMAND 5: REGRESSION — STAGE 2 BEASTWOOD GORGE PLANE & COMBAT
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_004_stage2_plane_and_combat.gd"
+Exit Code: 0
+
+
+>>> COMMAND 6: REGRESSION — STAGE 3 CROSSBOW BASTION PLANE & PROJECTILES
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_005_stage3_projectile_and_plane.gd"
+Exit Code: 0
+
+
+>>> COMMAND 7: REGRESSION — STAGE 4 TITAN STONE SANCTUARY PLANE & MECHANICS
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_006_stage4_golem_and_plane.gd"
+Exit Code: 0
