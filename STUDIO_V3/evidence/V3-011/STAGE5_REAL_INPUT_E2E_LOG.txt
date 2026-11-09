@@ -1,0 +1,68 @@
+[0.000s] TitleScreen successfully instantiated into root scene tree.
+[0.417s] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s] Captured high-res viewport screenshot: 01_title_deploy_click.png (1280x720)
+[0.433s] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+[0.467s] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[1.774s] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[5.627s] Stage 1 Commander boss defeated naturally!
+[7.612s] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[7.629s] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+[9.446s] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[11.188s] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[14.845s] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+[16.849s] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[16.866s] Stage 2 Cleared verified! Awaiting Stage 3 Ruined Crossbow Bastion transition...
+[18.666s] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded.
+[20.220s] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated naturally! Advancing to Crossbow Commander...
+[23.925s] Crossbow Commander defeated naturally! Awaiting Stage 3 clear...
+[25.927s] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[25.944s] Stage 3 Cleared verified! Awaiting Stage 4 Titan Stone Sanctuary transition...
+[27.761s] Stage 4 Natural Entry Verified: Titan Stone Sanctuary loaded. Player at X=-8.00, Z=0.00
+[30.243s] Stage 4 Wave 1 Cleared: Both Heavy Golems defeated! Advancing to Golem Guardian...
+[33.721s] Golem Guardian defeated naturally! Awaiting Stage 4 clear...
+[35.721s] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+[35.738s] Stage 4 Cleared signal verified! Awaiting Stage 5 Silent Citadel transition...
+[37.538s] Stage 5 Natural Entry Verified: Silent Citadel active. Player at X=-8.00, Z=0.00
+[37.538s] Captured high-res viewport screenshot: 01_stage5_natural_entry.png (1280x720)
+[37.671s] Captured high-res viewport screenshot: 02_stage5_both_elite_knights.png (1280x720)
+[38.925s] [OBSERVATION] EliteAbyssalKnight_1 defeated callback received! instance_id=126667982531, count=1
+[39.564s] [OBSERVATION] EliteAbyssalKnight_2 defeated callback received! instance_id=126953195541, count=1
+[39.566s] Stage 5 Wave 1 Cleared: Both Elite Knights defeated! Unique IDs: [126667982531, 126953195541]. Advancing to Abyssal Arbiter...
+[40.582s] Stage 5 Boss Spawn Verified: Abyssal Arbiter active with HP=38/38, Poise=18 at X=12.12, Z=0.00
+[40.582s] Captured high-res viewport screenshot: 03_stage5_boss_spawn.png (1280x720)
+[40.899s] [OBSERVATION] Arbiter dark_crescent_fired
+[42.001s] Abyssal Arbiter HP progress: 36/38 (Phase 1)
+[42.236s] Abyssal Arbiter HP progress: 34/38 (Phase 1)
+[42.471s] Abyssal Arbiter HP progress: 30/38 (Phase 1)
+[42.874s] Abyssal Arbiter HP progress: 28/38 (Phase 1)
+[43.109s] Abyssal Arbiter HP progress: 26/38 (Phase 1)
+[43.343s] Abyssal Arbiter HP progress: 22/38 (Phase 1)
+[43.581s] Abyssal Arbiter HP progress: 20/38 (Phase 1)
+[43.814s] [OBSERVATION] Arbiter phase_changed callback received! phase=2 count=1
+[43.814s] [OBSERVATION] Arbiter judgment_storm_triggered
+[43.816s] Abyssal Arbiter HP progress: 17/38 (Phase 2)
+[44.985s] Abyssal Arbiter HP progress: 15/38 (Phase 2)
+[45.785s] Abyssal Arbiter HP progress: 13/38 (Phase 2)
+[46.585s] Abyssal Arbiter HP progress: 11/38 (Phase 2)
+[46.637s] Abyssal Arbiter HP progress: 9/38 (Phase 2)
+[46.872s] Abyssal Arbiter HP progress: 7/38 (Phase 2)
+[47.106s] Abyssal Arbiter HP progress: 3/38 (Phase 2)
+[47.842s] [OBSERVATION] Arbiter boss_defeated callback received! count=1
+[47.843s] Abyssal Arbiter HP progress: 0/38 (Phase 2)
+[47.843s] Abyssal Arbiter defeated naturally with real inputs! HP reached 0
+[47.843s] Captured high-res viewport screenshot: 09_stage5_boss_natural_defeat.png (1280x720)
+[49.851s] [OBSERVATION] SideQVCampaign.campaign_completed callback received! count=1
+[49.851s] [OBSERVATION] Stage 5 stage_cleared callback received! count=1
+[49.867s] Stage 5 Cleared signal verified (count=1)! Awaiting Full Campaign Victory...
+[49.884s] CAMPAIGN VICTORY VERIFIED! CampaignVictoryPanel found with Replay & Title buttons.
+[49.884s] Captured high-res viewport screenshot: 10_stage5_clear_campaign_victory.png (1280x720)
+[49.901s] Victory screenshot captured. Advancing to Phase 23: Return-to-Title & Second Deploy smoke...
+[49.917s] Clicking ReturnTitleButton on CampaignVictoryPanel...
+[50.034s] RETURN TO TITLE VERIFIED! TitleScreen node instantiated in root.
+[50.067s] Captured high-res viewport screenshot: 11_return_to_title_screen.png (1280x720)
+[50.084s] Clicking Deploy (btn_new_game) on TitleScreen for second campaign start...
+[50.101s] SECOND CAMPAIGN START VERIFIED! SideQVCampaign reloaded cleanly from TitleScreen.
+[50.117s] Captured high-res viewport screenshot: 12_second_campaign_start.png (1280x720)
+[50.134s] >>> ALL REAL INPUT E2E CHECKS PASSED: CAMPAIGN VICTORY CONFIRMED! <<<

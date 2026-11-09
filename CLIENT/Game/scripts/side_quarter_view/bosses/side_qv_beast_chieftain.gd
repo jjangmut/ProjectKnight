@@ -274,6 +274,7 @@ func _pick_next_pattern(dist_x: float, dir_x: float) -> void:
 # 패턴 1: 맹수 도약 덮치기 (Pounce Leap - Option C 2D Parabolic Jump)
 # ==============================================================================
 func _show_danger_telegraph(duration: float = 0.35) -> void:
+	AudioManager.play("boss_tell_beast")
 	var p := get_parent()
 	if p == null:
 		return

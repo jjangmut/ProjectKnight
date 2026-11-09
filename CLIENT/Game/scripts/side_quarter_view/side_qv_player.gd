@@ -421,6 +421,7 @@ func start_dash() -> void:
 	velocity.z = 0.0
 	_set_state(State.DASH)
 	_spawn_dash_ghost()
+	AudioManager.play("player_dash")
 	if has_engraving("thunder_step"):
 		_spawn_thunder_step_spark(global_position + Vector3(0.0, 0.7, 0.0))
 
@@ -515,6 +516,7 @@ func _execute_dive_slam_landing() -> void:
 	if p != null and "camera" in p and p.camera != null and p.camera.has_method("add_trauma"):
 		p.camera.add_trauma(0.42)
 	GameFeelManager.hit_stop_3d(0.06, 0.05)
+	AudioManager.play("dive_slam_impact")
 	dive_slammed.emit(self, hit_count)
 
 
@@ -603,6 +605,15 @@ func start_attack() -> void:
 	attack_cooldown = 0.22
 	attack_duration_remaining = ATTACK_TOTAL_DURATION
 
+	# Distinct combat swing SFX per combo step
+	match combo_step:
+		1:
+			AudioManager.play("player_slash_1")
+		2:
+			AudioManager.play("player_slash_2")
+		3:
+			AudioManager.play("player_slash_3")
+
 	# Symmetric Aligned 2D Attack Animation (Starts at windup frame 0)
 	sprite_3d.texture = TexAttack
 	sprite_3d.hframes = 2
@@ -677,6 +688,10 @@ func _check_melee_hit() -> void:
 			enemy_hit.emit(target_node, dmg, was_counter)
 
 	if not hit_targets.is_empty():
+		if was_counter:
+			AudioManager.play("enemy_hit_counter")
+		else:
+			AudioManager.play("enemy_hit_impact")
 		var p := get_parent()
 		if was_counter:
 			GameFeelManager.hit_stop_3d(0.08, 0.04)
@@ -787,6 +802,7 @@ func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) 
 			if attacker != null and attacker.has_method("apply_parry_stun"):
 				attacker.apply_parry_stun(2.0)
 			_trigger_parry_flash()
+			AudioManager.play("parry_clash")
 			GameFeelManager.damage_popup_3d(get_parent(), global_position + Vector3(0.0, 1.6, 0.0), "PARRIED!", Color(0.2, 1.0, 1.4), true)
 
 			# Runic Engraving: Aegis Reflect (Reflects 2 instant damage back to attacker)
@@ -804,6 +820,7 @@ func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) 
 			invuln_timer = HIT_INVULN_DURATION * 0.8
 			emit_signal("hp_changed", current_hp, max_hp)
 			GameFeelManager.damage_popup_3d(get_parent(), global_position + Vector3(0.0, 1.4, 0.0), "GUARD -%d" % reduced, Color(0.9, 0.9, 0.5), false)
+			AudioManager.play("guard_block")
 			velocity = Vector3.ZERO
 			if current_hp <= 0:
 				_enter_death_state()
@@ -815,6 +832,7 @@ func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) 
 	hurt_timer = HURT_DURATION
 	emit_signal("hp_changed", current_hp, max_hp)
 	GameFeelManager.damage_popup_3d(get_parent(), global_position + Vector3(0.0, 1.4, 0.0), "-%d" % amount, Color(1.0, 0.25, 0.25), false)
+	AudioManager.play("player_hurt")
 	velocity = Vector3.ZERO
 
 	if current_hp <= 0:

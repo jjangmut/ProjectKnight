@@ -592,6 +592,7 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 	# 클리어 팡파르 연출
 	var clear_lbl := Label.new()
 	clear_lbl.text = "STAGE CLEARED!\n+ %d SOUL SHARDS" % earned_shards
+	AudioManager.play("stage_clear_stinger")
 	clear_lbl.position = Vector2(440, 230)
 	clear_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	clear_lbl.add_theme_font_size_override("font_size", 38)

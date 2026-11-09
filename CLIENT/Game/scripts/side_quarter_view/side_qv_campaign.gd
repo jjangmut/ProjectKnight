@@ -111,6 +111,7 @@ func _on_stage_failed() -> void:
 
 func _show_campaign_victory() -> void:
 	print(">>> [CAMPAIGN] CONGRATULATIONS! ALL 5 STAGES CLEARED! <<<")
+	AudioManager.play("campaign_victory_fanfare")
 	campaign_completed.emit()
 
 	var vic_panel := PanelContainer.new()
@@ -160,6 +161,7 @@ func _show_campaign_victory() -> void:
 	btn_replay.focus_mode = Control.FOCUS_ALL
 	btn_replay.pressed.connect(func():
 		print(">>> [CAMPAIGN] Replay Campaign Button Pressed: Reloading Stage 1... <<<")
+		AudioManager.stop_sfx()
 		if is_instance_valid(vic_panel):
 			vic_panel.queue_free()
 		cleared_stages = [false, false, false, false, false]
@@ -176,6 +178,8 @@ func _show_campaign_victory() -> void:
 	btn_title.focus_mode = Control.FOCUS_ALL
 	btn_title.pressed.connect(func():
 		print(">>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<")
+
+		AudioManager.reset_all()
 		if is_instance_valid(vic_panel):
 			vic_panel.queue_free()
 		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")

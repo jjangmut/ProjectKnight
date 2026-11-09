@@ -253,6 +253,7 @@ func _execute_fan_volley() -> void:
 	# 1. 조준 텔레그래프 (Row 2 Frame 8: 석궁 조준 자세)
 	sprite_3d.texture = BossTextureMain
 	sprite_3d.frame = 8
+	AudioManager.play("boss_tell_crossbow")
 	var aim_marker := _create_aim_line()
 
 	await get_tree().create_timer(0.40).timeout
@@ -367,6 +368,7 @@ func _execute_caltrop_trap() -> void:
 # 패턴 4: 2페이즈 연사 폭풍 (Rapid Crossbow Barrage: 5연발 고속 점사)
 # ==============================================================================
 func _show_danger_telegraph(duration: float = 0.35) -> void:
+	AudioManager.play("boss_tell_crossbow")
 	var p := get_parent()
 	if p == null:
 		return
@@ -499,6 +501,7 @@ func _spawn_bolt(dir: Vector3, spd: float, dmg: int, explosive: bool) -> void:
 	spawn_pos.z = 0.0
 	dir.z = 0.0
 	dir = dir.normalized()
+	AudioManager.play("boss_crossbow_fire")
 	get_parent().add_child(bolt)
 	bolt.launch(spawn_pos, dir, self, spd, dmg, explosive)
 

@@ -386,6 +386,7 @@ func _pick_next_pattern(dist_x: float) -> void:
 
 
 func _show_danger_telegraph(duration: float = 0.35) -> void:
+	AudioManager.play("boss_tell_golem")
 	var p := get_parent()
 	if p == null:
 		return
@@ -660,6 +661,8 @@ func _execute_quake_fissure() -> void:
 	fissure_origin.z = 0.0
 
 	# Create Linear Molten Lava Fissure tearing across floor in X plane
+	AudioManager.play("boss_golem_fissure")
+
 	_spawn_molten_fissure_line(fissure_origin, facing_dir_x)
 	_shake_camera(0.65)
 

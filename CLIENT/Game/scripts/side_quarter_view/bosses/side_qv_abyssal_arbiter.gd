@@ -367,6 +367,8 @@ func _execute_dark_crescent_wave() -> void:
 	var wave := DarkCrescentWaveClass.new()
 	get_parent().add_child(wave)
 	wave.initialize(spawn_pos, fire_dir, self, wave_damage)
+	AudioManager.play("boss_abyssal_strike")
+
 	dark_crescent_fired.emit(wave)
 
 	# Slight recoil step
@@ -590,6 +592,7 @@ func _on_attack_body_entered(body: Node3D) -> void:
 			body.receive_incoming_attack(dmg, self, Vector3(facing_dir_x, 0.0, 0.0))
 
 func _show_danger_telegraph(duration: float = 0.35, cue_text: String = "!") -> void:
+	AudioManager.play("boss_tell_abyssal")
 	var p := get_parent()
 	if p == null:
 		return

@@ -1,0 +1,11 @@
+{
+  "all_checks_passed": true,
+  "audio_combat_sfx_wired": true,
+  "boss_telegraph_tell_audio_wired": true,
+  "campaign_victory_fanfare_wired": true,
+  "just_parry_clash_audio_wired": true,
+  "narrow_1024x720_responsive_verified": true,
+  "option_c_plane_z_lock_pass": true,
+  "slash_swing_distinct_combos": true,
+  "stage_clear_stinger_wired": true
+}

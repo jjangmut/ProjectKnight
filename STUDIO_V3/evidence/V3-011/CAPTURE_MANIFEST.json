@@ -1,0 +1,97 @@
+[
+  {
+    "file": "01_stage5_natural_entry.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 01_stage5_natural_entry.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "01_title_deploy_click.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 01_title_deploy_click.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "02_stage1_combat_audio_slash.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 02_stage1_combat_audio_slash.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "02_stage5_both_elite_knights.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 02_stage5_both_elite_knights.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "03_stage5_boss_spawn.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 03_stage5_boss_spawn.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "07_just_parry_clash_visual_timing.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 07_just_parry_clash_visual_timing.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "08_stage_clear_stinger_banner.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 08_stage_clear_stinger_banner.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "09_stage5_boss_natural_defeat.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 09_stage5_boss_natural_defeat.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "10_narrow_1024_onboarding_and_deck.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 10_narrow_1024_onboarding_and_deck.png",
+    "resolution": "1024x720"
+  },
+  {
+    "file": "10_stage5_clear_campaign_victory.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 10_stage5_clear_campaign_victory.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "11_return_to_title_screen.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 11_return_to_title_screen.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "12_second_campaign_start.png",
+    "description": "V3-011 Audio & Combat Visual Capture: 12_second_campaign_start.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "after\\after_01_combat_audio_slash_timing.png",
+    "description": "V3-011 Audio & Combat Visual Capture: after\\after_01_combat_audio_slash_timing.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "after\\after_02_combo_slash_and_parry_timing.png",
+    "description": "V3-011 Audio & Combat Visual Capture: after\\after_02_combo_slash_and_parry_timing.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "after\\after_03_narrow_1024_viewport_responsive.png",
+    "description": "V3-011 Audio & Combat Visual Capture: after\\after_03_narrow_1024_viewport_responsive.png",
+    "resolution": "1024x720"
+  },
+  {
+    "file": "after\\after_04_stage_clear_stinger_banner.png",
+    "description": "V3-011 Audio & Combat Visual Capture: after\\after_04_stage_clear_stinger_banner.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "before\\before_01_silent_stage1_combat.png",
+    "description": "V3-011 Audio & Combat Visual Capture: before\\before_01_silent_stage1_combat.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "before\\before_02_silent_boss_telegraph.png",
+    "description": "V3-011 Audio & Combat Visual Capture: before\\before_02_silent_boss_telegraph.png",
+    "resolution": "1280x720"
+  },
+  {
+    "file": "before\\before_03_silent_stage_clear.png",
+    "description": "V3-011 Audio & Combat Visual Capture: before\\before_03_silent_stage_clear.png",
+    "resolution": "1280x720"
+  }
+]

@@ -1,0 +1,167 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "info": "",
+      "name": "manager_instantiated",
+      "status": "PASS"
+    },
+    {
+      "info": "Pool size: 16",
+      "name": "pool_size_minimum_16",
+      "status": "PASS"
+    },
+    {
+      "info": "Missing: []",
+      "name": "all_required_audio_streams_registered",
+      "status": "PASS"
+    },
+    {
+      "info": "Total streams: 31",
+      "name": "total_streams_count_adequate",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "slash_combo1_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "slash_combo2_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "slash_combo3_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "normal_hit_impact_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "counter_hit_impact_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "guard_block_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "parry_clash_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "dash_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "dive_slam_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "player_hurt_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage2_beast_tell_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage3_crossbow_tell_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage3_crossbow_fire_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage4_golem_tell_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage4_golem_fissure_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage5_abyssal_tell_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage5_abyssal_strike_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "stage_clear_stinger_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "campaign_victory_fanfare_fired",
+      "status": "PASS"
+    },
+    {
+      "info": "Recorded calls: 1 (expected 1 due to 35ms throttle)",
+      "name": "rapid_burst_throttled",
+      "status": "PASS"
+    },
+    {
+      "info": "Active count: 1",
+      "name": "active_concurrency_capped",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "all_sfx_stopped_cleanly",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "event_history_cleared",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "event_counts_cleared",
+      "status": "PASS"
+    },
+    {
+      "info": "",
+      "name": "master_bus_valid",
+      "status": "PASS"
+    },
+    {
+      "info": "Volume DB: -1.94",
+      "name": "master_bus_attenuation_applied",
+      "status": "PASS"
+    },
+    {
+      "info": "Restored DB: 0.00",
+      "name": "master_bus_restored_safely",
+      "status": "PASS"
+    }
+  ],
+  "max_concurrent_per_sound": 3,
+  "min_retrigger_interval_sec": 0.035,
+  "passed_checks": 31,
+  "pool_size": 16,
+  "task_id": "V3-011",
+  "timestamp": "2026-11-09T10:15:02",
+  "total_checks": 31
+}
