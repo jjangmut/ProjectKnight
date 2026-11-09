@@ -1,0 +1,51 @@
+[t=0.000s, f=0] TitleScreen successfully instantiated into root scene tree.
+[t=0.417s, f=25] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[t=0.417s, f=25] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/01_title_deploy_click.png
+[t=0.433s, f=26] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[t=0.433s, f=26] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[t=0.450s, f=27] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+[t=0.483s, f=29] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[t=1.788s, f=110] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[t=6.158s, f=385] Stage 1 Commander boss defeated naturally!
+[t=8.144s, f=505] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[t=8.160s, f=506] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+[t=9.960s, f=614] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[t=11.699s, f=721] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[t=24.606s, f=1514] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+[t=26.609s, f=1638] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[t=26.626s, f=1639] Stage 2 Cleared verified! Awaiting Stage 3 Ruined Crossbow Bastion transition...
+[t=28.426s, f=1747] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded.
+[t=29.980s, f=1842] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated naturally! Advancing to Crossbow Commander...
+[t=34.754s, f=2143] Crossbow Commander defeated naturally! Awaiting Stage 3 clear...
+[t=36.756s, f=2265] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[t=36.772s, f=2266] Stage 3 Cleared verified! Awaiting Stage 4 Titan Stone Sanctuary transition...
+[t=38.572s, f=2374] Stage 4 Natural Entry Verified: Titan Stone Sanctuary loaded. Player at X=-8.00, Z=0.00
+[t=38.572s, f=2374] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/01_stage4_natural_entry.png
+[t=38.706s, f=2382] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/02_stage4_both_heavy_golems.png
+[t=40.060s, f=2465] [OBSERVATION] HeavyGolem_1 enemy_defeated callback received! count=1
+[t=41.068s, f=2531] [OBSERVATION] HeavyGolem_2 enemy_defeated callback received! count=1
+[t=41.068s, f=2531] [OBSERVATION] HeavyGolem_2 enemy_defeated callback received! count=2
+[t=41.069s, f=2532] Stage 4 Wave 1 Cleared: Both Heavy Golems defeated! Kills: g1=1, g2=2. Advancing to Golem Guardian...
+[t=41.855s, f=2582] Stage 4 Boss Spawn Verified: Golem Guardian active with HP=34/34 at X=12.03, Z=0.00
+[t=41.855s, f=2582] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/03_stage4_boss_spawn.png
+[t=42.190s, f=2603] Golem Guardian HP progress: 32/34 (Phase 1)
+[t=42.426s, f=2618] Golem Guardian HP progress: 30/34 (Phase 1)
+[t=42.660s, f=2633] Golem Guardian HP progress: 26/34 (Phase 1)
+[t=42.897s, f=2650] Golem Guardian HP progress: 24/34 (Phase 1)
+[t=43.047s, f=2659] [OBSERVATION] boss.attack_performed: SPINNING_LARIAT
+[t=43.133s, f=2665] Golem Guardian HP progress: 22/34 (Phase 1)
+[t=43.367s, f=2680] Golem Guardian HP progress: 18/34 (Phase 1)
+[t=43.602s, f=2696] [OBSERVATION] boss.phase_changed callback received! phase=2 count=1
+[t=43.604s, f=2697] Golem Guardian HP progress: 15/34 (Phase 2)
+[t=43.840s, f=2712] Golem Guardian HP progress: 12/34 (Phase 2)
+[t=44.074s, f=2727] Golem Guardian HP progress: 6/34 (Phase 2)
+[t=44.311s, f=2744] Golem Guardian HP progress: 3/34 (Phase 2)
+[t=44.545s, f=2758] [OBSERVATION] boss.boss_defeated callback received! count=1
+[t=44.547s, f=2759] Golem Guardian HP progress: 0/34 (Phase 2)
+[t=44.547s, f=2759] Golem Guardian defeated naturally with real inputs! HP reached 0
+[t=44.547s, f=2759] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/10_stage4_boss_natural_defeat.png
+[t=46.546s, f=2886] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+[t=46.563s, f=2887] Stage 4 Cleared signal verified (count=1)! Awaiting Stage 5 transition...
+[t=48.363s, f=2995] Stage 5 Transition Verified: Loaded Stage 5 (SideQVStage5)
+[t=48.363s, f=2995] [CAPTURE] Saved synchronized capture: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/CLIENT/Game/../../STUDIO_V3/evidence/V3-006/captures/11_stage4_clear_stage5_transition.png
+[t=48.379s, f=2996] >>> ALL CHECKS PASSED: Real Engine-Input E2E Playthrough Title -> Stage 1 -> Stage 2 -> Stage 3 -> Stage 4 -> Stage 5 Verified! <<<

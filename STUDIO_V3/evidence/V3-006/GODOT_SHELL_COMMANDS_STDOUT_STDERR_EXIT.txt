@@ -1,0 +1,138 @@
+================================================================================
+ProjectKnight V3-006 Stage 4 Stone Sanctuary Real Play & Regression Shell Transcript
+Timestamp: 2026-11-09 10:11:21 +09:00
+Host OS: Windows 11 / PowerShell
+Godot Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+Project Path: D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game
+Rendering Engine: GL Compatibility (1280x720 windowed)
+Target: Godot 4.7.2 stable / Desktop Real-Input Playthrough
+Scope Limitation: Android Physical Device NOT_TESTED; Commercial Release NOT_APPROVED
+================================================================================
+
+>>> COMMAND 1: REGRESSION — REAL MOBILE TOUCH EVENT ROUTING & OWNERSHIP TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_real_touch_ui.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[t=3.067s, step=20] >>> ALL CHECKS PASSED: Real Engine-Routed Touch & Multitouch Verification <<<
+  Strike Button Touch: PASS
+  Leap Button Touch: PASS
+  Parry Button Touch: PASS
+  Dash Button Touch: PASS
+  Multi-Touch Move+Attack (rel 0 then 1): PASS
+  Multi-Touch Move+Jump (rel 1 then 0): PASS
+  Release Safety Zero Stuck: PASS
+  Keyboard/Touch Ownership: PASS (Scope: SIMULATED_KEY_ROUTE_ONLY)
+
+
+>>> COMMAND 2: REGRESSION — STAGE 1 BOSS CHARGE TIMING AND WINDUP
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_003_boss_charge_timing.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[BOSS TIMING TEST] >>> PASSED <<<
+  Windup Start: 0.0833s | Motion Start: 0.5167s | Measured Windup: 0.4333s (Requirement: >= 0.42s)
+  Max Windup Displacement: 0.000000m (Requirement: ~0.0m)
+  Active Charge Motion & Hitbox Engagement: VERIFIED
+  Parry Stun Cancellation & Hitbox Cleanup: VERIFIED
+
+
+>>> COMMAND 3: REGRESSION — STAGE 2 ISOLATED PLANE & MECHANICS TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_004_stage2_plane_and_combat.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[V3-004 PLANE TEST] Minion 1 spawn Z: 0.0000, Minion 2 spawn Z: 0.0000
+[V3-004 PLANE TEST] Boss Chieftain spawned: HP=28/28 at Z=0.0000
+[V3-004 PLANE TEST] Boss leap landed safely. Max airborne |vz|: 0.0000
+[V3-004 PLANE TEST] phase_changed signal received: 2
+>>> [V3-004 PLANE TEST] ALL CHECKS PASSED: Stage 2 Option C Plane & Boss Mechanics <<<
+
+
+>>> COMMAND 4: REGRESSION — STAGE 3 PROJECTILE & PLANE TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_005_stage3_projectile_and_plane.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[V3-005 PLANE TEST] Minion 1 spawn Z: 0.0000, Minion 2 spawn Z: 0.0000
+[V3-005 PLANE TEST] Boss Crossbow Commander spawned: HP=30/30 at Z=0.0000
+[V3-005 PLANE TEST] Fan Volley 3-bolt spread verified on Z=0.0 plane (count=3)
+[V3-005 PLANE TEST] Boss backstep landed safely. Max airborne |vz|: 0.0000
+[V3-005 PLANE TEST] Caltrop Traps in-lane placement verified (count=4, all Z=0.0)
+[V3-005 PLANE TEST] Caltrop slow confirmed: 8.40 -> 5.04 (recovery scheduled)
+[V3-005 PLANE TEST] Boss Phase 2 transition confirmed: signal=true, aura=visible
+[V3-005 PLANE TEST] Rapid Barrage 5 bolts verified on Z=0.0 plane (count=5)
+>>> [V3-005 PLANE TEST] ALL CHECKS PASSED: Stage 3 Option C Plane, Projectiles, Traps & Guard <<<
+
+
+>>> COMMAND 5: STAGE 4 ISOLATED GOLEM, GUARDIAN MECHANICS & HAZARDS TEST
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_006_stage4_golem_and_plane.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[V3-006 PLANE TEST] Initializing Stage 4 isolated golem, boss mechanics & plane test...
+[V3-006 PLANE TEST] Golem 1 spawn Z: 0.0000, Golem 2 spawn Z: 0.0000
+[V3-006 PLANE TEST] Golem Guardian spawned: HP=34/34, Poise=16 at Z=0.0000
+[V3-006 PLANE TEST] attack_performed signal received: GROUND_SLAM
+[V3-006 PLANE TEST] Ground Slam mechanics and Z=0 verified: emitted=true
+[V3-006 PLANE TEST] attack_performed signal received: SPINNING_LARIAT
+[V3-006 PLANE TEST] Spinning Lariat and Parry Stun clash verified: emitted=true
+[V3-006 PLANE TEST] phase_changed signal received: 2
+[V3-006 PLANE TEST] Boss Phase 2 transition confirmed: signal=true, aura=visible
+[V3-006 PLANE TEST] attack_performed signal received: QUAKE_FISSURE
+[V3-006 PLANE TEST] Quake Fissure mechanics and Z=0 verified: emitted=true
+[V3-006 PLANE TEST] boss_defeated signal received!
+>>> [V3-006 PLANE TEST] ALL CHECKS PASSED: Stage 4 Option C Plane, Golems, Guardian & Hazards <<<
+
+
+>>> COMMAND 6: STAGE 4 FULL REAL-INPUT E2E CONTINUOUS PLAYTHROUGH
+Command Line: "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_006_stage4_real_input_e2e.gd"
+Exit Code: 0
+--- STDOUT ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[V3-006 E2E] Initializing Stage 4 real input-only E2E playthrough test...
+[t=0.000s, f=0] TitleScreen successfully instantiated into root scene tree.
+[t=0.417s, f=25] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[t=0.433s, f=26] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[t=0.450s, f=27] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[t=0.483s, f=29] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[t=1.788s, f=110] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[t=6.158s, f=385] Stage 1 Commander boss defeated naturally!
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+[t=8.144s, f=505] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[t=8.160s, f=506] Stage 1 Cleared verified! Awaiting Stage 2 Beastwood Gorge transition...
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[t=9.960s, f=614] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[t=11.699s, f=721] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[t=24.606s, f=1514] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+>>> [CAMPAIGN] Stage 2 CLEARED! <<<
+[t=26.609s, f=1638] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[t=26.626s, f=1639] Stage 2 Cleared verified! Awaiting Stage 3 Ruined Crossbow Bastion transition...
+>>> [CAMPAIGN] Loaded Stage 3: 무너진 성벽 (Ruined Crossbow Bastion) <<<
+[t=28.426s, f=1747] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded.
+[t=29.980s, f=1842] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated naturally! Advancing to Crossbow Commander...
+[t=34.754s, f=2143] Crossbow Commander defeated naturally! Awaiting Stage 3 clear...
+>>> [CAMPAIGN] Stage 3 CLEARED! <<<
+[t=36.756s, f=2265] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[t=36.772s, f=2266] Stage 3 Cleared verified! Awaiting Stage 4 Titan Stone Sanctuary transition...
+>>> [CAMPAIGN] Loaded Stage 4: 돌의 성소 (Titan Stone Sanctuary) <<<
+[t=38.572s, f=2374] Stage 4 Natural Entry Verified: Titan Stone Sanctuary loaded. Player at X=-8.00, Z=0.00
+[t=40.060s, f=2465] [OBSERVATION] HeavyGolem_1 enemy_defeated callback received! count=1
+[t=41.068s, f=2531] [OBSERVATION] HeavyGolem_2 enemy_defeated callback received! count=1
+[t=41.069s, f=2532] Stage 4 Wave 1 Cleared: Both Heavy Golems defeated! Kills: g1=1, g2=2. Advancing to Golem Guardian...
+[t=41.855s, f=2582] Stage 4 Boss Spawn Verified: Golem Guardian active with HP=34/34 at X=12.03, Z=0.00
+[t=43.047s, f=2659] [OBSERVATION] boss.attack_performed: SPINNING_LARIAT
+[t=43.602s, f=2696] [OBSERVATION] boss.phase_changed callback received! phase=2 count=1
+[t=44.545s, f=2758] [OBSERVATION] boss.boss_defeated callback received! count=1
+[t=44.547s, f=2759] Golem Guardian defeated naturally with real inputs! HP reached 0
+>>> [CAMPAIGN] Stage 4 CLEARED! <<<
+[t=46.546s, f=2886] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+[t=46.563s, f=2887] Stage 4 Cleared signal verified (count=1)! Awaiting Stage 5 transition...
+>>> [CAMPAIGN] Loaded Stage 5: 침묵의 성채 (Silent Abyssal Citadel) <<<
+[t=48.363s, f=2995] Stage 5 Transition Verified: Loaded Stage 5 (SideQVStage5)
+[t=48.379s, f=2996] >>> ALL CHECKS PASSED: Real Engine-Input E2E Playthrough Title -> Stage 1 -> Stage 2 -> Stage 3 -> Stage 4 -> Stage 5 Verified! <<<
+================================================================================

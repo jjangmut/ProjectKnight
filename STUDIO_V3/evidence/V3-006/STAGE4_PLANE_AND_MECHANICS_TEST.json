@@ -1,0 +1,13 @@
+{
+  "all_checks_passed": true,
+  "boss_initial_hp_34": true,
+  "boss_spawn_z_zero": true,
+  "ground_slam_mechanics_and_z_verified": true,
+  "hazard_cleanup_on_defeat": true,
+  "minion_initial_hp_8": true,
+  "minion_spawns_z_zero": true,
+  "phase2_transition_hp_17": true,
+  "quake_fissure_mechanics_and_z_verified": true,
+  "spinning_lariat_x_rush_and_parry_verified": true,
+  "stage4_entry_verified": true
+}

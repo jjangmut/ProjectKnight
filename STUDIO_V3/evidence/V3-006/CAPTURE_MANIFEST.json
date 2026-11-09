@@ -1,0 +1,98 @@
+[
+  {
+    "id": "01_title_deploy_click",
+    "file_name": "01_title_deploy_click.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/01_title_deploy_click.png",
+    "resolution": "1280x720",
+    "timestamp_s": 0.417,
+    "description": "Title screen Deploy UI button real mouse click dispatch"
+  },
+  {
+    "id": "01_stage4_natural_entry",
+    "file_name": "01_stage4_natural_entry.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/01_stage4_natural_entry.png",
+    "resolution": "1280x720",
+    "timestamp_s": 38.572,
+    "description": "Stage 4 Titan Stone Sanctuary natural entry after Stages 1-3 clears"
+  },
+  {
+    "id": "02_stage4_both_heavy_golems",
+    "file_name": "02_stage4_both_heavy_golems.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/02_stage4_both_heavy_golems.png",
+    "resolution": "1280x720",
+    "timestamp_s": 38.706,
+    "description": "Stage 4 Wave 1 two Heavy Golems spawned co-planar at Z=0.0"
+  },
+  {
+    "id": "03_stage4_boss_spawn",
+    "file_name": "03_stage4_boss_spawn.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/03_stage4_boss_spawn.png",
+    "resolution": "1280x720",
+    "timestamp_s": 41.855,
+    "description": "Colossal Golem Guardian boss natural emergence (HP 34/34, Poise 16) at Z=0.0"
+  },
+  {
+    "id": "04_stage4_ground_slam_windup",
+    "file_name": "04_stage4_ground_slam_windup.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/04_stage4_ground_slam_windup.png",
+    "resolution": "1280x720",
+    "timestamp_s": 1.45,
+    "description": "Ground Slam telegraph windup: glowing red floor ring + arms raised"
+  },
+  {
+    "id": "05_stage4_ground_slam_impact",
+    "file_name": "05_stage4_ground_slam_impact.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/05_stage4_ground_slam_impact.png",
+    "resolution": "1280x720",
+    "timestamp_s": 1.85,
+    "description": "Ground Slam impact: basalt rock shard eruption (Z<=0) and radial shockwave"
+  },
+  {
+    "id": "06_stage4_spinning_lariat_rush",
+    "file_name": "06_stage4_spinning_lariat_rush.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/06_stage4_spinning_lariat_rush.png",
+    "resolution": "1280x720",
+    "timestamp_s": 2.1,
+    "description": "Spinning Lariat high-speed horizontal rush along X axis with swirling dust"
+  },
+  {
+    "id": "07_stage4_parry_stun_clash",
+    "file_name": "07_stage4_parry_stun_clash.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/07_stage4_parry_stun_clash.png",
+    "resolution": "1280x720",
+    "timestamp_s": 2.35,
+    "description": "Just Parry clash halting Golem Guardian rush with 2.0s parry stun"
+  },
+  {
+    "id": "08_stage4_phase2_fissure_eruption",
+    "file_name": "08_stage4_phase2_fissure_eruption.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/08_stage4_phase2_fissure_eruption.png",
+    "resolution": "1280x720",
+    "timestamp_s": 2.85,
+    "description": "Phase 2 Quake Fissure: molten lava cracks tearing across floor at Z=0.0"
+  },
+  {
+    "id": "09_stage4_guardian_defeat",
+    "file_name": "09_stage4_guardian_defeat.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/09_stage4_guardian_defeat.png",
+    "resolution": "1280x720",
+    "timestamp_s": 3.2,
+    "description": "Golem Guardian boss defeat and complete hazard cleanup"
+  },
+  {
+    "id": "10_stage4_boss_natural_defeat",
+    "file_name": "10_stage4_boss_natural_defeat.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/10_stage4_boss_natural_defeat.png",
+    "resolution": "1280x720",
+    "timestamp_s": 44.547,
+    "description": "Continuous E2E Golem Guardian natural defeat (HP reduced from 34 to 0)"
+  },
+  {
+    "id": "11_stage4_clear_stage5_transition",
+    "file_name": "11_stage4_clear_stage5_transition.png",
+    "path": "STUDIO_V3/evidence/V3-006/captures/11_stage4_clear_stage5_transition.png",
+    "resolution": "1280x720",
+    "timestamp_s": 48.363,
+    "description": "Stage 4 Cleared fanfare and natural transition into Stage 5 (SideQVStage5)"
+  }
+]

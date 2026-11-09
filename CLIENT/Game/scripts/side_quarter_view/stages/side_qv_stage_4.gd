@@ -257,7 +257,7 @@ func _spawn_wave_1_enemies() -> void:
 	# 헤비 골렘 미니언 1
 	var golem1 = SideQVGolemMinionClass.new()
 	golem1.name = "HeavyGolem_1"
-	golem1.position = Vector3(4.0, 0.1, -1.2)
+	golem1.position = Vector3(4.0, 0.1, 0.0) # Option C: Z=0.0
 	golem1.enemy_defeated.connect(_on_enemy_defeated)
 	add_child(golem1)
 	enemies.append(golem1)
@@ -265,7 +265,7 @@ func _spawn_wave_1_enemies() -> void:
 	# 헤비 골렘 미니언 2
 	var golem2 = SideQVGolemMinionClass.new()
 	golem2.name = "HeavyGolem_2"
-	golem2.position = Vector3(8.5, 0.1, 1.2)
+	golem2.position = Vector3(8.5, 0.1, 0.0) # Option C: Z=0.0
 	golem2.enemy_defeated.connect(_on_enemy_defeated)
 	add_child(golem2)
 	enemies.append(golem2)
