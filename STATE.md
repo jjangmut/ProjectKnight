@@ -1,10 +1,10 @@
 # ProjectKnight Studio V3 — Current State & Milestone Status
 
 **Current Date:** 2026-11-09  
-**Active Milestone:** Milestone V3-013 Completed & Formally Dual-Reviewed (QA PASS, Game Director APPROVED) $\rightarrow$ Player-Controlled Defeat, Retry & Campaign Recovery Complete  
-**Working Branch:** `studio/v3-013-failure-retry-gameplay`  
-**Base Implementation Commit SHA:** `bbf255146c602a8fcbf8d4e782eb91d7945c5ea7`  
-**Frozen Implementation & Evidence Commit SHA:** `f44bdc956b109847796fb26d23ab23838554f047`  
+**Active Milestone:** Milestone V3-014 Completed & Formally Dual-Reviewed (QA PASS, Game Director APPROVED) $\rightarrow$ Stage-Clear Intermission & Player-Controlled Next Stage Complete  
+**Working Branch:** `studio/v3-014-stage-clear-intermission`  
+**Base Implementation Commit SHA:** `d3ebccdd241f4b1717b7c4588f139e35366bd9a7`  
+**Frozen Implementation & Evidence Commit SHA:** `8b9afd52e67e0c533b0bd162ee842381fb838ada`  
 **Desktop 5-Stage Vertical Slice Quality Gate:** **`APPROVED`**  
 **Game Release Status:** **`NOT_APPROVED`** (Vertical Slice Polish Scope; Mobile ARM Packaging & Store Publishing Pending)  
 **Android Hardware Status:** **`NOT_TESTED`** (Desktop 1280×720 Landscape and 1024×720 Narrow Viewport Emulation Verified Only)  
@@ -13,15 +13,15 @@
 
 ---
 
-## 1. Task V3-013 Execution Summary (Player-Controlled Defeat, Retry & Campaign Recovery)
+## 1. Task V3-014 Execution Summary (Stage-Clear Intermission & Player-Controlled Next Stage)
 
-- **Task ID:** `V3-013`
-- **Objective:** Overhaul player defeat flow across all 5 stages; replace legacy 2.0s uncontrolled automatic stage reload with player-controlled `StageFailedOverlay` & `StageFailedPanel`; provide explicit, accessible `RetryStageButton` and `ReturnTitleButton` actions (220×48, `focus_mode = FOCUS_ALL`); neutralize virtual touch deck and lingering enemy attacks upon defeat without global tree pausing; guarantee mathematical viewport centering across 1280×720 and 1024×720 via `CenterContainer` and `PRESET_FULL_RECT`; preserve campaign stage progression on retry (`cleared_stages` intact); verify Option C plane lock and zero regressions across continuous 5-stage campaign loop.
+- **Task ID:** `V3-014`
+- **Objective:** Overhaul stage-clear progression across Stages 1–4; replace legacy 1.8s uncontrolled automatic stage advance with player-controlled `StageClearOverlay` & `StageClearPanel`; display authoritative single-source Soul Shard rewards and overall campaign progress without duplicate awarding; provide explicit, accessible `ContinueStageButton` ("CONTINUE TO STAGE N+1 ➔", 230×48) and `ReturnTitleButton` ("⮌ RETURN TO TITLE", 210×48) actions with `focus_mode = FOCUS_ALL`; neutralize virtual touch deck and lingering enemy attacks upon clear without global tree pausing; guarantee mathematical viewport centering across 1280×720 and 1024×720 via `CenterContainer` and `PRESET_FULL_RECT`; cleanly eliminate floating label clutter; preserve Stage 5 final campaign victory flow exclusively; verify Option C plane lock and zero regressions across continuous 5-stage campaign loop.
 - **Owner / Worker:** `PK_ClientLead`
 - **Lead Game Designer:** `PK_GameDesign`
 - **Visual Quality Director:** `PK_ArtDirector`
-- **Independent QA Reviewer:** `PK_QALead` (Session: `b1c1461d-2f23-49c3-a824-e936f2d92f04`) $\rightarrow$ **`QA PASS`** (Report: [`QA_V3-013_REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/QA_V3-013_REVIEW.md))
-- **Independent Game Director Reviewer:** `PK_GameDirector` (Session: `6bb8eacd-c33f-4279-8ee2-ff55c0d4588c`) $\rightarrow$ **`APPROVED`** (Score: **9.67 / 10.0**, Report: [`V3-013-GAME-DIRECTOR-MILESTONE-REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/V3-013-GAME-DIRECTOR-MILESTONE-REVIEW.md))
+- **Independent QA Reviewer:** `PK_QALead` (Session: `f142668e-0a47-4950-8c41-ce8c47b7412e`) $\rightarrow$ **`QA PASS`** (Report: [`QA_V3-014_REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/QA_V3-014_REVIEW.md))
+- **Independent Game Director Reviewer:** `PK_GameDirector` (Session: `c0934b34-3237-40ff-acb5-cf6ff81d185a`) $\rightarrow$ **`APPROVED`** (Score: **9.73 / 10.0**, Report: [`V3-014-GAME-DIRECTOR-MILESTONE-REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/V3-014-GAME-DIRECTOR-MILESTONE-REVIEW.md))
 
 ---
 
@@ -29,32 +29,32 @@
 
 | Checkpoint | Requirement | Implementation & Proof | Verdict |
 |---|---|---|:---:|
-| **Checkpoint A** | Characterize baseline defeat auto-reload shortcoming, capture reproducible BEFORE frame in 1280×720 | Captured baseline frame in `captures/before/before_01_uncontrolled_auto_reload_defeat.png`: unprompted hang and abrupt automatic reload without UI overlay or player consent. Documented in `BEFORE_AFTER.md`. | **PASS** |
-| **Checkpoint B** | Implement interactive defeat overlay, retry/title actions, touch & combat neutralization, responsive centering | 1) `side_qv_campaign.gd`: Added `is_defeat_active`, `failure_overlay`, `_show_stage_failed()` with crimson `StageFailedPanel` (`Vector2(620, 320)`), `RetryStageButton` and `ReturnTitleButton` (220×48, `FOCUS_ALL`, double-click guarded via `is_transitioning`), responsive `CenterContainer` (`PRESET_FULL_RECT`), audio management wiring.<br>2) `side_qv_stage_base.gd`: Overhauled `_on_player_died()` to release virtual touch actions, hide touch controls deck, disable enemy/boss attack area monitoring and physics processing.<br>3) Campaign victory dialog: Wrapped in `CenterContainer` (`PRESET_FULL_RECT`) with double-click transition safety. | **PASS** |
-| **Checkpoint C** | Run automated defeat/retry test suite, audio regressions, multi-touch regressions, encounter regressions, rendered AFTER captures, and continuous 5-stage campaign smoke | `v3_013_failure_retry_verification.gd` (Exit 0): 27/27 checks passed.<br>`v3_013_capture_and_verify.gd` (Exit 0): 4/4 after captures verified (1280×720 & 1024×720, OpenGL3).<br>`v3_013_failure_retry_smoke.gd` (Exit 0): Title $\rightarrow$ Stage 1 lethal damage $\rightarrow$ defeat overlay $\rightarrow$ real GUI click Retry $\rightarrow$ fresh respawn $\rightarrow$ natural combat clear $\rightarrow$ Stage 2 transition.<br>`v3_011_audio_verification.gd` (Exit 0): 31/31 audio checks passed.<br>`v3_010_test_touch_repro.gd` (Exit 0): 11/11 multi-touch checks passed.<br>`v3_012_encounter_readability_verification.gd` (Exit 0): 29/29 encounter checks passed.<br>`v3_013_campaign_smoke.gd` (Exit 0): Full Title $\rightarrow$ Stages 1–5 $\rightarrow$ Victory $\rightarrow$ Title $\rightarrow$ Second Deploy smoke passed; 1,341 samples in `ACTOR_Z_PRESENCE.csv` show 0 Option C violations ($Z=0.0000, v_z=0.0000$). | **PASS** |
-| **Dual Sign-Off** | Two-key independent review on identical frozen SHA | `PK_QALead` (QA PASS) and `PK_GameDirector` (APPROVED, 9.67/10) both audited identical frozen SHA `f44bdc956b109847796fb26d23ab23838554f047`. | **PASS** |
+| **Checkpoint A** | Characterize baseline clear auto-advance shortcoming, capture reproducible BEFORE frame in 1280×720 | Captured baseline frame in `captures/before/before_01_auto_advance_stage_clear.png`: unprompted 1.8s automatic advance with raw floating text and zero player pause. Documented in `BEFORE_AFTER.md`. | **PASS** |
+| **Checkpoint B** | Implement interactive intermission overlay, continue/title actions, single reward display, touch & combat neutralization, responsive centering | 1) `side_qv_campaign.gd`: Added `clear_overlay`, `_show_stage_clear_intermission()` with obsidian-and-gold `StageClearPanel` (`Vector2(640, 360)`), authoritative shard readout, campaign progress, `ContinueStageButton` (230×48) and `ReturnTitleButton` (210×48) with double-click and transition race guards, responsive `CenterContainer` (`PRESET_FULL_RECT`), audio management wiring.<br>2) `side_qv_stage_base.gd`: Overhauled `_on_boss_defeated()` to record `last_earned_shards`, release virtual touch actions, hide touch controls deck, disable enemy/boss attack area monitoring and physics processing, and free `clear_lbl` prior to signal emission.<br>3) Preserved Stage 5 final campaign victory dialog exclusively without intermission duplication. | **PASS** |
+| **Checkpoint C** | Run automated intermission test suite, audio regressions, multi-touch regressions, encounter regressions, defeat/retry regressions, rendered AFTER captures, and continuous 5-stage campaign smoke | `v3_014_stage_clear_intermission_verification.gd` (Exit 0): 41/41 checks passed.<br>`v3_014_capture_and_verify.gd` (Exit 0): 4/4 after captures verified (1280×720 & 1024×720, OpenGL3).<br>`v3_014_intermission_smoke.gd` (Exit 0): 12/12 checks passed; 2.2s dwell with zero auto-advance verified; real GUI mouse clicks on Continue buttons verified; shard invariance verified.<br>`v3_013_failure_retry_smoke.gd` (Exit 0): Defeat & retry smoke passed.<br>`v3_011_audio_verification.gd` (Exit 0): 31/31 audio checks passed.<br>`v3_010_test_touch_repro.gd` (Exit 0): 11/11 multi-touch checks passed.<br>`v3_012_encounter_readability_verification.gd` (Exit 0): 29/29 encounter checks passed.<br>`v3_014_campaign_smoke.gd` (Exit 0): Full Title $\rightarrow$ Stages 1–4 with Continue clicks $\rightarrow$ Stage 5 Arbiter defeat $\rightarrow$ Victory $\rightarrow$ Title $\rightarrow$ Second Deploy smoke passed; 1,161 samples in `ACTOR_Z_PRESENCE.csv` show 0 Option C violations ($Z=0.0000, v_z=0.0000$). | **PASS** |
+| **Dual Sign-Off** | Two-key independent review on identical frozen SHA | `PK_QALead` (QA PASS) and `PK_GameDirector` (APPROVED, 9.73/10) both audited identical frozen SHA `8b9afd52e67e0c533b0bd162ee842381fb838ada`. | **PASS** |
 
 ---
 
 ## 3. Two-Key Dual Review Certification
 
-Both independent reviewers audited the **exact same frozen commit SHA** (`f44bdc956b109847796fb26d23ab23838554f047`):
+Both independent reviewers audited the **exact same frozen commit SHA** (`8b9afd52e67e0c533b0bd162ee842381fb838ada`):
 
 1. **Independent QA Review:**
    - **Reviewer:** `PK_QALead`
-   - **Session ID:** `b1c1461d-2f23-49c3-a824-e936f2d92f04`
-   - **Reviewed SHA:** `f44bdc956b109847796fb26d23ab23838554f047`
+   - **Session ID:** `f142668e-0a47-4950-8c41-ce8c47b7412e`
+   - **Reviewed SHA:** `8b9afd52e67e0c533b0bd162ee842381fb838ada`
    - **Verdict:** **`QA PASS`**
-   - **Review Document:** [`QA_V3-013_REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/QA_V3-013_REVIEW.md)
-   - **Key Finding:** Zero open blocking defects (P0: 0, P1: 0). Player-controlled defeat presentation, accessible action hitboxes, double-click race immunity, defeat-cleared race immunity, virtual touch release, enemy attack area neutralization, progress preservation on retry, audio cleanup on title return, responsive centering across 1280×720 and 1024×720, and Option C compliance (1,341 records, $Z=0.0000, v_z=0.0000$) verified. All regressions pass green.
+   - **Review Document:** [`QA_V3-014_REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/QA_V3-014_REVIEW.md)
+   - **Key Finding:** Zero open blocking defects (P0: 0, P1: 0). Player-controlled intermission presentation, accessible action hitboxes, double-click race immunity, single authoritative Soul Shards crediting without duplication or drift, virtual touch release, enemy attack area neutralization, floating text cleanup, Stage 5 victory exclusivity, responsive centering across 1280×720 and 1024×720, and Option C compliance (1,161 records, $Z=0.0000, v_z=0.0000$) verified. All regressions pass green.
 
 2. **Game Director Milestone Sign-Off:**
    - **Reviewer:** `PK_GameDirector`
-   - **Session ID:** `6bb8eacd-c33f-4279-8ee2-ff55c0d4588c`
-   - **Reviewed SHA:** `f44bdc956b109847796fb26d23ab23838554f047`
+   - **Session ID:** `c0934b34-3237-40ff-acb5-cf6ff81d185a`
+   - **Reviewed SHA:** `8b9afd52e67e0c533b0bd162ee842381fb838ada`
    - **Verdict:** **`APPROVED`**
-   - **Review Document:** [`V3-013-GAME-DIRECTOR-MILESTONE-REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/V3-013-GAME-DIRECTOR-MILESTONE-REVIEW.md)
-   - **Key Finding:** Quality scorecard average **9.67 / 10.0** (all categories $\ge 9.5$, exceeding $\ge 8.5$ bar). Replaces abrupt automatic reload with a respectful, high-agency player recovery loop; delivers responsive dialog centering; guarantees progression momentum on retry; neutralizes corpse juggling; maintains strict Option C plane lock.
+   - **Review Document:** [`V3-014-GAME-DIRECTOR-MILESTONE-REVIEW.md`](file:///D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/reviews/V3-014-GAME-DIRECTOR-MILESTONE-REVIEW.md)
+   - **Key Finding:** Quality scorecard average **9.73 / 10.0** (all categories $\ge 9.5$, exceeding $\ge 8.5$ bar). Replaces abrupt automatic advance with complete player progression agency; delivers responsive dialog centering; ensures reward authoritativeness and progress transparency; neutralizes combat inputs post-clear; maintains strict Option C plane lock.
 
 ---
 
@@ -65,6 +65,7 @@ Both independent reviewers audited the **exact same frozen commit SHA** (`f44bdc
 - **Stage 3 (Ruined Crossbow Bastion):** `APPROVED` (Option C plane lock, ranged minion micro-recoil and defeat burst, 3-directional laser aim fan volley on $Z=0$, caltrop traps, Commander boss mechanical telegraph and bolt fire audio verified).
 - **Stage 4 (Titan Stone Sanctuary):** `APPROVED` (Option C plane lock, heavy golem micro-recoil, ground slam telegraph aligned to `slam_origin` with 4.5m radius ($0.0000\text{m}$ offset), spinning lariat, Golem Guardian seismic rumble tell and quake fissure audio verified).
 - **Stage 5 (Silent Abyssal Citadel):** `APPROVED` (Option C plane lock, dark crescent wave, shadow blink strike, judgment storm, Abyssal Arbiter void shimmer tell and strike audio, radiant void damage flash, single-owner mobile virtual deck verified).
+- **Stage-Clear Intermission UX Loop:** **`APPROVED`** (Player-controlled `StageClearOverlay` & `StageClearPanel` with obsidian/gold theme, 230×48 Continue and 210×48 Title buttons, double-tap race protection, zero global pause, touch/attack neutralization, authoritative Soul Shards readout, campaign progress tracking, and clean return to Title with complete audio reset).
 - **Defeat & Campaign Recovery UX Loop:** **`APPROVED`** (Player-controlled `StageFailedOverlay` & `StageFailedPanel` with crimson theme, 220×48 accessible buttons, double-tap race protection, zero global pause, touch/attack neutralization, single-stage retry respawn preserving `cleared_stages`, and clean return to Title with complete audio reset).
 - **Campaign Victory UX Loop:** **`APPROVED`** (Stage clear ascending arpeggio glockenspiel stinger, styled `CampaignVictoryPanel` with 3-chord orchestral victory fanfare, responsive `CenterContainer` centering, `ReplayCampaignButton` with audio reset, `ReturnTitleButton` with complete state teardown, and fresh second campaign restart from Title).
 
@@ -76,4 +77,4 @@ Both independent reviewers audited the **exact same frozen commit SHA** (`f44bdc
 2. **Subjective Listening Status:** **`SUBJECTIVE_LISTENING_NOT_VERIFIED`**. Programmatic PCM audio generation, playback routing, gain headroom, and voice throttling verified; human acoustic tonal balance across physical speakers/headphones remains pending.
 3. **Android Status:** **`NOT_TESTED`**. Physical device testing has not been performed; desktop simulated multi-touch event routing and responsive layout scaling validated.
 4. **Human Playtest Status:** **`HUMAN_PLAYTEST_NOT_VERIFIED`**. Programmatic automated real-input events verified; tactile human playtesting scheduled for post-vertical-slice release phase.
-5. **Commercial Release Readiness:** **`COMMERCIAL_RELEASE_READINESS_NOT_CLAIMED`**. Milestone V3-013 establishes vertical slice stage defeat and campaign recovery excellence; final commercial sound mixing and localization remain part of downstream milestones.
+5. **Commercial Release Readiness:** **`COMMERCIAL_RELEASE_READINESS_NOT_CLAIMED`**. Milestone V3-014 establishes vertical slice stage-clear intermission and player progression excellence; final commercial sound mixing and localization remain part of downstream milestones.
