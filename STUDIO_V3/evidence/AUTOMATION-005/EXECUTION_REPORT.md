@@ -71,7 +71,7 @@
 - **테스트 결과:**
   ```text
   [INFO] Binding execution to remote branch: origin/test/v3-test-automation
-  [PASS] Verified remote branch HEAD SHA matches approved SHA (bedc1c0524028c8a462668175c95198007599902).
+  [PASS] Verified remote branch HEAD SHA matches approved SHA (a69ae8c5fdb664ee2db56c3cfd584aaf4a50f7f6).
   [INFO] Execution pre-authorized by WinForms GUI. Skipping duplicate console prompt.
   ```
   `Read-Host` 대기 없이 즉시 다음 검증 단계로 원활하게 진입함을 확인.
@@ -82,6 +82,18 @@
 - **Smart App Control (SAC) 관련 명확한 보고:**
   - 본 Windows 11 머신은 Smart App Control이 활성화되어 있으며, 로컬에서 컴파일된 독립 PE 파일(`ProjectKnight.Launcher.exe`)은 Microsoft Cloud ISG 서명이 없어 `0x800711C7`로 차단됩니다.
   - 보안 설정을 무력화하거나 우회하지 않고, Microsoft 정식 서명된 .NET 8 호스트(`dotnet.exe`)를 통해 순수 C# WinForms DLL을 로드하여 Windows Forms UI가 네이티브로 실행됨을 검증하였습니다.
+
+### 4.5. Antigravity CLI 실제 연동 엔드투엔드 개발 실행 검증
+- **검증 태스크:** `V3-TEST-AUTOMATION` (`STUDIO_V3/tasks/V3-TEST-AUTOMATION.md`)
+- **대상 브랜치 및 승인 SHA:** `test/v3-test-automation` (HEAD: `a69ae8c5fdb664ee2db56c3cfd584aaf4a50f7f6`)
+- **실행 모드:** GUI 사전 승인 (`-ApprovedByGui`), 중복 `Read-Host` 프롬프트 없이 안전 실행
+- **CLI 실행:** `agy.exe` (PID: 24768) 백그라운드 구동, 476.9초 동안 지시서 분석 및 테스트 수행
+- **산출물 검증:**
+  - `STUDIO_V3/evidence/V3-TEST-AUTOMATION/EXECUTION_VERIFICATION.json` 타임스탬프 및 대화 ID(`36256265-ccf0-4d60-9708-f51a214d472f`) 갱신
+  - Pre-commit 스코프 검증 PASS (허용 범위 외 변조 0건)
+  - Worktree 신규 커밋 생성: `0e464b309ee042488c09ad8186c992921940901d`
+  - 원격 Push 완료: `https://github.com/jjangmut/ProjectKnight/commit/0e464b309ee042488c09ad8186c992921940901d`
+  - Runner 정상 종료 (ExitCode: 0) 및 `[RESULT:JSON]` 기계 판독 완료 로그 방출
 
 ---
 
