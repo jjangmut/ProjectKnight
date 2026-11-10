@@ -27,6 +27,8 @@ param(
 
     [switch]$AutoApprove = $false,
 
+    [switch]$ApprovedByGui = $false,
+
     [string]$ConfigPath = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\config.json"
 )
 
@@ -248,7 +250,8 @@ function Validate-TaskSecurity {
 # ------------------------------------------------------------------------------
 function Ensure-Worktree {
     param(
-        [string]$TargetBranch
+        [string]$TargetBranch,
+        [string]$RequiredSha = ""
     )
 
     Log-Info "Verifying Git Worktree isolation for branch: $TargetBranch"
@@ -293,17 +296,16 @@ function Ensure-Worktree {
         if ($null -ne $wtsRaw) { $wtStatus = "$wtsRaw".Trim() }
 
         if (-not [string]::IsNullOrWhiteSpace($wtStatus)) {
-            Log-Warn "Worktree contains uncommitted residue. Resetting worktree cleanly."
-            git -C $WorktreePath reset --hard HEAD
-            git -C $WorktreePath clean -fd
+            throw "Safety Abort: Worktree ($WorktreePath) contains uncommitted residue. To protect uncommitted work, runner will not automatically clean or reset. Please inspect, commit, or clean the worktree manually before continuing."
         }
+
+        # Fetch latest origin
+        $prevEAP = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        git -C $WorktreePath fetch origin $TargetBranch --quiet 2>&1 | Out-Null
+        $ErrorActionPreference = $prevEAP
 
         if ($wtBranch -ne $TargetBranch) {
             Log-Info "Switching worktree to target branch: $TargetBranch"
-            $prevEAP = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
-            git -C $WorktreePath fetch origin --quiet 2>&1 | Out-Null
-            $ErrorActionPreference = $prevEAP
-
             $targetLocalExists = ""
             $tleRaw = git -C $WorktreePath branch --list $TargetBranch 2>$null
             if ($null -ne $tleRaw) { $targetLocalExists = "$tleRaw".Trim() }
@@ -314,6 +316,22 @@ function Ensure-Worktree {
                 git -C $WorktreePath checkout -b $TargetBranch "origin/$TargetBranch"
             }
         }
+
+        # Ensure local branch is fast-forwarded to origin
+        git -C $WorktreePath merge --ff-only "origin/$TargetBranch" 2>$null
+    }
+
+    # Verify exact SHA binding if RequiredSha specified
+    if (-not [string]::IsNullOrWhiteSpace($RequiredSha)) {
+        $actualSha = (git -C $WorktreePath rev-parse HEAD 2>$null).Trim()
+        if ($actualSha -ne $RequiredSha) {
+            git -C $WorktreePath checkout $RequiredSha 2>$null
+            $actualSha = (git -C $WorktreePath rev-parse HEAD 2>$null).Trim()
+            if ($actualSha -ne $RequiredSha) {
+                throw "Security Violation: Worktree HEAD ($actualSha) does not match approved commit SHA ($RequiredSha). Execution aborted to prevent unauthorized modifications."
+            }
+        }
+        Log-Success "Worktree verified at approved commit SHA: $RequiredSha"
     }
 
     Log-Success "Worktree ready and isolated at: $WorktreePath (Branch: $TargetBranch)"
@@ -571,7 +589,9 @@ function Invoke-Execute {
     }
 
     # Manual Approval Gate
-    if ($Config.require_manual_approval -and (-not $AutoApprove)) {
+    if ($ApprovedByGui) {
+        Log-Info "Execution pre-authorized by WinForms GUI. Skipping duplicate console prompt."
+    } elseif ($Config.require_manual_approval -and (-not $AutoApprove)) {
         Write-Host "`n[MANUAL APPROVAL GATE]" -ForegroundColor Yellow
         Write-Host "Task ID:       $($taskInfo.task_id)" -ForegroundColor White
         Write-Host "Target Branch: $($taskInfo.target_branch)" -ForegroundColor White
@@ -602,9 +622,16 @@ function Invoke-Execute {
 
         Write-Host "[STAGE:VALIDATE] GitHub 지시서 검증 완료 (Branch: $($taskInfo.target_branch))"
 
-        # Ensure Worktree is set up and isolated
+        # Ensure Worktree is set up and isolated at verified commit SHA
         Write-Host "[STAGE:WORKTREE] 격리 Worktree 준비 중 ($WorktreePath)"
-        Ensure-Worktree -TargetBranch $taskInfo.target_branch
+        Ensure-Worktree -TargetBranch $taskInfo.target_branch -RequiredSha $ExpectedCommitSha
+
+        # Pre-CLI assertion of Worktree HEAD SHA
+        $preCliSha = (git -C $WorktreePath rev-parse HEAD).Trim()
+        if (-not [string]::IsNullOrWhiteSpace($ExpectedCommitSha) -and $preCliSha -ne $ExpectedCommitSha) {
+            throw "Security Violation: Worktree HEAD ($preCliSha) does not match approved SHA ($ExpectedCommitSha) right before CLI start. Execution aborted."
+        }
+        Log-Success "Worktree HEAD verified at approved commit SHA: $preCliSha"
 
         # Construct Antigravity CLI Prompt
         $agyPrompt = "Read STUDIO_V3/tasks/$TargetTaskId.md and implement the requirements. Execute tests and record evidence."
@@ -738,23 +765,34 @@ function Invoke-Execute {
             $finalStatus = "NO_CHANGES"
         }
 
-        # Update State
-        $completedObj = [PSCustomObject]@{
-            task_id = $TargetTaskId
-            branch = $taskInfo.target_branch
-            commit_sha = $commitSha
-            duration_seconds = [math]::Round($sw.Elapsed.TotalSeconds, 1)
-            completed_at = (Get-Date).ToString("o")
-            status = $finalStatus
-            log_file = $logPath
-            isolated_worktree = $WorktreePath
+        # Update State: ONLY record as completed if finalStatus is strictly COMPLETED
+        if ($finalStatus -eq "COMPLETED") {
+            $completedObj = [PSCustomObject]@{
+                task_id = $TargetTaskId
+                branch = $taskInfo.target_branch
+                commit_sha = $commitSha
+                duration_seconds = [math]::Round($sw.Elapsed.TotalSeconds, 1)
+                completed_at = (Get-Date).ToString("o")
+                status = $finalStatus
+                log_file = $logPath
+                isolated_worktree = $WorktreePath
+            }
+            $state.completed_tasks | Add-Member -MemberType NoteProperty -Name $TargetTaskId -Value $completedObj -Force
         }
-        $state.completed_tasks | Add-Member -MemberType NoteProperty -Name $TargetTaskId -Value $completedObj -Force
         $state.in_progress_task = $null
         Save-TasksState -StateObject $state
 
         Write-Host "[STAGE:COMPLETE] 작업 자동 개발 및 반영 완료 (Commit: $commitSha, Status: $finalStatus)"
-        Log-Success "Task $TargetTaskId automated execution completed successfully in isolated worktree!"
+        $resJson = @{
+            task_id = $TargetTaskId
+            branch = $taskInfo.target_branch
+            commit_sha = $commitSha
+            status = $finalStatus
+            duration_seconds = [math]::Round($sw.Elapsed.TotalSeconds, 1)
+            log_file = $logPath
+        } | ConvertTo-Json -Compress
+        Write-Host "[RESULT:JSON] $resJson"
+        Log-Success "Task $TargetTaskId execution finished with status: $finalStatus"
 
     } catch {
         Log-Err "Task execution failed: $_"

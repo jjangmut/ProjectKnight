@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using ProjectKnight.Launcher.Models;
 
@@ -47,6 +48,7 @@ public class AutomationRunnerService
         argsBuilder.Append($"-TaskId \"{candidate.TaskId}\" ");
         argsBuilder.Append($"-ExpectedBranch \"{candidate.Branch}\" ");
         argsBuilder.Append($"-ExpectedCommitSha \"{candidate.CommitSha}\" ");
+        argsBuilder.Append("-ApprovedByGui ");
 
         if (autoApprove)
         {
@@ -107,6 +109,35 @@ public class AutomationRunnerService
                 result.FinalStatus = statusMatch.Groups[1].Value;
             }
 
+            // Explicit machine-readable result parsing: [RESULT:JSON] { ... }
+            var jsonMatch = Regex.Match(line, @"\[RESULT:JSON\]\s*(\{.*\})");
+            if (jsonMatch.Success)
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(jsonMatch.Groups[1].Value);
+                    if (doc.RootElement.TryGetProperty("status", out var st))
+                    {
+                        var statusStr = st.GetString();
+                        if (!string.IsNullOrWhiteSpace(statusStr)) result.FinalStatus = statusStr;
+                    }
+                    if (doc.RootElement.TryGetProperty("commit_sha", out var cs))
+                    {
+                        var sha = cs.GetString();
+                        if (!string.IsNullOrWhiteSpace(sha)) result.CommitSha = sha;
+                    }
+                    if (doc.RootElement.TryGetProperty("log_file", out var lf))
+                    {
+                        var lfp = lf.GetString();
+                        if (!string.IsNullOrWhiteSpace(lfp)) result.LogFilePath = lfp;
+                    }
+                }
+                catch
+                {
+                    // Non-fatal JSON parse error
+                }
+            }
+
             // Log file location parsing
             var logMatch = Regex.Match(line, @"Execution Log:\s*([^\r\n]+\.log)");
             if (logMatch.Success)
@@ -150,12 +181,17 @@ public class AutomationRunnerService
             sw.Stop();
 
             result.Duration = sw.Elapsed;
-            if (process.ExitCode == 0)
+            if (process.ExitCode == 0 && result.FinalStatus == "COMPLETED")
             {
                 result.Success = true;
+            }
+            else if (process.ExitCode == 0)
+            {
+                // Partial outcomes like NO_CHANGES or PUSH_SKIPPED are not treated as full completion
+                result.Success = false;
                 if (result.FinalStatus == "UNKNOWN")
                 {
-                    result.FinalStatus = "COMPLETED";
+                    result.FinalStatus = "NO_CHANGES";
                 }
             }
             else

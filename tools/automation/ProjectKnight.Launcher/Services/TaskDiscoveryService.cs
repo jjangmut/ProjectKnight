@@ -256,12 +256,26 @@ public class TaskDiscoveryService
                 CreateNoWindow = true
             };
 
-            using var process = Process.Start(psi);
-            if (process == null) return string.Empty;
+            using var process = new Process { StartInfo = psi };
+            if (!process.Start()) return string.Empty;
 
-            var stdout = process.StandardOutput.ReadToEnd();
-            process.WaitForExit(timeoutMs);
-            return stdout.Trim();
+            var stdoutTask = process.StandardOutput.ReadToEndAsync();
+            var stderrTask = process.StandardError.ReadToEndAsync();
+
+            if (!process.WaitForExit(timeoutMs))
+            {
+                try { process.Kill(true); } catch { }
+                return string.Empty;
+            }
+
+            Task.WaitAll(new Task[] { stdoutTask, stderrTask }, 2000);
+
+            if (process.ExitCode != 0)
+            {
+                return string.Empty;
+            }
+
+            return stdoutTask.Result.Trim();
         }
         catch
         {

@@ -455,45 +455,40 @@ public class MainForm : Form
             if (_candidates.Count == 0) return;
         }
 
-        // 2. Identify candidate: if selected candidate is valid & incomplete, use it;
-        // else find first incomplete valid candidate
-        var candidateToRun = _selectedCandidate;
-        if (candidateToRun == null || candidateToRun.IsCompleted || !candidateToRun.IsValid)
-        {
-            candidateToRun = _candidates.FirstOrDefault(c => !c.IsCompleted && c.IsValid);
-        }
-
-        if (candidateToRun == null)
+        // 2. Identify candidate: if multiple candidates, require explicit user selection
+        var eligibleCandidates = _candidates.Where(c => !c.IsCompleted && c.IsValid).ToList();
+        if (eligibleCandidates.Count == 0)
         {
             MessageBox.Show("실행할 수 있는 미완료 작업이 없습니다. 모든 작업이 완료되었거나 메타데이터에 오류가 있습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
-        // Select it in ComboBox
-        _cboTasks.SelectedItem = candidateToRun;
-
-        // 3. Check multiple candidate condition
-        var eligibleCandidates = _candidates.Where(c => !c.IsCompleted && c.IsValid).ToList();
-        if (eligibleCandidates.Count > 1 && !_chkAutoApprove.Checked)
+        TaskCandidate? candidateToRun = null;
+        if (_selectedCandidate != null && !_selectedCandidate.IsCompleted && _selectedCandidate.IsValid)
         {
-            // Prompt user with confirmation dialog showing candidate details
-            var promptResult = MessageBox.Show(
-                $"미완료 작업 {eligibleCandidates.Count}건이 발견되었습니다.\n\n" +
-                $"현재 선택된 작업:\n" +
-                $" - Task ID: {candidateToRun.TaskId}\n" +
-                $" - 제목: {candidateToRun.Title}\n" +
-                $" - 브랜치: {candidateToRun.Branch}\n" +
-                $" - 커밋 SHA: {candidateToRun.ShortSha}\n\n" +
-                $"이 작업을 즉시 격리 Worktree에서 개발·테스트 실행하시겠습니까?",
-                "작업 실행 확인",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (promptResult != DialogResult.Yes) return;
+            candidateToRun = _selectedCandidate;
         }
-        else if (!_chkAutoApprove.Checked)
+        else if (eligibleCandidates.Count == 1)
         {
-            // Single candidate, manual confirmation
+            candidateToRun = eligibleCandidates[0];
+            _cboTasks.SelectedItem = candidateToRun;
+        }
+        else
+        {
+            // Multiple eligible candidates and none explicitly chosen -> do NOT pick first automatically
+            MessageBox.Show(
+                $"미완료 작업 {eligibleCandidates.Count}건이 대기 중입니다.\n\n" +
+                "안전한 개발 진행을 위해 상단 '작업 선택' 목록에서 실행할 작업을 먼저 선택해 주세요.",
+                "작업 선택 필요",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            _cboTasks.Focus();
+            return;
+        }
+
+        // 3. User Confirmation Gate
+        if (!_chkAutoApprove.Checked)
+        {
             var promptResult = MessageBox.Show(
                 $"다음 작업을 격리 Worktree에서 개발·테스트 실행하시겠습니까?\n\n" +
                 $" - Task ID: {candidateToRun.TaskId}\n" +
@@ -508,7 +503,6 @@ public class MainForm : Form
         }
         else
         {
-            // Auto-Approve is ON: executes this 1 task without secondary popup
             AppendLog("SYSTEM", $"[AUTO-APPROVE] 자동 승인 옵션에 따라 작업 {candidateToRun.TaskId}을(를) 추가 확인 없이 실행합니다.");
         }
 
@@ -582,7 +576,7 @@ public class MainForm : Form
             if (!string.IsNullOrEmpty(_lastLogFilePath)) _btnOpenLog.Enabled = true;
             if (!string.IsNullOrEmpty(_lastCommitSha)) _btnOpenCommit.Enabled = true;
 
-            if (result.Success)
+            if (result.Success && result.FinalStatus == "COMPLETED")
             {
                 SetUiRunning(false, "완료 (COMPLETED)", Color.FromArgb(40, 167, 69));
                 AppendLog("PASS", $"[COMPLETED] Task {candidate.TaskId} 개발·테스트·커밋·Push 완료!");
@@ -601,6 +595,19 @@ public class MainForm : Form
 
                 // Refresh candidate list to reflect completion
                 await RefreshCandidatesAsync();
+            }
+            else if (result.FinalStatus == "NO_CHANGES" || result.FinalStatus == "PUSH_SKIPPED")
+            {
+                SetUiRunning(false, $"종료 ({result.FinalStatus})", Color.FromArgb(255, 193, 7));
+                AppendLog("WARN", $"[{result.FinalStatus}] Task {candidate.TaskId} 실행 종료 (상태: {result.FinalStatus})");
+
+                MessageBox.Show(
+                    $"Task {candidate.TaskId} 실행이 종료되었으나 변경 사항이 없거나 Push가 생략되었습니다.\n\n" +
+                    $"상태: {result.FinalStatus}\n" +
+                    $"커밋 SHA: {result.CommitSha ?? "N/A"}",
+                    "알림",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
             else
             {

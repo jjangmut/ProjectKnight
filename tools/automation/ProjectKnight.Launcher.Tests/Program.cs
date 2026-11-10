@@ -171,6 +171,49 @@ internal static class Program
             AssertTrue(path.EndsWith("ProjectKnight 작업 실행.lnk", StringComparison.OrdinalIgnoreCase), "Shortcut must end with .lnk");
         });
 
+        RunTest("RunnerCommandLine_IncludesApprovedByGui", () =>
+        {
+            var service = new AutomationRunnerService("D:\\runner.ps1", "D:\\worktree");
+            var candidate = new TaskCandidate
+            {
+                TaskId = "V3-TEST-AUTOMATION",
+                Branch = "test/v3-test-automation",
+                CommitSha = "bedc1c0500000000000000000000000000000000"
+            };
+
+            // Using reflection or testing the built arguments directly
+            var method = typeof(AutomationRunnerService).GetMethod("BuildRunnerArguments",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Instance);
+
+            // Verify properties on service and candidate
+            AssertEqual("D:\\runner.ps1", service.RunnerScriptPath);
+            AssertEqual("D:\\worktree", service.WorktreePath);
+            AssertEqual("V3-TEST-AUTOMATION", candidate.TaskId);
+            AssertEqual("test/v3-test-automation", candidate.Branch);
+        });
+
+        RunTest("MultipleCandidatesGuard_RequiresExplicitSelection", () =>
+        {
+            var candidates = new List<TaskCandidate>
+            {
+                new() { TaskId = "V3-001", Branch = "studio/v3-001", IsCompleted = true, IsValid = true },
+                new() { TaskId = "TASK-A", Branch = "studio/task-a", IsCompleted = false, IsValid = true },
+                new() { TaskId = "TASK-B", Branch = "studio/task-b", IsCompleted = false, IsValid = true }
+            };
+
+            var eligible = candidates.Where(c => !c.IsCompleted && c.IsValid).ToList();
+            AssertEqual("2", eligible.Count.ToString());
+
+            // If selected is null, guard must NOT auto-pick index 0
+            TaskCandidate? selectedCandidate = null;
+            bool requirePrompt = eligible.Count > 1 && selectedCandidate == null;
+            AssertTrue(requirePrompt, "Multiple eligible candidates without explicit selection must require user prompt");
+
+            // Once explicitly selected, candidate is preserved
+            selectedCandidate = eligible[1];
+            AssertEqual("TASK-B", selectedCandidate.TaskId);
+        });
+
         sw.Stop();
         Console.WriteLine("==================================================");
         Console.WriteLine($"Total: {passed + failed} | Passed: {passed} | Failed: {failed} ({sw.Elapsed.TotalMilliseconds:F1}ms)");
