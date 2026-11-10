@@ -2,7 +2,14 @@
 # ProjectKnight Antigravity Task Runner - GitHub Actions Workflow
 # Location: .github/workflows/antigravity_task_runner.yml
 # Execution: Self-Hosted Windows Runner on Local Workstation
-# Security Policy: Manual Approval (workflow_dispatch) only; no untrusted PR runs.
+# Security Policy:
+#   1. Manual Approval (workflow_dispatch) only; no PR or untrusted triggers.
+#   2. Restricted strictly to jjangmut/ProjectKnight repository and authorized actor.
+#   3. Task ID strictly validated against allowed pattern (^[A-Za-z0-9_\-]+$).
+#   4. Task specification must exist in STUDIO_V3/tasks/<task_id>.md.
+#   5. Target branch must match approved pattern (studio/v3-*, test/v3-*) and forbidden branches blocked.
+#   6. Isolated execution in dedicated Git Worktree (main workspace protected).
+#   7. Pre-commit scope validation aborts push on unauthorized file changes.
 # ==============================================================================
 
 name: Antigravity Automated Task Runner
@@ -11,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       task_id:
-        description: "Task ID to execute (e.g. V3-018, V3-TEST-AUTOMATION)"
+        description: "Approved Task ID (e.g. V3-TEST-AUTOMATION, V3-018)"
         required: true
         type: string
       force_rerun:
@@ -25,7 +32,6 @@ on:
         type: boolean
         default: false
 
-# Concurrency group ensures only one task executes at any given time
 concurrency:
   group: antigravity-projectknight-runner
   cancel-in-progress: false
@@ -35,21 +41,44 @@ jobs:
     name: Execute Task with Antigravity
     runs-on: [self-hosted, windows]
     timeout-minutes: 60
+    if: github.repository == 'jjangmut/ProjectKnight' && github.actor == 'jjangmut'
 
     steps:
-      - name: Security Pre-Flight Checks
+      - name: Security Pre-Flight Audit
         shell: powershell
         run: |
           Write-Host "=========================================="
           Write-Host "Security Pre-Flight Audit"
-          Write-Host "Repository: ${{ github.repository }}"
+          Write-Host "Repository:   ${{ github.repository }}"
           Write-Host "Triggered By: ${{ github.actor }}"
-          Write-Host "Task ID: ${{ inputs.task_id }}"
+          Write-Host "Task ID:      ${{ inputs.task_id }}"
           Write-Host "=========================================="
+
+          # 1. Repository Boundary Verification
           if ("${{ github.repository }}" -ne "jjangmut/ProjectKnight") {
-            Write-Error "Security Reject: Unauthorized repository."
+            Write-Error "Security Reject: Unauthorized repository (${{ github.repository }})."
             exit 1
           }
+
+          # 2. Actor Boundary Verification
+          if ("${{ github.actor }}" -ne "jjangmut") {
+            Write-Error "Security Reject: Unauthorized actor (${{ github.actor }})."
+            exit 1
+          }
+
+          # 3. Task ID Format Validation (Block command injection, path traversal)
+          $taskId = "${{ inputs.task_id }}".Trim()
+          if ($taskId -notmatch '^[A-Za-z0-9_\-]+$') {
+            Write-Error "Security Reject: Task ID contains illegal characters: '$taskId'"
+            exit 1
+          }
+
+          if ($taskId -notmatch '^(?:V3-[0-9]{3}[A-Za-z0-9_\-]*|V3-TEST-[A-Za-z0-9_\-]+)$') {
+            Write-Error "Security Reject: Task ID '$taskId' does not match approved ProjectKnight naming convention."
+            exit 1
+          }
+
+          Write-Host "Pre-Flight security audit PASSED."
 
       - name: Execute Antigravity Runner
         shell: powershell
@@ -60,9 +89,11 @@ jobs:
             exit 1
           }
 
+          $taskId = "${{ inputs.task_id }}".Trim()
+
           $params = @{
             Action = "Execute"
-            TaskId = "${{ inputs.task_id }}"
+            TaskId = $taskId
             AutoApprove = $true
           }
 
