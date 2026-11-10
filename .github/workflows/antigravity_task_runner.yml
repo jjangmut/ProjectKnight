@@ -1,0 +1,79 @@
+# ==============================================================================
+# ProjectKnight Antigravity Task Runner - GitHub Actions Workflow
+# Location: .github/workflows/antigravity_task_runner.yml
+# Execution: Self-Hosted Windows Runner on Local Workstation
+# Security Policy: Manual Approval (workflow_dispatch) only; no untrusted PR runs.
+# ==============================================================================
+
+name: Antigravity Automated Task Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: "Task ID to execute (e.g. V3-018, V3-TEST-AUTOMATION)"
+        required: true
+        type: string
+      force_rerun:
+        description: "Force re-execution even if recorded as completed"
+        required: false
+        type: boolean
+        default: false
+      skip_push:
+        description: "Skip git push after execution"
+        required: false
+        type: boolean
+        default: false
+
+# Concurrency group ensures only one task executes at any given time
+concurrency:
+  group: antigravity-projectknight-runner
+  cancel-in-progress: false
+
+jobs:
+  run-task:
+    name: Execute Task with Antigravity
+    runs-on: [self-hosted, windows]
+    timeout-minutes: 60
+
+    steps:
+      - name: Security Pre-Flight Checks
+        shell: powershell
+        run: |
+          Write-Host "=========================================="
+          Write-Host "Security Pre-Flight Audit"
+          Write-Host "Repository: ${{ github.repository }}"
+          Write-Host "Triggered By: ${{ github.actor }}"
+          Write-Host "Task ID: ${{ inputs.task_id }}"
+          Write-Host "=========================================="
+          if ("${{ github.repository }}" -ne "jjangmut/ProjectKnight") {
+            Write-Error "Security Reject: Unauthorized repository."
+            exit 1
+          }
+
+      - name: Execute Antigravity Runner
+        shell: powershell
+        run: |
+          $runnerScript = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\runner.ps1"
+          if (-not (Test-Path $runnerScript)) {
+            Write-Error "Automation runner not found at: $runnerScript"
+            exit 1
+          }
+
+          $params = @{
+            Action = "Execute"
+            TaskId = "${{ inputs.task_id }}"
+            AutoApprove = $true
+          }
+
+          if ("${{ inputs.force_rerun }}" -eq "true") {
+            $params["Force"] = $true
+          }
+          if ("${{ inputs.skip_push }}" -eq "true") {
+            $params["SkipPush"] = $true
+          }
+
+          Write-Host "Launching Runner with parameters:"
+          $params | Out-String | Write-Host
+
+          & $runnerScript @params
