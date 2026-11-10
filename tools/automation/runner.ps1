@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # ProjectKnight Antigravity Automated Task Runner
 # Location: D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\runner.ps1
 # Description: Automates task discovery, branch validation, Antigravity CLI execution,
@@ -653,28 +653,8 @@ function Invoke-Execute {
 
         $process = [System.Diagnostics.Process]::Start($psi)
 
-        $stdoutSb = New-Object System.Text.StringBuilder
-        $stderrSb = New-Object System.Text.StringBuilder
-
-        $outHandler = [System.Diagnostics.DataReceivedEventHandler]{
-            param($sender, $e)
-            if ($null -ne $e.Data) {
-                Write-Host $e.Data
-                [void]$stdoutSb.AppendLine($e.Data)
-            }
-        }
-        $errHandler = [System.Diagnostics.DataReceivedEventHandler]{
-            param($sender, $e)
-            if ($null -ne $e.Data) {
-                Write-Host $e.Data
-                [void]$stderrSb.AppendLine($e.Data)
-            }
-        }
-
-        $process.add_OutputDataReceived($outHandler)
-        $process.add_ErrorDataReceived($errHandler)
-        $process.BeginOutputReadLine()
-        $process.BeginErrorReadLine()
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
 
         $timeoutMs = $Config.execution_timeout_seconds * 1000
         $finished = $process.WaitForExit($timeoutMs)
@@ -685,8 +665,10 @@ function Invoke-Execute {
             throw "Antigravity CLI execution timed out after $($Config.execution_timeout_seconds) seconds."
         }
 
-        $rawStdout = $stdoutSb.ToString()
-        $rawStderr = $stderrSb.ToString()
+        [System.Threading.Tasks.Task]::WaitAll($stdoutTask, $stderrTask)
+
+        $rawStdout = $stdoutTask.Result
+        $rawStderr = $stderrTask.Result
         $agyExitCode = $process.ExitCode
 
         [System.IO.File]::WriteAllText($jsonOutPath, $rawStdout, [System.Text.Encoding]::UTF8)
