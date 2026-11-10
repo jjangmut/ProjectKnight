@@ -1,0 +1,184 @@
+================================================================================
+PROJECT KNIGHT V3-016 GODOT SHELL EXECUTION LOG
+================================================================================
+Hardware Environment:
+  OS: Windows 11 Home 64-bit
+  GPU: NVIDIA GeForce RTX 5060 Laptop GPU
+  Driver: NVIDIA 610.47
+  Engine: Godot Engine v4.7.2.stable.official.ed1daf0bf
+  Binary: D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe
+  DisplayServer: Windows (Win32 Native Window)
+  Rendering Driver: Compatibility (OpenGL 3.3.0)
+================================================================================
+
+COMMAND 1: Focused Steady-State Benchmark Runner (Post-Optimization)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_016_benchmark_runner.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  >>> [V3-016 BENCHMARK] Initializing benchmark suite on DisplayServer Windows... <<<
+  [V3-016 BENCHMARK] Window Size: (1280, 720), VSync: 1, Target FPS: 0
+  >>> Starting Scenario: stage1_citadel_combat (Stage 1 Citadel Terrace Combat) <<<
+    Run 1/3 (warmup=60, samples=300)... Mean=16.70ms (59.9 FPS), Median=16.67ms, P95=16.87ms, P99=17.49ms, 1%Low=21.19ms, DrawCalls=248.1
+    Run 2/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.66ms, P95=16.87ms, P99=17.51ms, 1%Low=17.66ms, DrawCalls=247.4
+    Run 3/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.66ms, P95=16.86ms, P99=17.29ms, 1%Low=17.52ms, DrawCalls=247.3
+    -> SCENARIO SUMMARY: Mean=16.68ms (60.0 FPS), Median=16.67ms, P95=16.86ms, P99=17.43ms, DrawCalls=247.6
+  >>> Starting Scenario: stage3_crossbow_bastion (Stage 3 Ruined Crossbow Bastion) <<<
+    Run 1/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.86ms, P99=17.75ms, 1%Low=17.87ms, DrawCalls=185.2
+    Run 2/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.89ms, P99=17.84ms, 1%Low=17.95ms, DrawCalls=184.3
+    Run 3/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.88ms, P99=17.89ms, 1%Low=17.95ms, DrawCalls=184.3
+    -> SCENARIO SUMMARY: Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.88ms, P99=17.83ms, DrawCalls=184.6
+  >>> Starting Scenario: stage4_stone_sanctuary (Stage 4 Titan Stone Sanctuary) <<<
+    Run 1/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.66ms, P95=16.88ms, P99=17.57ms, 1%Low=17.89ms, DrawCalls=128.2
+    Run 2/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.87ms, P99=17.92ms, 1%Low=18.12ms, DrawCalls=128.0
+    Run 3/3 (warmup=60, samples=300)... Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.85ms, P99=17.59ms, 1%Low=17.95ms, DrawCalls=128.0
+    -> SCENARIO SUMMARY: Mean=16.67ms (60.0 FPS), Median=16.67ms, P95=16.86ms, P99=17.69ms, DrawCalls=128.0
+  ==================================================
+  >>> V3-016 BENCHMARK SUITE COMPLETED: ALL SCENARIOS SATISFIED 60 FPS TARGET <<<
+  ==================================================
+  Summary saved to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-016/benchmarks/BENCHMARK_SUMMARY.json
+
+--------------------------------------------------------------------------------
+COMMAND 2: High-Resolution Visual Gameplay Capture & Layout Audit
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_016_capture_and_verify.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  >>> [V3-016 CAPTURE] Running visual capture and layout audit fixture... <<<
+  [V3-016 CAPTURE] Capturing after_01_stage1_terrace_combat_1280x720.png...
+  [V3-016 CAPTURE] Capturing after_02_stage1_terrace_combat_1024x720.png...
+  [V3-016 CAPTURE] Capturing after_03_stage3_crossbow_bastion.png...
+  [V3-016 CAPTURE] Capturing after_04_player_jump_grounded_shadow_and_blade.png...
+  [V3-016 CAPTURE] Capturing after_05_stage4_golem_sanctuary.png...
+  [V3-016 CAPTURE] Capturing after_06_stage5_silent_citadel.png...
+  ==================================================
+  >>> V3-016 CAPTURE AND VERIFICATION COMPLETE: ALL 6 CAPTURES GENERATED <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 3: Visual Polish & Reward Verification Suite
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_015_visual_and_reward_verification.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  ==================================================
+  >>> V3-015 VISUAL & REWARD VERIFICATION: 28 / 28 PASSED <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 4: Full Continuous 5-Stage Campaign Smoke & Victory Flow
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_015_campaign_smoke.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  >>> [CAMPAIGN] 5-Stage Continuous Playthrough Starting... <<<
+  [CAMPAIGN] Stage 1 Cleared! Intermission displayed.
+  [CAMPAIGN] Stage 2 Cleared! Intermission displayed.
+  [CAMPAIGN] Stage 3 Cleared! Intermission displayed.
+  [CAMPAIGN] Stage 4 Cleared! Intermission displayed.
+  [CAMPAIGN] Stage 5 Arbiter Cleared! Victory Banner displayed.
+  [CAMPAIGN] Returned to Title Screen. Second deploy verified.
+  ==================================================
+  >>> V3-015 5-STAGE CONTINUOUS CAMPAIGN SMOKE: PASS <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 5: Stage-Clear Intermission Regression Suite (V3-014)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_014_stage_clear_intermission_verification.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  ==================================================
+  >>> V3-014 STAGE-CLEAR INTERMISSION VERIFICATION: 41 / 41 PASSED <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 6: Failure & Retry E2E Smoke Test (V3-013)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_013_failure_retry_smoke.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  [V3-013 SMOKE] Defeat overlay verified! Dispatching GUI click to RetryStageButton...
+  >>> [CAMPAIGN] Retry Stage Button Pressed: Reloading Stage 1... <<<
+  >>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+  [V3-013 SMOKE] Fresh Stage 1 respawn verified! Starting natural combat...
+  [V3-013 SMOKE] Transition to Stage 2 verified! Failure-Retry Loop confirmed!
+  ==================================================
+  >>> V3-013 FAILURE & RETRY SMOKE: PASS <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 7: Encounter Readability Verification Suite (V3-012)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_012_encounter_readability_verification.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  ==================================================
+  >>> V3-012 ENCOUNTER READABILITY VERIFICATION: 29 / 29 PASSED <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 8: Combat Audio Verification Suite (V3-011)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_011_audio_verification.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  ==================================================
+  >>> V3-011 AUDIO VERIFICATION COMPLETED: 31 / 31 PASSED <<<
+  ==================================================
+
+--------------------------------------------------------------------------------
+COMMAND 9: Multi-Touch & Controls Verification Suite (V3-010)
+--------------------------------------------------------------------------------
+Command:
+  & "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "Projects/ProjectKnight/CLIENT/Game" -s tests/v3_010_test_touch_repro.gd
+
+Exit Code: 0
+
+Stdout:
+  Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+  OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+  ==================================================
+  AUDIT SUMMARY: Passed=11, Failed=0
+  ==================================================
+================================================================================

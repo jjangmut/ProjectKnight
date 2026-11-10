@@ -105,6 +105,7 @@ var sprite_3d: Sprite3D
 var guard_barrier_3d: MeshInstance3D
 var slash_visual_3d: MeshInstance3D
 var attack_area_3d: Area3D
+var ground_shadow: MeshInstance3D = null
 
 # Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned 780x780 Cells)
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
@@ -213,6 +214,7 @@ func _build_components() -> void:
 	# 4.1 Ground Contact Shadow Decal
 	var shadow_mesh := MeshInstance3D.new()
 	shadow_mesh.name = "GroundContactShadow"
+	ground_shadow = shadow_mesh
 	var s_quad := QuadMesh.new()
 	s_quad.size = Vector2(0.95, 0.45)
 	shadow_mesh.mesh = s_quad
@@ -245,6 +247,23 @@ func _build_components() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_timers(delta)
+
+	# Dynamic ground-anchored shadow projection (keeps shadow grounded during jumps)
+	if ground_shadow != null and is_instance_valid(ground_shadow):
+		if is_on_floor():
+			ground_shadow.position = Vector3(0.0, 0.015, 0.0)
+			ground_shadow.scale = Vector3(1.0, 1.0, 1.0)
+			if ground_shadow.material_override is StandardMaterial3D:
+				(ground_shadow.material_override as StandardMaterial3D).albedo_color.a = 0.55
+		else:
+			ground_shadow.global_position.y = 0.015
+			ground_shadow.global_position.x = global_position.x
+			ground_shadow.global_position.z = 0.0
+			var height_above_ground: float = maxf(0.0, global_position.y - 0.1)
+			var shadow_scale: float = clampf(1.0 - (height_above_ground * 0.16), 0.40, 1.0)
+			ground_shadow.scale = Vector3(shadow_scale, shadow_scale, shadow_scale)
+			if ground_shadow.material_override is StandardMaterial3D:
+				(ground_shadow.material_override as StandardMaterial3D).albedo_color.a = 0.55 * shadow_scale
 
 	# Apply Gravity in 3D & Track Floor Transitions (Coyote Time + Landing Buffs)
 	var on_floor_now := is_on_floor()
@@ -984,7 +1003,7 @@ func _generate_slash_arc_mesh(r_out: float, r_in: float, arc_deg: float, segment
 		var v_in1 := Vector3(cos(a1) * r_inner1, sin(a1) * r_inner1, 0.0)
 		var v_out1 := Vector3(cos(a1) * r_outer1, sin(a1) * r_outer1, 0.0)
 
-		# Double-sided quad (4 triangles)
+		# Single quad (2 triangles); material cull_mode = CULL_DISABLED provides double-sided visibility with zero redundant overdraw
 		st.add_vertex(v_in0)
 		st.add_vertex(v_out0)
 		st.add_vertex(v_out1)
@@ -992,14 +1011,6 @@ func _generate_slash_arc_mesh(r_out: float, r_in: float, arc_deg: float, segment
 		st.add_vertex(v_in0)
 		st.add_vertex(v_out1)
 		st.add_vertex(v_in1)
-
-		st.add_vertex(v_out1)
-		st.add_vertex(v_out0)
-		st.add_vertex(v_in0)
-
-		st.add_vertex(v_in1)
-		st.add_vertex(v_out1)
-		st.add_vertex(v_in0)
 
 	st.generate_normals()
 	return st.commit()

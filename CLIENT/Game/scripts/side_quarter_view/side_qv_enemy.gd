@@ -23,6 +23,7 @@ var recoil_timer: float = 0.0
 
 var sprite_3d: Sprite3D
 var attack_area_3d: Area3D
+var ground_shadow: MeshInstance3D = null
 var hp_bar_fill: MeshInstance3D = null
 
 const MeleeTexture = preload("res://assets/enemy_frames/melee_v1.png")
@@ -88,6 +89,7 @@ func _build_components() -> void:
 	# Soft Ground Contact Shadow Decal
 	var shadow_mesh := MeshInstance3D.new()
 	shadow_mesh.name = "GroundContactShadow"
+	ground_shadow = shadow_mesh
 	var s_quad := QuadMesh.new()
 	s_quad.size = Vector2(0.85, 0.40)
 	shadow_mesh.mesh = s_quad
@@ -151,6 +153,15 @@ const ATTACK_DURATION: float = 0.28
 func _physics_process(delta: float) -> void:
 	velocity.z = 0.0
 	global_position.z = 0.0
+
+	# Anchor ground shadow to floor level
+	if ground_shadow != null and is_instance_valid(ground_shadow):
+		if is_on_floor():
+			ground_shadow.position = Vector3(0.0, 0.015, 0.0)
+		else:
+			ground_shadow.global_position.y = 0.015
+			ground_shadow.global_position.x = global_position.x
+			ground_shadow.global_position.z = 0.0
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 

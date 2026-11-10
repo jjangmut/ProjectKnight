@@ -53,6 +53,7 @@ var facing_dir_x: float = -1.0 # Typically faces player to the left
 var sprite_3d: Sprite3D
 var aura_ring_3d: MeshInstance3D
 var attack_area_3d: Area3D
+var ground_shadow: MeshInstance3D = null
 
 const BossTextureNormal = preload("res://assets/enemy_frames/boss_commander_v2.png")
 const BossTextureDefense = preload("res://assets/enemy_frames/boss_commander_v2_defense.png")
@@ -91,6 +92,7 @@ func _build_components() -> void:
 	# Boss Soft Ground Contact Shadow Decal
 	var shadow_mesh := MeshInstance3D.new()
 	shadow_mesh.name = "GroundContactShadow"
+	ground_shadow = shadow_mesh
 	var s_quad := QuadMesh.new()
 	s_quad.size = Vector2(1.8, 0.75)
 	shadow_mesh.mesh = s_quad
@@ -153,6 +155,15 @@ func _build_components() -> void:
 func _physics_process(delta: float) -> void:
 	velocity.z = 0.0
 	global_position.z = 0.0
+
+	# Anchor ground shadow to floor level
+	if ground_shadow != null and is_instance_valid(ground_shadow):
+		if is_on_floor():
+			ground_shadow.position = Vector3(0.0, 0.015, 0.0)
+		else:
+			ground_shadow.global_position.y = 0.015
+			ground_shadow.global_position.x = global_position.x
+			ground_shadow.global_position.z = 0.0
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
