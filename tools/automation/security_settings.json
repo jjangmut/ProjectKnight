@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "read_file(*)",
+      "edit_file(*)",
+      "write_file(*)",
+      "command(*)"
+    ],
+    "deny": [
+      "command(*format*)",
+      "command(*rmdir*)",
+      "command(*Remove-Item*)",
+      "command(*del /s*)",
+      "command(*del /f /s*)",
+      "command(*del *.* /s*)",
+      "command(*git push --force*)",
+      "command(*git push -f*)",
+      "command(*git reset --hard*)",
+      "command(*git clean -fdx*)",
+      "command(*git clean -f*)",
+      "command(*curl*)",
+      "command(*wget*)",
+      "command(*Invoke-WebRequest*)",
+      "command(*powershell -enc*)",
+      "command(*powershell -encodedcommand*)",
+      "command(*cmd.exe /c del*)"
+    ]
+  }
+}

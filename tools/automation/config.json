@@ -1,0 +1,41 @@
+{
+  "project_name": "ProjectKnight",
+  "repository": "jjangmut/ProjectKnight",
+  "local_repo_path": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight",
+  "worktree_path": "D:\\JUNYPAPA_STUDIO\\Automation\\ProjectKnight\\worktree",
+  "tasks_relative_dir": "STUDIO_V3/tasks",
+  "godot_binary": "D:\\JUNYPAPA_STUDIO\\Tools\\Godot\\4.7.2\\Godot_v4.7.2-stable_win64_console.exe",
+  "agy_binary": "C:\\Users\\jjang\\AppData\\Local\\agy\\bin\\agy.exe",
+  "agy_settings_path": "D:\\JUNYPAPA_STUDIO\\Automation\\ProjectKnight\\security_settings.json",
+  "allowed_branch_patterns": [
+    "^studio/v3-[0-9a-z\\-]+$",
+    "^test/v3-[0-9a-z\\-]+$"
+  ],
+  "forbidden_branches": [
+    "main",
+    "master",
+    "integration",
+    "HEAD"
+  ],
+  "forbidden_change_patterns": [
+    "^\\.git/",
+    "^Automation/",
+    "^STUDIO_V3/evidence/(?!{{TASK_ID}}/).*",
+    "^STUDIO_V3/tasks/(?!{{TASK_ID}}\\.md).*"
+  ],
+  "allowed_change_patterns": [
+    "^CLIENT/Game/",
+    "^STUDIO_V3/evidence/{{TASK_ID}}/",
+    "^STUDIO_V3/reviews/",
+    "^STUDIO_V3/tasks/{{TASK_ID}}\\.md$",
+    "^STUDIO_V3/docs/",
+    "^\\.github/workflows/",
+    "^tools/",
+    "^STATE\\.md$"
+  ],
+  "require_manual_approval": true,
+  "execution_timeout_seconds": 1800,
+  "max_retries": 1,
+  "auto_push_on_success": true,
+  "log_level": "INFO"
+}
