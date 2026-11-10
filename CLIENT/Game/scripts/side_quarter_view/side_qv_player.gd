@@ -190,29 +190,40 @@ func _build_components() -> void:
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
 
-	# 4. 3D Melee Thrust VFX (Sleek Translucent Radiant Spear Streak)
+	# 4. 3D Melee Radiant Slash VFX (Curved Blade Arc with High-Energy Core)
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
-	var thrust_cyl := CylinderMesh.new()
-	thrust_cyl.top_radius = 0.008
-	thrust_cyl.bottom_radius = 0.085
-	thrust_cyl.height = 1.75
-	thrust_cyl.radial_segments = 8
-	slash_visual_3d.mesh = thrust_cyl
+	slash_visual_3d.mesh = _generate_slash_arc_mesh(1.35, 0.55, 110.0, 16)
 
 	var smat := StandardMaterial3D.new()
-	smat.albedo_color = Color(3.2, 2.7, 1.4, 0.72) # Semi-transparent Golden-White Holy Thrust Streak
+	smat.albedo_color = Color(3.6, 2.8, 1.2, 0.88) # Radiant Golden-White Blade Arc
 	smat.emission_enabled = true
-	smat.emission = Color(3.2, 2.6, 1.2, 1.0)
-	smat.emission_energy_multiplier = 4.2
+	smat.emission = Color(3.6, 2.6, 1.0, 1.0)
+	smat.emission_energy_multiplier = 4.5
 	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	slash_visual_3d.material_override = smat
 	slash_visual_3d.scale = Vector3(1.0, 1.0, 1.0)
-	slash_visual_3d.position = Vector3(1.15, 0.92, 0.0)
-	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0)
+	slash_visual_3d.position = Vector3(0.55, 0.95, 0.0)
+	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, 0.0)
 	slash_visual_3d.visible = false
 	add_child(slash_visual_3d)
+
+	# 4.1 Ground Contact Shadow Decal
+	var shadow_mesh := MeshInstance3D.new()
+	shadow_mesh.name = "GroundContactShadow"
+	var s_quad := QuadMesh.new()
+	s_quad.size = Vector2(0.95, 0.45)
+	shadow_mesh.mesh = s_quad
+	shadow_mesh.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	shadow_mesh.position = Vector3(0.0, 0.015, 0.0)
+	var sh_mat := StandardMaterial3D.new()
+	sh_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sh_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sh_mat.albedo_color = Color(0.02, 0.03, 0.05, 0.55)
+	shadow_mesh.material_override = sh_mat
+	add_child(shadow_mesh)
 
 	# 5. Attack Hitbox Area3D (Keep monitoring active so overlaps are always fresh!)
 	attack_area_3d = Area3D.new()
@@ -372,7 +383,7 @@ func _process_movement(delta: float) -> void:
 		facing_dir_x = signf(input_x)
 		attack_area_3d.position.x = 1.0 * facing_dir_x
 		guard_barrier_3d.position.x = 0.6 * facing_dir_x
-		slash_visual_3d.position.x = 1.15 * facing_dir_x
+		slash_visual_3d.position.x = 0.55 * facing_dir_x
 		velocity.x = input_x * move_speed_x
 		velocity.z = 0.0
 		move_direction = Vector3(facing_dir_x, 0.0, 0.0)
@@ -623,13 +634,28 @@ func start_attack() -> void:
 
 	attack_area_3d.position.x = 1.0 * facing_dir_x
 	slash_visual_3d.visible = true
-	slash_visual_3d.position = Vector3(facing_dir_x * 1.15, 0.92, 0.0)
-	slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -90.0 * facing_dir_x)
-	slash_visual_3d.scale = Vector3(0.35, 0.35, 0.35)
+	slash_visual_3d.position = Vector3(facing_dir_x * 0.55, 0.95, 0.0)
 	var thrust_tween := create_tween()
 	if thrust_tween:
-		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.85, 1.25, 0.85), 0.06)
-		thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(0.15, 0.5, 0.15), 0.12)
+		thrust_tween.set_parallel(true)
+		if combo_step == 1:
+			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -30.0 * facing_dir_x)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.12)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.15, 1.15, 1.15), 0.06)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
+		elif combo_step == 2:
+			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, 35.0 * facing_dir_x)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.12)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.25, 1.25, 1.25), 0.06)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
+		else: # Combo 3 Finisher
+			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, 65.0 * facing_dir_x)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.50, 0.50, 0.50)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.14)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.45, 1.45, 1.45), 0.07)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
@@ -933,6 +959,50 @@ func _spawn_hit_impact_vfx(hit_pos: Vector3, is_counter: bool) -> void:
 		stw.tween_property(spark, "scale", Vector3(2.2, 2.2, 2.2), 0.14)
 		stw.tween_property(smat, "albedo_color:a", 0.0, 0.14)
 		stw.chain().tween_callback(spark.queue_free)
+
+
+func _generate_slash_arc_mesh(r_out: float, r_in: float, arc_deg: float, segments: int) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var half_arc := deg_to_rad(arc_deg * 0.5)
+
+	for i in range(segments):
+		var t0 := float(i) / float(segments)
+		var t1 := float(i + 1) / float(segments)
+		var a0 := -half_arc + t0 * (half_arc * 2.0)
+		var a1 := -half_arc + t1 * (half_arc * 2.0)
+
+		var taper0 := sin(t0 * PI)
+		var taper1 := sin(t1 * PI)
+		var r_inner0 := r_in + (r_out - r_in) * (1.0 - taper0) * 0.40
+		var r_outer0 := r_out - (r_out - r_in) * (1.0 - taper0) * 0.10
+		var r_inner1 := r_in + (r_out - r_in) * (1.0 - taper1) * 0.40
+		var r_outer1 := r_out - (r_out - r_in) * (1.0 - taper1) * 0.10
+
+		var v_in0 := Vector3(cos(a0) * r_inner0, sin(a0) * r_inner0, 0.0)
+		var v_out0 := Vector3(cos(a0) * r_outer0, sin(a0) * r_outer0, 0.0)
+		var v_in1 := Vector3(cos(a1) * r_inner1, sin(a1) * r_inner1, 0.0)
+		var v_out1 := Vector3(cos(a1) * r_outer1, sin(a1) * r_outer1, 0.0)
+
+		# Double-sided quad (4 triangles)
+		st.add_vertex(v_in0)
+		st.add_vertex(v_out0)
+		st.add_vertex(v_out1)
+
+		st.add_vertex(v_in0)
+		st.add_vertex(v_out1)
+		st.add_vertex(v_in1)
+
+		st.add_vertex(v_out1)
+		st.add_vertex(v_out0)
+		st.add_vertex(v_in0)
+
+		st.add_vertex(v_in1)
+		st.add_vertex(v_out1)
+		st.add_vertex(v_in0)
+
+	st.generate_normals()
+	return st.commit()
 
 
 func _execute_pogo_bounce() -> void:

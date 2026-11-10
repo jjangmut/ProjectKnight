@@ -85,6 +85,21 @@ func _build_components() -> void:
 	attack_area_3d.body_entered.connect(_on_attack_body_entered)
 	_build_overhead_hp_bar()
 
+	# Soft Ground Contact Shadow Decal
+	var shadow_mesh := MeshInstance3D.new()
+	shadow_mesh.name = "GroundContactShadow"
+	var s_quad := QuadMesh.new()
+	s_quad.size = Vector2(0.85, 0.40)
+	shadow_mesh.mesh = s_quad
+	shadow_mesh.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	shadow_mesh.position = Vector3(0.0, 0.015, 0.0)
+	var sh_mat := StandardMaterial3D.new()
+	sh_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sh_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sh_mat.albedo_color = Color(0.02, 0.03, 0.05, 0.50)
+	shadow_mesh.material_override = sh_mat
+	add_child(shadow_mesh)
+
 
 func _build_overhead_hp_bar() -> void:
 	var bar_root := Node3D.new()

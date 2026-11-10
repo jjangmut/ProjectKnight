@@ -1,0 +1,175 @@
+================================================================================
+PROJECT KNIGHT V3-015 EXECUTION COMMANDS, LOGS & EXIT CODES
+================================================================================
+Timestamp: 2026-11-10T12:47:00
+Hardware: NVIDIA GeForce RTX 5060 Laptop GPU, Windows 11
+Engine: Godot Engine v4.7.2.stable.official.ed1daf0bf (Compatibility OpenGL3)
+
+--------------------------------------------------------------------------------
+COMMAND 1: BASELINE CAPTURES & PERFORMANCE AUDIT
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_015_capture_before.gd" --rendering-driver opengl3 --audio-driver Dummy
+
+Stdout:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+>>> [V3-015 BASELINE] Initializing multi-stage gameplay visual audit fixture... <<<
+[V3-015 BASELINE] Captured Stage 1 Terrace combat frame.
+[V3-015 BASELINE] Saved BASELINE_PERFORMANCE.json.
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+[V3-015 BASELINE] Captured Stage 3 Crossbow Bastion frame.
+[V3-015 BASELINE] Captured Stage 4 Stone Sanctuary frame.
+[V3-015 BASELINE] Captured Stage 5 Silent Citadel frame.
+[V3-015 BASELINE] Multi-stage baseline visual audit complete.
+
+Exit Code: 0
+
+--------------------------------------------------------------------------------
+COMMAND 2: UNIT VISUAL QUALITY & REWARD INTEGRITY VERIFICATION
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_015_visual_and_reward_verification.gd" --rendering-driver opengl3 --audio-driver Dummy
+
+Stdout:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+
+>>> [V3-015 VERIFY] Initializing Visual Quality & Reward Integrity Verification... <<<
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[PASS] Check 1: Campaign loads Stage 1 instance
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 1, Authoritative Earned Shards=20 <<<
+[PASS] Check 2: StageClearOverlay displayed on clear
+[PASS] Check 3: RewardLabel exists in intermission
+[PASS] Check 4: Positive Path: RewardLabel shows authoritative '+ 20 SOUL SHARDS EARNED'
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 1, Authoritative Reward Unavailable <<<
+[PASS] Check 5: Negative Path: StageClearOverlay recreated
+[PASS] Check 6: Negative Path: RewardLabel shows explicit '💎 REWARD UNAVAILABLE'
+[PASS] Check 7: Negative Path: No speculative +20 fabricated
+[PASS] Check 8: Stage 1 PanoramicCastleBackdrop exists
+[PASS] Check 9: Stage 1 Backdrop has atmospheric aerial depth tint (albedo != 1.0, 1.0, 1.0)
+[PASS] Check 10: Stage 1 Backdrop matches twilight atmospheric tint (Color(0.72, 0.78, 0.90, 1.0))
+[PASS] Check 11: Stage 1 ArenaFloor exists
+[PASS] Check 12: Stage 1 Floor material roughness is high tactile quality (>= 0.80)
+[PASS] Check 13: Stage 1 CentralRunicSeal exists
+[PASS] Check 14: Stage 1 Runic seal emission is enhanced for holy radiance (>= 3.5)
+[PASS] Check 15: Player exists in Stage 1
+[PASS] Check 16: Player has GroundContactShadow decal mesh
+[PASS] Check 17: Player shadow decal position Y is 0.015 (grounded)
+[PASS] Check 18: Player shadow strictly coplanar Z=0
+[PASS] Check 19: Player SlashVisual3D exists
+[PASS] Check 20: SlashVisual3D uses procedural ArrayMesh (curved crescent blade arc)
+[PASS] Check 21: Slash material has double-sided rendering (cull_mode disabled)
+[PASS] Check 22: Slash material has radiant HDR emission (>= 4.0)
+[PASS] Check 23: Minion_1 exists in Stage 1
+[PASS] Check 24: Minion_1 has GroundContactShadow decal mesh
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+[PASS] Check 25: Stage 3 RuinedBastionBackdrop exists
+[PASS] Check 26: Stage 3 Backdrop has high-contrast cobalt tint (Color(0.50, 0.60, 0.82, 1.0))
+[PASS] Check 27: Stage 3 Floating Shard exists
+[PASS] Check 28: Stage 3 Floating Shards have enhanced arcane emission (>= 2.7)
+================================================================================
+[V3-015 VERIFY SUMMARY] Total: 28 | Passed: 28 | Failed: 0
+================================================================================
+Saved verification result to: D:/JUNYPAPA_STUDIO/Projects/ProjectKnight/STUDIO_V3/evidence/V3-015/VISUAL_AND_REWARD_VERIFICATION_RESULT.json
+>>> ALL V3-015 UNIT CHECKS PASSED SUCCESSFULLY! <<<
+
+Exit Code: 0
+
+--------------------------------------------------------------------------------
+COMMAND 3: AFTER CAPTURES & PERFORMANCE MEASUREMENT
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_015_capture_and_verify.gd" --rendering-driver opengl3 --audio-driver Dummy
+
+Stdout:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+>>> [V3-015 AFTER] Initializing visual polish after-capture fixture... <<<
+[V3-015 AFTER] Captured Stage 1 Terrace combat 1280x720 frame.
+[V3-015 AFTER] Saved AFTER_PERFORMANCE.json.
+[V3-015 AFTER] Captured Stage 1 Terrace combat 1024x720 layout frame.
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+[V3-015 AFTER] Captured Stage 3 Ruined Bastion frame.
+[V3-015 AFTER] Captured Player curved slash combat frame.
+[V3-015 AFTER] All after captures and performance samples successfully recorded.
+
+Exit Code: 0
+
+--------------------------------------------------------------------------------
+COMMAND 4: FULL CONTINUOUS 5-STAGE CAMPAIGN SMOKE TEST
+--------------------------------------------------------------------------------
+Command:
+& "D:\JUNYPAPA_STUDIO\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe" --path "D:\JUNYPAPA_STUDIO\Projects\ProjectKnight\CLIENT\Game" -s "res://tests/v3_015_campaign_smoke.gd" --rendering-driver opengl3 --audio-driver Dummy
+
+Stdout:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.47 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5060 Laptop GPU
+[V3-015 E2E] Initializing Stage 5 real input-only E2E playthrough test...
+[0.000s] TitleScreen successfully instantiated into root scene tree.
+[0.417s] Dispatching real InputEventMouseButton PRESS to Deploy button center: (971.5, 216.0)
+[0.417s] Captured high-res viewport screenshot: 01_title_deploy_click.png (1280x720)
+[0.433s] Dispatching real InputEventMouseButton RELEASE to Deploy button center: (971.5, 216.0)
+[0.433s] [OBSERVATION] btn_new_game.pressed callback received! count=1
+[0.450s] Real GUI input verified: title_click_count == 1! Awaiting Stage 1 Campaign load...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[0.467s] Stage 1 Entry verified: Citadel Terrace Gate active. Player at X=-8.00
+[1.942s] Stage 1 Wave 1 minions cleared! Awaiting Stage 1 Commander boss...
+[5.791s] Stage 1 Commander boss defeated naturally!
+>>> [CAMPAIGN] Stage 1 CLEARED! <<<
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 1, Authoritative Earned Shards=20 <<<
+[7.776s] [OBSERVATION] Stage 1 stage_cleared callback received! count=1
+[7.793s] Clicking ContinueStageButton on Stage 1 StageClearOverlay...
+>>> [CAMPAIGN] Continue Button Pressed: Advancing to Stage 2... <<<
+>>> [CAMPAIGN] Loaded Stage 2: 야수숲 (Beastwood Forest Gorge) <<<
+[7.810s] Stage 2 Natural Entry Verified: Beastwood Forest Gorge loaded. Player at X=-8.00, Z=0.00
+[9.874s] Stage 2 Wave 1 Cleared: Both Beast Minions defeated naturally! Advancing to Chieftain...
+[13.392s] Beast Chieftain defeated naturally! Awaiting Stage 2 clear...
+>>> [CAMPAIGN] Stage 2 CLEARED! <<<
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 2, Authoritative Earned Shards=25 <<<
+[15.394s] [OBSERVATION] Stage 2 stage_cleared callback received! count=1
+[15.411s] Clicking ContinueStageButton on Stage 2 StageClearOverlay...
+>>> [CAMPAIGN] Continue Button Pressed: Advancing to Stage 3... <<<
+>>> [STAGE 3] Wave 1 Started: 2 Ranged Crossbow Minions Spawned <<<
+>>> [CAMPAIGN] Loaded Stage 3: 무너진 성벽 (Ruined Crossbow Bastion) <<<
+[15.427s] Stage 3 Natural Entry Verified: Ruined Crossbow Bastion loaded.
+[16.967s] Stage 3 Wave 1 Cleared: Both Crossbow Minions defeated naturally! Advancing to Crossbow Commander...
+>>> [STAGE 3] Wave 2 Started: SideQVCrossbowCommander Emerged! <<<
+[20.284s] Crossbow Commander defeated naturally! Awaiting Stage 3 clear...
+>>> [CAMPAIGN] Stage 3 CLEARED! <<<
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 3, Authoritative Earned Shards=30 <<<
+[22.286s] [OBSERVATION] Stage 3 stage_cleared callback received! count=1
+[22.303s] Clicking ContinueStageButton on Stage 3 StageClearOverlay...
+>>> [CAMPAIGN] Continue Button Pressed: Advancing to Stage 4... <<<
+>>> [CAMPAIGN] Loaded Stage 4: 돌의 성소 (Titan Stone Sanctuary) <<<
+[22.319s] Stage 4 Natural Entry Verified: Titan Stone Sanctuary loaded. Player at X=-8.00, Z=0.00
+[25.090s] Stage 4 Wave 1 Cleared: Both Heavy Golems defeated! Advancing to Golem Guardian...
+[28.533s] Golem Guardian defeated naturally! Awaiting Stage 4 clear...
+>>> [CAMPAIGN] Stage 4 CLEARED! <<<
+>>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage 4, Authoritative Earned Shards=35 <<<
+[30.519s] [OBSERVATION] Stage 4 stage_cleared callback received! count=1
+[30.535s] Clicking ContinueStageButton on Stage 4 StageClearOverlay...
+>>> [CAMPAIGN] Continue Button Pressed: Advancing to Stage 5... <<<
+>>> [CAMPAIGN] Loaded Stage 5: 침묵의 성채 (Silent Abyssal Citadel) <<<
+[30.552s] Stage 5 Natural Entry Verified: Silent Citadel active. Player at X=-8.00, Z=0.00
+[32.449s] Stage 5 Wave 1 Cleared: Both Elite Knights defeated! Unique IDs: [134167398093, 134502942993]. Advancing to Abyssal Arbiter...
+[33.418s] Stage 5 Boss Spawn Verified: Abyssal Arbiter active with HP=38/38, Poise=18 at X=12.13, Z=0.00
+[36.727s] [OBSERVATION] Arbiter phase_changed callback received! phase=2 count=1
+[40.759s] [OBSERVATION] Arbiter boss_defeated callback received! count=1
+[40.760s] Abyssal Arbiter defeated naturally with real inputs! HP reached 0
+>>> [CAMPAIGN] Stage 5 CLEARED! <<<
+>>> [CAMPAIGN] CONGRATULATIONS! ALL 5 STAGES CLEARED! <<<
+[42.751s] [OBSERVATION] SideQVCampaign.campaign_completed callback received! count=1
+[42.751s] [OBSERVATION] Stage 5 stage_cleared callback received! count=1
+[42.785s] CAMPAIGN VICTORY VERIFIED! CampaignVictoryPanel found with Replay & Title buttons.
+[42.818s] Clicking ReturnTitleButton on CampaignVictoryPanel...
+>>> [CAMPAIGN] Return to Title Button Pressed: Loading TitleScreen... <<<
+[42.918s] RETURN TO TITLE VERIFIED! TitleScreen node instantiated in root.
+[42.968s] Clicking Deploy (btn_new_game) on TitleScreen for second campaign start...
+>>> [CAMPAIGN] Loaded Stage 1: 성문 외곽 (Citadel Terrace Gate) <<<
+[43.018s] SECOND CAMPAIGN START VERIFIED! SideQVCampaign reloaded cleanly from TitleScreen.
+[43.068s] >>> ALL REAL INPUT E2E CHECKS PASSED: CAMPAIGN VICTORY CONFIRMED! <<<
+[43.068s] Evidence artifacts successfully exported under STUDIO_V3/evidence/V3-015/
+
+Exit Code: 0
+================================================================================

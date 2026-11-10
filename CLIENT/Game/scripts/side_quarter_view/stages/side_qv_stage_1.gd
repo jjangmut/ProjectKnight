@@ -28,9 +28,45 @@ func _init() -> void:
 	stage_title = "성문 외곽"
 
 
+func _setup_3d_environment() -> void:
+	# Stage 1 Dawn Citadel Terrace Ambience & WorldEnvironment
+	var world_env := WorldEnvironment.new()
+	world_env.name = "WorldEnvironment3D"
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.65, 0.76, 0.90, 1.0)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.72, 0.78, 0.92, 1.0)
+	env.ambient_light_energy = 1.18
+	env.glow_enabled = true
+	env.set("glow_levels/1", 1.0)
+	env.set("glow_levels/2", 1.0)
+	env.set("glow_levels/4", 0.5)
+	env.glow_bloom = 0.22
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
+	env.glow_hdr_threshold = 0.95
+	env.glow_hdr_scale = 1.45
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.52, 0.62, 0.80, 1.0)
+	env.fog_density = 0.016
+	env.fog_aerial_perspective = 0.48
+	world_env.environment = env
+	add_child(world_env)
+
+	var sun := DirectionalLight3D.new()
+	sun.name = "SunLight3D"
+	sun.shadow_enabled = true
+	sun.light_color = Color(1.0, 0.96, 0.90, 1.0)
+	sun.light_energy = 1.45
+	sun.rotation_degrees = Vector3(-46.0, -32.0, 0.0)
+	add_child(sun)
+
+	_spawn_stage_floating_particles("CitadelDustEmbers", Color(2.4, 1.9, 0.9, 0.85), Vector3(0.18, 0.42, 0.0), 54)
+
+
 func _setup_3d_background_architecture() -> void:
 	# -------------------------------------------------------------
-	# 1. Distant Panoramic Castle Vista Backdrop (Epic Mountain Vista)
+	# 1. Distant Panoramic Castle Vista Backdrop (Tonal Aerial Depth)
 	# -------------------------------------------------------------
 	var backdrop_mesh := MeshInstance3D.new()
 	backdrop_mesh.name = "PanoramicCastleBackdrop"
@@ -41,7 +77,7 @@ func _setup_3d_background_architecture() -> void:
 	var bmat := StandardMaterial3D.new()
 	bmat.albedo_texture = TexBackdrop
 	bmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	bmat.albedo_color = Color(1.0, 1.0, 1.0, 1.0)
+	bmat.albedo_color = Color(0.72, 0.78, 0.90, 1.0) # Atmospheric aerial depth tint
 	bmat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	backdrop_mesh.material_override = bmat
 	backdrop_mesh.position = Vector3(0.0, 3.8, -13.5)
@@ -61,7 +97,8 @@ func _setup_3d_background_architecture() -> void:
 	floor_mat.albedo_texture = TexFlagstone
 	floor_mat.uv1_triplanar = true
 	floor_mat.uv1_scale = Vector3(0.35, 0.35, 0.35)
-	floor_mat.roughness = 0.70
+	floor_mat.albedo_color = Color(0.85, 0.88, 0.95, 1.0)
+	floor_mat.roughness = 0.82
 	floor_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	floor_box.material_override = floor_mat
 	add_child(floor_box)
@@ -78,14 +115,15 @@ func _setup_3d_background_architecture() -> void:
 	var smat := StandardMaterial3D.new()
 	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	smat.albedo_texture = TexRunicCircle
+	smat.albedo_color = Color(1.0, 0.94, 0.70, 0.95)
 	smat.emission_enabled = true
 	smat.emission_texture = TexRunicCircle
-	smat.emission_energy_multiplier = 2.4
+	smat.emission_energy_multiplier = 3.6
 	smat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	runic_seal.material_override = smat
 	add_child(runic_seal)
 
-	# Decorative Stone Curb Trim (Front & Back boundaries)
+	# Decorative Stone Curb Trim (Front & Back boundaries with subtle rune accent)
 	_build_curb_border(Vector3(0.0, 0.04, -arena_depth * 0.5 + 0.3), Vector3(arena_width, 0.08, 0.5))
 	_build_curb_border(Vector3(0.0, 0.04, arena_depth * 0.5 - 0.3), Vector3(arena_width, 0.08, 0.5))
 
@@ -180,8 +218,11 @@ func _build_curb_border(pos: Vector3, size: Vector3) -> void:
 	curb.size = size
 	curb.position = pos
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.35, 0.42, 0.55, 1.0)
-	mat.roughness = 0.5
+	mat.albedo_color = Color(0.38, 0.46, 0.60, 1.0)
+	mat.roughness = 0.55
+	mat.emission_enabled = true
+	mat.emission = Color(0.18, 0.38, 0.72, 1.0)
+	mat.emission_energy_multiplier = 1.35
 	curb.material_override = mat
 	add_child(curb)
 
@@ -335,9 +376,9 @@ func _build_torch(pos: Vector3, index: int) -> void:
 	# Dynamic Warm Torch Light
 	var torch_light := OmniLight3D.new()
 	torch_light.name = "TorchLight"
-	torch_light.light_color = Color(1.8, 1.2, 0.5, 1.0)
-	torch_light.light_energy = 2.4
-	torch_light.omni_range = 9.0
+	torch_light.light_color = Color(1.9, 1.25, 0.55, 1.0)
+	torch_light.light_energy = 2.8
+	torch_light.omni_range = 10.5
 	torch_light.position = Vector3(0.0, 0.35, 0.0)
 	torch_root.add_child(torch_light)
 

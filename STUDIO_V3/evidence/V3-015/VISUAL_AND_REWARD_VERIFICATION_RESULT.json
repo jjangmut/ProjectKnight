@@ -1,0 +1,178 @@
+{
+	"all_passed": true,
+	"checks": [
+		{
+			"check_id": 1,
+			"condition": true,
+			"description": "Campaign loads Stage 1 instance",
+			"status": "PASS"
+		},
+		{
+			"check_id": 2,
+			"condition": true,
+			"description": "StageClearOverlay displayed on clear",
+			"status": "PASS"
+		},
+		{
+			"check_id": 3,
+			"condition": true,
+			"description": "RewardLabel exists in intermission",
+			"status": "PASS"
+		},
+		{
+			"check_id": 4,
+			"condition": true,
+			"description": "Positive Path: RewardLabel shows authoritative '+ 20 SOUL SHARDS EARNED'",
+			"status": "PASS"
+		},
+		{
+			"check_id": 5,
+			"condition": true,
+			"description": "Negative Path: StageClearOverlay recreated",
+			"status": "PASS"
+		},
+		{
+			"check_id": 6,
+			"condition": true,
+			"description": "Negative Path: RewardLabel shows explicit '💎 REWARD UNAVAILABLE'",
+			"status": "PASS"
+		},
+		{
+			"check_id": 7,
+			"condition": true,
+			"description": "Negative Path: No speculative +20 fabricated",
+			"status": "PASS"
+		},
+		{
+			"check_id": 8,
+			"condition": true,
+			"description": "Stage 1 PanoramicCastleBackdrop exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 9,
+			"condition": true,
+			"description": "Stage 1 Backdrop has atmospheric aerial depth tint (albedo != 1.0, 1.0, 1.0)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 10,
+			"condition": true,
+			"description": "Stage 1 Backdrop matches twilight atmospheric tint (Color(0.72, 0.78, 0.90, 1.0))",
+			"status": "PASS"
+		},
+		{
+			"check_id": 11,
+			"condition": true,
+			"description": "Stage 1 ArenaFloor exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 12,
+			"condition": true,
+			"description": "Stage 1 Floor material roughness is high tactile quality (>= 0.80)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 13,
+			"condition": true,
+			"description": "Stage 1 CentralRunicSeal exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 14,
+			"condition": true,
+			"description": "Stage 1 Runic seal emission is enhanced for holy radiance (>= 3.5)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 15,
+			"condition": true,
+			"description": "Player exists in Stage 1",
+			"status": "PASS"
+		},
+		{
+			"check_id": 16,
+			"condition": true,
+			"description": "Player has GroundContactShadow decal mesh",
+			"status": "PASS"
+		},
+		{
+			"check_id": 17,
+			"condition": true,
+			"description": "Player shadow decal position Y is 0.015 (grounded)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 18,
+			"condition": true,
+			"description": "Player shadow strictly coplanar Z=0",
+			"status": "PASS"
+		},
+		{
+			"check_id": 19,
+			"condition": true,
+			"description": "Player SlashVisual3D exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 20,
+			"condition": true,
+			"description": "SlashVisual3D uses procedural ArrayMesh (curved crescent blade arc)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 21,
+			"condition": true,
+			"description": "Slash material has double-sided rendering (cull_mode disabled)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 22,
+			"condition": true,
+			"description": "Slash material has radiant HDR emission (>= 4.0)",
+			"status": "PASS"
+		},
+		{
+			"check_id": 23,
+			"condition": true,
+			"description": "Minion_1 exists in Stage 1",
+			"status": "PASS"
+		},
+		{
+			"check_id": 24,
+			"condition": true,
+			"description": "Minion_1 has GroundContactShadow decal mesh",
+			"status": "PASS"
+		},
+		{
+			"check_id": 25,
+			"condition": true,
+			"description": "Stage 3 RuinedBastionBackdrop exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 26,
+			"condition": true,
+			"description": "Stage 3 Backdrop has high-contrast cobalt tint (Color(0.50, 0.60, 0.82, 1.0))",
+			"status": "PASS"
+		},
+		{
+			"check_id": 27,
+			"condition": true,
+			"description": "Stage 3 Floating Shard exists",
+			"status": "PASS"
+		},
+		{
+			"check_id": 28,
+			"condition": true,
+			"description": "Stage 3 Floating Shards have enhanced arcane emission (>= 2.7)",
+			"status": "PASS"
+		}
+	],
+	"failed_checks": 0,
+	"milestone": "V3-015",
+	"passed_checks": 28,
+	"timestamp": "2026-11-10T12:41:29",
+	"total_checks": 28
+}

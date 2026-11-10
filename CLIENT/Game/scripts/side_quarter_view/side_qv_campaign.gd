@@ -116,14 +116,14 @@ func _on_stage_cleared() -> void:
 
 
 func _show_stage_clear_intermission() -> void:
-	var earned_shards: int = 20
+	var earned_shards: int = -1
 	if current_stage_instance != null and "last_earned_shards" in current_stage_instance and current_stage_instance.last_earned_shards > 0:
 		earned_shards = current_stage_instance.last_earned_shards
-	else:
-		var shard_rewards := { 0: 20, 1: 25, 2: 30, 3: 35, 4: 50 }
-		earned_shards = shard_rewards.get(current_stage_index, 20)
 
-	print(">>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage %d, Earned Shards=%d <<<" % [current_stage_index + 1, earned_shards])
+	if earned_shards > 0:
+		print(">>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage %d, Authoritative Earned Shards=%d <<<" % [current_stage_index + 1, earned_shards])
+	else:
+		print(">>> [CAMPAIGN] Displaying Stage Clear Intermission: Stage %d, Authoritative Reward Unavailable <<<" % [current_stage_index + 1])
 	AudioManager.play("stage_clear_stinger")
 	is_transitioning = false
 
@@ -183,13 +183,17 @@ func _show_stage_clear_intermission() -> void:
 	sub.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98))
 	vbox.add_child(sub)
 
-	# Reward Section
+	# Reward Section: Authoritative Single Source
 	var reward_lbl := Label.new()
 	reward_lbl.name = "RewardLabel"
-	reward_lbl.text = "💎 + %d SOUL SHARDS EARNED" % earned_shards
+	if earned_shards > 0:
+		reward_lbl.text = "💎 + %d SOUL SHARDS EARNED" % earned_shards
+		reward_lbl.add_theme_color_override("font_color", Color(0.35, 0.85, 1.0))
+	else:
+		reward_lbl.text = "💎 REWARD UNAVAILABLE"
+		reward_lbl.add_theme_color_override("font_color", Color(0.75, 0.75, 0.80))
 	reward_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	reward_lbl.add_theme_font_size_override("font_size", 22)
-	reward_lbl.add_theme_color_override("font_color", Color(0.35, 0.85, 1.0))
 	vbox.add_child(reward_lbl)
 
 	# Action Button Row (Continue to Next Stage & Return to Title)

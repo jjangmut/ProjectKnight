@@ -88,6 +88,21 @@ func _build_components() -> void:
 	sprite_3d.flip_h = true # Initially face Left towards the player on the left
 	add_child(sprite_3d)
 
+	# Boss Soft Ground Contact Shadow Decal
+	var shadow_mesh := MeshInstance3D.new()
+	shadow_mesh.name = "GroundContactShadow"
+	var s_quad := QuadMesh.new()
+	s_quad.size = Vector2(1.8, 0.75)
+	shadow_mesh.mesh = s_quad
+	shadow_mesh.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	shadow_mesh.position = Vector3(0.0, 0.015, 0.0)
+	var sh_mat := StandardMaterial3D.new()
+	sh_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sh_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sh_mat.albedo_color = Color(0.02, 0.03, 0.05, 0.60)
+	shadow_mesh.material_override = sh_mat
+	add_child(shadow_mesh)
+
 	# 2. Crimson Aura Ring (Phase 2 Enrage)
 	aura_ring_3d = MeshInstance3D.new()
 	aura_ring_3d.name = "CrimsonAuraRing"
