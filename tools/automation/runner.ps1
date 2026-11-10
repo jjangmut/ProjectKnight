@@ -17,6 +17,10 @@ param(
 
     [string]$TaskId = "",
 
+    [string]$ExpectedBranch = "",
+
+    [string]$ExpectedCommitSha = "",
+
     [switch]$Force = $false,
 
     [switch]$SkipPush = $false,
@@ -150,24 +154,39 @@ function Save-TasksState {
 # 5. Task Parsing & Security Validation
 # ------------------------------------------------------------------------------
 function Parse-TaskFile {
-    param([string]$FilePath)
-    $content = Get-Content -Path $FilePath -Raw -Encoding UTF8
-    $fileName = Split-Path -Leaf $FilePath
-    $taskId = [System.IO.Path]::GetFileNameWithoutExtension($fileName)
+    param(
+        [string]$FilePath = "",
+        [string]$Content = "",
+        [string]$TaskId = ""
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Content)) {
+        if (-not (Test-Path $FilePath)) {
+            throw "Task file not found: $FilePath"
+        }
+        $Content = Get-Content -Path $FilePath -Raw -Encoding UTF8
+    }
+
+    if ([string]::IsNullOrWhiteSpace($TaskId)) {
+        $fileName = Split-Path -Leaf $FilePath
+        $TaskId = [System.IO.Path]::GetFileNameWithoutExtension($fileName)
+    } else {
+        $fileName = "$TaskId.md"
+    }
 
     $branch = ""
-    if ($content -match '(?im)(?:\*{0,2}Target Branch|\*{0,2}Branch):\*{0,2}\s*`?([a-zA-Z0-9_\-\/]+)`?') {
+    if ($Content -match '(?im)(?:\*{0,2}Target Branch|\*{0,2}Branch):\*{0,2}\s*`?([a-zA-Z0-9_\-\/]+)`?') {
         $branch = $matches[1].Trim()
     }
 
     $baseCommit = ""
-    if ($content -match '(?im)(?:parent branch HEAD|Base Commit):\*{0,2}\s*`?([a-zA-Z0-9_\-\/]+)`?') {
+    if ($Content -match '(?im)(?:parent branch HEAD|Base Commit):\*{0,2}\s*`?([a-zA-Z0-9_\-\/]+)`?') {
         $baseCommit = $matches[1].Trim()
     }
 
     # Extract allowed and forbidden change rules from markdown if documented
     $allowedChanges = @()
-    if ($content -match '(?ims)Allowed changes:(.*?)(?:\n\s*\n|Forbidden changes|##|$)') {
+    if ($Content -match '(?ims)Allowed changes:(.*?)(?:\n\s*\n|Forbidden changes|##|$)') {
         $allowedLines = $matches[1] -split "\r?\n"
         foreach ($line in $allowedLines) {
             if ($line -match '^\s*[-*]\s*`?([^`\r\n]+)`?') {
@@ -177,7 +196,7 @@ function Parse-TaskFile {
     }
 
     $forbiddenChanges = @()
-    if ($content -match '(?ims)Forbidden changes:(.*?)(?:\n\s*\n|Allowed changes|##|$)') {
+    if ($Content -match '(?ims)Forbidden changes:(.*?)(?:\n\s*\n|Allowed changes|##|$)') {
         $forbiddenLines = $matches[1] -split "\r?\n"
         foreach ($line in $forbiddenLines) {
             if ($line -match '^\s*[-*]\s*`?([^`\r\n]+)`?') {
@@ -187,7 +206,7 @@ function Parse-TaskFile {
     }
 
     return @{
-        task_id = $taskId
+        task_id = $TaskId
         file_path = $FilePath
         file_name = $fileName
         target_branch = $branch
@@ -255,7 +274,9 @@ function Ensure-Worktree {
             git -C $RepoPath worktree add $WorktreePath $TargetBranch
         } else {
             # Try origin branch
-            git -C $RepoPath fetch origin $TargetBranch 2>$null
+            $prevEAP = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+            git -C $RepoPath fetch origin $TargetBranch --quiet 2>&1 | Out-Null
+            $ErrorActionPreference = $prevEAP
             git -C $RepoPath worktree add -b $TargetBranch $WorktreePath "origin/$TargetBranch"
         }
     } else {
@@ -279,7 +300,9 @@ function Ensure-Worktree {
 
         if ($wtBranch -ne $TargetBranch) {
             Log-Info "Switching worktree to target branch: $TargetBranch"
-            git -C $WorktreePath fetch origin 2>$null
+            $prevEAP = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+            git -C $WorktreePath fetch origin --quiet 2>&1 | Out-Null
+            $ErrorActionPreference = $prevEAP
 
             $targetLocalExists = ""
             $tleRaw = git -C $WorktreePath branch --list $TargetBranch 2>$null
@@ -475,26 +498,70 @@ function Invoke-Status {
 # 10. Action: Execute Task
 # ------------------------------------------------------------------------------
 function Invoke-Execute {
-    param([string]$TargetTaskId)
+    param(
+        [string]$TargetTaskId,
+        [string]$ExpectedBranch = "",
+        [string]$ExpectedCommitSha = ""
+    )
 
     if ([string]::IsNullOrWhiteSpace($TargetTaskId)) {
         throw "Execute action requires -TaskId <TaskId>"
     }
 
-    $taskFile = Join-Path $TasksDir "$TargetTaskId.md"
-    if (-not (Test-Path $taskFile)) {
-        if (Test-Path $WorktreePath) {
-            $wtTaskFile = Join-Path $WorktreePath (Join-Path $Config.tasks_relative_dir "$TargetTaskId.md")
-            if (Test-Path $wtTaskFile) {
-                $taskFile = $wtTaskFile
+    $taskInfo = $null
+
+    # If ExpectedBranch is specified, fetch origin and bind directly to remote task specification
+    if (-not [string]::IsNullOrWhiteSpace($ExpectedBranch)) {
+        Log-Info "Binding execution to remote branch: origin/$ExpectedBranch"
+        $prevEAP = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        git -C $RepoPath fetch origin $ExpectedBranch --quiet 2>&1 | Out-Null
+        $ErrorActionPreference = $prevEAP
+
+        $remoteHeadSha = ""
+        $rhsRaw = git -C $RepoPath rev-parse "origin/$ExpectedBranch" 2>$null
+        if ($null -ne $rhsRaw) { $remoteHeadSha = "$rhsRaw".Trim() }
+
+        if ([string]::IsNullOrWhiteSpace($remoteHeadSha)) {
+            throw "Security Reject: Remote branch 'origin/$ExpectedBranch' could not be resolved on origin."
+        }
+
+        # SHA integrity verification
+        if (-not [string]::IsNullOrWhiteSpace($ExpectedCommitSha)) {
+            if ($remoteHeadSha -ne $ExpectedCommitSha) {
+                throw "Security Violation: Remote branch HEAD SHA ($remoteHeadSha) does not match approved SHA ($ExpectedCommitSha). Task rejected to prevent execution of unauthorized modifications."
             }
+            Log-Success "Verified remote branch HEAD SHA matches approved SHA ($ExpectedCommitSha)."
+        }
+
+        # Read task specification from origin commit
+        $remoteSpec = git -C $RepoPath show "origin/${ExpectedBranch}:STUDIO_V3/tasks/${TargetTaskId}.md" 2>$null
+        if ($null -ne $remoteSpec -and "$remoteSpec".Trim().Length -gt 0) {
+            $taskInfo = Parse-TaskFile -Content "$remoteSpec" -TaskId $TargetTaskId -FilePath "origin/${ExpectedBranch}:STUDIO_V3/tasks/${TargetTaskId}.md"
         }
     }
-    if (-not (Test-Path $taskFile)) {
-        throw "Task specification file not found: $taskFile"
+
+    if ($null -eq $taskInfo) {
+        $taskFile = Join-Path $TasksDir "$TargetTaskId.md"
+        if (-not (Test-Path $taskFile)) {
+            if (Test-Path $WorktreePath) {
+                $wtTaskFile = Join-Path $WorktreePath (Join-Path $Config.tasks_relative_dir "$TargetTaskId.md")
+                if (Test-Path $wtTaskFile) {
+                    $taskFile = $wtTaskFile
+                }
+            }
+        }
+        if (-not (Test-Path $taskFile)) {
+            throw "Task specification file not found for Task: $TargetTaskId"
+        }
+        $taskInfo = Parse-TaskFile -FilePath $taskFile
     }
 
-    $taskInfo = Parse-TaskFile -FilePath $taskFile
+    # Verify target branch matches ExpectedBranch if provided
+    if (-not [string]::IsNullOrWhiteSpace($ExpectedBranch) -and $taskInfo.target_branch -ne $ExpectedBranch) {
+        throw "Security Reject: Task specification specifies target branch '$($taskInfo.target_branch)' which does not match expected branch '$ExpectedBranch'."
+    }
+
     Validate-TaskSecurity -TaskInfo $taskInfo
 
     $state = Get-TasksState
@@ -615,7 +682,11 @@ function Invoke-Execute {
             throw "Antigravity CLI exited with non-zero code ($agyExitCode)."
         }
 
-        if ($null -ne $agyJson -and $agyJson.status -ne "SUCCESS") {
+        if ($null -eq $agyJson) {
+            throw "Fail-Closed: Antigravity CLI output was empty or invalid JSON. Cannot confirm task execution success."
+        }
+
+        if ($agyJson.status -ne "SUCCESS") {
             throw "Antigravity reported execution failure: $($agyJson.status)"
         }
 
@@ -635,6 +706,7 @@ function Invoke-Execute {
         # Commit and Push from within the isolated worktree
         $changedFiles = git -C $WorktreePath status --porcelain
         $commitSha = ""
+        $finalStatus = "COMPLETED"
 
         if (-not [string]::IsNullOrWhiteSpace($changedFiles)) {
             git -C $WorktreePath add -A
@@ -652,15 +724,18 @@ function Invoke-Execute {
                 $pushExit = $LASTEXITCODE
                 $ErrorActionPreference = $prevEap
                 if ($pushExit -ne 0) {
+                    $finalStatus = "PARTIAL_PUSH_FAILED"
                     throw "Git push failed (Exit $pushExit): $pushOutput"
                 }
                 Log-Success "Branch pushed successfully."
             } else {
                 Log-Info "Push skipped (SkipPush or auto_push_on_success disabled)."
+                $finalStatus = "PUSH_SKIPPED"
             }
         } else {
-            Log-Info "No working directory changes detected after task execution."
+            Log-Warn "No working directory changes detected after task execution."
             $commitSha = (git -C $WorktreePath rev-parse HEAD).Trim()
+            $finalStatus = "NO_CHANGES"
         }
 
         # Update State
@@ -670,7 +745,7 @@ function Invoke-Execute {
             commit_sha = $commitSha
             duration_seconds = [math]::Round($sw.Elapsed.TotalSeconds, 1)
             completed_at = (Get-Date).ToString("o")
-            status = "COMPLETED"
+            status = $finalStatus
             log_file = $logPath
             isolated_worktree = $WorktreePath
         }
@@ -678,7 +753,7 @@ function Invoke-Execute {
         $state.in_progress_task = $null
         Save-TasksState -StateObject $state
 
-        Write-Host "[STAGE:COMPLETE] 작업 자동 개발 및 반영 완료 (Commit: $commitSha)"
+        Write-Host "[STAGE:COMPLETE] 작업 자동 개발 및 반영 완료 (Commit: $commitSha, Status: $finalStatus)"
         Log-Success "Task $TargetTaskId automated execution completed successfully in isolated worktree!"
 
     } catch {
@@ -702,6 +777,6 @@ switch ($Action) {
         Invoke-Status
     }
     "Execute" {
-        Invoke-Execute -TargetTaskId $TaskId
+        Invoke-Execute -TargetTaskId $TaskId -ExpectedBranch $ExpectedBranch -ExpectedCommitSha $ExpectedCommitSha
     }
 }

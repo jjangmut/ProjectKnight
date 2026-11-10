@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationTitle>ProjectKnight 자동 개발 실행기</ApplicationTitle>
+    <AssemblyName>ProjectKnight.Launcher</AssemblyName>
+    <RootNamespace>ProjectKnight.Launcher</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <EnableWindowsFormsHighDpiAutoResizing>true</EnableWindowsFormsHighDpiAutoResizing>
+  </PropertyGroup>
+
+</Project>
