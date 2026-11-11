@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProjectKnight.Launcher.Models;
 using ProjectKnight.Launcher.Services;
@@ -770,7 +770,7 @@ public class MainForm : Form
         {
             color = Color.FromArgb(220, 220, 170); // Yellow
         }
-        else if (text.Contains("[INFO]") || stream.Equals("SYSTEM", StringComparison.OrdinalIgnoreCase))
+        else if (text.Contains("[INFO]") || text.Contains("[HEARTBEAT]") || stream.Equals("SYSTEM", StringComparison.OrdinalIgnoreCase))
         {
             color = Color.FromArgb(78, 201, 176); // Cyan
         }

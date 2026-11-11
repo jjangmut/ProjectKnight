@@ -6,7 +6,7 @@ public static class DesktopShortcutService
         Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
         "ProjectKnight 작업 실행.lnk");
 
-    public static bool CreateOrUpdateShortcut(string targetExePath)
+    public static bool CreateOrUpdateShortcut(string targetPath)
     {
         try
         {
@@ -20,10 +20,31 @@ public static class DesktopShortcutService
             if (shell == null) return false;
 
             dynamic shortcut = shell.CreateShortcut(shortcutFile);
-            shortcut.TargetPath = targetExePath;
-            shortcut.WorkingDirectory = Path.GetDirectoryName(targetExePath);
-            shortcut.Description = "ProjectKnight 자동 개발 실행기 (C# WinForms)";
-            shortcut.IconLocation = $"{targetExePath},0";
+
+            if (targetPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+                var dotnetExe = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                    "dotnet", "dotnet.exe");
+                if (!File.Exists(dotnetExe))
+                {
+                    dotnetExe = "dotnet.exe";
+                }
+
+                shortcut.TargetPath = dotnetExe;
+                shortcut.Arguments = $"\"{targetPath}\"";
+                shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath);
+                shortcut.Description = "ProjectKnight 자동 개발 실행기 (C# WinForms .NET 8)";
+            }
+            else
+            {
+                shortcut.TargetPath = targetPath;
+                shortcut.Arguments = string.Empty;
+                shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath);
+                shortcut.Description = "ProjectKnight 자동 개발 실행기 (C# WinForms .NET 8)";
+                shortcut.IconLocation = $"{targetPath},0";
+            }
+
             shortcut.Save();
 
             return File.Exists(shortcutFile);

@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+﻿﻿# ==============================================================================
 # ProjectKnight Antigravity Automated Task Runner
 # Location: D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\runner.ps1
 # Description: Automates task discovery, branch validation, Antigravity CLI execution,
@@ -656,14 +656,21 @@ function Invoke-Execute {
         $stdoutTask = $process.StandardOutput.ReadToEndAsync()
         $stderrTask = $process.StandardError.ReadToEndAsync()
 
-        $timeoutMs = $Config.execution_timeout_seconds * 1000
-        $finished = $process.WaitForExit($timeoutMs)
-        $sw.Stop()
+        $timeoutSeconds = $Config.execution_timeout_seconds
+        $heartbeatCounter = 0
 
-        if (-not $finished) {
-            try { $process.Kill() } catch {}
-            throw "Antigravity CLI execution timed out after $($Config.execution_timeout_seconds) seconds."
+        while (-not $process.WaitForExit(2000)) {
+            $heartbeatCounter++
+            $elapsed = [math]::Round($sw.Elapsed.TotalSeconds, 0)
+            if ($heartbeatCounter % 3 -eq 0) {
+                Write-Host "[HEARTBEAT] Antigravity CLI executing in worktree... (${elapsed}s elapsed)"
+            }
+            if ($sw.Elapsed.TotalSeconds -ge $timeoutSeconds) {
+                try { $process.Kill() } catch {}
+                throw "Antigravity CLI execution timed out after $timeoutSeconds seconds."
+            }
         }
+        $sw.Stop()
 
         [System.Threading.Tasks.Task]::WaitAll($stdoutTask, $stderrTask)
 

@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # Install Desktop Shortcut for ProjectKnight C# WinForms Developer Launcher
 # ==============================================================================
 [CmdletBinding()]
@@ -7,39 +7,40 @@ param()
 $desktopPath = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::Desktop)
 $shortcutPath = Join-Path $desktopPath "ProjectKnight 작업 실행.lnk"
 
-$currentDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$launcherExe = Join-Path $currentDir "ProjectKnight.Launcher.exe"
+# Remove legacy SAC fallback shortcut if present
+$sacShortcutPath = Join-Path $desktopPath "ProjectKnight 작업 실행 (SAC 대응).lnk"
+if (Test-Path $sacShortcutPath) {
+    Remove-Item -Force $sacShortcutPath -ErrorAction SilentlyContinue
+}
 
-if (-not (Test-Path $launcherExe)) {
-    $parentDir = Split-Path -Parent $currentDir
-    if (Test-Path (Join-Path $parentDir "ProjectKnight.Launcher.exe")) {
-        $launcherExe = Join-Path $parentDir "ProjectKnight.Launcher.exe"
-        $currentDir = $parentDir
-    } elseif (Test-Path "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\ProjectKnight.Launcher.exe") {
-        $launcherExe = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\ProjectKnight.Launcher.exe"
-        $currentDir = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight"
+$dotnetExe = (Get-Command dotnet.exe -ErrorAction SilentlyContinue).Source
+if (-not $dotnetExe) {
+    $dotnetExe = "C:\Program Files\dotnet\dotnet.exe"
+}
+
+$dllPath = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\bin\ProjectKnight.Launcher.dll"
+$workDir = "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight"
+
+if (-not (Test-Path $dllPath)) {
+    $currentDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+    $worktreeDll = Join-Path $currentDir "ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.dll"
+    if (Test-Path $worktreeDll) {
+        New-Item -ItemType Directory -Force -Path "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\bin" | Out-Null
+        Copy-Item -Force (Split-Path -Parent $worktreeDll)\* "D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\bin\"
     }
 }
 
 $wsh = New-Object -ComObject WScript.Shell
 $shortcut = $wsh.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = $launcherExe
-$shortcut.Arguments = ""
-$shortcut.WorkingDirectory = $currentDir
+$shortcut.TargetPath = $dotnetExe
+$shortcut.Arguments = "`"$dllPath`""
+$shortcut.WorkingDirectory = $workDir
 $shortcut.Description = "ProjectKnight 자동 개발 실행기 (C# WinForms .NET 8)"
 $shortcut.Save()
-
-# Also create SAC fallback shortcut
-$sacShortcutPath = Join-Path $desktopPath "ProjectKnight 작업 실행 (SAC 대응).lnk"
-$sacShortcut = $wsh.CreateShortcut($sacShortcutPath)
-$sacShortcut.TargetPath = "powershell.exe"
-$sacShortcut.Arguments = "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$currentDir\launcher_winforms.ps1`""
-$sacShortcut.WorkingDirectory = $currentDir
-$sacShortcut.Description = "ProjectKnight 자동 개발 실행기 (WinForms PowerShell 호스트)"
-$sacShortcut.Save()
 
 Write-Host "=================================================="
 Write-Host "Desktop Shortcut Created Successfully!" -ForegroundColor Green
 Write-Host "Location: $shortcutPath" -ForegroundColor Cyan
-Write-Host "Target:   $launcherExe"
+Write-Host "Target:   $dotnetExe `"$dllPath`""
+Write-Host "Mode:     CSHARP_DLL_HOST_VERIFIED (Smart App Control compliant)"
 Write-Host "=================================================="

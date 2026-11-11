@@ -59,7 +59,7 @@ public class AutomationRunnerService
         {
             FileName = "powershell.exe",
             Arguments = argsBuilder.ToString(),
-            WorkingDirectory = WorktreePath,
+            WorkingDirectory = Path.GetDirectoryName(RunnerScriptPath) ?? WorktreePath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
@@ -93,6 +93,14 @@ public class AutomationRunnerService
                 {
                     stageProgress?.Report(new StageTransition(stageKey, StageStatus.Running, stageMsg));
                 }
+            }
+
+            // Live heartbeat progress update
+            var heartbeatMatch = Regex.Match(line, @"\[HEARTBEAT\]\s*(.*)");
+            if (heartbeatMatch.Success)
+            {
+                var heartbeatMsg = heartbeatMatch.Groups[1].Value.Trim();
+                stageProgress?.Report(new StageTransition("EXECUTE", StageStatus.Running, heartbeatMsg));
             }
 
             // Commit SHA parsing
