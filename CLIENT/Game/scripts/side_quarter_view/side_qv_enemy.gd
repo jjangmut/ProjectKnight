@@ -310,7 +310,8 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	is_stunned = true
 	stun_timer = duration
 	is_attacking = false
-	attack_area_3d.monitoring = false
+	if attack_area_3d != null and is_instance_valid(attack_area_3d):
+		attack_area_3d.set_deferred("monitoring", false)
 	velocity = Vector3.ZERO # Firm stop on parry clash; zero slide
 
 

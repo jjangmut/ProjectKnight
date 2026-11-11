@@ -25,14 +25,15 @@ var charge_windup_started_at: float = 0.0
 var charge_motion_started_at: float = 0.0
 var first_damage_at: float = 0.0
 
-@export var max_hp: int = 24
-@export var current_hp: int = 24
-@export var max_poise: int = 12
-var current_poise: int = 12
+@export var max_hp: int = 38
+@export var current_hp: int = 38
+@export var max_poise: int = 36
+var current_poise: int = 36
 var is_groggy: bool = false
 var groggy_timer: float = 0.0
 var groggy_halo_3d: MeshInstance3D = null
 var is_dead: bool = false
+var pattern_cycle_count: int = 0
 var _defeated_signaled: bool = false
 @export var move_speed: float = 3.8
 @export var charge_speed: float = 12.0
@@ -244,19 +245,19 @@ func _physics_process(delta: float) -> void:
 				sprite_3d.texture = BossTextureNormal
 				attack_area_3d.monitoring = false
 				current_pattern = Pattern.CHASE
-				pattern_timer = 0.8
+				pattern_timer = 0.65
 		Pattern.TRIPLE_CLEAVE:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
 			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
 			if pattern_timer <= 0.0:
 				current_pattern = Pattern.CHASE
-				pattern_timer = 1.0
+				pattern_timer = 0.65
 		Pattern.QUAKE_RING:
 			velocity.x = 0.0
 			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				current_pattern = Pattern.CHASE
-				pattern_timer = 1.2
+				pattern_timer = 0.65
 
 	move_and_slide()
 	_update_boss_animation(delta)
@@ -280,7 +281,7 @@ func _execute_charge_impact() -> void:
 	attack_area_3d.monitoring = false
 	sprite_3d.texture = BossTextureNormal
 	current_pattern = Pattern.CHASE
-	pattern_timer = 1.0
+	pattern_timer = 0.65
 	if target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("receive_incoming_attack"):
 			target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
@@ -335,24 +336,19 @@ func _find_player() -> void:
 		target_player = players[0] as Node3D
 
 
-func _pick_next_pattern(dist: float) -> void:
-	if dist <= 3.2:
-		# Player is in close range -> 360 Whirlwind Cleave / Quake Ring to punish mashing!
-		if randf() < 0.65:
+func _pick_next_pattern(_dist: float) -> void:
+	pattern_cycle_count += 1
+	var choices := [Pattern.TRIPLE_CLEAVE, Pattern.SHIELD_CHARGE, Pattern.QUAKE_RING]
+	var next_p: int = choices[(pattern_cycle_count - 1) % 3]
+	print("[BOSS] Picked pattern cycle #", pattern_cycle_count, " pattern: ", next_p)
+
+	match next_p:
+		Pattern.TRIPLE_CLEAVE:
+			_execute_triple_cleave()
+		Pattern.SHIELD_CHARGE:
+			_execute_shield_charge()
+		Pattern.QUAKE_RING:
 			_execute_quake_ring()
-		else:
-			_execute_triple_cleave()
-	elif dist > 5.5:
-		# Player is at distance -> Shield Charge rush!
-		if randf() < 0.70:
-			_execute_shield_charge()
-		else:
-			_execute_triple_cleave()
-	else:
-		if randf() < 0.50:
-			_execute_triple_cleave()
-		else:
-			_execute_shield_charge()
 
 
 func _show_danger_telegraph(duration: float = 0.35) -> void:
@@ -388,7 +384,7 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 
 func _enter_groggy_state() -> void:
 	is_groggy = true
-	groggy_timer = 3.0
+	groggy_timer = 1.2
 	current_pattern = Pattern.STUNNED
 	charge_windup_timer = 0.0
 	velocity = Vector3.ZERO
@@ -430,7 +426,7 @@ func _exit_groggy_state() -> void:
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
 	current_pattern = Pattern.CHASE
-	pattern_timer = 0.8
+	pattern_timer = 0.25
 	var p := get_parent()
 	if p != null:
 		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.4, 0.0), "RECOVER!", Color(0.4, 0.8, 1.2), false)

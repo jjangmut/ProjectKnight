@@ -12,6 +12,7 @@ const SideQVEliteKnightClass = preload("res://scripts/side_quarter_view/side_qv_
 const SideQVRangedMinionClass = preload("res://scripts/side_quarter_view/side_qv_ranged_minion.gd")
 const SideQVBossClass = preload("res://scripts/side_quarter_view/side_qv_boss.gd")
 const SideQVCaltropTrapClass = preload("res://scripts/side_quarter_view/bosses/side_qv_caltrop_trap.gd")
+const SideQVVitalityOrbClass = preload("res://scripts/side_quarter_view/side_qv_vitality_orb.gd")
 
 # High-Resolution 3D Environment Textures
 const TexFlagstone = preload("res://assets/side_qv/flagstone_floor.png")
@@ -511,8 +512,8 @@ func _spawn_caltrop_hazard(pos: Vector3) -> Node3D:
 func _spawn_stage_boss() -> void:
 	var boss := SideQVBossClass.new()
 	boss.name = "SideQVBossCommander"
-	boss.max_hp = 24
-	boss.current_hp = 24
+	boss.max_hp = 38
+	boss.current_hp = 38
 	boss.position = Vector3(78.0, 0.1, 0.0)
 	boss.target_player = player
 	add_child(boss)
@@ -527,6 +528,15 @@ func _on_stage_enemy_defeated(defeated_enemy: Node) -> void:
 	if defeated_enemy in enemies:
 		enemies.erase(defeated_enemy)
 
+	# Natural in-game vitality drop from defeated enemies
+	if defeated_enemy != null and is_instance_valid(defeated_enemy) and defeated_enemy is Node3D:
+		var drop_pos: Vector3 = (defeated_enemy as Node3D).global_position
+		drop_pos.y = 0.45
+		if defeated_enemy is SideQVEliteKnightClass or defeated_enemy is SideQVRangedMinionClass:
+			_spawn_vitality_orb(drop_pos, 2)
+		elif randf() < 0.60:
+			_spawn_vitality_orb(drop_pos, 1)
+
 	if enemies.is_empty():
 		match current_encounter_idx:
 			1:
@@ -534,18 +544,29 @@ func _on_stage_enemy_defeated(defeated_enemy: Node) -> void:
 				if camera != null:
 					camera.max_camera_x = 38.0
 				_show_stage_banner("PROCEED >>", Color(0.2, 1.0, 0.4))
+				_spawn_vitality_orb(Vector3(14.0, 0.45, 0.0), 2)
 			2:
 				_dissolve_gate_barrier("Gate_2")
 				_dissolve_gate_barrier("Gate_Behind_2")
 				if camera != null:
 					camera.max_camera_x = 62.0
 				_show_stage_banner("PROCEED >>", Color(0.2, 1.0, 0.4))
+				_spawn_vitality_orb(Vector3(38.0, 0.45, 0.0), 2)
 			3:
 				_dissolve_gate_barrier("Gate_3")
 				_dissolve_gate_barrier("Gate_Behind_3")
 				if camera != null:
 					camera.max_camera_x = 78.0
 				_show_stage_banner("BOSS AHEAD >>", Color(1.0, 0.8, 0.2))
+				_spawn_vitality_orb(Vector3(64.0, 0.45, 0.0), 3)
+
+
+func _spawn_vitality_orb(pos: Vector3, heal_val: int = 2) -> SideQVVitalityOrb:
+	var orb := SideQVVitalityOrbClass.new()
+	orb.heal_amount = heal_val
+	add_child(orb)
+	orb.global_position = pos
+	return orb
 
 
 func _process(delta: float) -> void:

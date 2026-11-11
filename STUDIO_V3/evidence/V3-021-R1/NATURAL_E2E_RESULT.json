@@ -1,0 +1,29 @@
+{
+	"attacks_performed": 75,
+	"attempt_count": 1,
+	"boss_patterns_observed": {
+		"ground_fissure": true,
+		"quake_ring": true,
+		"shield_charge": true
+	},
+	"camera_x_max": 77.9999847412109,
+	"camera_x_min": -3.25829124450684,
+	"damage_taken_total": 16,
+	"dashes_performed": 0,
+	"direct_state_mutations_performed": 0,
+	"duration_seconds": 64.13,
+	"final_boss_hp": -3,
+	"final_player_hp": 1,
+	"mode": "NATURAL_INPUT_E2E",
+	"parries_performed": 39,
+	"player_death_occurred": false,
+	"stage_cleared_naturally": true,
+	"total_enemies_defeated_naturally": 12,
+	"vitality_orbs_collected": 5,
+	"x_max": 87.1999969482422,
+	"x_min": -6.0,
+	"z_max": 2.10844087600708,
+	"z_min": -2.11777019500732,
+	"z_span_verified": true,
+	"zero_cheats_audit_passed": true
+}

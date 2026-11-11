@@ -1,4 +1,4 @@
-extends SideQVEnemy
+extends "res://scripts/side_quarter_view/side_qv_enemy.gd"
 class_name SideQVEliteKnight
 ## 침묵의 성채 중장 방패 기사 (Heavy Shield Knight)
 ## - 칠흑의 대리석 갑주와 육중한 타워 실드를 장착한 정예 방패 기사

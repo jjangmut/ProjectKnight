@@ -1,11 +1,8 @@
 extends SceneTree
-## V3-021 Stage 1 2.5D Belt-Scroll Core Gameplay Verification Fixture
-## Validates:
-## 1. 2.5D Movement in X and Z (Z span >= 4.0 units, Y jump separation, shadow footprint tracking)
-## 2. Directional Hit & VFX Alignment (hits in front, misses behind/different depth lanes)
-## 3. Anti-Spam & 3 Enemy Roles (Shield Knight blocks frontal spam; flanking/jump-attacks succeed)
-## 4. Boss Commander 3 distinct patterns (Ground Fissure, Shield Charge, 360 Whirlwind Cleave)
-## 5. Full Stage 1 3-Encounter Progression + Boss Defeat
+## V3-021-R1 Classification: ISOLATED_MECHANICS_WITH_DIRECT_STATE_SETUP
+## Note: This is an isolated unit verification fixture verifying system math and formulas.
+## For honest, end-to-end natural input playtesting without state mutations, see:
+## tests/v3_021_r1_stage1_natural_e2e.gd
 
 const Stage1ScenePath := "res://scenes/side_quarter_view/SideQVStage1.tscn"
 const SideQVEnemyClass = preload("res://scripts/side_quarter_view/side_qv_enemy.gd")
@@ -326,8 +323,8 @@ func _on_process_frame() -> void:
 			# -------------------------------------------------------------
 			if test_results["stage_cleared"]:
 				_finalize_test_results()
-			elif step_timer >= 1.5:
-				test_results["stage_cleared"] = true
+			elif step_timer >= 3.5:
+				printerr("[V3-021 TEST] Stage clear signal was NOT received within timeout!")
 				_finalize_test_results()
 
 

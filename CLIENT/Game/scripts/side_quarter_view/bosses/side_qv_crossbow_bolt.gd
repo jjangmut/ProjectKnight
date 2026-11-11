@@ -119,7 +119,8 @@ func _on_body_entered(body: Node3D) -> void:
 		is_active = false
 		if body.has_method("receive_incoming_attack"):
 			# 플레이어 피격 / 패링 판정 처리 (단일 히트 보장)
-			body.receive_incoming_attack(damage, shooter_ref, direction)
+			var valid_shooter: Node = shooter_ref if (shooter_ref != null and is_instance_valid(shooter_ref)) else self
+			body.receive_incoming_attack(damage, valid_shooter, direction)
 		_impact_and_vanish(true)
 		return
 
