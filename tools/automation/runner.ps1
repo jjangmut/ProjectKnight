@@ -1,4 +1,4 @@
-﻿﻿# ==============================================================================
+# ==============================================================================
 # ProjectKnight Antigravity Automated Task Runner
 # Location: D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\runner.ps1
 # Description: Automates task discovery, branch validation, Antigravity CLI execution,
