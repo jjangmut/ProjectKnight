@@ -90,7 +90,7 @@ func _on_body_entered(body: Node3D) -> void:
 
 	if body.is_in_group("player") and is_instance_valid(body):
 		is_triggered = true
-		monitoring = false
+		set_deferred("monitoring", false)
 
 		# 1. 플레이어 대미지 적용
 		if body.has_method("receive_incoming_attack"):
@@ -135,9 +135,9 @@ func _snap_burst_and_free() -> void:
 	fmat.emission = Color(2.5, 0.5, 0.2, 1.0)
 	fmat.emission_energy_multiplier = 4.0
 	flash.material_override = fmat
-	flash.global_position = global_position + Vector3(0, 0.2, 0)
 	if get_parent() != null:
 		get_parent().add_child(flash)
+		flash.global_position = global_position + Vector3(0, 0.2, 0)
 
 	var tween := flash.create_tween()
 	if tween:

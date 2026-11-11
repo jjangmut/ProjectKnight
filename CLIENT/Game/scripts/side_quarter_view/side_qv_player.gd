@@ -38,6 +38,7 @@ enum State {
 var current_state: State = State.IDLE
 var move_direction: Vector3 = Vector3.ZERO
 var facing_dir_x: float = 1.0 # 1.0 = Right, -1.0 = Left
+var facing_attack_dir: Vector3 = Vector3(1.0, 0.0, 0.0)
 
 # Combat & Combo
 var combo_step: int = 0
@@ -136,13 +137,23 @@ func _ready() -> void:
 func _sync_stage_bounds() -> void:
 	var p := get_parent()
 	if p != null:
-		if "arena_width" in p:
+		if "stage_min_x" in p and "stage_max_x" in p:
+			stage_min_x = float(p.get("stage_min_x")) + 0.8
+			stage_max_x = float(p.get("stage_max_x")) - 0.8
+		elif "arena_width" in p:
 			var w: float = float(p.get("arena_width"))
 			stage_min_x = -w * 0.5 + 1.0
 			stage_max_x = w * 0.5 - 1.0
-		# Option C: Enforce strictly 2D gameplay plane at Z = 0.0
-		stage_min_z = 0.0
-		stage_max_z = 0.0
+		if "stage_min_z" in p and "stage_max_z" in p:
+			stage_min_z = float(p.get("stage_min_z")) + 0.5
+			stage_max_z = float(p.get("stage_max_z")) - 0.5
+		elif "arena_depth" in p:
+			var d: float = float(p.get("arena_depth"))
+			stage_min_z = -d * 0.5 + 0.8
+			stage_max_z = d * 0.5 - 0.8
+		else:
+			stage_min_z = -2.8
+			stage_max_z = 2.8
 
 
 func _build_components() -> void:
@@ -248,7 +259,7 @@ func _build_components() -> void:
 func _physics_process(delta: float) -> void:
 	_update_timers(delta)
 
-	# Dynamic ground-anchored shadow projection (keeps shadow grounded during jumps)
+	# Dynamic ground-anchored shadow projection (tracks X and Z on ground plane)
 	if ground_shadow != null and is_instance_valid(ground_shadow):
 		if is_on_floor():
 			ground_shadow.position = Vector3(0.0, 0.015, 0.0)
@@ -258,7 +269,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			ground_shadow.global_position.y = 0.015
 			ground_shadow.global_position.x = global_position.x
-			ground_shadow.global_position.z = 0.0
+			ground_shadow.global_position.z = global_position.z
 			var height_above_ground: float = maxf(0.0, global_position.y - 0.1)
 			var shadow_scale: float = clampf(1.0 - (height_above_ground * 0.16), 0.40, 1.0)
 			ground_shadow.scale = Vector3(shadow_scale, shadow_scale, shadow_scale)
@@ -280,11 +291,8 @@ func _physics_process(delta: float) -> void:
 
 	if is_dead or current_state == State.DEAD:
 		velocity.x = move_toward(velocity.x, 0.0, 40.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 40.0 * delta)
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_clamp_arena_bounds()
 		_update_character_animation(delta)
 		return
@@ -303,13 +311,8 @@ func _physics_process(delta: float) -> void:
 		State.HURT:
 			_process_hurt_state(delta)
 
-	# Option C: Enforce strict Z=0 before and after move_and_slide
-	velocity.z = 0.0
-	global_position.z = 0.0
 	_prevent_enemy_pushing()
 	move_and_slide()
-	velocity.z = 0.0
-	global_position.z = 0.0
 	_clamp_arena_bounds()
 	_update_character_animation(delta)
 
@@ -317,9 +320,7 @@ func _physics_process(delta: float) -> void:
 func _clamp_arena_bounds() -> void:
 	_sync_stage_bounds()
 	global_position.x = clampf(global_position.x, stage_min_x, stage_max_x)
-	# Option C: Zero Z drift
-	global_position.z = 0.0
-	velocity.z = 0.0
+	global_position.z = clampf(global_position.z, stage_min_z, stage_max_z)
 	if global_position.y < 0.0:
 		global_position.y = 0.0
 		if velocity.y < 0.0:
@@ -327,21 +328,22 @@ func _clamp_arena_bounds() -> void:
 
 
 func _prevent_enemy_pushing() -> void:
-	# Avoid sliding into or pushing monsters; halt clean on contact boundary (Option C X-only)
+	# Avoid sliding into or pushing monsters; halt clean on contact boundary in 2.5D (X/Z)
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
 			continue
 		var enemy_3d := enemy as Node3D
-		var diff_x: float = enemy_3d.global_position.x - global_position.x
-		var dist_x: float = absf(diff_x)
+		var diff := enemy_3d.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
 		var enemy_radius: float = 0.60 if enemy_3d.is_in_group("bosses") else 0.40
 		var min_dist: float = 0.35 + enemy_radius + 0.06
-		if dist_x < min_dist and dist_x > 0.001:
-			var dir_x: float = signf(diff_x)
-			if velocity.x * dir_x > 0.0:
-				velocity.x = 0.0
-	velocity.z = 0.0
+		if dist < min_dist and dist > 0.001:
+			var dir := diff.normalized()
+			var speed_towards := velocity.dot(dir)
+			if speed_towards > 0.0:
+				velocity -= dir * speed_towards
 
 
 func _update_timers(delta: float) -> void:
@@ -397,19 +399,27 @@ func _process_movement(delta: float) -> void:
 	if Input.is_action_pressed("move_right"):
 		input_x += 1.0
 
-	# Option C: Fixed 2D side-scroller movement on X/Y (Z strictly locked to 0)
-	if input_x != 0.0:
-		facing_dir_x = signf(input_x)
-		attack_area_3d.position.x = 1.0 * facing_dir_x
-		guard_barrier_3d.position.x = 0.6 * facing_dir_x
-		slash_visual_3d.position.x = 0.55 * facing_dir_x
-		velocity.x = input_x * move_speed_x
-		velocity.z = 0.0
-		move_direction = Vector3(facing_dir_x, 0.0, 0.0)
+	var input_z := 0.0
+	if Input.is_action_pressed("move_up"):
+		input_z -= 1.0 # into depth / away from camera
+	if Input.is_action_pressed("move_down"):
+		input_z += 1.0 # toward camera
+
+	if input_x != 0.0 or input_z != 0.0:
+		var input_vec := Vector2(input_x, input_z).normalized()
+		velocity.x = input_vec.x * move_speed_x
+		velocity.z = input_vec.y * move_speed_z
+
+		if absf(input_x) > 0.05:
+			facing_dir_x = signf(input_x)
+		facing_attack_dir = Vector3(input_vec.x, 0.0, input_vec.y).normalized()
+
+		_align_combat_orientations()
+		move_direction = facing_attack_dir
 		_set_state(State.MOVE)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, 45.0 * delta)
-		velocity.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 45.0 * delta)
 		move_direction = Vector3.ZERO
 		_set_state(State.IDLE)
 
@@ -420,7 +430,7 @@ func _process_movement(delta: float) -> void:
 		start_jump()
 	elif (Input.is_action_just_pressed("attack") or attack_buffer_timer > 0.0) and attack_cooldown <= 0.0:
 		attack_buffer_timer = 0.0
-		if not is_on_floor() and (Input.is_action_pressed("move_down") or global_position.y >= 0.35 and Input.is_action_pressed("move_down")):
+		if not is_on_floor() and (Input.is_action_pressed("move_down") or (global_position.y >= 0.35 and Input.is_action_pressed("move_down"))):
 			start_dive_slam()
 		else:
 			start_attack()
@@ -429,6 +439,22 @@ func _process_movement(delta: float) -> void:
 		start_dash()
 	elif Input.is_action_pressed("guard") and is_on_floor():
 		start_guard()
+
+
+func _align_combat_orientations() -> void:
+	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
+	if attack_area_3d != null:
+		attack_area_3d.position = atk_dir * 1.0 + Vector3(0.0, 0.85, 0.0)
+	if guard_barrier_3d != null:
+		guard_barrier_3d.position = atk_dir * 0.6 + Vector3(0.0, 0.85, 0.0)
+		if absf(atk_dir.z) > 0.15:
+			guard_barrier_3d.rotation_degrees.y = rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
+		else:
+			guard_barrier_3d.rotation_degrees.y = 0.0
+	if slash_visual_3d != null:
+		slash_visual_3d.position = atk_dir * 0.65 + Vector3(0.0, 0.95, 0.0)
+		var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
+		slash_visual_3d.rotation_degrees.y = angle_y
 
 
 func start_jump() -> void:
@@ -446,9 +472,9 @@ func start_dash() -> void:
 	ghost_timer = 0.0
 	is_invulnerable = true
 	dash_hit_enemies.clear()
-	var dash_dir := Vector3(facing_dir_x, 0.0, 0.0)
+	var dash_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
 	velocity.x = dash_dir.x * dash_speed
-	velocity.z = 0.0
+	velocity.z = dash_dir.z * dash_speed
 	_set_state(State.DASH)
 	_spawn_dash_ghost()
 	AudioManager.play("player_dash")
@@ -651,26 +677,31 @@ func start_attack() -> void:
 	sprite_3d.pixel_size = 0.00282
 	sprite_3d.frame = 0
 
-	attack_area_3d.position.x = 1.0 * facing_dir_x
+	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
+	attack_area_3d.position = atk_dir * 1.0 + Vector3(0.0, 0.85, 0.0)
 	slash_visual_3d.visible = true
-	slash_visual_3d.position = Vector3(facing_dir_x * 0.55, 0.95, 0.0)
+	slash_visual_3d.position = atk_dir * 0.65 + Vector3(0.0, 0.95, 0.0)
+
+	var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
+	slash_visual_3d.rotation_degrees.y = angle_y
+
 	var thrust_tween := create_tween()
 	if thrust_tween:
 		thrust_tween.set_parallel(true)
 		if combo_step == 1:
-			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, -30.0 * facing_dir_x)
+			slash_visual_3d.rotation_degrees.z = -30.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
 			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.12)
 			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.15, 1.15, 1.15), 0.06)
 			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
 		elif combo_step == 2:
-			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, 35.0 * facing_dir_x)
+			slash_visual_3d.rotation_degrees.z = 35.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
 			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.12)
 			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.25, 1.25, 1.25), 0.06)
 			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
 		else: # Combo 3 Finisher
-			slash_visual_3d.rotation_degrees = Vector3(0.0, 0.0, 65.0 * facing_dir_x)
+			slash_visual_3d.rotation_degrees.z = 65.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.50, 0.50, 0.50)
 			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.14)
 			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.45, 1.45, 1.45), 0.07)
@@ -678,10 +709,10 @@ func start_attack() -> void:
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
-	# Responsive melee hit check (Direct spatial + Area3D hybrid check)
+	# Responsive melee hit check (Direction-aligned spatial + Area3D check)
 	_check_melee_hit()
 
-	# Combo 3 Finisher: Fire glowing 3D piercing sword wave!
+	# Combo 3 Finisher: Fire glowing 3D piercing sword wave along attack direction!
 	if combo_step == 3:
 		_fire_sword_beam()
 
@@ -697,7 +728,8 @@ func _check_melee_hit() -> void:
 			if body != null and is_instance_valid(body) and body != self and body.has_method("receive_hit"):
 				hit_targets[body.get_instance_id()] = body
 
-	# 2. Direct spatial reach check (Fixes Godot same-frame Area3D monitoring delay)
+	# 2. Direct spatial reach check with directional alignment
+	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
@@ -706,11 +738,14 @@ func _check_melee_hit() -> void:
 			continue
 		var e3d := enemy as Node3D
 		var diff: Vector3 = e3d.global_position - global_position
-		var forward_dist: float = diff.x * facing_dir_x
-		var z_dist: float = absf(diff.z)
 		var y_dist: float = absf(diff.y)
-		var extra_r: float = 0.55 if e3d.is_in_group("bosses") else 0.25
-		if forward_dist >= -0.35 and forward_dist <= (2.35 + extra_r) and z_dist <= (1.35 + extra_r * 0.5) and y_dist <= 2.2:
+		var diff_h := Vector3(diff.x, 0.0, diff.z)
+		var forward_dist: float = diff_h.dot(atk_dir)
+		var lateral_dist: float = (diff_h - atk_dir * forward_dist).length()
+		var extra_r: float = 0.65 if e3d.is_in_group("bosses") else 0.35
+
+		# Target must be in front of attack cone and within lateral/depth tolerance
+		if forward_dist >= -0.25 and forward_dist <= (2.4 + extra_r) and lateral_dist <= (1.35 + extra_r * 0.5) and y_dist <= 2.2:
 			hit_targets[e3d.get_instance_id()] = e3d
 
 	var dmg: int = current_attack_damage
@@ -723,7 +758,13 @@ func _check_melee_hit() -> void:
 	for id in hit_targets.keys():
 		var target_node: Node = hit_targets[id]
 		if is_instance_valid(target_node):
-			target_node.receive_hit(dmg, Vector3(facing_dir_x, 0, 0), was_counter)
+			var push_dir: Vector3 = atk_dir
+			if target_node is Node3D:
+				var diff: Vector3 = (target_node as Node3D).global_position - global_position
+				if diff.length_squared() >= 0.01:
+					push_dir = diff.normalized()
+			if target_node.has_method("receive_hit"):
+				target_node.receive_hit(dmg, push_dir, was_counter)
 			if target_node is Node3D:
 				var t3d := target_node as Node3D
 				_spawn_hit_impact_vfx(t3d.global_position + Vector3(0.0, 0.95, 0.0), was_counter)
@@ -772,9 +813,9 @@ func _fire_sword_beam() -> void:
 		beam.speed = 20.0 * 1.2
 		beam.pierce_count = 1
 	get_parent().add_child(beam)
-	var shoot_dir := Vector3(facing_dir_x, 0, 0)
+	var shoot_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
 	var extra_beam_dmg: int = (current_attack_damage - 2) + (2 if counter_attack_buff else 0)
-	beam.initialize(global_position + Vector3(facing_dir_x * 0.9, 1.1, 0.0), shoot_dir, extra_beam_dmg)
+	beam.initialize(global_position + shoot_dir * 0.9 + Vector3(0.0, 1.1, 0.0), shoot_dir, extra_beam_dmg)
 	sword_beam_fired.emit(beam)
 
 

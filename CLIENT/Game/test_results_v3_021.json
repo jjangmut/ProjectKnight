@@ -1,0 +1,20 @@
+{
+	"boss_pattern_charge": true,
+	"boss_pattern_fissure": true,
+	"boss_pattern_whirlwind": true,
+	"directional_behind_missed": true,
+	"directional_front_hit": true,
+	"directional_lateral_missed": true,
+	"encounter_1_cleared": true,
+	"encounter_2_cleared": true,
+	"encounter_3_cleared": true,
+	"heavy_shield_knight_flank_success": true,
+	"heavy_shield_knight_frontal_block": true,
+	"jump_y_shadow_separated": true,
+	"ranged_minion_3d_aiming": true,
+	"stage_cleared": true,
+	"total_enemies_faced": 12,
+	"z_max_reached": 2.2,
+	"z_min_reached": -2.2,
+	"z_span_verified": true
+}

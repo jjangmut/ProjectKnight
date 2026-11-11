@@ -38,9 +38,9 @@ func initialize(start_pos: Vector3, dir: Vector3, extra_dmg: int = 0) -> void:
 
 	damage = 2 + extra_dmg
 	
-	# Face forward in flight direction
-	if direction.x < 0.0:
-		scale.x = -1.0
+	# Face forward in flight direction (full horizontal yaw alignment)
+	if direction.length_squared() > 0.01:
+		rotation.y = atan2(-direction.z, direction.x)
 
 
 func _build_vertical_crescent_visuals() -> void:

@@ -111,35 +111,26 @@ func _update_hp_bar() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Option C: 엄격한 Z=0.0 평면 고정
-	velocity.z = 0.0
-	global_position.z = 0.0
-
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
 	if is_stunned:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-		velocity.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
 		sprite_3d.frame = 4 # Hurt frame
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		return
 
 	if is_recoiling:
 		recoil_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 32.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 32.0 * delta)
 		if recoil_timer <= 0.0:
 			is_recoiling = false
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_animation(delta)
 		return
 
@@ -148,60 +139,72 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		return
 
-	# 1D 수평 거리 및 방향 계산 (Z 성분 완전 배제)
-	var dx := target_player.global_position.x - global_position.x
-	var dist := absf(dx)
+	# 2.5D Distance and Depth Tracking
+	var diff := target_player.global_position - global_position
+	diff.y = 0.0
+	var dist := diff.length()
+	var dx := diff.x
+	var dz := diff.z
 	var dir_x := signf(dx) if absf(dx) > 0.001 else facing_dir_x
 
 	if not is_aiming and dir_x != 0.0:
 		facing_dir_x = dir_x
 		sprite_3d.flip_h = (facing_dir_x < 0.0)
 
-	# 원거리 사격 사거리 조율 (1D 수평 이동)
+	# 2.5D Tactical Ranged Kiting & Lane Alignment
 	if not is_aiming:
-		if dist < standoff_dist - 0.8:
+		if dist < 2.8:
+			# Too close! Evasive retreat and sidestep in depth
+			velocity.x = -dir_x * (move_speed * 1.25)
+			velocity.z = (-signf(dz) if absf(dz) > 0.1 else 1.0) * (move_speed * 0.9)
+		elif absf(dx) < standoff_dist - 0.8:
 			velocity.x = -dir_x * move_speed
-			velocity.z = 0.0
-		elif dist > standoff_dist + 1.2:
+			velocity.z = signf(dz) * (move_speed * 0.6) if absf(dz) > 0.3 else 0.0
+		elif absf(dx) > standoff_dist + 1.2:
 			velocity.x = dir_x * move_speed
-			velocity.z = 0.0
+			velocity.z = signf(dz) * (move_speed * 0.7) if absf(dz) > 0.3 else 0.0
 			_prevent_player_pushing()
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
-			velocity.z = 0.0
+			velocity.z = signf(dz) * (move_speed * 0.65) if absf(dz) > 0.25 else move_toward(velocity.z, 0.0, 25.0 * delta)
 
 		shoot_timer -= delta
-		if shoot_timer <= 0.0 and dist <= 12.0:
+		if shoot_timer <= 0.0 and dist <= 14.0:
 			_execute_shoot()
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 
 	move_and_slide()
-	velocity.z = 0.0
-	global_position.z = 0.0
 	_update_animation(delta)
 
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var dx := target_player.global_position.x - global_position.x
-		var dist := absf(dx)
+		var diff := target_player.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
 		var min_dist: float = 0.38 + 0.35 + 0.10
 		if dist < min_dist and dist > 0.001:
-			var dir_x := signf(dx)
-			if velocity.x * dir_x > 0.0:
-				velocity.x = 0.0
+			var dir := diff.normalized()
+			var speed_towards := velocity.dot(dir)
+			if speed_towards > 0.0:
+				velocity -= dir * speed_towards
 
 
 func _execute_shoot() -> void:
 	is_aiming = true
 	shoot_timer = shoot_interval + randf_range(-0.3, 0.4)
 	sprite_3d.frame = 1 # Aim frame
+
+	# Aiming visual telegraph flash
+	if sprite_3d != null:
+		var tw := create_tween()
+		if tw:
+			sprite_3d.modulate = Color(2.5, 0.6, 0.6, 1.0)
+			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.35)
 
 	await get_tree().create_timer(0.35).timeout
 	if not is_instance_valid(self) or is_stunned:
@@ -210,11 +213,12 @@ func _execute_shoot() -> void:
 
 	sprite_3d.frame = 2 # Fire frame
 	if target_player != null and is_instance_valid(target_player):
-		var dy := (target_player.global_position.y + 0.7) - (global_position.y + 0.8)
-		var aim_dir := Vector3(target_player.global_position.x - global_position.x, dy, 0.0).normalized()
+		var target_pt := target_player.global_position + Vector3(0.0, 0.85, 0.0)
+		var fire_pt := global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
+		var aim_dir := (target_pt - fire_pt).normalized()
 		var bolt := CrossbowBoltScene.new()
 		get_parent().add_child(bolt)
-		bolt.launch(global_position + Vector3(facing_dir_x * 0.5, 0.8, 0.0), aim_dir, self, 15.0, 1, false)
+		bolt.launch(fire_pt, aim_dir, self, 16.5, 1, false)
 
 	await get_tree().create_timer(0.25).timeout
 	if is_instance_valid(self):
@@ -270,14 +274,13 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 				sprite_3d.modulate = Color(3.5, 1.0, 1.0, 1.0) # Sharp white-hot damage flash
 				tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
 
-	# 2. Confirmed damage micro-recoil (clamped, pure X impulse, Z=0 locked)
-	var push_x := hit_dir.x
-	if push_x == 0.0:
-		push_x = -1.0 if (sprite_3d == null or not sprite_3d.flip_h) else 1.0
+	# 2. Confirmed damage micro-recoil (in hit direction)
+	var push := hit_dir.normalized()
+	if push.length_squared() < 0.01:
+		push = Vector3(-1.0 if (sprite_3d == null or not sprite_3d.flip_h) else 1.0, 0.0, 0.0)
 	var impulse: float = 3.6 if is_counter else 2.2
-	velocity.x = push_x * impulse
-	velocity.z = 0.0
-	global_position.z = 0.0
+	velocity.x = push.x * impulse
+	velocity.z = push.z * impulse
 	is_recoiling = true
 	recoil_timer = 0.09
 
@@ -303,7 +306,6 @@ func _die(is_counter: bool = false) -> void:
 
 	set_physics_process(false)
 	velocity = Vector3.ZERO
-	global_position.z = 0.0
 
 	var bar := get_node_or_null("OverheadHPBar") as Node3D
 	if bar != null:

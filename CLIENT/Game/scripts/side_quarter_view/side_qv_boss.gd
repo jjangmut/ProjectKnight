@@ -153,9 +153,6 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	velocity.z = 0.0
-	global_position.z = 0.0
-
 	# Anchor ground shadow to floor level
 	if ground_shadow != null and is_instance_valid(ground_shadow):
 		if is_on_floor():
@@ -163,7 +160,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			ground_shadow.global_position.y = 0.015
 			ground_shadow.global_position.x = global_position.x
-			ground_shadow.global_position.z = 0.0
+			ground_shadow.global_position.z = global_position.z
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -174,24 +171,17 @@ func _physics_process(delta: float) -> void:
 		if groggy_timer <= 0.0:
 			_exit_groggy_state()
 		velocity = Vector3.ZERO
-		velocity.z = 0.0
-		global_position.z = 0.0
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
 	if current_pattern == Pattern.STUNNED:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 15.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 15.0 * delta)
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -199,10 +189,7 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
-		global_position.z = 0.0
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_boss_animation(delta)
 		return
 
@@ -225,15 +212,14 @@ func _physics_process(delta: float) -> void:
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
 				var boss_combat_distance := 1.85 # Reach of heavy boss blade; halt to avoid pushing
-				var dist_x: float = absf(diff.x)
-				if dist_x > boss_combat_distance:
-					# Option C: Chase strictly along horizontal X axis on Z=0
-					velocity.x = facing_dir_x * spd
-					velocity.z = 0.0
+				if dist > boss_combat_distance:
+					var chase_dir := diff.normalized()
+					velocity.x = chase_dir.x * spd
+					velocity.z = chase_dir.z * (spd * 0.70)
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-					velocity.z = 0.0
+					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 		Pattern.CHARGE_WINDUP:
 			velocity.x = 0.0
 			velocity.z = 0.0
@@ -272,11 +258,7 @@ func _physics_process(delta: float) -> void:
 				current_pattern = Pattern.CHASE
 				pattern_timer = 1.2
 
-	velocity.z = 0.0
-	global_position.z = 0.0
 	move_and_slide()
-	velocity.z = 0.0
-	global_position.z = 0.0
 	_update_boss_animation(delta)
 
 
@@ -354,15 +336,23 @@ func _find_player() -> void:
 
 
 func _pick_next_pattern(dist: float) -> void:
-	if dist > 5.5:
-		_execute_shield_charge()
-	elif dist <= 3.0:
-		if randf() > 0.5:
+	if dist <= 3.2:
+		# Player is in close range -> 360 Whirlwind Cleave / Quake Ring to punish mashing!
+		if randf() < 0.65:
+			_execute_quake_ring()
+		else:
+			_execute_triple_cleave()
+	elif dist > 5.5:
+		# Player is at distance -> Shield Charge rush!
+		if randf() < 0.70:
+			_execute_shield_charge()
+		else:
+			_execute_triple_cleave()
+	else:
+		if randf() < 0.50:
 			_execute_triple_cleave()
 		else:
-			_execute_quake_ring()
-	else:
-		_execute_triple_cleave()
+			_execute_shield_charge()
 
 
 func _show_danger_telegraph(duration: float = 0.35) -> void:
@@ -461,17 +451,69 @@ func _execute_shield_charge() -> void:
 
 func _execute_triple_cleave() -> void:
 	current_pattern = Pattern.TRIPLE_CLEAVE
-	pattern_timer = 0.95
+	pattern_timer = 1.15
 
 	for swing in range(3):
 		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
 			break
 		attack_area_3d.monitoring = true
-		velocity.x = facing_dir_x * 4.5
+		velocity.x = facing_dir_x * 4.2
+
+		# On 3rd swing: Slam the floor with ground fissure shockwave!
+		if swing == 2:
+			_spawn_fissure_shockwave()
+
 		await get_tree().create_timer(0.22).timeout
 		if is_instance_valid(self):
 			attack_area_3d.monitoring = false
-			await get_tree().create_timer(0.08).timeout
+			await get_tree().create_timer(0.10).timeout
+
+
+func _spawn_fissure_shockwave() -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var fissure := Area3D.new()
+	fissure.name = "CommanderFissureWave"
+	fissure.collision_layer = 0
+	fissure.collision_mask = 1 # Player
+	var col := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(1.6, 1.2, 1.2)
+	col.shape = box
+	fissure.add_child(col)
+
+	var fmesh := MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.8, 1.2)
+	fmesh.mesh = quad
+	var fmat := StandardMaterial3D.new()
+	fmat.albedo_color = Color(3.5, 1.5, 0.2, 0.95)
+	fmat.emission_enabled = true
+	fmat.emission = Color(3.5, 1.5, 0.2, 1.0)
+	fmat.emission_energy_multiplier = 4.0
+	fmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	fmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	fmat.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
+	fmesh.material_override = fmat
+	fissure.add_child(fmesh)
+
+	p.add_child(fissure)
+	var spawn_pos := global_position + Vector3(facing_dir_x * 1.2, 0.6, 0.0)
+	fissure.global_position = spawn_pos
+
+	var target_x := spawn_pos.x + facing_dir_x * 12.0
+	var tw := fissure.create_tween()
+	if tw:
+		tw.tween_property(fissure, "global_position:x", target_x, 0.65)
+		tw.parallel().tween_property(fmat, "albedo_color:a", 0.0, 0.65)
+		tw.chain().tween_callback(fissure.queue_free)
+
+	fissure.body_entered.connect(func(body: Node3D):
+		if body.is_in_group("player") and is_instance_valid(body):
+			if body.has_method("receive_incoming_attack"):
+				body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
+	)
 
 
 func _execute_quake_ring() -> void:
@@ -558,6 +600,13 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
 	if is_dead or current_hp <= 0 or amount <= 0:
 		return
+
+	if current_pattern == Pattern.CHARGE_WINDUP:
+		amount = maxi(1, int(amount * 0.5))
+		var p := get_parent()
+		if p != null:
+			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.2, 0.0), "GUARDED", Color(0.6, 0.8, 1.2), false)
+
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
 		var p := get_parent()
@@ -572,7 +621,6 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 	emit_signal("boss_hp_changed", current_hp, max_hp)
 
 	velocity = Vector3.ZERO # Stand firm like a boss; no knockback slide
-	global_position.z = 0.0
 
 	# 1. Distinct visual hit confirmation flash
 	var tween := create_tween()

@@ -78,11 +78,28 @@ func _ready() -> void:
 func _ensure_arena_boundary_colliders() -> void:
 	var half_w := arena_width * 0.5
 	var half_d := arena_depth * 0.5
+	var min_x := -half_w
+	var max_x := half_w
+	var min_z := -half_d
+	var max_z := half_d
+
+	if "stage_min_x" in self and "stage_max_x" in self:
+		min_x = float(get("stage_min_x"))
+		max_x = float(get("stage_max_x"))
+	if "stage_min_z" in self and "stage_max_z" in self:
+		min_z = float(get("stage_min_z"))
+		max_z = float(get("stage_max_z"))
+
+	var width := max_x - min_x
+	var depth := max_z - min_z
+	var center_x := (min_x + max_x) * 0.5
+	var center_z := (min_z + max_z) * 0.5
+
 	var wall_defs := [
-		{"name": "BoundaryWall_Left", "pos": Vector3(-half_w - 0.5, 3.0, 0.0), "size": Vector3(1.0, 8.0, arena_depth + 4.0)},
-		{"name": "BoundaryWall_Right", "pos": Vector3(half_w + 0.5, 3.0, 0.0), "size": Vector3(1.0, 8.0, arena_depth + 4.0)},
-		{"name": "BoundaryWall_Back", "pos": Vector3(0.0, 3.0, -half_d - 0.5), "size": Vector3(arena_width + 4.0, 8.0, 1.0)},
-		{"name": "BoundaryWall_Front", "pos": Vector3(0.0, 3.0, half_d + 0.5), "size": Vector3(arena_width + 4.0, 8.0, 1.0)},
+		{"name": "BoundaryWall_Left", "pos": Vector3(min_x - 0.5, 3.0, center_z), "size": Vector3(1.0, 8.0, depth + 4.0)},
+		{"name": "BoundaryWall_Right", "pos": Vector3(max_x + 0.5, 3.0, center_z), "size": Vector3(1.0, 8.0, depth + 4.0)},
+		{"name": "BoundaryWall_Back", "pos": Vector3(center_x, 3.0, min_z - 0.5), "size": Vector3(width + 4.0, 8.0, 1.0)},
+		{"name": "BoundaryWall_Front", "pos": Vector3(center_x, 3.0, max_z + 0.5), "size": Vector3(width + 4.0, 8.0, 1.0)},
 	]
 	for wd in wall_defs:
 		if get_node_or_null(wd["name"]) != null:

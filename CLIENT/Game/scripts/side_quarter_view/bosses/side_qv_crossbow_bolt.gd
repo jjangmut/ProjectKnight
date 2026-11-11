@@ -31,16 +31,13 @@ func _ready() -> void:
 
 func launch(start_pos: Vector3, dir: Vector3, shooter: Node, spd: float = 18.0, dmg: int = 2, explosive: bool = false) -> void:
 	global_position = start_pos
-	global_position.z = 0.0 # Option C Z=0 고정
-	direction = dir
-	direction.z = 0.0
-	direction = direction.normalized()
+	direction = dir.normalized()
 	speed = spd
 	damage = dmg
 	shooter_ref = shooter
 	is_explosive = explosive
 
-	# 방향 정렬 (X/Y 평면)
+	# 방향 정렬 (3D)
 	if direction != Vector3.ZERO:
 		look_at(global_position + direction, Vector3.UP)
 
@@ -96,7 +93,6 @@ func _physics_process(delta: float) -> void:
 	var prev_pos := global_position
 	var step := speed * delta
 	global_position += direction * step
-	global_position.z = 0.0
 	traveled_distance += step
 
 	# 고속 이동 시 터널링 방지용 레이캐스트 검증

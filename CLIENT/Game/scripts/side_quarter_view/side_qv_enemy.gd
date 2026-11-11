@@ -151,9 +151,6 @@ const ATTACK_DURATION: float = 0.28
 
 
 func _physics_process(delta: float) -> void:
-	velocity.z = 0.0
-	global_position.z = 0.0
-
 	# Anchor ground shadow to floor level
 	if ground_shadow != null and is_instance_valid(ground_shadow):
 		if is_on_floor():
@@ -161,33 +158,27 @@ func _physics_process(delta: float) -> void:
 		else:
 			ground_shadow.global_position.y = 0.015
 			ground_shadow.global_position.x = global_position.x
-			ground_shadow.global_position.z = 0.0
+			ground_shadow.global_position.z = global_position.z
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
 	if is_recoiling:
 		recoil_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 32.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 32.0 * delta)
 		if recoil_timer <= 0.0:
 			is_recoiling = false
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
 	if is_stunned:
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 		if stun_timer <= 0.0:
 			is_stunned = false
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
@@ -197,8 +188,7 @@ func _physics_process(delta: float) -> void:
 	if is_attacking:
 		attack_timer += delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
-		velocity.z = 0.0
-		global_position.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
 		if attack_timer >= 0.08 and attack_timer < 0.22:
 			attack_area_3d.monitoring = true
 		else:
@@ -208,8 +198,6 @@ func _physics_process(delta: float) -> void:
 			is_attacking = false
 			attack_area_3d.monitoring = false
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
@@ -217,10 +205,7 @@ func _physics_process(delta: float) -> void:
 		_find_player()
 		velocity.x = 0.0
 		velocity.z = 0.0
-		global_position.z = 0.0
 		move_and_slide()
-		velocity.z = 0.0
-		global_position.z = 0.0
 		_update_enemy_animation(delta)
 		return
 
@@ -229,44 +214,36 @@ func _physics_process(delta: float) -> void:
 	var dist := diff.length()
 	var dir := diff.normalized()
 
-	if dir.x != 0.0:
+	if absf(dir.x) > 0.05:
 		sprite_3d.flip_h = (dir.x < 0.0)
-		attack_area_3d.position.x = 0.6 * signf(dir.x)
+	attack_area_3d.position = Vector3(dir.x * 0.7, 0.0, dir.z * 0.7)
 
-	var combat_standoff_distance := 1.25 # Standoff distance: clean stop without pushing
-	var diff_x := target_player.global_position.x - global_position.x
-	var dist_x := absf(diff_x)
-	var dir_x := signf(diff_x) if dist_x > 0.01 else -1.0
-	if dist_x > combat_standoff_distance:
-		# Option C: Pursue player purely along horizontal X on Z=0 plane
-		velocity.x = dir_x * move_speed
-		velocity.z = 0.0
+	var combat_standoff := 1.35
+	if dist > combat_standoff:
+		velocity.x = dir.x * move_speed
+		velocity.z = dir.z * (move_speed * 0.75)
 		_prevent_player_pushing()
 	else:
-		# Firm stop in front of player (no pushing, no bouncing)
 		velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-		velocity.z = 0.0
+		velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 		if current_cooldown <= 0.0:
 			_execute_attack()
 
-	velocity.z = 0.0
-	global_position.z = 0.0
 	move_and_slide()
-	velocity.z = 0.0
-	global_position.z = 0.0
 	_update_enemy_animation(delta)
 
 
 func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
-		var diff_x := target_player.global_position.x - global_position.x
-		var dist_x := absf(diff_x)
+		var diff := target_player.global_position - global_position
+		diff.y = 0.0
+		var dist := diff.length()
 		var min_dist: float = 0.40 + 0.35 + 0.06
-		if dist_x < min_dist and dist_x > 0.001:
-			var dir_x := signf(diff_x)
-			var forward_speed := velocity.x * dir_x
-			if forward_speed > 0.0:
-				velocity.x -= dir_x * forward_speed
+		if dist < min_dist and dist > 0.001:
+			var dir := diff.normalized()
+			var speed_towards := velocity.dot(dir)
+			if speed_towards > 0.0:
+				velocity -= dir * speed_towards
 
 
 func _update_enemy_animation(delta: float) -> void:
@@ -313,12 +290,19 @@ func _execute_attack() -> void:
 	attack_timer = 0.0
 	velocity.x = 0.0
 	velocity.z = 0.0
+	if sprite_3d != null:
+		var tw := create_tween()
+		if tw:
+			sprite_3d.modulate = Color(2.5, 1.8, 0.4, 1.0) # Weapon gleam telegraph
+			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.16)
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player") and is_instance_valid(body):
 		if body.has_method("receive_incoming_attack"):
-			var atk_dir := Vector3(1.0 if not sprite_3d.flip_h else -1.0, 0, 0)
+			var atk_dir := (body.global_position - global_position).normalized()
+			if atk_dir.length_squared() < 0.01:
+				atk_dir = Vector3(1.0 if not sprite_3d.flip_h else -1.0, 0, 0)
 			body.receive_incoming_attack(attack_damage, self, atk_dir)
 
 
@@ -347,14 +331,13 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 				sprite_3d.modulate = Color(3.5, 1.0, 1.0, 1.0) # Sharp white-hot damage flash
 				tween.tween_property(sprite_3d, "modulate", Color.WHITE, 0.12)
 
-	# 2. Confirmed damage micro-recoil (clamped, pure X impulse, Z=0 locked)
-	var push_x := hit_dir.x
-	if push_x == 0.0:
-		push_x = -1.0 if (sprite_3d == null or not sprite_3d.flip_h) else 1.0
+	# 2. Confirmed damage micro-recoil (in hit direction)
+	var push := hit_dir.normalized()
+	if push.length_squared() < 0.01:
+		push = Vector3(-1.0 if (sprite_3d == null or not sprite_3d.flip_h) else 1.0, 0.0, 0.0)
 	var impulse: float = 3.6 if is_counter else 2.2
-	velocity.x = push_x * impulse
-	velocity.z = 0.0
-	global_position.z = 0.0
+	velocity.x = push.x * impulse
+	velocity.z = push.z * impulse
 	is_recoiling = true
 	recoil_timer = 0.09
 

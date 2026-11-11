@@ -9,6 +9,10 @@ class_name SideQVCamera
 @export var follow_smoothness: float = 12.0
 @export var camera_offset: Vector3 = Vector3(0.0, 5.2, 7.8)
 @export var lookahead_distance: float = 1.8
+@export var min_camera_x: float = -999.0
+@export var max_camera_x: float = 999.0
+@export var min_camera_z: float = -999.0
+@export var max_camera_z: float = 999.0
 
 var trauma: float = 0.0
 var trauma_power: float = 2.0
@@ -38,13 +42,23 @@ func _physics_process(delta: float) -> void:
 			var midpoint: Vector3 = (target_pos + boss_pos) * 0.5
 			var dist_x: float = absf(target_pos.x - boss_pos.x)
 			desired_fov = clampf(42.0 + (dist_x - 5.0) * 0.9, 42.0, 52.0)
-			dest = midpoint + camera_offset
+			dest = Vector3(midpoint.x + camera_offset.x, camera_offset.y, midpoint.z * 0.35 + camera_offset.z)
 		else:
 			# Dynamic Lookahead (Celeste / Dead Cells style): Forward view offset in facing direction
 			var look_x: float = 0.0
 			if "facing_dir_x" in target:
 				look_x = float(target.facing_dir_x) * lookahead_distance
-			dest = target_pos + camera_offset + Vector3(look_x, 0.0, 0.0)
+			dest = Vector3(target_pos.x + camera_offset.x + look_x, camera_offset.y, target_pos.z * 0.35 + camera_offset.z)
+
+		# Clamp destination to camera bounds
+		if min_camera_x > -900.0:
+			dest.x = maxf(dest.x, min_camera_x)
+		if max_camera_x < 900.0:
+			dest.x = minf(dest.x, max_camera_x)
+		if min_camera_z > -900.0:
+			dest.z = maxf(dest.z, min_camera_z)
+		if max_camera_z < 900.0:
+			dest.z = minf(dest.z, max_camera_z)
 
 		# Lockstep physics tracking without micro-stutter
 		base_pos = base_pos.lerp(dest, follow_smoothness * delta)

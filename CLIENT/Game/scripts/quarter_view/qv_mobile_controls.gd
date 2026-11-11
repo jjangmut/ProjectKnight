@@ -389,23 +389,27 @@ func _emulate_direction(dir: Vector2, strength: float) -> void:
 		_release_all_moves()
 		return
 
-	# Option C: Left / Right horizontal control
-	if dir.x < -0.35:
+	# 2.5D Belt-Scroll: Left / Right (X-axis)
+	if dir.x < -0.30:
 		_press_virtual_action("move_left")
 		_release_virtual_action("move_right")
-	elif dir.x > 0.35:
+	elif dir.x > 0.30:
 		_press_virtual_action("move_right")
 		_release_virtual_action("move_left")
 	else:
 		_release_virtual_action("move_left")
 		_release_virtual_action("move_right")
 
-	# Option C: Downward threshold enables airborne Dive Slam, zero ground Z drift
-	if dir.y > 0.50:
-		_press_virtual_action("move_down")
-	else:
+	# 2.5D Belt-Scroll: Up / Down depth navigation (Z-axis)
+	if dir.y < -0.30:
+		_press_virtual_action("move_up")
 		_release_virtual_action("move_down")
-	_release_virtual_action("move_up")
+	elif dir.y > 0.30:
+		_press_virtual_action("move_down")
+		_release_virtual_action("move_up")
+	else:
+		_release_virtual_action("move_up")
+		_release_virtual_action("move_down")
 
 
 func _press_virtual_action(action: String) -> void:
