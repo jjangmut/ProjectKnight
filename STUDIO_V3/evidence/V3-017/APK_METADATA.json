@@ -1,0 +1,52 @@
+{
+  "milestone": "V3-017",
+  "task": "First Playable Android Build & Real Mobile Readiness",
+  "generated_at": "2026-11-11T14:14:18+09:00",
+  "engine": {
+    "name": "Godot Engine",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "renderer": "gl_compatibility (OpenGL ES 3.0 compatible)",
+    "viewport_width": 1280,
+    "viewport_height": 720,
+    "aspect": "expand",
+    "orientation": "sensor_landscape (5)"
+  },
+  "package": {
+    "unique_name": "com.junypapa.projectknight",
+    "label": "Project Knight",
+    "version_code": 8,
+    "version_name": "2.0.0",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "main_activity": "com.godot.game.GodotApp",
+    "launcher_activity": "com.godot.game.GodotAppLauncher",
+    "native_architectures": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "permissions": [],
+    "signed": true,
+    "debug_keystore": "C:/Users/jjang/.android/debug.keystore",
+    "signature_schemes": {
+      "v1_jar": false,
+      "v2_apk_signature_scheme": true,
+      "v3_apk_signature_scheme": true,
+      "v4_apk_signature_scheme": false
+    }
+  },
+  "artifact": {
+    "file_name": "ProjectKnight.apk",
+    "relative_path": "CLIENT/Game/builds/android/ProjectKnight.apk",
+    "absolute_path": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-017/CLIENT/Game/builds/android/ProjectKnight.apk",
+    "size_bytes": 542751493,
+    "size_mb": 517.61,
+    "sha256": "0EF28AD2E356B22EB3EA8C64F5AB810CB734F36B2CE130D40087FC60D41685A3",
+    "verified": true,
+    "status": "INSTALLABLE_DEBUG_APK_VERIFIED"
+  },
+  "device_status": {
+    "physical_device_attached": false,
+    "hardware_tested": false,
+    "status_code": "ANDROID_DEVICE_NOT_TESTED"
+  }
+}
