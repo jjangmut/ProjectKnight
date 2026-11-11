@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProjectKnight.Launcher.Models;
 using ProjectKnight.Launcher.Services;
@@ -584,14 +584,17 @@ public class MainForm : Form
                 AppendLog("PASS", $" - 최종 상태: {result.FinalStatus}");
                 AppendLog("PASS", $" - 총 소요 시간: {result.Duration.TotalSeconds:F1}초");
 
-                MessageBox.Show(
-                    $"Task {candidate.TaskId} 개발 및 반영이 성공적으로 완료되었습니다!\n\n" +
-                    $"커밋 SHA: {result.CommitSha}\n" +
-                    $"상태: {result.FinalStatus}\n" +
-                    $"소요 시간: {result.Duration.TotalSeconds:F1}초",
-                    "실행 완료",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                if (!_chkAutoApprove.Checked)
+                {
+                    MessageBox.Show(
+                        $"Task {candidate.TaskId} 개발 및 반영이 성공적으로 완료되었습니다!\n\n" +
+                        $"커밋 SHA: {result.CommitSha}\n" +
+                        $"상태: {result.FinalStatus}\n" +
+                        $"소요 시간: {result.Duration.TotalSeconds:F1}초",
+                        "실행 완료",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
 
                 // Refresh candidate list to reflect completion
                 await RefreshCandidatesAsync();
@@ -601,26 +604,32 @@ public class MainForm : Form
                 SetUiRunning(false, $"종료 ({result.FinalStatus})", Color.FromArgb(255, 193, 7));
                 AppendLog("WARN", $"[{result.FinalStatus}] Task {candidate.TaskId} 실행 종료 (상태: {result.FinalStatus})");
 
-                MessageBox.Show(
-                    $"Task {candidate.TaskId} 실행이 종료되었으나 변경 사항이 없거나 Push가 생략되었습니다.\n\n" +
-                    $"상태: {result.FinalStatus}\n" +
-                    $"커밋 SHA: {result.CommitSha ?? "N/A"}",
-                    "알림",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                if (!_chkAutoApprove.Checked)
+                {
+                    MessageBox.Show(
+                        $"Task {candidate.TaskId} 실행이 종료되었으나 변경 사항이 없거나 Push가 생략되었습니다.\n\n" +
+                        $"상태: {result.FinalStatus}\n" +
+                        $"커밋 SHA: {result.CommitSha ?? "N/A"}",
+                        "알림",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
             else
             {
                 SetUiRunning(false, $"실패 ({result.FinalStatus})", Color.FromArgb(220, 53, 69));
                 AppendLog("ERROR", $"[FAILED] Task {candidate.TaskId} 실행 실패: {result.ErrorMessage}");
 
-                MessageBox.Show(
-                    $"Task {candidate.TaskId} 실행 중 오류가 발생했습니다.\n\n" +
-                    $"오류 내용: {result.ErrorMessage}\n\n" +
-                    $"하단 콘솔 로그를 확인하세요.",
-                    "실행 실패",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                if (!_chkAutoApprove.Checked)
+                {
+                    MessageBox.Show(
+                        $"Task {candidate.TaskId} 실행 중 오류가 발생했습니다.\n\n" +
+                        $"오류 내용: {result.ErrorMessage}\n\n" +
+                        $"하단 콘솔 로그를 확인하세요.",
+                        "실행 실패",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
             }
         }
         catch (OperationCanceledException)
