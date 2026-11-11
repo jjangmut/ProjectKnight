@@ -1,0 +1,31 @@
+{
+	"video_file": "Stage1_QualityGate_Uncut.mp4",
+	"local_path": "D:\\JUNYPAPA_STUDIO\\Videos\\ProjectKnight\\V3-022\\Stage1_QualityGate_Uncut.mp4",
+	"file_size_bytes": 50440350,
+	"sha256": "393F27346A062D427EF765D70BD066A8F21CEA383241F9E09E4742B807C91B79",
+	"duration_seconds": 29.266667,
+	"total_frames": 1756,
+	"framerate": 60.0,
+	"resolution": "1280x720",
+	"video_codec": "h264 (High, yuv420p)",
+	"audio_codec": "aac (48000 Hz, stereo, 192 kbps)",
+	"capture_mode": "Godot Movie Maker (Deterministic 60 FPS Engine Render)",
+	"playtest_mode": "NATURAL_INPUT_E2E (Simulated Physical Input, Zero Cheats)",
+	"recorded_at": "2026-11-11T23:46:00",
+	"telemetry_correlation": {
+		"stage_cleared_naturally": true,
+		"player_travel_x": [-6.0, 87.2],
+		"player_travel_z": [-2.14, 2.13],
+		"enemies_defeated": 12,
+		"damage_taken": 15,
+		"vitality_orbs_collected": 5,
+		"parries_performed": 18,
+		"attacks_performed": 38,
+		"boss_patterns_observed": [
+			"ground_fissure",
+			"quake_ring",
+			"shield_charge"
+		],
+		"direct_state_mutations": 0
+	}
+}

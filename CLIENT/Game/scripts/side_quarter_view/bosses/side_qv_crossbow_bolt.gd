@@ -5,6 +5,9 @@ class_name SideQVCrossbowBolt
 ## - 플레이어 충돌 시 대미지 판정 및 피격/가드/저스트 패링 전달
 ## - 지형 충돌 및 사거리 소진 시 폭발 이펙트와 함께 소멸
 
+const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
+const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
+
 @export var speed: float = 18.0
 @export var damage: int = 2
 @export var is_explosive: bool = false
@@ -56,24 +59,24 @@ func _build_visuals() -> void:
 
 	var bmat := StandardMaterial3D.new()
 	if is_explosive:
-		bmat.albedo_color = Color(2.8, 1.2, 0.2, 1.0) # 불타는 주황 화염 코어
+		bmat.albedo_color = Color(1.35, 0.7, 0.2, 1.0) # 불타는 주황 화염 코어
 		bmat.emission_enabled = true
-		bmat.emission = Color(2.8, 1.2, 0.2, 1.0)
-		bmat.emission_energy_multiplier = 4.0
+		bmat.emission = Color(1.35, 0.7, 0.2, 1.0)
+		bmat.emission_energy_multiplier = 1.35
 	else:
-		bmat.albedo_color = Color(0.8, 1.6, 3.2, 1.0) # 코발트 비전 에너지 코어
+		bmat.albedo_color = Color(0.4, 0.9, 1.4, 1.0) # 코발트 비전 에너지 코어
 		bmat.emission_enabled = true
-		bmat.emission = Color(0.8, 1.6, 3.2, 1.0)
-		bmat.emission_energy_multiplier = 3.5
+		bmat.emission = Color(0.4, 0.9, 1.4, 1.0)
+		bmat.emission_energy_multiplier = 1.35
 	bolt_mesh.material_override = bmat
 	add_child(bolt_mesh)
 
 	# 2. 볼트 촉 발광 라이트
 	tip_glow = OmniLight3D.new()
 	tip_glow.name = "TipGlow"
-	tip_glow.light_color = Color(2.5, 1.4, 0.4) if is_explosive else Color(0.6, 1.5, 3.0)
-	tip_glow.light_energy = 1.8
-	tip_glow.omni_range = 2.4
+	tip_glow.light_color = Color(1.4, 0.75, 0.25) if is_explosive else Color(0.4, 0.85, 1.4)
+	tip_glow.light_energy = 1.2
+	tip_glow.omni_range = 2.0
 	add_child(tip_glow)
 
 	# 3. 충돌 콜리전 캡슐
@@ -144,17 +147,24 @@ func _impact_and_vanish(spark: bool) -> void:
 func _spawn_impact_burst() -> void:
 	var burst := MeshInstance3D.new()
 	burst.name = "BoltImpactBurst"
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.35 if not is_explosive else 0.65
-	sphere.height = sphere.radius * 2.0
-	burst.mesh = sphere
+	var quad := QuadMesh.new()
+	var sz: float = 1.2 if is_explosive else 0.8
+	quad.size = Vector2(sz, sz)
+	burst.mesh = quad
 
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(3.0, 1.5, 0.4, 1.0) if is_explosive else Color(1.0, 2.0, 3.5, 1.0)
+	mat.albedo_texture = TexHitSpark
+	var col := Color(1.35, 0.8, 0.3, 0.95) if is_explosive else Color(0.4, 0.95, 1.4, 0.95)
+	mat.albedo_color = col
 	mat.emission_enabled = true
-	mat.emission = mat.albedo_color
-	mat.emission_energy_multiplier = 4.5
+	mat.emission_texture = TexHitSpark
+	mat.emission = col
+	mat.emission_energy_multiplier = 1.35
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	burst.material_override = mat
 
 	get_parent().add_child(burst)

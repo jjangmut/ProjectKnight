@@ -131,6 +131,10 @@ func _setup_3d_environment() -> void:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.62, 0.70, 0.82, 1.0)
 	env.ambient_light_energy = 1.15
+	# VIS-009 Fix: Filmic Tonemapping prevents HDR emission clipping to flat 255,255,255 white
+	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_exposure = 1.0
+	env.tonemap_white = 6.0
 	env.glow_enabled = true
 	env.set("glow_levels/1", 1.0)
 	env.set("glow_levels/2", 1.0)

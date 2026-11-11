@@ -59,6 +59,11 @@ var ground_shadow: MeshInstance3D = null
 const BossTextureNormal = preload("res://assets/enemy_frames/boss_commander_v2.png")
 const BossTextureDefense = preload("res://assets/enemy_frames/boss_commander_v2_defense.png")
 
+# VIS-009 Boss Combat VFX Textures
+const TexBossFissure = preload("res://assets/vfx/vfx_boss_fissure_magma.png")
+const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
+const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
+
 
 var anim_frame_timer: float = 0.0
 var anim_frame_idx: int = 0
@@ -109,18 +114,24 @@ func _build_components() -> void:
 	# 2. Crimson Aura Ring (Phase 2 Enrage)
 	aura_ring_3d = MeshInstance3D.new()
 	aura_ring_3d.name = "CrimsonAuraRing"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 1.4
-	torus.outer_radius = 1.65
-	aura_ring_3d.mesh = torus
+	var aquad := QuadMesh.new()
+	aquad.size = Vector2(3.2, 3.2)
+	aura_ring_3d.mesh = aquad
+	aura_ring_3d.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 
 	var amat := StandardMaterial3D.new()
-	amat.albedo_color = Color(2.5, 0.3, 0.3, 1.0)
+	amat.albedo_texture = TexShockwaveRing
+	amat.albedo_color = Color(1.3, 0.35, 0.35, 0.85)
 	amat.emission_enabled = true
-	amat.emission = Color(2.5, 0.3, 0.3, 1.0)
-	amat.emission_energy_multiplier = 4.0
+	amat.emission_texture = TexShockwaveRing
+	amat.emission = Color(1.3, 0.35, 0.35, 1.0)
+	amat.emission_energy_multiplier = 1.35
+	amat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	amat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	amat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	amat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	aura_ring_3d.material_override = amat
-	aura_ring_3d.position.y = 0.2
+	aura_ring_3d.position.y = 0.04
 	aura_ring_3d.visible = false
 	add_child(aura_ring_3d)
 
@@ -357,21 +368,24 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 		return
 	var ring := MeshInstance3D.new()
 	ring.name = "DangerTelegraphRing3D"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 0.6
-	torus.outer_radius = 0.95
-	ring.mesh = torus
+	var quad := QuadMesh.new()
+	quad.size = Vector2(2.2, 2.2)
+	ring.mesh = quad
+	ring.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	var rmat := StandardMaterial3D.new()
-	rmat.albedo_color = Color(3.8, 0.4, 0.2, 0.9)
+	rmat.albedo_texture = TexShockwaveRing
+	rmat.albedo_color = Color(1.35, 0.35, 0.2, 0.95)
 	rmat.emission_enabled = true
-	rmat.emission = Color(3.8, 0.4, 0.2, 1.0)
-	rmat.emission_energy_multiplier = 4.5
+	rmat.emission_texture = TexShockwaveRing
+	rmat.emission = Color(1.35, 0.35, 0.2, 1.0)
+	rmat.emission_energy_multiplier = 1.35
 	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
-	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+	ring.global_position = global_position + Vector3(0.0, 0.04, 0.0)
 	var tw := ring.create_tween()
 	if tw:
 		tw.set_parallel(true)
@@ -379,7 +393,7 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
 		tw.chain().tween_callback(ring.queue_free)
 
-	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "!", Color(3.8, 0.3, 0.2), true)
+	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "!", Color(1.4, 0.3, 0.2), true)
 
 
 func _enter_groggy_state() -> void:
@@ -407,10 +421,10 @@ func _spawn_groggy_halo() -> void:
 	torus.outer_radius = 0.55
 	groggy_halo_3d.mesh = torus
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(3.2, 2.4, 0.4, 0.95)
+	mat.albedo_color = Color(1.3, 1.0, 0.3, 0.95)
 	mat.emission_enabled = true
-	mat.emission = Color(3.2, 2.4, 0.4, 1.0)
-	mat.emission_energy_multiplier = 4.2
+	mat.emission = Color(1.3, 1.0, 0.3, 1.0)
+	mat.emission_energy_multiplier = 1.35
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	groggy_halo_3d.material_override = mat
@@ -481,14 +495,18 @@ func _spawn_fissure_shockwave() -> void:
 
 	var fmesh := MeshInstance3D.new()
 	var quad := QuadMesh.new()
-	quad.size = Vector2(1.8, 1.2)
+	quad.size = Vector2(2.0, 1.3)
 	fmesh.mesh = quad
 	var fmat := StandardMaterial3D.new()
-	fmat.albedo_color = Color(3.5, 1.5, 0.2, 0.95)
+	fmat.albedo_texture = TexBossFissure
+	fmat.albedo_color = Color(1.35, 0.85, 0.35, 0.95)
 	fmat.emission_enabled = true
-	fmat.emission = Color(3.5, 1.5, 0.2, 1.0)
-	fmat.emission_energy_multiplier = 4.0
+	fmat.emission_texture = TexBossFissure
+	fmat.emission = Color(1.35, 0.75, 0.2, 1.0)
+	fmat.emission_energy_multiplier = 1.35
 	fmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	fmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	fmat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	fmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	fmat.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
 	fmesh.material_override = fmat
@@ -526,24 +544,28 @@ func _execute_quake_ring() -> void:
 	if p != null:
 		var vring := MeshInstance3D.new()
 		vring.name = "QuakeShockwaveRing3D"
-		var torus := TorusMesh.new()
-		torus.inner_radius = 0.65
-		torus.outer_radius = 1.05
-		vring.mesh = torus
+		var quad := QuadMesh.new()
+		quad.size = Vector2(2.5, 2.5)
+		vring.mesh = quad
+		vring.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 		var vmat := StandardMaterial3D.new()
-		vmat.albedo_color = Color(3.4, 0.55, 0.2, 0.9)
+		vmat.albedo_texture = TexShockwaveRing
+		vmat.albedo_color = Color(1.4, 0.45, 0.2, 0.95)
 		vmat.emission_enabled = true
-		vmat.emission = Color(3.4, 0.55, 0.2, 1.0)
-		vmat.emission_energy_multiplier = 4.2
+		vmat.emission_texture = TexShockwaveRing
+		vmat.emission = Color(1.4, 0.45, 0.2, 1.0)
+		vmat.emission_energy_multiplier = 1.30
 		vmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		vmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+		vmat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		vmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		vring.material_override = vmat
 		p.add_child(vring)
-		vring.global_position = global_position + Vector3(0.0, 0.1, 0.0)
+		vring.global_position = global_position + Vector3(0.0, 0.05, 0.0)
 		var vtw := vring.create_tween()
 		if vtw:
 			vtw.set_parallel(true)
-			vtw.tween_property(vring, "scale", Vector3(4.2, 1.0, 4.2), 0.36)
+			vtw.tween_property(vring, "scale", Vector3(3.8, 3.8, 3.8), 0.36)
 			vtw.tween_property(vmat, "albedo_color:a", 0.0, 0.36)
 			vtw.chain().tween_callback(vring.queue_free)
 

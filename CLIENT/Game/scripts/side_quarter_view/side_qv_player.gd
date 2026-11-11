@@ -123,6 +123,12 @@ const PaladinTexture = TexIdle
 const AttackSheetTexture = TexAttack
 const SwordBeamScene = preload("res://scripts/side_quarter_view/side_qv_sword_beam.gd")
 
+# VIS-009 Combat VFX Textures (Amber Slash, Runic Barrier, Burst Sparks, Shockwave)
+const TexSlashArc = preload("res://assets/vfx/vfx_slash_arc_amber.png")
+const TexBarrierRunic = preload("res://assets/vfx/vfx_energy_barrier_runic.png")
+const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
+const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
+
 
 func _ready() -> void:
 	collision_layer = 1 # Player Layer (1)
@@ -185,34 +191,41 @@ func _build_components() -> void:
 	# 3. 3D Runic Shield Barrier (Just Parry visual)
 	guard_barrier_3d = MeshInstance3D.new()
 	guard_barrier_3d.name = "GuardBarrier3D"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 0.6
-	torus.outer_radius = 0.8
-	guard_barrier_3d.mesh = torus
+	var bquad := QuadMesh.new()
+	bquad.size = Vector2(1.5, 1.5)
+	guard_barrier_3d.mesh = bquad
 
 	var bmat := StandardMaterial3D.new()
-	bmat.albedo_color = Color(0.2, 0.8, 1.8, 0.85)
+	bmat.albedo_texture = TexBarrierRunic
+	bmat.albedo_color = Color(0.4, 0.9, 1.4, 0.92)
 	bmat.emission_enabled = true
-	bmat.emission = Color(0.2, 0.8, 2.0, 1.0)
-	bmat.emission_energy_multiplier = 4.0
+	bmat.emission_texture = TexBarrierRunic
+	bmat.emission = Color(0.35, 0.85, 1.35, 1.0)
+	bmat.emission_energy_multiplier = 1.35
 	bmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	bmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	bmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	bmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	guard_barrier_3d.material_override = bmat
 	guard_barrier_3d.position = Vector3(0.45, 0.85, 0.0)
-	guard_barrier_3d.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+	guard_barrier_3d.rotation_degrees = Vector3(0.0, 90.0, 0.0)
 	guard_barrier_3d.visible = false
 	add_child(guard_barrier_3d)
 
-	# 4. 3D Melee Radiant Slash VFX (Curved Blade Arc with High-Energy Core)
+	# 4. 3D Melee Radiant Slash VFX (Curved Blade Arc with Amber Texture & High-Energy Core)
 	slash_visual_3d = MeshInstance3D.new()
 	slash_visual_3d.name = "SlashVisual3D"
-	slash_visual_3d.mesh = _generate_slash_arc_mesh(1.35, 0.55, 110.0, 16)
+	slash_visual_3d.mesh = _generate_slash_arc_mesh(1.4, 0.5, 115.0, 18)
 
 	var smat := StandardMaterial3D.new()
-	smat.albedo_color = Color(3.6, 2.8, 1.2, 0.88) # Radiant Golden-White Blade Arc
+	smat.albedo_texture = TexSlashArc
+	smat.albedo_color = Color(1.3, 0.95, 0.35, 0.95) # Radiant Warm Amber Golden Arc
 	smat.emission_enabled = true
-	smat.emission = Color(3.6, 2.6, 1.0, 1.0)
-	smat.emission_energy_multiplier = 4.5
+	smat.emission_texture = TexSlashArc
+	smat.emission = Color(1.3, 0.85, 0.2, 1.0)
+	smat.emission_energy_multiplier = 1.35
 	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	smat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	slash_visual_3d.material_override = smat
@@ -961,31 +974,34 @@ func _trigger_parry_flash() -> void:
 		guard_barrier_3d.scale = Vector3(1.6, 1.6, 1.6)
 		tween.tween_property(guard_barrier_3d, "scale", Vector3(1.0, 1.0, 1.0), 0.18)
 
-	# 3D Golden-Cyan Parry Shockwave Ring + Burst Flash Light
+	# 3D Textured Golden-Cyan Parry Shockwave Ring
 	var p := get_parent()
 	if p != null:
 		var ring := MeshInstance3D.new()
 		ring.name = "ParryShockwaveRing3D"
-		var torus := TorusMesh.new()
-		torus.inner_radius = 0.45
-		torus.outer_radius = 0.68
-		ring.mesh = torus
+		var quad := QuadMesh.new()
+		quad.size = Vector2(1.8, 1.8)
+		ring.mesh = quad
 		var rmat := StandardMaterial3D.new()
-		rmat.albedo_color = Color(1.2, 3.0, 4.5, 0.9)
+		rmat.albedo_texture = TexShockwaveRing
+		rmat.albedo_color = Color(0.35, 1.1, 1.6, 0.95)
 		rmat.emission_enabled = true
-		rmat.emission = Color(1.2, 3.0, 4.5, 1.0)
-		rmat.emission_energy_multiplier = 4.5
+		rmat.emission_texture = TexShockwaveRing
+		rmat.emission = Color(0.35, 1.1, 1.6, 1.0)
+		rmat.emission_energy_multiplier = 1.35
 		rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+		rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		rmat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 		ring.material_override = rmat
 		p.add_child(ring)
 		ring.global_position = global_position + Vector3(facing_dir_x * 0.5, 0.9, 0.0)
-		ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
 		var rtw := ring.create_tween()
 		if rtw:
 			rtw.set_parallel(true)
-			rtw.tween_property(ring, "scale", Vector3(2.8, 2.8, 2.8), 0.22)
-			rtw.tween_property(rmat, "albedo_color:a", 0.0, 0.22)
+			rtw.tween_property(ring, "scale", Vector3(2.6, 2.6, 2.6), 0.20)
+			rtw.tween_property(rmat, "albedo_color:a", 0.0, 0.20)
 			rtw.chain().tween_callback(ring.queue_free)
 
 		if "camera" in p and p.camera != null and p.camera.has_method("add_trauma"):
@@ -998,26 +1014,31 @@ func _spawn_hit_impact_vfx(hit_pos: Vector3, is_counter: bool) -> void:
 		return
 	var spark := MeshInstance3D.new()
 	spark.name = "MeleeHitImpact3D"
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.28 if is_counter else 0.18
-	sphere.height = sphere.radius * 2.0
-	spark.mesh = sphere
+	var quad := QuadMesh.new()
+	var sz: float = 0.95 if is_counter else 0.65
+	quad.size = Vector2(sz, sz)
+	spark.mesh = quad
 	var smat := StandardMaterial3D.new()
-	var col := Color(1.4, 3.2, 4.6, 0.9) if is_counter else Color(3.4, 2.6, 1.0, 0.85)
+	smat.albedo_texture = TexHitSpark
+	var col := Color(0.4, 1.15, 1.6, 0.95) if is_counter else Color(1.35, 0.95, 0.35, 0.95)
 	smat.albedo_color = col
 	smat.emission_enabled = true
+	smat.emission_texture = TexHitSpark
 	smat.emission = col
-	smat.emission_energy_multiplier = 4.2
+	smat.emission_energy_multiplier = 1.35
 	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	smat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	spark.material_override = smat
 	p.add_child(spark)
 	spark.global_position = hit_pos
 	var stw := spark.create_tween()
 	if stw:
 		stw.set_parallel(true)
-		stw.tween_property(spark, "scale", Vector3(2.2, 2.2, 2.2), 0.14)
-		stw.tween_property(smat, "albedo_color:a", 0.0, 0.14)
+		stw.tween_property(spark, "scale", Vector3(2.0, 2.0, 2.0), 0.15)
+		stw.tween_property(smat, "albedo_color:a", 0.0, 0.15)
 		stw.chain().tween_callback(spark.queue_free)
 
 
@@ -1044,13 +1065,19 @@ func _generate_slash_arc_mesh(r_out: float, r_in: float, arc_deg: float, segment
 		var v_in1 := Vector3(cos(a1) * r_inner1, sin(a1) * r_inner1, 0.0)
 		var v_out1 := Vector3(cos(a1) * r_outer1, sin(a1) * r_outer1, 0.0)
 
-		# Single quad (2 triangles); material cull_mode = CULL_DISABLED provides double-sided visibility with zero redundant overdraw
+		# Explicit UV mapping across the arc: U along sweep (0->1), V across thickness (0 inner -> 1 outer)
+		st.set_uv(Vector2(t0, 0.0))
 		st.add_vertex(v_in0)
+		st.set_uv(Vector2(t0, 1.0))
 		st.add_vertex(v_out0)
+		st.set_uv(Vector2(t1, 1.0))
 		st.add_vertex(v_out1)
 
+		st.set_uv(Vector2(t0, 0.0))
 		st.add_vertex(v_in0)
+		st.set_uv(Vector2(t1, 1.0))
 		st.add_vertex(v_out1)
+		st.set_uv(Vector2(t1, 0.0))
 		st.add_vertex(v_in1)
 
 	st.generate_normals()

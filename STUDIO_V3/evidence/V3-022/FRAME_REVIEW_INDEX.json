@@ -1,0 +1,101 @@
+{
+	"version": "v3-022",
+	"audit_date": "2026-11-11",
+	"resolution": "1280x720",
+	"frames": [
+		{
+			"frame_id": "01_player_slash_arc_amber",
+			"defect_id": "VIS-009",
+			"file_path": "captures/01_player_slash_arc_amber.png",
+			"description": "Player melee slash arc rendered with warm amber gradient texture, UV sweep, and bounded filmic emission.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 64.01,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "02_player_runic_barrier",
+			"defect_id": "VIS-009",
+			"file_path": "captures/02_player_runic_barrier.png",
+			"description": "Player runic energy barrier disc rendered with cool cyan hexagonal grid texture.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 61.81,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "03_just_parry_shockwave_sparks",
+			"defect_id": "VIS-009",
+			"file_path": "captures/03_just_parry_shockwave_sparks.png",
+			"description": "Just parry impact shockwave ring and 8-pointed starburst sparks.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 50.8,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "04_heavy_shield_knight_guard",
+			"defect_id": "VIS-010",
+			"file_path": "captures/04_heavy_shield_knight_guard.png",
+			"description": "Heavy Shield Knight 3/4 beauty view showing curved 3D Heater Shield, gold heraldic crest, riveted steel rim, and central umbo boss.",
+			"metrics": {
+				"gold_crest_pixels": 45441,
+				"metallic_rim_pixels": 164496,
+				"triangle_count": 316,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "05_heavy_shield_block_recoil",
+			"defect_id": "VIS-010",
+			"file_path": "captures/05_heavy_shield_block_recoil.png",
+			"description": "Heavy Shield Knight frontal block clang with textured impact sparks and elastic shield recoil.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 68.33,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "06_heavy_shield_side_profile",
+			"defect_id": "VIS-010",
+			"file_path": "captures/06_heavy_shield_side_profile.png",
+			"description": "Heavy Shield Knight side profile showing shield curvature, double-sided plate thickness, and relaxed forearm socketing.",
+			"metrics": {
+				"metallic_rim_pixels": 125000,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "07_boss_fissure_magma",
+			"defect_id": "VIS-009",
+			"file_path": "captures/07_boss_fissure_magma.png",
+			"description": "Boss Commander traveling ground fissure with volcanic magma vein texture and ember glow.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 25.13,
+				"status": "PASS"
+			}
+		},
+		{
+			"frame_id": "08_boss_quake_shockwave",
+			"defect_id": "VIS-009",
+			"file_path": "captures/08_boss_quake_shockwave.png",
+			"description": "Boss Commander 360-degree quake expanding ground shockwave ring with crimson ripple texturing.",
+			"metrics": {
+				"white_clip_pct": 0.0,
+				"color_saturation_pct": 11.72,
+				"status": "PASS"
+			}
+		}
+	],
+	"summary": {
+		"total_frames": 8,
+		"passed_frames": 8,
+		"failed_frames": 0,
+		"overall_status": "APPROVED"
+	}
+}

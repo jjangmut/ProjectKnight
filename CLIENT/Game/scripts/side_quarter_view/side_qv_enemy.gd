@@ -27,6 +27,8 @@ var ground_shadow: MeshInstance3D = null
 var hp_bar_fill: MeshInstance3D = null
 
 const MeleeTexture = preload("res://assets/enemy_frames/melee_v1.png")
+const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
+const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
 
 
 var anim_timer: float = 0.0
@@ -398,31 +400,64 @@ func _spawn_defeat_burst(is_counter: bool = false) -> void:
 	var p := get_parent()
 	if p == null:
 		return
+
+	var burst_pos := global_position + Vector3(0.0, 0.8, 0.0)
+	var burst_col := Color(0.4, 1.15, 1.6, 0.95) if is_counter else Color(1.35, 0.85, 0.3, 0.95)
+
+	# 1. 3D Textured Spark Burst (QuadMesh billboard)
+	var spark := MeshInstance3D.new()
+	spark.name = "DefeatSparkBurst3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.1, 1.1)
+	spark.mesh = quad
+	var smat := StandardMaterial3D.new()
+	smat.albedo_texture = TexHitSpark
+	smat.albedo_color = burst_col
+	smat.emission_enabled = true
+	smat.emission_texture = TexHitSpark
+	smat.emission = burst_col
+	smat.emission_energy_multiplier = 1.35
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	smat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	spark.material_override = smat
+	p.add_child(spark)
+	spark.global_position = burst_pos
+
+	var stw := spark.create_tween()
+	if stw:
+		stw.set_parallel(true)
+		stw.tween_property(spark, "scale", Vector3(2.2, 2.2, 2.2), 0.22)
+		stw.tween_property(smat, "albedo_color:a", 0.0, 0.22)
+		stw.chain().tween_callback(spark.queue_free)
+
+	# 2. 3D Textured Shockwave Ring (QuadMesh billboard)
 	var ring := MeshInstance3D.new()
 	ring.name = "DefeatBurstRing"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 0.25
-	torus.outer_radius = 0.45
-	ring.mesh = torus
-
-	var mat := StandardMaterial3D.new()
-	var burst_col := Color(0.8, 2.6, 3.8, 1.0) if is_counter else Color(3.5, 1.2, 0.3, 1.0)
-	mat.albedo_color = burst_col
-	mat.emission_enabled = true
-	mat.emission = burst_col
-	mat.emission_energy_multiplier = 3.5
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	ring.material_override = mat
-
+	var rquad := QuadMesh.new()
+	rquad.size = Vector2(1.4, 1.4)
+	ring.mesh = rquad
+	var rmat := StandardMaterial3D.new()
+	rmat.albedo_texture = TexShockwaveRing
+	rmat.albedo_color = burst_col
+	rmat.emission_enabled = true
+	rmat.emission_texture = TexShockwaveRing
+	rmat.emission = burst_col
+	rmat.emission_energy_multiplier = 1.30
+	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	rmat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.8, 0.0)
-	ring.global_position.z = 0.0
-	ring.rotation_degrees = Vector3(90.0, 0.0, 0.0)
+	ring.global_position = burst_pos
 
-	var tw := ring.create_tween()
-	if tw:
-		tw.set_parallel(true)
-		tw.tween_property(ring, "scale", Vector3(2.2, 2.2, 2.2), 0.26)
-		tw.tween_property(mat, "albedo_color:a", 0.0, 0.26)
-		tw.chain().tween_callback(ring.queue_free)
+	var rtw := ring.create_tween()
+	if rtw:
+		rtw.set_parallel(true)
+		rtw.tween_property(ring, "scale", Vector3(2.6, 2.6, 2.6), 0.26)
+		rtw.tween_property(rmat, "albedo_color:a", 0.0, 0.26)
+		rtw.chain().tween_callback(ring.queue_free)
