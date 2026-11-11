@@ -1,0 +1,62 @@
+{
+  "milestone": "V3-020",
+  "task": "Desktop Godot Playtest MP4 Video Recording",
+  "generated_at": "2026-11-11T16:13:00+09:00",
+  "playthrough_tag": "AUTOMATED_ENGINE_INPUT_PLAYTHROUGH",
+  "engine": {
+    "name": "Godot Engine",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "renderer": "gl_compatibility (OpenGL 3.3.0 Compatibility, NVIDIA GeForce RTX 5060 Laptop GPU)",
+    "viewport_width": 1280,
+    "viewport_height": 720,
+    "aspect": "16:9",
+    "recording_mode": "Godot Movie Maker Mode (Fixed 60 FPS Lockstep Sync)"
+  },
+  "video_artifact": {
+    "file_name": "ProjectKnight_Playtest_Full.mp4",
+    "absolute_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-020/ProjectKnight_Playtest_Full.mp4",
+    "size_bytes": 66394737,
+    "size_mb": 63.32,
+    "sha256": "666E7F00E6F9BD6166EA9B62A259B8570C44DF4DCAE29DF102B1F2BB6787EE87",
+    "duration_seconds": 64.03,
+    "duration_formatted": "00:01:04.03",
+    "total_frames": 3842,
+    "fps": 60.0,
+    "container": "QuickTime / MOV / MP4 (isom/iso2/avc1/mp41, FastStart enabled)",
+    "video_codec": "H.264 / AVC (High Profile, Level 3.2, yuv420p)",
+    "video_bitrate_kbps": 8181,
+    "resolution": "1280x720"
+  },
+  "audio_artifact": {
+    "audio_included": true,
+    "audio_codec": "AAC (LC)",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "channel_layout": "stereo",
+    "audio_bitrate_kbps": 100,
+    "mean_volume_db": -20.8,
+    "max_volume_db": 0.0,
+    "total_audio_samples": 6148096,
+    "audio_status": "AUDIO_VERIFIED"
+  },
+  "raw_movie_backup": {
+    "file_name": "ProjectKnight_Playtest_Full.avi",
+    "absolute_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-020/ProjectKnight_Playtest_Full.avi",
+    "size_mb": 439.81
+  },
+  "gameplay_validation": {
+    "option_c_plane_lock": "STRICT_PASS (Z=0.000, vz=0.000)",
+    "zero_cheats_enforced": true,
+    "no_hp_injection": true,
+    "stages_completed": [
+      "TitleScreen & Deploy Navigation",
+      "Stage 1: Citadel Terrace Gate & Commander Boss",
+      "Stage 2: Beastwood Forest Gorge & Beast Chieftain",
+      "Stage 3: Ruined Crossbow Bastion & Crossbow Commander",
+      "Stage 4: Titan Stone Sanctuary & Golem Guardian",
+      "Stage 5: Silent Abyssal Citadel, 2 Elite Knights & Abyssal Arbiter (Phases 1 & 2)",
+      "Campaign Victory Panel (All 5 Stages Cleared)",
+      "Return to Title Screen"
+    ]
+  }
+}

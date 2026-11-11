@@ -1,0 +1,15 @@
+{
+  "campaign_completed": true,
+  "milestone": "V3-020",
+  "plane_lock_intact": true,
+  "stages_cleared": [
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "tag": "AUTOMATED_ENGINE_INPUT_PLAYTHROUGH",
+  "total_sim_time": 61.7469999999978,
+  "zero_cheats_enforced": true
+}
