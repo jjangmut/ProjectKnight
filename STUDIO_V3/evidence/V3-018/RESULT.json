@@ -1,0 +1,51 @@
+{
+  "task_id": "V3-018",
+  "track": "AUTOMATION-006",
+  "branch": "studio/v3-018-automation-006-launcher-acceptance",
+  "timestamp": "2026-11-11T13:30:00+09:00",
+  "desktop_shortcut": {
+    "shortcut_path": "C:\\Users\\jjang\\Desktop\\ProjectKnight 작업 실행.lnk",
+    "target_exe": "C:\\Program Files\\dotnet\\dotnet.exe",
+    "arguments": "\"D:\\JUNYPAPA_STUDIO\\Automation\\ProjectKnight\\bin\\ProjectKnight.Launcher.dll\"",
+    "working_directory": "D:\\JUNYPAPA_STUDIO\\Automation\\ProjectKnight",
+    "mode": "CSHARP_DLL_HOST_VERIFIED",
+    "native_exe_classification": "BLOCKED_BY_SAC",
+    "smart_app_control_code": "0x800711C7",
+    "legacy_fallback_deleted": true
+  },
+  "csharp_launcher": {
+    "framework": "C# WinForms (.NET 8.0-windows)",
+    "assembly": "ProjectKnight.Launcher.dll",
+    "window_title": "ProjectKnight 자동 개발 실행기",
+    "deployed_bin_path": "D:\\JUNYPAPA_STUDIO\\Automation\\ProjectKnight\\bin\\ProjectKnight.Launcher.dll",
+    "persistent_outside_worktree": true
+  },
+  "gui_integration_acceptance": {
+    "tested_flow": "Shortcut -> C# WinForms UI -> Discover Remote Tasks -> Select Non-First Test Candidate -> Manual & Auto-Approve -> Run Selected -> Live Heartbeat Streaming -> Completion",
+    "test_candidate_task_id": "V3-TEST-AUTOMATION",
+    "test_candidate_branch": "test/v3-test-automation",
+    "base_commit_sha": "0e464b309ee042488c09ad8186c992921940901d",
+    "completed_commit_sha": "4d2f4fb4b7846b6a5a01754502bee7463c00b0d0",
+    "execution_duration_seconds": 262.7,
+    "auto_approve_toggle_tested": true,
+    "live_heartbeat_streaming_tested": true,
+    "captures": [
+      "csharp_winforms_ui_launched.png",
+      "csharp_winforms_task_selected.png",
+      "csharp_winforms_running_progress.png",
+      "csharp_winforms_completed.png"
+    ]
+  },
+  "negative_security_tests": {
+    "multiple_candidates_no_selection_prompt": "PASS (UI halts and requires explicit task selection)",
+    "remote_commit_sha_mismatch_abort": "PASS (runner throws Security Violation before execution)",
+    "dirty_worktree_safety_abort": "PASS (runner detects uncommitted residue and halts without destructive reset)"
+  },
+  "safety_guarantees": {
+    "main_project_repo_path": "D:\\JUNYPAPA_STUDIO\\Projects\\ProjectKnight",
+    "main_project_touched": false,
+    "v3_017_branch_touched": false,
+    "gameplay_code_regressions": 0
+  },
+  "overall_verdict": "PASS"
+}
