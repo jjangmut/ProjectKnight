@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ProjectKnight.Launcher.Tests/1.0.0": {
+        "dependencies": {
+          "ProjectKnight.Launcher": "1.0.0"
+        },
+        "runtime": {
+          "ProjectKnight.Launcher.Tests.dll": {}
+        }
+      },
+      "ProjectKnight.Launcher/1.0.0": {
+        "runtime": {
+          "ProjectKnight.Launcher.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ProjectKnight.Launcher.Tests/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ProjectKnight.Launcher/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

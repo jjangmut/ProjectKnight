@@ -1,0 +1,15 @@
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.exe
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.deps.json
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.runtimeconfig.json
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.dll
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\bin\Release\net8.0-windows\ProjectKnight.Launcher.pdb
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.GeneratedMSBuildEditorConfig.editorconfig
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.AssemblyInfoInputs.cache
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.AssemblyInfo.cs
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.csproj.CoreCompileInputs.cache
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.sourcelink.json
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.dll
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\refint\ProjectKnight.Launcher.dll
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.pdb
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ProjectKnight.Launcher.genruntimeconfig.cache
+D:\JUNYPAPA_STUDIO\Automation\ProjectKnight\worktree\tools\automation\ProjectKnight.Launcher\obj\Release\net8.0-windows\ref\ProjectKnight.Launcher.dll
