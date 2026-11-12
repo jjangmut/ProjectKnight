@@ -83,6 +83,7 @@ const DASH_DURATION: float = 0.22
 var dash_buffer_timer: float = 0.0
 const DASH_BUFFER_TIME: float = 0.16
 var can_air_dash: bool = true
+var has_used_air_pogo: bool = false
 var ghost_timer: float = 0.0
 const GHOST_INTERVAL: float = 0.045
 var is_invulnerable: bool = false
@@ -805,8 +806,17 @@ func _check_melee_hit() -> void:
 			if p != null and "camera" in p and p.camera != null and p.camera.has_method("add_trauma"):
 				p.camera.add_trauma(0.08)
 
-		# Air Pogo Bounce (Hollow Knight style upward recoil when striking in air)
-		if not is_on_floor():
+		# Air Pogo Bounce (Hollow Knight style downward slash bounce: requires holding Down in mid-air while striking an enemy below, max once per airtime)
+		var any_target_below := false
+		for id in hit_targets.keys():
+			var t_node: Node = hit_targets[id]
+			if is_instance_valid(t_node) and t_node is Node3D:
+				var target_pos := (t_node as Node3D).global_position
+				if global_position.y > target_pos.y + 0.85 and absf(global_position.x - target_pos.x) < 1.15:
+					any_target_below = true
+					break
+		if not is_on_floor() and not has_used_air_pogo and velocity.y <= 0.2 and any_target_below and Input.is_action_pressed("move_down"):
+			has_used_air_pogo = true
 			_execute_pogo_bounce()
 
 	# Runic Engraving: Vampiric Edge (Combo 3 Finisher heals 1 HP on hit, 8s cooldown)
@@ -1127,6 +1137,7 @@ func _spawn_pogo_shockwave_vfx(pos: Vector3) -> void:
 
 func _on_landed_on_floor() -> void:
 	can_air_dash = true
+	has_used_air_pogo = false
 	# Air-to-ground buffered attack execution
 	if attack_buffer_timer > 0.0 and attack_cooldown <= 0.0 and not is_dead:
 		attack_buffer_timer = 0.0

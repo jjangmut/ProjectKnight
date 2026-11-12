@@ -1,0 +1,677 @@
+{
+	"all_pillars_and_wings_have_layer4_colliders": true,
+	"colliders_audit": [
+		{
+			"global_pos": [
+				18.0,
+				0.0,
+				-2.70000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GatePillar_1",
+			"shape_extents": [
+				1.35000002384186,
+				6.19999980926514,
+				1.35000002384186
+			]
+		},
+		{
+			"global_pos": [
+				44.0,
+				0.0,
+				-2.70000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GatePillar_2",
+			"shape_extents": [
+				1.35000002384186,
+				6.19999980926514,
+				1.35000002384186
+			]
+		},
+		{
+			"global_pos": [
+				68.0,
+				0.0,
+				-2.70000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GatePillar_3",
+			"shape_extents": [
+				1.35000002384186,
+				6.19999980926514,
+				1.35000002384186
+			]
+		},
+		{
+			"global_pos": [
+				76.0,
+				0.0,
+				-2.70000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "BossPillar_Rear",
+			"shape_extents": [
+				1.35000002384186,
+				6.19999980926514,
+				1.35000002384186
+			]
+		},
+		{
+			"global_pos": [
+				-10.0,
+				0.0,
+				-3.20000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GothicWing_Start",
+			"shape_extents": [
+				1.0,
+				4.59999990463257,
+				0.899999976158142
+			]
+		},
+		{
+			"global_pos": [
+				20.0,
+				0.0,
+				-3.20000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GothicWing_Bastion",
+			"shape_extents": [
+				1.0,
+				4.59999990463257,
+				0.899999976158142
+			]
+		},
+		{
+			"global_pos": [
+				45.0,
+				0.0,
+				-3.20000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GothicWing_Terrace",
+			"shape_extents": [
+				1.0,
+				4.59999990463257,
+				0.899999976158142
+			]
+		},
+		{
+			"global_pos": [
+				84.0,
+				0.0,
+				-3.20000004768372
+			],
+			"has_static_body_layer_4": true,
+			"node_name": "GothicWing_Boss",
+			"shape_extents": [
+				1.0,
+				4.59999990463257,
+				0.899999976158142
+			]
+		}
+	],
+	"corridor_lane_bypass_open": true,
+	"dash_into_pillar_blocked": true,
+	"decorative_distinction": "PanoramicCastleBackdrop_0..2 at Z=-14.0 are distant vista quads outside playable Z[-3.2, 3.2] and have no colliders; all GatePillar_1..3, BossPillar_Rear, GothicWing_*, and ParapetPost_* intersecting/bordering the corridor have Layer 4 physical collision.",
+	"test_suite": "PILLAR-P0",
+	"x_approach_blocked": true,
+	"x_approach_trace": [
+		{
+			"actual_pos": [
+				16.34,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 0,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.48,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 1,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.62,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 2,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.76,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 3,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.9,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 4,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 5,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 6,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 7,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 8,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 9,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 10,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 11,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 12,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 13,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 14,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 15,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 16,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 17,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 18,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 19,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 20,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 21,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 22,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 23,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 24,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 25,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 26,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 27,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 28,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				16.97,
+				0.0,
+				-2.35
+			],
+			"attempted_dir": "+X",
+			"frame": 29,
+			"slide_collision_count": 1
+		}
+	],
+	"z_approach_blocked": true,
+	"z_approach_trace": [
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.08
+			],
+			"attempted_dir": "-Z",
+			"frame": 0,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.16
+			],
+			"attempted_dir": "-Z",
+			"frame": 1,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.24
+			],
+			"attempted_dir": "-Z",
+			"frame": 2,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.32
+			],
+			"attempted_dir": "-Z",
+			"frame": 3,
+			"slide_collision_count": 2
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.4
+			],
+			"attempted_dir": "-Z",
+			"frame": 4,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.48
+			],
+			"attempted_dir": "-Z",
+			"frame": 5,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.56
+			],
+			"attempted_dir": "-Z",
+			"frame": 6,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.64
+			],
+			"attempted_dir": "-Z",
+			"frame": 7,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 8,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 9,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 10,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 11,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 12,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 13,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 14,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 15,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 16,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 17,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 18,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 19,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 20,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 21,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 22,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 23,
+			"slide_collision_count": 1
+		},
+		{
+			"actual_pos": [
+				18.0,
+				0.0,
+				-1.67
+			],
+			"attempted_dir": "-Z",
+			"frame": 24,
+			"slide_collision_count": 1
+		}
+	]
+}

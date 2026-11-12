@@ -183,6 +183,8 @@ func _setup_3d_background_architecture() -> void:
 		var px := stage_start_x + float(i) * 8.0
 		var post := CSGBox3D.new()
 		post.name = "ParapetPost_%d" % i
+		post.use_collision = true
+		post.collision_layer = 4
 		post.size = Vector3(0.75, 1.45, 0.88)
 		post.position = Vector3(px, 0.725, corridor_min_z)
 		post.material_override = wall_mat
@@ -260,6 +262,8 @@ func _build_gothic_wing(pos: Vector3, mirrored: bool, wing_name: String) -> void
 
 	var arch_p := CSGBox3D.new()
 	arch_p.name = "ArchPillar"
+	arch_p.use_collision = true
+	arch_p.collision_layer = 4
 	arch_p.size = Vector3(1.0, 4.6, 0.9)
 	arch_p.position = Vector3(0.0, 2.3, 0.0)
 	var mat := StandardMaterial3D.new()
@@ -268,6 +272,19 @@ func _build_gothic_wing(pos: Vector3, mirrored: bool, wing_name: String) -> void
 	mat.roughness = 0.7
 	arch_p.material_override = mat
 	wing_root.add_child(arch_p)
+
+	# Physical StaticBody3D collider for Gothic Wing column (World Layer 4)
+	var sb := StaticBody3D.new()
+	sb.name = "PillarCollider"
+	sb.collision_layer = 4
+	sb.collision_mask = 0
+	var col := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(1.0, 4.6, 0.9)
+	col.shape = box
+	col.position = Vector3(0.0, 2.3, 0.0)
+	sb.add_child(col)
+	wing_root.add_child(sb)
 
 	# Banner
 	var banner := MeshInstance3D.new()
@@ -292,6 +309,8 @@ func _build_pillar(pos: Vector3, p_name: String) -> void:
 
 	var shaft := CSGBox3D.new()
 	shaft.name = "PillarShaft"
+	shaft.use_collision = true
+	shaft.collision_layer = 4
 	shaft.size = Vector3(1.35, 6.2, 1.35)
 	shaft.position = Vector3(0.0, 3.1, 0.0)
 	var mat := StandardMaterial3D.new()
@@ -300,6 +319,20 @@ func _build_pillar(pos: Vector3, p_name: String) -> void:
 	mat.roughness = 0.65
 	shaft.material_override = mat
 	pillar.add_child(shaft)
+
+	# Explicit StaticBody3D + BoxShape3D (World Layer 4) matching the 1.35x6.2x1.35 stone pillar
+	var sb := StaticBody3D.new()
+	sb.name = "PillarCollider"
+	sb.collision_layer = 4
+	sb.collision_mask = 0
+	var col := CollisionShape3D.new()
+	col.name = "CollisionShape3D"
+	var box := BoxShape3D.new()
+	box.size = Vector3(1.35, 6.2, 1.35)
+	col.shape = box
+	col.position = Vector3(0.0, 3.1, 0.0)
+	sb.add_child(col)
+	pillar.add_child(sb)
 
 
 func _build_torch(pos: Vector3, idx: int) -> void:
@@ -512,8 +545,8 @@ func _spawn_caltrop_hazard(pos: Vector3) -> Node3D:
 func _spawn_stage_boss() -> void:
 	var boss := SideQVBossClass.new()
 	boss.name = "SideQVBossCommander"
-	boss.max_hp = 38
-	boss.current_hp = 38
+	boss.max_hp = 48
+	boss.current_hp = 48
 	boss.position = Vector3(78.0, 0.1, 0.0)
 	boss.target_player = player
 	add_child(boss)

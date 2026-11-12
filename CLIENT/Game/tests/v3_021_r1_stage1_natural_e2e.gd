@@ -57,6 +57,27 @@ var telemetry := {
 
 var sim_time: float = 0.0
 var max_sim_time: float = 120.0 # 2 minutes generous timeout
+var rendered_frame_count: int = 0
+var physics_tick_count: int = 0
+var wall_start_usec: int = 0
+var wall_end_usec: int = 0
+var run_id: String = ""
+var encounter_timestamps := {
+	"run_started_sec": 0.0,
+	"encounter_1_cleared_sec": 0.0,
+	"encounter_2_started_sec": 0.0,
+	"encounter_2_cleared_sec": 0.0,
+	"encounter_3_started_sec": 0.0,
+	"encounter_3_cleared_sec": 0.0,
+	"boss_started_sec": 0.0,
+	"boss_defeated_sec": 0.0
+}
+var min_time_scale_seen: float = 1.0
+var max_time_scale_seen: float = 1.0
+var max_player_y_during_boss: float = 0.0
+var max_boss_y_during_boss: float = 0.0
+var bolts_observed_count: int = 0
+var tracked_bolt_ids: Dictionary = {}
 var attack_input_timer: float = 0.0
 var guard_hold_timer: float = 0.0
 var jump_cooldown_timer: float = 0.0
@@ -101,7 +122,17 @@ func _launch_stage() -> void:
 	# Connect read-only signals
 	stage.stage_cleared.connect(_on_stage_cleared_signal)
 
+	wall_start_usec = Time.get_ticks_usec()
+	run_id = "V3-022-R1-E2E-%d" % int(Time.get_unix_time_from_system())
+	physics_frame.connect(_on_physics_tick)
 	process_frame.connect(_on_process_frame)
+
+
+func _on_physics_tick() -> void:
+	physics_tick_count += 1
+	var ts := Engine.time_scale
+	min_time_scale_seen = minf(min_time_scale_seen, ts)
+	max_time_scale_seen = maxf(max_time_scale_seen, ts)
 
 
 func _setup_input_actions() -> void:
@@ -116,6 +147,7 @@ func _on_stage_cleared_signal() -> void:
 
 
 func _on_process_frame() -> void:
+	rendered_frame_count += 1
 	var delta: float = 1.0 / 60.0
 	sim_time += delta
 	telemetry["duration_seconds"] = snappedf(sim_time, 0.01)
@@ -212,10 +244,41 @@ func _sample_telemetry(_delta: float) -> void:
 				if e.has_signal("enemy_defeated"):
 					e.enemy_defeated.connect(func(_def): telemetry["total_enemies_defeated_naturally"] += 1)
 
+	# Track encounter transition timestamps
+	if stage.current_encounter_idx == 1 and stage.enemies.is_empty() and encounter_timestamps["encounter_1_cleared_sec"] == 0.0:
+		encounter_timestamps["encounter_1_cleared_sec"] = snappedf(sim_time, 0.01)
+	elif stage.current_encounter_idx == 2:
+		if encounter_timestamps["encounter_2_started_sec"] == 0.0:
+			encounter_timestamps["encounter_2_started_sec"] = snappedf(sim_time, 0.01)
+		if stage.enemies.is_empty() and encounter_timestamps["encounter_2_cleared_sec"] == 0.0:
+			encounter_timestamps["encounter_2_cleared_sec"] = snappedf(sim_time, 0.01)
+	elif stage.current_encounter_idx == 3:
+		if encounter_timestamps["encounter_3_started_sec"] == 0.0:
+			encounter_timestamps["encounter_3_started_sec"] = snappedf(sim_time, 0.01)
+		if stage.enemies.is_empty() and encounter_timestamps["encounter_3_cleared_sec"] == 0.0:
+			encounter_timestamps["encounter_3_cleared_sec"] = snappedf(sim_time, 0.01)
+	elif stage.current_encounter_idx == 4:
+		if encounter_timestamps["boss_started_sec"] == 0.0:
+			encounter_timestamps["boss_started_sec"] = snappedf(sim_time, 0.01)
+
+	# Track active projectiles (SideQVCrossbowBolt)
+	for child in stage.get_children():
+		if child != null and is_instance_valid(child) and child.get_script() != null:
+			var spath := str(child.get_script().resource_path)
+			if "side_qv_crossbow_bolt.gd" in spath:
+				var bid := child.get_instance_id()
+				if not tracked_bolt_ids.has(bid):
+					tracked_bolt_ids[bid] = true
+					bolts_observed_count += 1
+
 	# Boss telemetry
 	if stage.active_boss != null and is_instance_valid(stage.active_boss):
 		boss = stage.active_boss
 		telemetry["final_boss_hp"] = boss.current_hp
+		max_player_y_during_boss = maxf(max_player_y_during_boss, player.global_position.y)
+		max_boss_y_during_boss = maxf(max_boss_y_during_boss, boss.global_position.y)
+		if boss.current_hp <= 0 and encounter_timestamps["boss_defeated_sec"] == 0.0:
+			encounter_timestamps["boss_defeated_sec"] = snappedf(sim_time, 0.01)
 		match boss.current_pattern:
 			boss.Pattern.TRIPLE_CLEAVE:
 				telemetry["boss_patterns_observed"]["ground_fissure"] = true
@@ -257,9 +320,10 @@ func _process_natural_input_controller(delta: float) -> void:
 	else:
 		Input.action_release("guard")
 
-	# Find active threat or closest enemy
+	# Find active threat or closest enemy, plus check if any ranged minion is aiming/shooting
 	var closest_enemy: Node3D = null
 	var min_dist: float = 9999.0
+	var active_sniper: Node3D = null
 
 	for e in stage.enemies:
 		if e != null and is_instance_valid(e) and not e.get("is_dead"):
@@ -268,6 +332,27 @@ func _process_natural_input_controller(delta: float) -> void:
 			if dist < min_dist:
 				min_dist = dist
 				closest_enemy = e as Node3D
+			if e is SideQVRangedMinionClass:
+				active_sniper = e as Node3D
+
+	# Global incoming projectile check: if any crossbow bolt is within 2.4m of player, face the bolt and Just Parry it!
+	for child in stage.get_children():
+		if child != null and is_instance_valid(child) and child.get_script() != null:
+			if "side_qv_crossbow_bolt.gd" in str(child.get_script().resource_path):
+				var b_diff := (child as Node3D).global_position - player.global_position
+				if b_diff.length() < 2.4 and absf(b_diff.z) < 0.9:
+					_release_movement_inputs()
+					Input.action_press("move_right" if b_diff.x > 0.0 else "move_left")
+					_trigger_just_parry()
+					return
+
+	# If an active ranged sniper is aiming and we haven't observed at least 2 bolts yet, let them fire so projectile flight & parry are clearly visible on screen!
+	if active_sniper != null and bolts_observed_count < 2:
+		var sn := active_sniper as CharacterBody3D
+		if sn.is_aiming or sn.shoot_timer < 0.40:
+			if min_dist > 2.2:
+				_release_movement_inputs()
+				return
 
 	# Also check for nearby Vitality Orbs to collect
 	var closest_orb: Node3D = null
@@ -309,13 +394,19 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 	var dz: float = diff.z
 	var dist_h := Vector2(dx, dz).length()
 
-	# 1. BOSS COMBAT LOGIC
+	# 1. BOSS COMBAT LOGIC (Tactical pacing: parry/jump cleave, sidestep charge, parry quake)
 	if target is SideQVBossClass:
 		var b := target as CharacterBody3D
-		# Pattern 1: Fissure Shockwave -> Jump to evade!
-		if b.current_pattern == b.Pattern.TRIPLE_CLEAVE and player.is_on_floor() and jump_cooldown_timer <= 0.0:
-			_trigger_jump()
-			return
+		# Pattern 1: Fissure Shockwave -> Jump over 3rd swing fissure wave, and Just Parry close cleave swings!
+		if b.current_pattern == b.Pattern.TRIPLE_CLEAVE:
+			if b.pattern_timer < 0.55 and player.is_on_floor() and jump_cooldown_timer <= 0.0:
+				_release_movement_inputs()
+				_trigger_jump()
+				return
+			elif dist_h < 2.2:
+				_release_movement_inputs()
+				_trigger_just_parry()
+				return
 
 		# Pattern 2: Shield Line Charge -> Sidestep depth lane!
 		if b.current_pattern == b.Pattern.CHARGE_WINDUP or b.current_pattern == b.Pattern.CHARGE_ACTIVE:
@@ -326,10 +417,11 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 		# Pattern 3: 360 Whirlwind Cleave -> Just Parry!
 		if b.current_pattern == b.Pattern.QUAKE_RING:
 			if dist_h < 3.2:
+				_release_movement_inputs()
 				_trigger_just_parry()
 				return
 
-		# Attack Boss when in reach
+		# Attack Boss when in reach (grounded or during clean single jump arc)
 		if dist_h <= 1.8:
 			_release_movement_inputs()
 			_trigger_attack()
@@ -342,10 +434,13 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 		var k := target as CharacterBody3D
 		var face_x: float = -1.0 if (k.sprite_3d != null and k.sprite_3d.flip_h) else 1.0
 
-		# If Knight is guarding front: maneuver into depth lane (Z) to flank!
+		# If Knight is guarding front: first test 1 frontal strike to trigger/demonstrate shield block spark, then flank in Z!
 		if k.is_shield_guarding:
-			# If player is in front and in same Z lane: sidestep into depth to get behind shield
 			if absf(dz) < 1.2 and (dx * face_x < 0.0):
+				if dist_h <= 1.75 and int(sim_time * 10.0) % 14 == 0:
+					_release_movement_inputs()
+					_trigger_attack()
+					return
 				# Move up or down in Z to flank
 				var flank_z_dir: float = 1.0 if player.global_position.z <= 0.0 else -1.0
 				_steer_depth(flank_z_dir)
@@ -367,12 +462,22 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 		_steer_towards(target.global_position)
 		return
 
-	# 3. CROSSBOWMAN SNIPER LOGIC
+	# 3. CROSSBOWMAN SNIPER LOGIC (Demonstrate projectile flight + parry/evade before closing in)
 	if target is SideQVRangedMinionClass:
 		var sn := target as CharacterBody3D
-		# If sniper is aiming laser at player: raise guard or dash forward!
-		if sn.is_aiming and dist_h > 2.5:
-			_trigger_just_parry()
+		# Observe active bolts in flight: if a bolt is within 2.8m of player, raise Just Parry guard!
+		for child in stage.get_children():
+			if child != null and is_instance_valid(child) and child.get_script() != null:
+				if "side_qv_crossbow_bolt.gd" in str(child.get_script().resource_path):
+					var b_dist := ((child as Node3D).global_position - player.global_position).length()
+					if b_dist < 2.8:
+						_release_movement_inputs()
+						_trigger_just_parry()
+						return
+
+		# If sniper is aiming telegraph and we haven't seen at least 2 bolts fired yet, hold standoff at ~5.5m so bolt flight is clearly visible!
+		if (sn.is_aiming or sn.shoot_timer < 0.45) and dist_h > 3.2 and bolts_observed_count < 3:
+			_release_movement_inputs()
 			return
 
 		if dist_h <= 1.6:
@@ -423,10 +528,20 @@ func _steer_towards(target_pos: Vector3) -> void:
 func _steer_forward() -> void:
 	Input.action_press("move_right")
 	Input.action_release("move_left")
-	# Natural depth traversal exploring upper balustrade (Z <= -2.1) and lower terrace (Z >= 2.1)
+	# Natural depth traversal exploring upper balustrade (Z <= -2.1) and lower terrace (Z >= 2.1),
+	# while steering around stone GatePillars at x = 18.0, 44.0, 68.0 (Z in [-3.375, -2.025])
 	var px: float = player.global_position.x
-	if px < 25.0:
-		# Early corridor: explore upper depth lane
+	var near_gate_pillar: bool = (absf(px - 18.0) < 1.9 or absf(px - 44.0) < 1.9 or absf(px - 68.0) < 1.9)
+	if near_gate_pillar:
+		# Steer toward center lane (Z >= -1.2) to walk cleanly past the physical stone gate pillar
+		if player.global_position.z < -1.1:
+			Input.action_press("move_down")
+			Input.action_release("move_up")
+		else:
+			Input.action_release("move_up")
+			Input.action_release("move_down")
+	elif px < 28.0:
+		# Early corridor: explore upper depth lane (Z <= -2.1) once clear of GatePillar_1
 		if player.global_position.z > -2.1:
 			Input.action_press("move_up")
 			Input.action_release("move_down")
@@ -465,7 +580,7 @@ func _steer_depth(dir_z: float) -> void:
 
 func _trigger_attack() -> void:
 	if attack_input_timer <= 0.0:
-		attack_input_timer = 0.24 # Natural cadence for 3-hit combo
+		attack_input_timer = 0.26
 		Input.action_press("attack")
 		telemetry["attacks_performed"] += 1
 	else:
@@ -514,14 +629,30 @@ func _release_all_inputs() -> void:
 
 func _finalize_e2e_results() -> void:
 	_release_all_inputs()
+	wall_end_usec = Time.get_ticks_usec()
+	var wall_elapsed_sec: float = float(wall_end_usec - wall_start_usec) / 1000000.0
+	telemetry["run_id"] = run_id
+	telemetry["rendered_frame_count"] = rendered_frame_count
+	telemetry["physics_tick_count"] = physics_tick_count
+	telemetry["wall_elapsed_seconds"] = snappedf(wall_elapsed_sec, 0.01)
+	telemetry["encounter_timestamps"] = encounter_timestamps
+	telemetry["bolts_observed_count"] = bolts_observed_count
+	telemetry["max_player_y_during_boss"] = snappedf(max_player_y_during_boss, 0.02)
+	telemetry["max_boss_y_during_boss"] = snappedf(max_boss_y_during_boss, 0.02)
+	telemetry["min_time_scale_seen"] = snappedf(min_time_scale_seen, 0.01)
+	telemetry["max_time_scale_seen"] = snappedf(max_time_scale_seen, 0.01)
+
 	print("=================================================================")
 	print(">>> [V3-021-R1 NATURAL E2E] HONEST AUDIT SUMMARY <<<")
 	print("=================================================================")
+	print("  - Run ID: %s" % run_id)
 	print("  - Mode: %s" % telemetry["mode"])
 	print("  - Stage Cleared Naturally: %s" % str(telemetry["stage_cleared_naturally"]))
-	print("  - Duration: %.2fs" % telemetry["duration_seconds"])
+	print("  - Simulation Duration: %.2fs (Frames: %d, Physics Ticks: %d, Wall: %.2fs)" % [telemetry["duration_seconds"], rendered_frame_count, physics_tick_count, wall_elapsed_sec])
 	print("  - Player X Travel: [%.2f, %.2f]" % [telemetry["x_min"], telemetry["x_max"]])
 	print("  - Player Z Span: [%.2f, %.2f] (Verified: %s)" % [telemetry["z_min"], telemetry["z_max"], str(telemetry["z_span_verified"])])
+	print("  - Max Y During Boss: Player=%.2fm, Boss=%.2fm" % [max_player_y_during_boss, max_boss_y_during_boss])
+	print("  - Crossbow Bolts Observed: %d" % bolts_observed_count)
 	print("  - Enemies Defeated Naturally: %d" % telemetry["total_enemies_defeated_naturally"])
 	print("  - Damage Taken: %d HP" % telemetry["damage_taken_total"])
 	print("  - Vitality Orbs Collected: %d" % telemetry["vitality_orbs_collected"])

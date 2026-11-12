@@ -1,0 +1,55 @@
+{
+	"audit_suite": "SPEED-P0_CAPTURE_CLOCK_AUDIT",
+	"run_id": "V3-022-R1-E2E-1794492437",
+	"single_source_execution_verified": true,
+	"classification": "REAL_1X_SIMULATION_RECORDING",
+	"previous_v3_022_discrepancy_diagnosis": {
+		"previous_mp4_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-022/Stage1_QualityGate_Uncut.mp4",
+		"previous_mp4_frames": 1756,
+		"previous_mp4_fps": 60.0,
+		"previous_mp4_duration_seconds": 29.266667,
+		"previous_separate_telemetry_duration_seconds": 64.13,
+		"diagnosis": "STAGE1_PACING_TOO_FAST_PLUS_SEPARATE_RUN_TELEMETRY_MISMATCH",
+		"explanation": "In V3-022, Stage1_QualityGate_Uncut.mp4 (1,756 frames @ 60 FPS = 29.27s) was recorded at true 1.0x fixed-fps (60 FPS) without FFmpeg speed-up filters, while the 64.13s duration reported in telemetry came from an earlier non-Movie-Maker run. In V3-022-R1, both telemetry and Movie Maker recording are captured in the exact same execution (Run ID: V3-022-R1-E2E-1794492437)."
+	},
+	"engine_and_simulation_clock": {
+		"fixed_fps": 60,
+		"physics_ticks_per_second": 60,
+		"rendered_frame_count": 1849,
+		"physics_tick_count": 1848,
+		"simulation_duration_seconds": 30.82,
+		"wall_clock_render_encode_elapsed_seconds": 90.95,
+		"engine_time_scale_default": 1.0,
+		"engine_time_scale_min_during_hitstop": 0.04,
+		"engine_time_scale_max": 1.0,
+		"direct_state_mutations_performed": 0,
+		"zero_cheats_audit_passed": true
+	},
+	"encounter_timeline_seconds": {
+		"run_started_sec": 0.0,
+		"encounter_1_cleared_sec": 2.55,
+		"encounter_2_started_sec": 4.9,
+		"encounter_2_cleared_sec": 11.57,
+		"encounter_3_started_sec": 12.28,
+		"encounter_3_cleared_sec": 16.68,
+		"boss_started_sec": 18.28,
+		"boss_defeated_sec": 24.78,
+		"victory_fanfare_completed_sec": 30.82
+	},
+	"output_video_stream_verification": {
+		"video_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-022-R1/Physics_Pacing_Playtest_1x.mp4",
+		"sha256": "5B10B4FAA43B9CD15B792B7AAE6BF95B9879A9BBD9B30B24CFB1BE2E28EA0002",
+		"file_size_bytes": 58132124,
+		"video_codec": "h264",
+		"audio_codec": "aac",
+		"resolution": "1280x720",
+		"r_frame_rate": "60/1",
+		"nb_frames": 1849,
+		"video_stream_duration_seconds": 30.816667,
+		"audio_stream_duration_seconds": 30.816,
+		"ffmpeg_speed_or_setpts_filters_used": false,
+		"frame_count_matches_rendered_frames_1_to_1": true,
+		"simulation_to_video_duration_delta_seconds": 0.003333,
+		"playback_speed_ratio": 1.0
+	}
+}

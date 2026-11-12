@@ -207,7 +207,7 @@ func _execute_shoot() -> void:
 			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.35)
 
 	await get_tree().create_timer(0.35).timeout
-	if not is_instance_valid(self) or is_stunned:
+	if not is_instance_valid(self) or is_stunned or is_dead or current_hp <= 0:
 		is_aiming = false
 		return
 
@@ -215,7 +215,12 @@ func _execute_shoot() -> void:
 	if target_player != null and is_instance_valid(target_player):
 		var target_pt := target_player.global_position + Vector3(0.0, 0.85, 0.0)
 		var fire_pt := global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
-		var aim_dir := (target_pt - fire_pt).normalized()
+		var aim_dir := (target_pt - fire_pt)
+		aim_dir.y = 0.0 # Horizontal 2.5D trajectory so bolts fly cleanly across the arena plane
+		if aim_dir.length_squared() < 0.001:
+			aim_dir = Vector3(facing_dir_x, 0.0, 0.0)
+		else:
+			aim_dir = aim_dir.normalized()
 		var bolt := CrossbowBoltScene.new()
 		get_parent().add_child(bolt)
 		bolt.launch(fire_pt, aim_dir, self, 16.5, 1, false)

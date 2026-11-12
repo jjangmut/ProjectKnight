@@ -1,0 +1,440 @@
+{
+	"continues_cleanly_when_shooter_dies_midair": true,
+	"entity_class": "SideQVCrossbowBolt",
+	"frozen_over_3_frames": false,
+	"max_consecutive_frozen_frames_while_active": 0,
+	"mesh_tip_aligned_with_direction": true,
+	"scenario_a_player_guard_trace": [
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 0,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				38.72,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 0.28,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 1,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				38.45,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 0.56,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 2,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				38.17,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 0.82,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 3,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				37.9,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 1.1,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 4,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				37.62,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 1.38,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 5,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				37.35,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 1.66,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 6,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				37.07,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 1.92,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 7,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				36.8,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 2.2,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 8,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				36.52,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 2.48,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 9,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				36.25,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 2.74,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 10,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				35.97,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 3.02,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 11,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				35.7,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 3.3,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 12,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				35.42,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 3.58,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 13,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				35.15,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 3.84,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 14,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				34.87,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 4.12,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 15,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				34.6,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 4.4,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 16,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				34.32,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 4.68,
+			"tree_paused": false
+		},
+		{
+			"direction": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"engine_time_scale": 1.0,
+			"frame": 17,
+			"instance_id": 65498253317,
+			"is_active": true,
+			"pos": [
+				34.05,
+				0.85,
+				0.0
+			],
+			"speed": 16.5,
+			"traveled_distance": 4.96,
+			"tree_paused": false
+		},
+		{
+			"frame": 18,
+			"instance_id": 65498253317,
+			"is_active": false,
+			"vanished_on_player_guard": true
+		}
+	],
+	"scenario_b_pillar_impact_trace": [
+		{
+			"frame": 0,
+			"is_active": true,
+			"pos": [
+				46.72,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 1,
+			"is_active": true,
+			"pos": [
+				46.45,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 2,
+			"is_active": true,
+			"pos": [
+				46.17,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 3,
+			"is_active": true,
+			"pos": [
+				45.9,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 4,
+			"is_active": true,
+			"pos": [
+				45.62,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 5,
+			"is_active": true,
+			"pos": [
+				45.35,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 6,
+			"is_active": true,
+			"pos": [
+				45.07,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 7,
+			"is_active": true,
+			"pos": [
+				44.8,
+				0.85,
+				-2.5
+			]
+		},
+		{
+			"frame": 8,
+			"vanished_on_pillar_impact": true
+		}
+	],
+	"spawning_script": "res://scripts/side_quarter_view/side_qv_ranged_minion.gd (_execute_shoot)",
+	"test_suite": "PROJECTILE-P0",
+	"vanished_on_csg_world_wall_impact": true,
+	"vanished_on_pillar_impact": true,
+	"vanished_on_player_guard_frame": 18
+}

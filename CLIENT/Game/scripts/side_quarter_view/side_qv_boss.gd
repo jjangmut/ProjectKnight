@@ -25,10 +25,10 @@ var charge_windup_started_at: float = 0.0
 var charge_motion_started_at: float = 0.0
 var first_damage_at: float = 0.0
 
-@export var max_hp: int = 38
-@export var current_hp: int = 38
-@export var max_poise: int = 36
-var current_poise: int = 36
+@export var max_hp: int = 48
+@export var current_hp: int = 48
+@export var max_poise: int = 42
+var current_poise: int = 42
 var is_groggy: bool = false
 var groggy_timer: float = 0.0
 var groggy_halo_3d: MeshInstance3D = null
@@ -175,6 +175,11 @@ func _physics_process(delta: float) -> void:
 			ground_shadow.global_position.z = global_position.z
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
+	else:
+		if velocity.y != 0.0:
+			velocity.y = 0.0
+		if global_position.y > 0.02:
+			global_position.y = move_toward(global_position.y, 0.0, 12.0 * delta)
 
 	if is_groggy:
 		groggy_timer -= delta
@@ -402,7 +407,7 @@ func _enter_groggy_state() -> void:
 	current_pattern = Pattern.STUNNED
 	charge_windup_timer = 0.0
 	velocity = Vector3.ZERO
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
 	sprite_3d.texture = BossTextureDefense
 	sprite_3d.frame = 4 # Hurt frame
 	var p := get_parent()
@@ -607,7 +612,7 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	charge_windup_timer = 0.0
 	stun_timer = duration
 	velocity = Vector3.ZERO # Firm stop on clash; no slide or bounce
-	attack_area_3d.monitoring = false
+	attack_area_3d.set_deferred("monitoring", false)
 	sprite_3d.texture = BossTextureDefense
 	var stw := create_tween()
 	if stw:
