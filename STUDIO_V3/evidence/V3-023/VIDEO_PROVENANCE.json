@@ -1,0 +1,75 @@
+{
+	"task_id": "V3-023",
+	"branch": "studio/v3-023-stage1-gameplay-polish",
+	"run_id": "V3-022-R1-E2E-1794533450",
+	"recording_mode": "Godot 4.7.2 Movie Maker (--write-movie --fixed-fps 60) -> FFmpeg H.264 MP4 (-r 60)",
+	"playtest_classification": "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+	"human_playtest_status": "HUMAN_PLAYTEST_NOT_TESTED",
+	"video_file": {
+		"path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-023/Stage1_Gameplay_Polish_1x.mp4",
+		"sha256": "f35ebd7655a852f311b5d781f7772511f9f4f673a45821e3bf6f332caaca19e2",
+		"size_bytes": 82501584,
+		"codec": "h264 (High, yuvj420p)",
+		"resolution": "1280x720",
+		"fps": 60.0,
+		"nb_frames": 2320,
+		"video_seconds": 38.67
+	},
+	"simulation_timing": {
+		"rendered_frame_count": 2320,
+		"physics_tick_count": 2319,
+		"sim_seconds": 38.67,
+		"wall_elapsed_seconds": 36.85,
+		"video_seconds": 38.67,
+		"speed_ratio_sim_to_video": 1.0,
+		"is_exact_1x_speed": true,
+		"min_time_scale_seen": 0.04,
+		"max_time_scale_seen": 1.0
+	},
+	"gameplay_telemetry": {
+		"stage_cleared_naturally": true,
+		"player_death_occurred": false,
+		"initial_player_hp": 9,
+		"final_player_hp": 7,
+		"damage_taken_total": 3,
+		"vitality_orbs_collected": 1,
+		"total_enemies_defeated_naturally": 12,
+		"boss_defeated": true,
+		"attacks_performed": 56,
+		"parries_performed": 45,
+		"dashes_performed": 3,
+		"bolts_observed_count": 5,
+		"player_x_range": [-6.0, 79.99],
+		"player_z_range": [-2.45, 2.34],
+		"max_player_y_during_boss_m": 0.0,
+		"max_boss_y_during_boss_m": 0.1,
+		"boss_patterns_observed": {
+			"ground_fissure": true,
+			"shield_charge": true,
+			"quake_ring": true
+		},
+		"encounter_timestamps_sec": {
+			"run_started_sec": 0.0,
+			"encounter_1_cleared_sec": 3.38,
+			"encounter_2_started_sec": 5.93,
+			"encounter_2_cleared_sec": 12.98,
+			"encounter_3_started_sec": 14.58,
+			"encounter_3_cleared_sec": 22.28,
+			"boss_started_sec": 23.67,
+			"boss_defeated_sec": 35.45
+		},
+		"direct_state_mutations_performed": 0,
+		"zero_cheats_audit_passed": true
+	},
+	"extracted_verification_frames": [
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_01.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_02.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_03.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_04.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_05.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_06.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_07.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_08.png",
+		"STUDIO_V3/evidence/V3-023/captures/video_frame_09.png"
+	]
+}

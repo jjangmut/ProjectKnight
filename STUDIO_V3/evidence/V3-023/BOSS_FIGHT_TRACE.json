@@ -1,0 +1,1817 @@
+{
+	"boss_defeated_sec": 33.4,
+	"boss_fight_duration_sec": 14.95,
+	"boss_fight_started_sec": 18.45,
+	"boss_max_hp": 84,
+	"boss_max_poise": 30,
+	"boss_name": "성문 수호 기사단장 (SideQVBossCommander)",
+	"min_boss_player_center_dist_m": 1.26,
+	"patterns_triggered": {
+		"QUAKE_RING": 2,
+		"SHIELD_CHARGE": 3,
+		"SHIELD_GUARD_BLOCKS": 11,
+		"TRIPLE_CLEAVE": 3
+	},
+	"time_series_samples": [
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				78.0,
+				0.08,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				69.9,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 18.5,
+			"xz_dist": 8.1
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				78.0,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				71.3,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 18.67,
+			"xz_dist": 6.7
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				77.7,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.7,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 18.83,
+			"xz_dist": 5.0
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				77.6,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				74.1,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.0,
+			"xz_dist": 3.5
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				77.32,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.17,
+			"xz_dist": 2.38
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				77.18,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.33,
+			"xz_dist": 2.24
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				76.96,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.5,
+			"xz_dist": 2.02
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				76.78,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.67,
+			"xz_dist": 1.84
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				76.78,
+				0.0,
+				0.0
+			],
+			"pattern": 2,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 19.83,
+			"xz_dist": 1.84
+		},
+		{
+			"boss_hp": 64,
+			"boss_phase": 1,
+			"boss_poise": 30,
+			"boss_pos": [
+				76.6,
+				0.0,
+				-0.02
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				74.94,
+				0.0,
+				-0.2
+			],
+			"shield_up": false,
+			"t": 20.0,
+			"xz_dist": 1.66
+		},
+		{
+			"boss_hp": 61,
+			"boss_phase": 1,
+			"boss_poise": 27,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.08,
+				0.0,
+				-0.24
+			],
+			"shield_up": false,
+			"t": 20.17,
+			"xz_dist": 1.4
+		},
+		{
+			"boss_hp": 61,
+			"boss_phase": 1,
+			"boss_poise": 27,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.08,
+				0.0,
+				-0.24
+			],
+			"shield_up": false,
+			"t": 20.33,
+			"xz_dist": 1.4
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 1,
+			"pattern_phase": "GUARD_STANCE",
+			"player_pos": [
+				75.08,
+				0.0,
+				-0.24
+			],
+			"shield_up": true,
+			"t": 20.5,
+			"xz_dist": 1.4
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				75.16,
+				0.0,
+				-0.66
+			],
+			"shield_up": true,
+			"t": 20.67,
+			"xz_dist": 1.46
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				75.16,
+				0.0,
+				-0.48
+			],
+			"shield_up": true,
+			"t": 20.83,
+			"xz_dist": 1.38
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				76.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				75.06,
+				0.0,
+				0.3
+			],
+			"shield_up": true,
+			"t": 21.0,
+			"xz_dist": 1.44
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				75.26,
+				0.0,
+				-0.02
+			],
+			"pattern": 5,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				75.06,
+				0.0,
+				2.6
+			],
+			"shield_up": false,
+			"t": 21.17,
+			"xz_dist": 2.62
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				75.26,
+				0.0,
+				-0.02
+			],
+			"pattern": 5,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				75.06,
+				0.0,
+				2.28
+			],
+			"shield_up": false,
+			"t": 21.33,
+			"xz_dist": 2.3
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				74.46,
+				0.0,
+				-0.02
+			],
+			"pattern": 5,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				74.4,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 21.5,
+			"xz_dist": 2.14
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				74.04,
+				0.0,
+				-0.02
+			],
+			"pattern": 5,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				74.1,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 21.67,
+			"xz_dist": 2.14
+		},
+		{
+			"boss_hp": 58,
+			"boss_phase": 1,
+			"boss_poise": 24,
+			"boss_pos": [
+				74.32,
+				0.0,
+				0.18
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.06,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 21.83,
+			"xz_dist": 2.08
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.48,
+				0.0,
+				0.5
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				74.92,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.0,
+			"xz_dist": 1.68
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				74.08,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.17,
+			"xz_dist": 1.58
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.33,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.5,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.68,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 22.85,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.02,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.18,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.35,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.52,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.68,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 23.85,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 55,
+			"boss_phase": 1,
+			"boss_poise": 21,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				73.96,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.02,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 52,
+			"boss_phase": 1,
+			"boss_poise": 18,
+			"boss_pos": [
+				74.5,
+				0.0,
+				0.6
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.0,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.18,
+			"xz_dist": 1.6
+		},
+		{
+			"boss_hp": 52,
+			"boss_phase": 1,
+			"boss_poise": 18,
+			"boss_pos": [
+				74.56,
+				0.0,
+				0.7
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.34,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.35,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 52,
+			"boss_phase": 1,
+			"boss_poise": 18,
+			"boss_pos": [
+				74.56,
+				0.0,
+				0.7
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.34,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.52,
+			"xz_dist": 1.62
+		},
+		{
+			"boss_hp": 49,
+			"boss_phase": 1,
+			"boss_poise": 15,
+			"boss_pos": [
+				74.56,
+				0.0,
+				0.7
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				74.82,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.68,
+			"xz_dist": 1.44
+		},
+		{
+			"boss_hp": 49,
+			"boss_phase": 1,
+			"boss_poise": 15,
+			"boss_pos": [
+				74.56,
+				0.0,
+				0.7
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				74.62,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 24.85,
+			"xz_dist": 1.42
+		},
+		{
+			"boss_hp": 49,
+			"boss_phase": 1,
+			"boss_poise": 9,
+			"boss_pos": [
+				74.62,
+				0.0,
+				0.7
+			],
+			"pattern": 7,
+			"pattern_phase": "STAGGER",
+			"player_pos": [
+				74.62,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.02,
+			"xz_dist": 1.42
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.62,
+				0.0,
+				0.7
+			],
+			"pattern": 7,
+			"pattern_phase": "STAGGER",
+			"player_pos": [
+				74.34,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.18,
+			"xz_dist": 1.44
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.62,
+				0.0,
+				0.7
+			],
+			"pattern": 7,
+			"pattern_phase": "STAGGER",
+			"player_pos": [
+				73.58,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.35,
+			"xz_dist": 1.76
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.62,
+				0.0,
+				0.7
+			],
+			"pattern": 7,
+			"pattern_phase": "STAGGER",
+			"player_pos": [
+				73.5,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.52,
+			"xz_dist": 1.8
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.62,
+				0.0,
+				0.7
+			],
+			"pattern": 7,
+			"pattern_phase": "STAGGER",
+			"player_pos": [
+				73.5,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.68,
+			"xz_dist": 1.8
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.52,
+				0.0,
+				0.82
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				73.5,
+				0.0,
+				2.12
+			],
+			"shield_up": false,
+			"t": 25.85,
+			"xz_dist": 1.64
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.48,
+				0.0,
+				0.84
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				73.5,
+				0.0,
+				2.12
+			],
+			"shield_up": true,
+			"t": 26.02,
+			"xz_dist": 1.6
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.48,
+				0.0,
+				0.84
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				71.1,
+				0.0,
+				2.12
+			],
+			"shield_up": true,
+			"t": 26.18,
+			"xz_dist": 3.62
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				74.48,
+				0.0,
+				0.84
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				69.48,
+				0.0,
+				1.8
+			],
+			"shield_up": true,
+			"t": 26.35,
+			"xz_dist": 5.08
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				73.88,
+				0.0,
+				0.84
+			],
+			"pattern": 5,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				69.48,
+				0.0,
+				1.0
+			],
+			"shield_up": false,
+			"t": 26.52,
+			"xz_dist": 4.4
+		},
+		{
+			"boss_hp": 42,
+			"boss_phase": 1,
+			"boss_poise": 2,
+			"boss_pos": [
+				71.88,
+				0.0,
+				0.84
+			],
+			"pattern": 5,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.36
+			],
+			"shield_up": false,
+			"t": 26.68,
+			"xz_dist": 2.44
+		},
+		{
+			"boss_hp": 39,
+			"boss_phase": 1,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.3
+			],
+			"shield_up": false,
+			"t": 26.85,
+			"xz_dist": 1.32
+		},
+		{
+			"boss_hp": 39,
+			"boss_phase": 1,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.02,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 32,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.18,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 32,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.35,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 28,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.52,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 24,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.68,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 24,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 27.85,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 17,
+			"boss_phase": 2,
+			"boss_poise": 0,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 7,
+			"pattern_phase": "GROGGY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.02,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 17,
+			"boss_phase": 2,
+			"boss_poise": 30,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.18,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.35,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.52,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.68,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 28.85,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.02,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.18,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.35,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.52,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.68,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 6,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 29.85,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 14,
+			"boss_phase": 2,
+			"boss_poise": 27,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				69.48,
+				0.0,
+				0.18
+			],
+			"shield_up": false,
+			"t": 30.02,
+			"xz_dist": 1.36
+		},
+		{
+			"boss_hp": 11,
+			"boss_phase": 2,
+			"boss_poise": 24,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				69.62,
+				0.0,
+				-0.14
+			],
+			"shield_up": false,
+			"t": 30.18,
+			"xz_dist": 1.44
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "GUARD_STANCE",
+			"player_pos": [
+				69.62,
+				0.0,
+				-0.14
+			],
+			"shield_up": true,
+			"t": 30.35,
+			"xz_dist": 1.44
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				70.68,
+				0.0,
+				0.84
+			],
+			"pattern": 1,
+			"pattern_phase": "GUARD_STANCE",
+			"player_pos": [
+				70.56,
+				0.0,
+				-0.66
+			],
+			"shield_up": true,
+			"t": 30.52,
+			"xz_dist": 1.52
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				70.82,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				72.2,
+				0.0,
+				-1.98
+			],
+			"shield_up": false,
+			"t": 30.68,
+			"xz_dist": 2.8
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				70.82,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 30.85,
+			"xz_dist": 2.7
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				71.14,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.02,
+			"xz_dist": 2.56
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				71.22,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.18,
+			"xz_dist": 2.52
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				71.52,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.35,
+			"xz_dist": 2.44
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				71.62,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.52,
+			"xz_dist": 2.42
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				71.92,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "ACTIVE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.68,
+			"xz_dist": 2.38
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				72.04,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 31.85,
+			"xz_dist": 2.36
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				72.04,
+				0.0,
+				0.46
+			],
+			"pattern": 2,
+			"pattern_phase": "RECOVERY",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 32.02,
+			"xz_dist": 2.36
+		},
+		{
+			"boss_hp": 8,
+			"boss_phase": 2,
+			"boss_poise": 21,
+			"boss_pos": [
+				72.04,
+				0.0,
+				0.12
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				72.1,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 32.18,
+			"xz_dist": 2.04
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.04,
+				0.0,
+				-0.28
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				72.38,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 32.35,
+			"xz_dist": 1.68
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.12,
+				0.0,
+				-0.62
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				73.14,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 32.52,
+			"xz_dist": 1.64
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.12,
+				0.0,
+				-0.62
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				73.2,
+				0.0,
+				-1.92
+			],
+			"shield_up": false,
+			"t": 32.68,
+			"xz_dist": 1.68
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.12,
+				0.0,
+				-0.62
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				74.54,
+				0.0,
+				-1.92
+			],
+			"shield_up": true,
+			"t": 32.85,
+			"xz_dist": 2.74
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.12,
+				0.0,
+				-0.62
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				75.2,
+				0.0,
+				-1.26
+			],
+			"shield_up": true,
+			"t": 33.02,
+			"xz_dist": 3.14
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				72.12,
+				0.0,
+				-0.62
+			],
+			"pattern": 4,
+			"pattern_phase": "TELL",
+			"player_pos": [
+				75.2,
+				0.0,
+				-0.46
+			],
+			"shield_up": true,
+			"t": 33.18,
+			"xz_dist": 3.08
+		},
+		{
+			"boss_hp": 5,
+			"boss_phase": 2,
+			"boss_poise": 18,
+			"boss_pos": [
+				73.82,
+				0.0,
+				-0.62
+			],
+			"pattern": 1,
+			"pattern_phase": "CHASE",
+			"player_pos": [
+				75.2,
+				0.0,
+				-0.3
+			],
+			"shield_up": false,
+			"t": 33.35,
+			"xz_dist": 1.42
+		}
+	]
+}

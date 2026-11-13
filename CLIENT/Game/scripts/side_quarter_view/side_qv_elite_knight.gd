@@ -24,11 +24,11 @@ var post_attack_recovery: float = 0.0
 
 
 func _ready() -> void:
-	max_hp = 8
-	current_hp = 8
-	move_speed = 3.2
+	max_hp = 10
+	current_hp = 10
+	move_speed = 3.3
 	attack_damage = 2
-	attack_cooldown = 1.4
+	attack_cooldown = 1.35
 
 	super._ready()
 	_apply_elite_visuals()
@@ -214,18 +214,21 @@ func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 
 
-func _execute_attack() -> void:
+func _execute_attack(as_riposte: bool = false) -> void:
 	# Heavy Shield Bash attack
 	current_cooldown = attack_cooldown
 	is_attacking = true
+	is_counter_riposte = as_riposte
 	is_shield_guarding = false # Opening during attack!
 	attack_timer = 0.0
+	attack_phase = "TELL"
 	velocity = Vector3.ZERO
 	if sprite_3d != null:
 		var tw := create_tween()
 		if tw:
 			sprite_3d.modulate = Color(3.0, 1.2, 0.3, 1.0)
-			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.22)
+			tw.tween_property(sprite_3d, "modulate", Color(0.9, 0.8, 1.2, 1.0), 0.22)
+	_spawn_windup_telegraph_ring()
 
 
 func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
@@ -244,7 +247,7 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 		if to_player.x * face_x > 0.2 and absf(to_player.z) < 1.0:
 			is_frontal_hit = true
 
-	if is_shield_guarding and is_frontal_hit and not is_stunned and post_attack_recovery <= 0.0:
+	if is_shield_guarding and is_frontal_hit and not is_stunned and not is_counter and post_attack_recovery <= 0.0:
 		# FRONT BLOCKED: Clang! 0 damage, player attack bounces!
 		_spawn_shield_block_sparks()
 		AudioManager.play("guard_block")
@@ -263,16 +266,21 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 				rtw.chain().tween_property(shield_socket, "position", shield_socket.position, 0.12)
 				rtw.parallel().tween_property(shield_socket, "rotation_degrees", shield_socket.rotation_degrees, 0.12)
 
-		# Retaliate with immediate heavy shield bash forward
-		velocity.x = face_x * 3.5
+		# Retaliate with immediate heavy shield bash counter-strike while keeping frontal shield up!
+		velocity.x = face_x * 2.5
 		is_recoiling = false
-		post_attack_recovery = 0.35
+		if not is_attacking:
+			_execute_attack(true)
+			is_shield_guarding = true # Keep shield active until flanked or parried
 		return
 
 	# If hit from flank, back, or during recovery/stun: Takes full damage!
 	is_shield_guarding = false
 	post_attack_recovery = 0.45 # vulnerable recovery
+	# Bypass SideQVEnemy's 2-hit riposte when Knight is flanked/staggered so flanking is rewarded!
+	consecutive_hits_taken = 0
 	super.receive_hit(amount, hit_dir, is_counter)
+	consecutive_hits_taken = 0
 
 
 func _spawn_shield_block_sparks() -> void:

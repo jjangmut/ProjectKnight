@@ -601,9 +601,35 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 	if is_stage_finished:
 		return
 	is_stage_finished = true
-	if camera != null:
-		camera.add_trauma(0.7)
+
+	# Lock player into surviving victory pose inside the arena so hero never runs off-screen!
+	if player != null and is_instance_valid(player) and player.has_method("enter_victory_pose"):
+		player.enter_victory_pose()
+
+	if camera != null and is_instance_valid(camera):
+		camera.add_trauma(0.55)
 		camera.boss_target = null
+		camera.lookahead_distance = 0.0
+		camera.camera_offset = Vector3(0.0, 4.5, 6.6)
+		if player != null and is_instance_valid(player):
+			var px: float = player.global_position.x
+			var focus_x: float = px
+			if active_boss != null and is_instance_valid(active_boss):
+				var bx: float = active_boss.global_position.x
+				var bz: float = active_boss.global_position.z
+				# Ensure clear horizontal separation (2.3m) and foreground Z placement (Z in [0.4, 0.85])
+				# so the hero and kneeling boss never overlap and neither is hidden by the banner or balustrade!
+				var side_sign: float = -1.0 if px <= bx else 1.0
+				player.global_position.x = clampf(bx + side_sign * 2.35, bx - 2.6, bx + 2.6)
+				player.global_position.z = clampf(maxf(player.global_position.z, bz + 0.55), 0.35, 0.85)
+				px = player.global_position.x
+				player.facing_dir_x = 1.0 if bx >= px else -1.0
+				player.facing_attack_dir = Vector3(player.facing_dir_x, 0.0, 0.0)
+				if player.sprite_3d != null:
+					player.sprite_3d.flip_h = (player.facing_dir_x < 0.0)
+				focus_x = (px + bx) * 0.5
+			camera.min_camera_x = focus_x - 0.5
+			camera.max_camera_x = focus_x + 0.5
 
 	# Save stage clear and award soul shards
 	SaveManagerClass.mark_stage_cleared(stage_index)
@@ -627,20 +653,49 @@ func _on_boss_defeated(_boss: Node = null) -> void:
 				enemy.is_attacking = false
 			enemy.set_physics_process(false)
 
-	# 클리어 팡파르 연출
-	var clear_lbl := Label.new()
-	clear_lbl.text = "STAGE CLEARED!\n+ %d SOUL SHARDS" % earned_shards
+	# 클리어 팡파르 연출 (Victory Banner Plate — stays visible through clear transition)
 	AudioManager.play("stage_clear_stinger")
-	clear_lbl.position = Vector2(440, 230)
-	clear_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	clear_lbl.add_theme_font_size_override("font_size", 38)
-	clear_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	if mobile_controls != null:
-		mobile_controls.add_child(clear_lbl)
+		var clear_panel := Panel.new()
+		clear_panel.name = "VictorySummaryBanner"
+		clear_panel.size = Vector2(560.0, 108.0)
+		clear_panel.position = Vector2((1280.0 - 560.0) * 0.5, 42.0)
+		var vstyle := StyleBoxFlat.new()
+		vstyle.bg_color = Color(0.04, 0.08, 0.14, 0.90)
+		vstyle.border_color = Color(1.0, 0.85, 0.25, 1.0)
+		vstyle.set_border_width_all(2)
+		vstyle.border_width_left = 8
+		vstyle.corner_radius_top_left = 8
+		vstyle.corner_radius_top_right = 8
+		vstyle.corner_radius_bottom_left = 8
+		vstyle.corner_radius_bottom_right = 8
+		clear_panel.add_theme_stylebox_override("panel", vstyle)
+		mobile_controls.add_child(clear_panel)
+
+		var clear_lbl := Label.new()
+		clear_lbl.name = "VictoryTitleLabel"
+		clear_lbl.text = "⚔ STAGE %d CLEARED! ⚔" % stage_index
+		clear_lbl.size = Vector2(560.0, 52.0)
+		clear_lbl.position = Vector2(0.0, 14.0)
+		clear_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		clear_lbl.add_theme_font_size_override("font_size", 34)
+		clear_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.22, 1.0))
+		clear_lbl.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.95))
+		clear_lbl.add_theme_constant_override("shadow_offset_x", 2)
+		clear_lbl.add_theme_constant_override("shadow_offset_y", 2)
+		clear_panel.add_child(clear_lbl)
+
+		var sub_lbl := Label.new()
+		sub_lbl.name = "VictoryRewardLabel"
+		sub_lbl.text = "%s 제압 완료  |  +%d SOUL SHARDS 획득" % [_get_boss_title(), earned_shards]
+		sub_lbl.size = Vector2(560.0, 32.0)
+		sub_lbl.position = Vector2(0.0, 64.0)
+		sub_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sub_lbl.add_theme_font_size_override("font_size", 20)
+		sub_lbl.add_theme_color_override("font_color", Color(0.35, 0.95, 1.0, 1.0))
+		clear_panel.add_child(sub_lbl)
 
 	await get_tree().create_timer(clear_fanfare_delay).timeout
-	if is_instance_valid(clear_lbl):
-		clear_lbl.queue_free()
 	stage_cleared.emit()
 
 

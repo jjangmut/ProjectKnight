@@ -25,17 +25,22 @@ var charge_windup_started_at: float = 0.0
 var charge_motion_started_at: float = 0.0
 var first_damage_at: float = 0.0
 
-@export var max_hp: int = 48
-@export var current_hp: int = 48
-@export var max_poise: int = 42
-var current_poise: int = 42
+@export var max_hp: int = 84
+@export var current_hp: int = 84
+@export var max_poise: int = 30
+var current_poise: int = 30
 var is_groggy: bool = false
 var groggy_timer: float = 0.0
 var groggy_halo_3d: MeshInstance3D = null
 var is_dead: bool = false
 var pattern_cycle_count: int = 0
 var _defeated_signaled: bool = false
-@export var move_speed: float = 3.8
+var pattern_phase: String = "IDLE"
+var is_frontal_shield_up: bool = false
+var shield_guard_timer: float = 0.0
+var consecutive_frontal_hits: int = 0
+var frontal_hit_reset_timer: float = 0.0
+@export var move_speed: float = 3.9
 @export var charge_speed: float = 12.0
 @export var charge_damage: int = 2
 
@@ -165,6 +170,19 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if sprite_3d != null and is_instance_valid(sprite_3d):
+		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+
+	if frontal_hit_reset_timer > 0.0:
+		frontal_hit_reset_timer -= delta
+		if frontal_hit_reset_timer <= 0.0:
+			consecutive_frontal_hits = 0
+
+	if shield_guard_timer > 0.0:
+		shield_guard_timer -= delta
+		if shield_guard_timer <= 0.0:
+			is_frontal_shield_up = false
+
 	# Anchor ground shadow to floor level
 	if ground_shadow != null and is_instance_valid(ground_shadow):
 		if is_on_floor():
@@ -182,6 +200,8 @@ func _physics_process(delta: float) -> void:
 			global_position.y = move_toward(global_position.y, 0.0, 12.0 * delta)
 
 	if is_groggy:
+		pattern_phase = "GROGGY"
+		is_frontal_shield_up = false
 		groggy_timer -= delta
 		if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 			groggy_halo_3d.rotation_degrees.y += 180.0 * delta
@@ -193,11 +213,15 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if current_pattern == Pattern.STUNNED:
+		pattern_phase = "STAGGER"
+		is_frontal_shield_up = false
 		stun_timer -= delta
 		velocity.x = move_toward(velocity.x, 0.0, 15.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 15.0 * delta)
 		if stun_timer <= 0.0:
 			current_pattern = Pattern.CHASE
+			pattern_phase = "IDLE"
+			pattern_timer = 0.20
 		move_and_slide()
 		_update_boss_animation(delta)
 		return
@@ -224,36 +248,43 @@ func _physics_process(delta: float) -> void:
 
 	match current_pattern:
 		Pattern.IDLE, Pattern.CHASE:
+			pattern_phase = "GUARD_STANCE" if is_frontal_shield_up else "CHASE"
 			if pattern_timer <= 0.0:
+				is_frontal_shield_up = false
 				_pick_next_pattern(dist)
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
-				var boss_combat_distance := 1.85 # Reach of heavy boss blade; halt to avoid pushing
+				var boss_combat_distance := 1.72 # Reach of heavy boss blade; halt to avoid overlapping
 				if dist > boss_combat_distance:
 					var chase_dir := diff.normalized()
 					velocity.x = chase_dir.x * spd
-					velocity.z = chase_dir.z * (spd * 0.70)
+					velocity.z = chase_dir.z * (spd * 0.75)
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
 					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 		Pattern.CHARGE_WINDUP:
+			pattern_phase = "TELL"
+			is_frontal_shield_up = true
 			velocity.x = 0.0
 			velocity.z = 0.0
 			attack_area_3d.monitoring = false
 			charge_windup_timer -= delta
 			if charge_windup_timer <= 0.0:
 				current_pattern = Pattern.CHARGE_ACTIVE
+				pattern_phase = "ACTIVE"
 				charge_motion_started_at = Time.get_ticks_msec() / 1000.0
-				pattern_timer = 0.75
+				pattern_timer = 0.72
 				sprite_3d.texture = BossTextureDefense
 				attack_area_3d.monitoring = true
 
 		Pattern.CHARGE_ACTIVE, Pattern.SHIELD_CHARGE:
-			velocity.x = facing_dir_x * charge_speed
+			pattern_phase = "ACTIVE" if pattern_timer > 0.22 else "RECOVERY"
+			is_frontal_shield_up = false
+			velocity.x = facing_dir_x * (charge_speed if pattern_timer > 0.22 else 2.0)
 			velocity.z = 0.0
 			# Stop charge upon contact with player
-			if dist <= 0.60 + 0.35 + 0.15:
+			if dist <= 1.45 and pattern_timer > 0.22:
 				if first_damage_at == 0.0:
 					first_damage_at = Time.get_ticks_msec() / 1000.0
 				_execute_charge_impact()
@@ -261,19 +292,22 @@ func _physics_process(delta: float) -> void:
 				sprite_3d.texture = BossTextureNormal
 				attack_area_3d.monitoring = false
 				current_pattern = Pattern.CHASE
-				pattern_timer = 0.65
+				pattern_phase = "RECOVERY"
+				pattern_timer = 0.60
 		Pattern.TRIPLE_CLEAVE:
 			velocity.x = move_toward(velocity.x, 0.0, 20.0 * delta)
 			velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
 			if pattern_timer <= 0.0:
 				current_pattern = Pattern.CHASE
-				pattern_timer = 0.65
+				pattern_phase = "RECOVERY"
+				pattern_timer = 0.60
 		Pattern.QUAKE_RING:
 			velocity.x = 0.0
 			velocity.z = 0.0
 			if pattern_timer <= 0.0:
 				current_pattern = Pattern.CHASE
-				pattern_timer = 0.65
+				pattern_phase = "RECOVERY"
+				pattern_timer = 0.60
 
 	move_and_slide()
 	_update_boss_animation(delta)
@@ -284,7 +318,7 @@ func _prevent_player_pushing() -> void:
 		var diff := target_player.global_position - global_position
 		diff.y = 0.0
 		var dist := diff.length()
-		var min_dist: float = 0.60 + 0.35 + 0.10
+		var min_dist: float = 1.45
 		if dist < min_dist and dist > 0.001:
 			var dir := diff / dist
 			var forward_speed := velocity.dot(dir)
@@ -297,6 +331,7 @@ func _execute_charge_impact() -> void:
 	attack_area_3d.monitoring = false
 	sprite_3d.texture = BossTextureNormal
 	current_pattern = Pattern.CHASE
+	pattern_phase = "RECOVERY"
 	pattern_timer = 0.65
 	if target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("receive_incoming_attack"):
@@ -311,12 +346,12 @@ func _update_boss_animation(delta: float) -> void:
 
 	match current_pattern:
 		Pattern.IDLE:
-			sprite_3d.texture = BossTextureNormal
+			sprite_3d.texture = BossTextureDefense if is_frontal_shield_up else BossTextureNormal
 			start_frame = 0 # Row 0
 			fps = 6.0
 		Pattern.CHASE:
-			sprite_3d.texture = BossTextureNormal
-			start_frame = 4 # Row 1 Walk
+			sprite_3d.texture = BossTextureDefense if is_frontal_shield_up else BossTextureNormal
+			start_frame = 0 if is_frontal_shield_up else 4 # Row 0 Guard or Row 1 Walk
 			fps = 8.0
 		Pattern.CHARGE_WINDUP:
 			sprite_3d.texture = BossTextureDefense
@@ -453,24 +488,35 @@ func _exit_groggy_state() -> void:
 
 func _execute_shield_charge() -> void:
 	current_pattern = Pattern.CHARGE_WINDUP
-	charge_windup_timer = 0.42
-	pattern_timer = 1.25
+	pattern_phase = "TELL"
+	is_frontal_shield_up = true
+	charge_windup_timer = 0.44
+	pattern_timer = 1.28
 	charge_windup_started_at = Time.get_ticks_msec() / 1000.0
 	charge_motion_started_at = 0.0
 	first_damage_at = 0.0
-	# PK_GameDesign standard: 0.42s stationary windup telegraph before any rush motion
-	_show_danger_telegraph(0.42)
+	# PK_GameDesign standard: 0.44s stationary windup telegraph before any rush motion
+	_show_danger_telegraph(0.44)
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 
 
 func _execute_triple_cleave() -> void:
 	current_pattern = Pattern.TRIPLE_CLEAVE
-	pattern_timer = 1.15
+	pattern_phase = "TELL"
+	is_frontal_shield_up = false
+	pattern_timer = 1.48
+	_show_danger_telegraph(0.28)
+	velocity = Vector3.ZERO
+	attack_area_3d.monitoring = false
+	await get_tree().create_timer(0.28).timeout
+	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
+		return
 
 	for swing in range(3):
-		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy:
+		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
 			break
+		pattern_phase = "ACTIVE"
 		attack_area_3d.monitoring = true
 		velocity.x = facing_dir_x * 4.2
 
@@ -481,7 +527,9 @@ func _execute_triple_cleave() -> void:
 		await get_tree().create_timer(0.22).timeout
 		if is_instance_valid(self):
 			attack_area_3d.monitoring = false
-			await get_tree().create_timer(0.10).timeout
+			if swing == 2:
+				pattern_phase = "RECOVERY"
+			await get_tree().create_timer(0.12).timeout
 
 
 func _spawn_fissure_shockwave() -> void:
@@ -537,13 +585,16 @@ func _spawn_fissure_shockwave() -> void:
 
 func _execute_quake_ring() -> void:
 	current_pattern = Pattern.QUAKE_RING
-	pattern_timer = 1.45
-	_show_danger_telegraph(0.35)
+	pattern_phase = "TELL"
+	is_frontal_shield_up = false
+	pattern_timer = 1.55
+	_show_danger_telegraph(0.38)
 	velocity = Vector3.ZERO
-	await get_tree().create_timer(0.35).timeout
-	if not is_instance_valid(self) or is_stunned or is_groggy:
+	await get_tree().create_timer(0.38).timeout
+	if not is_instance_valid(self) or is_stunned or is_groggy or is_dead:
 		return
 
+	pattern_phase = "ACTIVE"
 	# Visual 3D Expanding Crimson Shockwave Ring
 	var p := get_parent()
 	if p != null:
@@ -594,6 +645,8 @@ func _execute_quake_ring() -> void:
 				var push := (body.global_position - global_position).normalized()
 				body.receive_incoming_attack(2, self, push)
 	ring.queue_free()
+	if is_instance_valid(self) and current_pattern == Pattern.QUAKE_RING:
+		pattern_phase = "RECOVERY"
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
@@ -602,15 +655,18 @@ func _on_attack_body_entered(body: Node3D) -> void:
 			body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
 
 
-func apply_parry_stun(duration: float = 2.0) -> void:
+func apply_parry_stun(duration: float = 0.72) -> void:
+	is_frontal_shield_up = false
+	consecutive_frontal_hits = 0
 	if not is_groggy:
-		current_poise = maxi(0, current_poise - 4)
+		current_poise = maxi(0, current_poise - 6)
 		if current_poise <= 0:
 			_enter_groggy_state()
 			return
 	current_pattern = Pattern.STUNNED
+	pattern_phase = "STAGGER"
 	charge_windup_timer = 0.0
-	stun_timer = duration
+	stun_timer = minf(duration, 0.72)
 	velocity = Vector3.ZERO # Firm stop on clash; no slide or bounce
 	attack_area_3d.set_deferred("monitoring", false)
 	sprite_3d.texture = BossTextureDefense
@@ -624,11 +680,30 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 	if is_dead or current_hp <= 0 or amount <= 0:
 		return
 
+	# Check if hit is frontal vs flank/rear
+	var is_frontal_hit := true
+	if target_player != null and is_instance_valid(target_player):
+		var to_player: Vector3 = target_player.global_position - global_position
+		if to_player.x * facing_dir_x < -0.15 or absf(to_player.z) >= 1.05:
+			is_frontal_hit = false
+
+	# Boss Frontal Greatshield Guard Stance:
+	# Blocks mindless frontal combo spam when boss is in neutral/guard stance and not staggered/groggy/recovering!
+	if is_frontal_shield_up and is_frontal_hit and not is_counter and not is_groggy and current_pattern != Pattern.STUNNED and pattern_phase != "RECOVERY":
+		var p := get_parent()
+		if p != null:
+			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.3, 0.0), "SHIELD GUARD!", Color(0.35, 0.85, 1.5), true)
+		_spawn_boss_shield_sparks()
+		# Counter-push / immediate pattern trigger if player keeps mashing into the shield
+		if current_pattern == Pattern.CHASE or current_pattern == Pattern.IDLE:
+			pattern_timer = minf(pattern_timer, 0.15)
+		return
+
 	if current_pattern == Pattern.CHARGE_WINDUP:
 		amount = maxi(1, int(amount * 0.5))
 		var p := get_parent()
 		if p != null:
-			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.2, 0.0), "GUARDED", Color(0.6, 0.8, 1.2), false)
+			GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.2, 0.0), "ARMORED", Color(0.6, 0.8, 1.2), false)
 
 	if is_groggy:
 		amount += 1 # Bonus shatter damage during groggy break
@@ -639,6 +714,14 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 		current_poise = maxi(0, current_poise - maxi(1, amount))
 		if current_poise <= 0:
 			_enter_groggy_state()
+		elif is_frontal_hit and not is_counter and (current_pattern == Pattern.CHASE or current_pattern == Pattern.IDLE) and pattern_phase != "RECOVERY":
+			consecutive_frontal_hits += 1
+			frontal_hit_reset_timer = 1.6
+			if consecutive_frontal_hits >= 2:
+				consecutive_frontal_hits = 0
+				is_frontal_shield_up = true
+				shield_guard_timer = 1.15
+				pattern_phase = "GUARD_STANCE"
 
 	current_hp -= amount
 	emit_signal("boss_hp_changed", current_hp, max_hp)
@@ -672,6 +755,38 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 		_die()
 
 
+func _spawn_boss_shield_sparks() -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var spark := MeshInstance3D.new()
+	spark.name = "BossShieldSpark3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.2, 1.2)
+	spark.mesh = quad
+	var smat := StandardMaterial3D.new()
+	smat.albedo_texture = TexHitSpark
+	smat.albedo_color = Color(0.4, 1.15, 1.6, 0.95)
+	smat.emission_enabled = true
+	smat.emission_texture = TexHitSpark
+	smat.emission = Color(0.4, 1.15, 1.6, 1.0)
+	smat.emission_energy_multiplier = 1.35
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	smat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	spark.material_override = smat
+	p.add_child(spark)
+	spark.global_position = global_position + Vector3(facing_dir_x * 0.7, 1.2, 0.0)
+	var tw := spark.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(spark, "scale", Vector3(2.2, 2.2, 2.2), 0.16)
+		tw.tween_property(smat, "albedo_color:a", 0.0, 0.16)
+		tw.chain().tween_callback(spark.queue_free)
+
+
 func _trigger_phase_2() -> void:
 	current_phase = 2
 	aura_ring_3d.visible = true
@@ -688,6 +803,8 @@ func _die() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	pattern_phase = "DEFEATED"
+	is_frontal_shield_up = false
 	collision_layer = 0
 	collision_mask = 0
 	if attack_area_3d != null and is_instance_valid(attack_area_3d):
@@ -696,13 +813,20 @@ func _die() -> void:
 	if groggy_halo_3d != null and is_instance_valid(groggy_halo_3d):
 		groggy_halo_3d.queue_free()
 		groggy_halo_3d = null
+	if aura_ring_3d != null and is_instance_valid(aura_ring_3d):
+		aura_ring_3d.visible = false
+	set_physics_process(false)
+	velocity = Vector3.ZERO
+
+	# Keep defeated Boss visibly kneeling/collapsed on the sanctuary floor during the victory sequence!
+	if sprite_3d != null and is_instance_valid(sprite_3d):
+		sprite_3d.texture = BossTextureDefense
+		sprite_3d.frame = 4
+		sprite_3d.position.y = 0.96
+		var tween := create_tween()
+		if tween:
+			tween.tween_property(sprite_3d, "modulate", Color(0.55, 0.50, 0.58, 0.92), 0.45)
+
 	if not _defeated_signaled:
 		_defeated_signaled = true
 		emit_signal("boss_defeated", self)
-	set_physics_process(false)
-	var tween := create_tween()
-	if tween:
-		tween.tween_property(sprite_3d, "modulate:a", 0.0, 0.4)
-		tween.tween_callback(queue_free)
-	else:
-		queue_free()

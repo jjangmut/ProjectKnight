@@ -7,11 +7,11 @@ class_name SideQVRangedMinion
 
 signal enemy_defeated(enemy_node: Node)
 
-@export var max_hp: int = 4
-@export var current_hp: int = 4
-@export var move_speed: float = 3.2
-@export var shoot_interval: float = 2.4
-@export var standoff_dist: float = 5.2
+@export var max_hp: int = 6
+@export var current_hp: int = 6
+@export var move_speed: float = 3.4
+@export var shoot_interval: float = 2.2
+@export var standoff_dist: float = 5.4
 
 var target_player: Node3D = null
 var shoot_timer: float = 1.0
@@ -21,6 +21,8 @@ var is_aiming: bool = false
 var anim_timer: float = 0.0
 
 var sprite_3d: Sprite3D
+var ground_shadow: MeshInstance3D = null
+var aim_laser_3d: MeshInstance3D = null
 var hp_bar_fill: MeshInstance3D = null
 var facing_dir_x: float = -1.0
 var is_dead: bool = false
@@ -67,6 +69,42 @@ func _build_components() -> void:
 
 	_build_overhead_hp_bar()
 
+	# Soft Ground Contact Shadow Decal
+	var shadow_mesh := MeshInstance3D.new()
+	shadow_mesh.name = "GroundContactShadow"
+	ground_shadow = shadow_mesh
+	var s_quad := QuadMesh.new()
+	s_quad.size = Vector2(0.85, 0.40)
+	shadow_mesh.mesh = s_quad
+	shadow_mesh.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	shadow_mesh.position = Vector3(0.0, 0.015, 0.0)
+	var sh_mat := StandardMaterial3D.new()
+	sh_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sh_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sh_mat.albedo_color = Color(0.02, 0.03, 0.05, 0.50)
+	shadow_mesh.material_override = sh_mat
+	add_child(shadow_mesh)
+
+	# Aiming Laser Telegraph Line on Floor
+	aim_laser_3d = MeshInstance3D.new()
+	aim_laser_3d.name = "CrossbowAimLaser3D"
+	var l_quad := QuadMesh.new()
+	l_quad.size = Vector2(6.5, 0.08)
+	aim_laser_3d.mesh = l_quad
+	aim_laser_3d.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	aim_laser_3d.position = Vector3(-3.25, 0.05, 0.0)
+	var l_mat := StandardMaterial3D.new()
+	l_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	l_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	l_mat.albedo_color = Color(1.6, 0.25, 0.2, 0.85)
+	l_mat.emission_enabled = true
+	l_mat.emission = Color(1.6, 0.25, 0.2, 1.0)
+	l_mat.emission_energy_multiplier = 1.35
+	l_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	aim_laser_3d.material_override = l_mat
+	aim_laser_3d.visible = false
+	add_child(aim_laser_3d)
+
 
 func _build_overhead_hp_bar() -> void:
 	var bar_root := Node3D.new()
@@ -111,6 +149,17 @@ func _update_hp_bar() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if sprite_3d != null and is_instance_valid(sprite_3d):
+		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+
+	if ground_shadow != null and is_instance_valid(ground_shadow):
+		if is_on_floor():
+			ground_shadow.position = Vector3(0.0, 0.015, 0.0)
+		else:
+			ground_shadow.global_position.y = 0.015
+			ground_shadow.global_position.x = global_position.x
+			ground_shadow.global_position.z = global_position.z
+
 	if not is_on_floor():
 		velocity.y -= 18.0 * delta
 
@@ -196,17 +245,23 @@ func _prevent_player_pushing() -> void:
 
 func _execute_shoot() -> void:
 	is_aiming = true
-	shoot_timer = shoot_interval + randf_range(-0.3, 0.4)
+	shoot_timer = shoot_interval + randf_range(-0.25, 0.35)
 	sprite_3d.frame = 1 # Aim frame
+
+	if aim_laser_3d != null and is_instance_valid(aim_laser_3d):
+		aim_laser_3d.visible = true
+		aim_laser_3d.position = Vector3(facing_dir_x * 3.25, 0.06, 0.0)
 
 	# Aiming visual telegraph flash
 	if sprite_3d != null:
 		var tw := create_tween()
 		if tw:
 			sprite_3d.modulate = Color(2.5, 0.6, 0.6, 1.0)
-			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.35)
+			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.38)
 
-	await get_tree().create_timer(0.35).timeout
+	await get_tree().create_timer(0.38).timeout
+	if aim_laser_3d != null and is_instance_valid(aim_laser_3d):
+		aim_laser_3d.visible = false
 	if not is_instance_valid(self) or is_stunned or is_dead or current_hp <= 0:
 		is_aiming = false
 		return

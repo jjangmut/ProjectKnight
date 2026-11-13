@@ -156,27 +156,35 @@ static func damage_popup(parent_node: Node2D, world_pos: Vector2, text: String, 
 func spawn_damage_number_3d(parent_node: Node, world_pos: Vector3, text: String, color: Color = Color.WHITE, is_crit: bool = false) -> void:
 	if not is_instance_valid(parent_node):
 		return
+	var active_popups: int = 0
+	for ch in parent_node.get_children():
+		if ch is Label3D and (ch.name.begins_with("FloatingDamage3D")):
+			active_popups += 1
+	if active_popups >= 4 and not is_crit:
+		return
 	var label := Label3D.new()
 	label.name = "FloatingDamage3D"
 	label.text = text
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.font_size = 40 if is_crit else 30
+	label.font_size = 32 if is_crit else 24
 	label.modulate = color
 	label.outline_render_priority = 1
-	label.outline_size = 4
+	label.outline_size = 3
 	label.outline_modulate = Color(0.02, 0.02, 0.04, 0.95)
 	label.no_depth_test = true
 	parent_node.add_child(label)
-	label.global_position = world_pos + Vector3(randf_range(-0.25, 0.25), 0.2, randf_range(-0.15, 0.15))
+	var slot_idx: int = active_popups % 4
+	var x_spread: float = (-0.45 + float(slot_idx) * 0.30)
+	label.global_position = world_pos + Vector3(x_spread, 0.35 + float(slot_idx) * 0.14, randf_range(-0.10, 0.10))
 
 	var tween := label.create_tween()
-	var rise_height := 1.25 if is_crit else 0.85
+	var rise_height := 1.05 if is_crit else 0.72
 	var target_pos := label.global_position + Vector3(0.0, rise_height, 0.0)
-	var duration := 0.65 if is_crit else 0.50
+	var duration := 0.52 if is_crit else 0.40
 
 	if is_crit:
-		label.scale = Vector3(1.35, 1.35, 1.35)
-		tween.tween_property(label, "scale", Vector3(1.0, 1.0, 1.0), 0.12)
+		label.scale = Vector3(1.20, 1.20, 1.20)
+		tween.tween_property(label, "scale", Vector3(1.0, 1.0, 1.0), 0.10)
 
 	tween.tween_property(label, "global_position", target_pos, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, duration * 0.45).set_delay(duration * 0.55)

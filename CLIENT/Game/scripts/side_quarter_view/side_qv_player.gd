@@ -24,8 +24,11 @@ enum State {
 	GUARD,
 	HURT,
 	DEAD,
-	DIVE_SLAM
+	DIVE_SLAM,
+	VICTORY
 }
+
+const DIRECTIONAL_ART_STATUS := "DIRECTIONAL_ART_MISSING_SIDE_PROFILE_WITH_3D_DEPTH_RING_INDICATOR"
 
 @export var move_speed_x: float = 7.5
 @export var move_speed_z: float = 4.8
@@ -44,9 +47,10 @@ var facing_attack_dir: Vector3 = Vector3(1.0, 0.0, 0.0)
 var combo_step: int = 0
 var combo_reset_timer: float = 0.0
 var is_attacking: bool = false
+var attack_hit_checked: bool = false
 var attack_cooldown: float = 0.0
 var attack_duration_remaining: float = 0.0
-const ATTACK_TOTAL_DURATION: float = 0.20
+const ATTACK_TOTAL_DURATION: float = 0.24
 var base_attack_damage: int = 2
 var current_attack_damage: int = 2
 
@@ -108,6 +112,8 @@ var guard_barrier_3d: MeshInstance3D
 var slash_visual_3d: MeshInstance3D
 var attack_area_3d: Area3D
 var ground_shadow: MeshInstance3D = null
+var hero_locator_ring_3d: MeshInstance3D = null
+var hero_aim_arrow_3d: MeshInstance3D = null
 
 # Multi-frame Spritesheets for Detailed Character Actions (Symmetric Centered & Ground-Aligned 780x780 Cells)
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
@@ -252,6 +258,41 @@ func _build_components() -> void:
 	shadow_mesh.material_override = sh_mat
 	add_child(shadow_mesh)
 
+	# 4.2 Hero Ground Locator Ring & 3D Aim Direction Arrow (Distinguishes Hero vs Enemies/Boss & shows 8-way aim)
+	hero_locator_ring_3d = MeshInstance3D.new()
+	hero_locator_ring_3d.name = "HeroLocatorRing3D"
+	var l_torus := TorusMesh.new()
+	l_torus.inner_radius = 0.50
+	l_torus.outer_radius = 0.58
+	hero_locator_ring_3d.mesh = l_torus
+	hero_locator_ring_3d.position = Vector3(0.0, 0.025, 0.0)
+	var l_mat := StandardMaterial3D.new()
+	l_mat.albedo_color = Color(0.15, 0.95, 1.35, 0.85)
+	l_mat.emission_enabled = true
+	l_mat.emission = Color(0.15, 0.95, 1.35, 1.0)
+	l_mat.emission_energy_multiplier = 1.25
+	l_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	l_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	hero_locator_ring_3d.material_override = l_mat
+	add_child(hero_locator_ring_3d)
+
+	hero_aim_arrow_3d = MeshInstance3D.new()
+	hero_aim_arrow_3d.name = "HeroAimArrow3D"
+	var a_prism := PrismMesh.new()
+	a_prism.size = Vector3(0.32, 0.36, 0.06)
+	hero_aim_arrow_3d.mesh = a_prism
+	hero_aim_arrow_3d.rotation_degrees = Vector3(90.0, -90.0, 0.0)
+	hero_aim_arrow_3d.position = Vector3(0.75, 0.01, 0.0)
+	var a_mat := StandardMaterial3D.new()
+	a_mat.albedo_color = Color(1.35, 1.05, 0.25, 0.92)
+	a_mat.emission_enabled = true
+	a_mat.emission = Color(1.35, 1.05, 0.25, 1.0)
+	a_mat.emission_energy_multiplier = 1.35
+	a_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	a_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	hero_aim_arrow_3d.material_override = a_mat
+	hero_locator_ring_3d.add_child(hero_aim_arrow_3d)
+
 	# 5. Attack Hitbox Area3D (Keep monitoring active so overlaps are always fresh!)
 	attack_area_3d = Area3D.new()
 	attack_area_3d.name = "AttackArea3D"
@@ -324,11 +365,50 @@ func _physics_process(delta: float) -> void:
 			_process_dive_slam_state(delta)
 		State.HURT:
 			_process_hurt_state(delta)
+		State.VICTORY:
+			velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
+			velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 
 	_prevent_enemy_pushing()
 	move_and_slide()
 	_clamp_arena_bounds()
+	_update_depth_sorting_and_locator()
 	_update_character_animation(delta)
+
+
+func _update_depth_sorting_and_locator() -> void:
+	if sprite_3d != null:
+		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+		# Depth tilt & brightness cue when aiming into (-Z) or out of (+Z) the screen
+		var aim_z := facing_attack_dir.z
+		if absf(aim_z) > 0.35 and not is_dead and invuln_timer <= 0.0:
+			sprite_3d.rotation_degrees.x = -aim_z * 9.0
+		else:
+			sprite_3d.rotation_degrees.x = 0.0
+	if hero_locator_ring_3d != null and is_instance_valid(hero_locator_ring_3d):
+		hero_locator_ring_3d.global_position = Vector3(global_position.x, 0.025, global_position.z)
+		var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
+		var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
+		hero_locator_ring_3d.rotation_degrees.y = angle_y
+
+
+func enter_victory_pose() -> void:
+	if is_dead:
+		return
+	is_attacking = false
+	is_guarding = false
+	is_invulnerable = true
+	slash_visual_3d.visible = false
+	guard_barrier_3d.visible = false
+	velocity = Vector3.ZERO
+	_set_state(State.VICTORY)
+	if sprite_3d != null:
+		sprite_3d.modulate = Color(1.15, 1.12, 1.0, 1.0)
+		sprite_3d.texture = TexGuard
+		sprite_3d.hframes = 3
+		sprite_3d.vframes = 1
+		sprite_3d.pixel_size = 0.00282
+		sprite_3d.frame = 2 # Radiant triumphant sword-raised stance
 
 
 func _clamp_arena_bounds() -> void:
@@ -342,22 +422,29 @@ func _clamp_arena_bounds() -> void:
 
 
 func _prevent_enemy_pushing() -> void:
-	# Avoid sliding into or pushing monsters; halt clean on contact boundary in 2.5D (X/Z)
+	# Maintain readable melee combat spacing in 2.5D (X/Z) so hero and enemies/boss never stack on top of each other
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
+			continue
+		if enemy.get("is_dead") == true:
 			continue
 		var enemy_3d := enemy as Node3D
 		var diff := enemy_3d.global_position - global_position
 		diff.y = 0.0
 		var dist := diff.length()
-		var enemy_radius: float = 0.60 if enemy_3d.is_in_group("bosses") else 0.40
-		var min_dist: float = 0.35 + enemy_radius + 0.06
+		var enemy_radius: float = 0.95 if enemy_3d.is_in_group("bosses") else 0.65
+		var min_dist: float = 0.45 + enemy_radius # 1.40m for boss, 1.10m for enemies
 		if dist < min_dist and dist > 0.001:
 			var dir := diff.normalized()
 			var speed_towards := velocity.dot(dir)
 			if speed_towards > 0.0:
 				velocity -= dir * speed_towards
+			# Soft separation push when overlapping too closely on floor
+			if dist < min_dist - 0.08 and current_state != State.DASH:
+				var sep := -dir * ((min_dist - dist) * 8.0)
+				velocity.x += sep.x
+				velocity.z += sep.z
 
 
 func _update_timers(delta: float) -> void:
@@ -667,12 +754,13 @@ func _spawn_thunder_step_spark(pos: Vector3) -> void:
 
 
 func start_attack() -> void:
-	if is_dead:
+	if is_dead or current_state == State.VICTORY:
 		return
 	combo_step = (combo_step % 3) + 1
 	combo_reset_timer = 0.95
 	is_attacking = true
-	attack_cooldown = 0.22
+	attack_hit_checked = false
+	attack_cooldown = 0.24
 	attack_duration_remaining = ATTACK_TOTAL_DURATION
 
 	# Distinct combat swing SFX per combo step
@@ -692,38 +780,42 @@ func start_attack() -> void:
 	sprite_3d.frame = 0
 
 	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
-	attack_area_3d.position = atk_dir * 1.0 + Vector3(0.0, 0.85, 0.0)
+	attack_area_3d.position = atk_dir * 1.15 + Vector3(0.0, 0.85, 0.0)
 	slash_visual_3d.visible = true
-	slash_visual_3d.position = atk_dir * 0.65 + Vector3(0.0, 0.95, 0.0)
+	slash_visual_3d.position = atk_dir * 0.72 + Vector3(0.0, 0.95, 0.0)
 
 	var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
 	slash_visual_3d.rotation_degrees.y = angle_y
+	# When aiming along Z depth (+Z or -Z), tilt the slash arc horizontally so its sweep is clearly readable from the side-quarter camera
+	var tilt_x := 68.0 if absf(atk_dir.z) > 0.65 else (32.0 * absf(atk_dir.z))
+	slash_visual_3d.rotation_degrees.x = tilt_x
 
 	var thrust_tween := create_tween()
 	if thrust_tween:
 		thrust_tween.set_parallel(true)
 		if combo_step == 1:
 			slash_visual_3d.rotation_degrees.z = -30.0 * facing_dir_x
-			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.12)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.15, 1.15, 1.15), 0.06)
-			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.35, 0.35, 0.35)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.14)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.95, 0.95, 0.95), 0.08)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
 		elif combo_step == 2:
 			slash_visual_3d.rotation_degrees.z = 35.0 * facing_dir_x
-			slash_visual_3d.scale = Vector3(facing_dir_x * 0.45, 0.45, 0.45)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.12)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.25, 1.25, 1.25), 0.06)
-			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.25, 0.25, 0.25), 0.06)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.35, 0.35, 0.35)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.14)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.05, 1.05, 1.05), 0.08)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
 		else: # Combo 3 Finisher
 			slash_visual_3d.rotation_degrees.z = 65.0 * facing_dir_x
-			slash_visual_3d.scale = Vector3(facing_dir_x * 0.50, 0.50, 0.50)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.14)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.45, 1.45, 1.45), 0.07)
+			slash_visual_3d.scale = Vector3(facing_dir_x * 0.40, 0.40, 0.40)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.16)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.20, 1.20, 1.20), 0.09)
 			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
 	attack_area_3d.monitoring = true
 	emit_signal("attack_swung", combo_step)
 
 	# Responsive melee hit check (Direction-aligned spatial + Area3D check)
+	attack_hit_checked = true
 	_check_melee_hit()
 
 	# Combo 3 Finisher: Fire glowing 3D piercing sword wave along attack direction!
@@ -759,13 +851,13 @@ func _check_melee_hit() -> void:
 		var extra_r: float = 0.65 if e3d.is_in_group("bosses") else 0.35
 
 		# Target must be in front of attack cone and within lateral/depth tolerance
-		if forward_dist >= -0.25 and forward_dist <= (2.4 + extra_r) and lateral_dist <= (1.35 + extra_r * 0.5) and y_dist <= 2.2:
+		if forward_dist >= -0.25 and forward_dist <= (2.65 + extra_r) and lateral_dist <= (1.40 + extra_r * 0.5) and y_dist <= 2.2:
 			hit_targets[e3d.get_instance_id()] = e3d
 
 	var dmg: int = current_attack_damage
 	var was_counter: bool = false
 	if counter_attack_buff and not hit_targets.is_empty():
-		dmg = current_attack_damage * 3 + (2 if has_relic("abyssal_crown") else 0)
+		dmg = current_attack_damage * 2 + (1 if has_relic("abyssal_crown") else 0)
 		counter_attack_buff = false
 		was_counter = true
 
@@ -819,8 +911,8 @@ func _check_melee_hit() -> void:
 			has_used_air_pogo = true
 			_execute_pogo_bounce()
 
-	# Runic Engraving: Vampiric Edge (Combo 3 Finisher heals 1 HP on hit, 8s cooldown)
-	if not hit_targets.is_empty() and combo_step == 3 and has_engraving("vampiric_edge") and vampiric_cooldown <= 0.0:
+	# Runic Engraving: Vampiric Edge (Combo 3 Finisher heals 1 HP on hit only when empowered by Just Parry counter_attack_buff, 8s cooldown)
+	if not hit_targets.is_empty() and combo_step == 3 and counter_attack_buff and has_engraving("vampiric_edge") and vampiric_cooldown <= 0.0:
 		vampiric_cooldown = VAMPIRIC_COOLDOWN_TIME
 		current_hp = mini(max_hp, current_hp + 1)
 		emit_signal("hp_changed", current_hp, max_hp)
@@ -832,12 +924,12 @@ func _fire_sword_beam() -> void:
 	var beam := SwordBeamScene.new()
 	beam.name = "SideQVSwordBeam_Finisher"
 	if has_relic("piercing_quiver") or has_relic("wind_quiver"):
-		beam.max_range = 24.0 * 1.4
-		beam.speed = 20.0 * 1.2
-		beam.pierce_count = 1
+		beam.max_range = 6.2
+		beam.speed = 18.0
+		beam.pierce_count = 0
 	get_parent().add_child(beam)
 	var shoot_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
-	var extra_beam_dmg: int = (current_attack_damage - 2) + (2 if counter_attack_buff else 0)
+	var extra_beam_dmg: int = (current_attack_damage - 2) + (1 if counter_attack_buff else 0)
 	beam.initialize(global_position + shoot_dir * 0.9 + Vector3(0.0, 1.1, 0.0), shoot_dir, extra_beam_dmg)
 	sword_beam_fired.emit(beam)
 
@@ -871,7 +963,7 @@ func _process_attack_state(delta: float) -> void:
 
 
 func start_guard() -> void:
-	if is_guarding or is_dead:
+	if is_guarding or is_dead or current_state == State.VICTORY:
 		return
 	is_guarding = true
 	guard_elapsed_time = 0.0
@@ -1153,25 +1245,29 @@ func _trigger_titan_landing_shockwave() -> void:
 		return
 	var ring := MeshInstance3D.new()
 	ring.name = "TitanLandingShockwave3D"
-	var torus := TorusMesh.new()
-	torus.inner_radius = 0.5
-	torus.outer_radius = 0.85
-	ring.mesh = torus
+	var quad := QuadMesh.new()
+	quad.size = Vector2(2.2, 2.2)
+	ring.mesh = quad
+	ring.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	var rmat := StandardMaterial3D.new()
-	rmat.albedo_color = Color(3.2, 1.8, 0.4, 0.85)
+	rmat.albedo_texture = TexShockwaveRing
+	rmat.albedo_color = Color(1.25, 0.85, 0.35, 0.85)
 	rmat.emission_enabled = true
-	rmat.emission = Color(3.2, 1.8, 0.4, 1.0)
-	rmat.emission_energy_multiplier = 3.8
+	rmat.emission_texture = TexShockwaveRing
+	rmat.emission = Color(1.25, 0.85, 0.35, 1.0)
+	rmat.emission_energy_multiplier = 1.25
 	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ring.material_override = rmat
 	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.08, 0.0)
+	ring.global_position = global_position + Vector3(0.0, 0.04, 0.0)
 	var rtw := ring.create_tween()
 	if rtw:
 		rtw.set_parallel(true)
-		rtw.tween_property(ring, "scale", Vector3(3.2, 1.0, 3.2), 0.24)
-		rtw.tween_property(rmat, "albedo_color:a", 0.0, 0.24)
+		rtw.tween_property(ring, "scale", Vector3(2.4, 2.4, 2.4), 0.22)
+		rtw.tween_property(rmat, "albedo_color:a", 0.0, 0.22)
 		rtw.chain().tween_callback(ring.queue_free)
 
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -1328,6 +1424,16 @@ func _update_character_animation(delta: float) -> void:
 		sprite_3d.frame = 3
 		return
 
+	# 0.2 Victory Pose State
+	if current_state == State.VICTORY:
+		if sprite_3d.texture != TexGuard:
+			sprite_3d.texture = TexGuard
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 1
+			sprite_3d.pixel_size = 0.00282
+		sprite_3d.frame = 2
+		return
+
 	# 0.5 Dive Slam Stomp Action
 	if current_state == State.DIVE_SLAM:
 		if sprite_3d.texture != TexAttack:
@@ -1421,5 +1527,7 @@ func _update_character_animation(delta: float) -> void:
 
 func _set_state(new_state: State) -> void:
 	if is_dead and new_state != State.DEAD:
+		return
+	if current_state == State.VICTORY and new_state != State.VICTORY:
 		return
 	current_state = new_state

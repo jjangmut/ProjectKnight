@@ -218,6 +218,169 @@ func _setup_3d_background_architecture() -> void:
 	_build_pillar(Vector3(68.0, 0.0, corridor_min_z + 0.5), "GatePillar_3")
 	_build_pillar(Vector3(76.0, 0.0, corridor_min_z + 0.5), "BossPillar_Rear")
 
+	# -------------------------------------------------------------
+	# 6. V3-023 Distinct Encounter Zone Architecture, Floor Identity & Tactical Obstacles
+	# -------------------------------------------------------------
+	_build_distinct_encounter_zones()
+
+
+func _build_distinct_encounter_zones() -> void:
+	# === ZONE 1 (X: -12..18): Outer Gate Courtyard (Dawn Blue-Slate Flagstones & Central Divider) ===
+	var z1_runner := MeshInstance3D.new()
+	z1_runner.name = "Zone1_CourtyardPathDecal"
+	var z1_quad := QuadMesh.new()
+	z1_quad.size = Vector2(28.0, 2.4)
+	z1_runner.mesh = z1_quad
+	z1_runner.position = Vector3(3.0, 0.012, 0.0)
+	z1_runner.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	var z1_mat := StandardMaterial3D.new()
+	z1_mat.albedo_texture = TexFlagstone
+	z1_mat.uv1_scale = Vector3(8.0, 1.5, 1.0)
+	z1_mat.albedo_color = Color(0.55, 0.72, 0.95, 0.85)
+	z1_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	z1_runner.material_override = z1_mat
+	add_child(z1_runner)
+
+	# Zone 1 Tactical Low Stone Divider Post (World Layer 4 Collider, splits Z lanes at X=7.2, Z=-1.55)
+	_build_tactical_obstacle(
+		Vector3(7.2, 0.0, -1.55),
+		Vector3(0.95, 1.05, 0.95),
+		Color(0.52, 0.62, 0.78, 1.0),
+		"Zone1_CourtyardDivider"
+	)
+
+	# === ZONE 2 (X: 18..44): Bastion Siege Rampart (Warm Torchlit Amber Floor & Zig-Zag Siege Barricades) ===
+	var z2_floor := MeshInstance3D.new()
+	z2_floor.name = "Zone2_BastionAmberOverlay"
+	var z2_quad := QuadMesh.new()
+	z2_quad.size = Vector2(25.0, 5.6)
+	z2_floor.mesh = z2_quad
+	z2_floor.position = Vector3(31.0, 0.014, 0.0)
+	z2_floor.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	var z2_mat := StandardMaterial3D.new()
+	z2_mat.albedo_texture = TexFlagstone
+	z2_mat.uv1_scale = Vector3(7.0, 2.0, 1.0)
+	z2_mat.albedo_color = Color(0.95, 0.76, 0.54, 0.92)
+	z2_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	z2_floor.material_override = z2_mat
+	add_child(z2_floor)
+
+	# Zone 2 Siege Barricades (Force Z-lane weaving around crossbow sightlines & caltrops)
+	_build_tactical_obstacle(
+		Vector3(26.5, 0.0, -1.55),
+		Vector3(1.3, 1.15, 1.4),
+		Color(0.45, 0.32, 0.22, 1.0),
+		"Zone2_SiegeBarricade_North"
+	)
+	_build_tactical_obstacle(
+		Vector3(34.8, 0.0, 1.55),
+		Vector3(1.3, 1.15, 1.4),
+		Color(0.45, 0.32, 0.22, 1.0),
+		"Zone2_SiegeBarricade_South"
+	)
+
+	# === ZONE 3 (X: 44..68): Royal Terrace Colonnade (Crimson Royal Carpet & Twin Flanking Columns) ===
+	var z3_carpet := MeshInstance3D.new()
+	z3_carpet.name = "Zone3_RoyalCrimsonCarpet"
+	var z3_quad := QuadMesh.new()
+	z3_quad.size = Vector2(23.0, 2.8)
+	z3_carpet.mesh = z3_quad
+	z3_carpet.position = Vector3(56.0, 0.018, 0.0)
+	z3_carpet.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	var z3_mat := StandardMaterial3D.new()
+	z3_mat.albedo_color = Color(0.68, 0.14, 0.18, 0.94)
+	z3_mat.roughness = 0.78
+	z3_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	z3_carpet.material_override = z3_mat
+	add_child(z3_carpet)
+
+	# Golden trim borders on the Royal Carpet
+	for z_trim in [-1.42, 1.42]:
+		var trim := MeshInstance3D.new()
+		var t_quad := QuadMesh.new()
+		t_quad.size = Vector2(23.0, 0.14)
+		trim.mesh = t_quad
+		trim.position = Vector3(56.0, 0.020, z_trim)
+		trim.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+		var t_mat := StandardMaterial3D.new()
+		t_mat.albedo_color = Color(1.2, 0.92, 0.32, 0.95)
+		t_mat.emission_enabled = true
+		t_mat.emission = Color(1.2, 0.92, 0.32, 1.0)
+		t_mat.emission_energy_multiplier = 1.2
+		t_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		trim.material_override = t_mat
+		add_child(trim)
+
+	# Zone 3 Colonnade Plinths (Create flanking lanes for Heavy Shield Knights)
+	_build_tactical_obstacle(
+		Vector3(53.5, 0.0, -1.85),
+		Vector3(1.15, 1.35, 1.15),
+		Color(0.62, 0.56, 0.68, 1.0),
+		"Zone3_ColonnadePlinth_North"
+	)
+	_build_tactical_obstacle(
+		Vector3(60.5, 0.0, 1.85),
+		Vector3(1.15, 1.35, 1.15),
+		Color(0.62, 0.56, 0.68, 1.0),
+		"Zone3_ColonnadePlinth_South"
+	)
+
+	# === ZONE 4 (X: 68..88): Commander's High Sanctuary (Golden Cathedral Dais & Sanctuary Light) ===
+	var z4_sanctuary := MeshInstance3D.new()
+	z4_sanctuary.name = "Zone4_SanctuaryFloorDecal"
+	var z4_quad := QuadMesh.new()
+	z4_quad.size = Vector2(19.0, 5.8)
+	z4_sanctuary.mesh = z4_quad
+	z4_sanctuary.position = Vector3(78.0, 0.015, 0.0)
+	z4_sanctuary.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	var z4_mat := StandardMaterial3D.new()
+	z4_mat.albedo_texture = TexFlagstone
+	z4_mat.uv1_scale = Vector3(5.0, 2.0, 1.0)
+	z4_mat.albedo_color = Color(0.95, 0.88, 0.68, 0.92)
+	z4_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	z4_sanctuary.material_override = z4_mat
+	add_child(z4_sanctuary)
+
+	var sanctuary_light := OmniLight3D.new()
+	sanctuary_light.name = "SanctuaryCathedralLight"
+	sanctuary_light.light_color = Color(1.0, 0.86, 0.55, 1.0)
+	sanctuary_light.light_energy = 2.6
+	sanctuary_light.omni_range = 14.0
+	sanctuary_light.position = Vector3(76.5, 4.2, 0.0)
+	add_child(sanctuary_light)
+
+
+func _build_tactical_obstacle(pos: Vector3, box_size: Vector3, tint: Color, obs_name: String) -> void:
+	var root := Node3D.new()
+	root.name = obs_name
+	root.position = pos
+	add_child(root)
+
+	var mesh_box := CSGBox3D.new()
+	mesh_box.name = "ObstacleMesh"
+	mesh_box.use_collision = true
+	mesh_box.collision_layer = 4
+	mesh_box.size = box_size
+	mesh_box.position = Vector3(0.0, box_size.y * 0.5, 0.0)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_texture = TexWall
+	mat.albedo_color = tint
+	mat.roughness = 0.68
+	mesh_box.material_override = mat
+	root.add_child(mesh_box)
+
+	var sb := StaticBody3D.new()
+	sb.name = "ObstacleCollider"
+	sb.collision_layer = 4
+	sb.collision_mask = 0
+	var col := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = box_size
+	col.shape = shape
+	col.position = Vector3(0.0, box_size.y * 0.5, 0.0)
+	sb.add_child(col)
+	root.add_child(sb)
+
 
 func _build_runic_seal(pos: Vector3, seal_size: float, sname: String) -> void:
 	var runic_seal := MeshInstance3D.new()
@@ -437,9 +600,9 @@ func _start_encounter_1() -> void:
 	_show_stage_banner("ENCOUNTER 1: 성문 외곽 경비대", Color(0.2, 1.0, 1.4))
 
 	# 3 Melee Grunts (Role 1: Melee Chaser)
-	_spawn_enemy_grunt(Vector3(5.0, 0.1, -1.2), "Minion_Grunt_1")
-	_spawn_enemy_grunt(Vector3(9.0, 0.1, 1.0), "Minion_Grunt_2")
-	_spawn_enemy_grunt(Vector3(13.0, 0.1, -0.2), "Minion_Grunt_3")
+	_spawn_enemy_grunt(Vector3(5.0, 0.1, -0.4), "Minion_Grunt_1")
+	_spawn_enemy_grunt(Vector3(9.0, 0.1, 1.1), "Minion_Grunt_2")
+	_spawn_enemy_grunt(Vector3(13.0, 0.1, -1.2), "Minion_Grunt_3")
 
 
 func _start_encounter_2() -> void:
@@ -545,8 +708,8 @@ func _spawn_caltrop_hazard(pos: Vector3) -> Node3D:
 func _spawn_stage_boss() -> void:
 	var boss := SideQVBossClass.new()
 	boss.name = "SideQVBossCommander"
-	boss.max_hp = 48
-	boss.current_hp = 48
+	boss.max_hp = 64
+	boss.current_hp = 64
 	boss.position = Vector3(78.0, 0.1, 0.0)
 	boss.target_player = player
 	add_child(boss)
@@ -561,13 +724,12 @@ func _on_stage_enemy_defeated(defeated_enemy: Node) -> void:
 	if defeated_enemy in enemies:
 		enemies.erase(defeated_enemy)
 
-	# Natural in-game vitality drop from defeated enemies
+	# Controlled vitality orb drop: only Heavy Shield Knights drop an immediate +1 HP orb mid-wave,
+	# while full encounter clears award a +2 HP orb at the gate so combat attrition remains meaningful!
 	if defeated_enemy != null and is_instance_valid(defeated_enemy) and defeated_enemy is Node3D:
 		var drop_pos: Vector3 = (defeated_enemy as Node3D).global_position
 		drop_pos.y = 0.45
-		if defeated_enemy is SideQVEliteKnightClass or defeated_enemy is SideQVRangedMinionClass:
-			_spawn_vitality_orb(drop_pos, 2)
-		elif randf() < 0.60:
+		if defeated_enemy is SideQVEliteKnightClass:
 			_spawn_vitality_orb(drop_pos, 1)
 
 	if enemies.is_empty():

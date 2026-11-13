@@ -5,9 +5,9 @@ class_name SideQVSwordBeam
 ## - 고휘도 백색 코어 + 외곽 황금빛 오라 2중 발광 구조 (HDR Bloom 4.0)
 ## - 비행 궤적을 가르는 3D 황금 스파크 파티클 & 지면 동적 옴니라이트 투영
 
-@export var speed: float = 20.0
-@export var damage: int = 2
-@export var max_range: float = 24.0
+@export var speed: float = 18.0
+@export var damage: int = 1
+@export var max_range: float = 6.2
 @export var pierce_count: int = 0
 
 var direction: Vector3 = Vector3.RIGHT
@@ -36,7 +36,7 @@ func initialize(start_pos: Vector3, dir: Vector3, extra_dmg: int = 0) -> void:
 	direction.y = 0.0
 	direction = direction.normalized()
 
-	damage = 2 + extra_dmg
+	damage = 1 + extra_dmg
 	
 	# Face forward in flight direction (full horizontal yaw alignment)
 	if direction.length_squared() > 0.01:

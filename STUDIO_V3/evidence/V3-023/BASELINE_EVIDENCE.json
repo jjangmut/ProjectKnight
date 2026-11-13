@@ -1,0 +1,94 @@
+{
+	"milestone": "V3-023",
+	"gate": "Gate A — Actual V3-022-R1 Gameplay Baseline Audit",
+	"source_commit_sha": "51081d53f1ce424db190a66d54532a91a485af6d",
+	"baseline_video": {
+		"file_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-022-R1/Physics_Pacing_Playtest_1x.mp4",
+		"sha256": "5B10B4FAA43B9CD15B792B7AAE6BF95B9879A9BBD9B30B24CFB1BE2E28EA0002",
+		"file_size_bytes": 58132124,
+		"resolution": "1280x720",
+		"fps": 60,
+		"rendered_frame_count": 1849,
+		"physics_tick_count": 1848,
+		"sim_seconds": 30.82,
+		"video_seconds": 30.816667,
+		"timebase_1x_verified": true,
+		"run_id": "V3-022-R1-E2E-1794492437",
+		"trial_classification": "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE"
+	},
+	"frame_linked_timeline": {
+		"run_start": {"sim_sec": 0.0, "frame_idx": 0},
+		"encounter_1_clear": {"sim_sec": 2.55, "frame_idx": 153, "combat_duration_sec": 2.55},
+		"encounter_2_start": {"sim_sec": 4.90, "frame_idx": 294},
+		"encounter_2_clear": {"sim_sec": 11.57, "frame_idx": 694, "combat_duration_sec": 6.67},
+		"encounter_3_start": {"sim_sec": 12.28, "frame_idx": 737},
+		"encounter_3_clear": {"sim_sec": 16.68, "frame_idx": 1001, "combat_duration_sec": 4.40},
+		"boss_encounter_start": {"sim_sec": 18.28, "frame_idx": 1097},
+		"boss_defeated": {"sim_sec": 24.78, "frame_idx": 1487, "boss_fight_duration_sec": 6.50},
+		"victory_aftermath_end": {"sim_sec": 30.82, "frame_idx": 1849, "aftermath_duration_sec": 6.04}
+	},
+	"baseline_combat_metrics": {
+		"enemies_spawned": 12,
+		"enemies_defeated": 12,
+		"boss_spawn_hp": 48,
+		"boss_final_hp": -2,
+		"player_initial_hp": 9,
+		"player_final_hp": 3,
+		"damage_taken_total": 13,
+		"vitality_orbs_collected": 4,
+		"attack_key_presses": 37,
+		"guard_key_presses": 24,
+		"dashes_executed": 0,
+		"boss_patterns_triggered": ["TRIPLE_CLEAVE", "SHIELD_CHARGE", "QUAKE_RING"]
+	},
+	"visually_verified_baseline_defects": [
+		{
+			"defect_id": "V3-023-D1",
+			"category": "Attack Direction & Sprite/VFX Readability",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_melee_overlap.png",
+			"video_timestamp_sec": 12.0,
+			"frame_idx": 720,
+			"description": "2D sprites only flip horizontally (X+/X-); pure Z-depth attacks (Z+/Z-) rotate the 3D slash mesh perpendicular to the camera while the 2D character swings sideways (`DIRECTIONAL_ART_MISSING` for dedicated front/back sprites). Instant frame-0 hit check (`_check_melee_hit()` called inside `start_attack()`) triggers damage popups and hit sparks before the swing animation reaches its active strike frame."
+		},
+		{
+			"defect_id": "V3-023-D2",
+			"category": "Actor Overlap & Melee Occlusion",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_boss_overlap.png",
+			"video_timestamp_sec": 21.0,
+			"frame_idx": 1260,
+			"description": "Player (`min_dist = 1.01m`), enemies (`min_dist = 0.81m`), and Boss (`min_dist = 1.05m`) crowd into the exact same X/Z coordinates (`frame_030.png`, `frame_042.png`, `frame_050.png`). Multiple enemies stack on top of each other and the boss shield overlaps the hero's head, obscuring attack animations. Player lacks a distinct ground target ring."
+		},
+		{
+			"defect_id": "V3-023-D3",
+			"category": "Trivial Enemy AI & Compressed Encounter Pacing",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_corridor_repetition.png",
+			"video_timestamp_sec": 15.0,
+			"frame_idx": 900,
+			"description": "Encounter 1 clears in 2.55s, Encounter 2 in 6.67s, Encounter 3 in 4.40s. Melee grunts (`HP=4`) have no windup warning before dealing damage (`0.08s`) and no inter-enemy spacing, allowing a single player combo + sword beam to cleave clustered enemies at once."
+		},
+		{
+			"defect_id": "V3-023-D4",
+			"category": "Repetitive 100m Corridor Architecture",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_corridor_repetition.png",
+			"video_timestamp_sec": 15.0,
+			"frame_idx": 900,
+			"description": "All 3 encounter zones share identical grey flagstone tiling, identical rear wall height, and identical lighting, differentiated only by spectral `PROCEED >>` barriers."
+		},
+		{
+			"defect_id": "V3-023-D5",
+			"category": "Compressed 6.50s Boss Fight",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_boss_clutter_popups.png",
+			"video_timestamp_sec": 24.5,
+			"frame_idx": 1470,
+			"description": "Boss dies in 6.50s (18.28s to 24.78s) because every player Just Parry stuns the boss for 2.0s and grants a 3x counter-attack (6 dmg + 4 sword beam dmg = 10 dmg per combo), melting 48 HP in 4 parries without the boss ever retreating, guarding frontal spam, or resetting spacing."
+		},
+		{
+			"defect_id": "V3-023-D6",
+			"category": "Empty Floor Victory Aftermath (Player Off-Screen)",
+			"evidence_capture": "STUDIO_V3/evidence/V3-023/captures/before_v3_022_r1_empty_victory_floor.png",
+			"video_timestamp_sec": 27.5,
+			"frame_idx": 1650,
+			"description": "At 24.78s when the boss dies, `camera.max_camera_x` remains clamped at `78.0` while the player controller sees `closest_enemy == null` and calls `_steer_forward()` (`move_right`), running the player to `x = 87.20` completely off the right edge of the camera viewport! Furthermore, `clear_lbl` fades out after 2.0s while the test records until 30.82s, leaving 6 seconds of an empty stone floor with no player, no boss, and no victory UI."
+		}
+	]
+}
