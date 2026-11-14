@@ -244,19 +244,9 @@ func _physics_process(delta: float) -> void:
 	var dist := diff.length()
 	var dir := diff.normalized()
 
-	if absf(diff.x) >= absf(diff.z) * 1.05:
+	if diff.x != 0.0:
 		current_facing_dir = FacingDir.SIDE_RIGHT if diff.x > 0.0 else FacingDir.SIDE_LEFT
-	elif diff.z > 0.0:
-		current_facing_dir = FacingDir.FRONT_SOUTH
-	else:
-		current_facing_dir = FacingDir.BACK_NORTH
-
-	if current_facing_dir == FacingDir.SIDE_LEFT:
-		sprite_3d.flip_h = true
-	elif current_facing_dir == FacingDir.SIDE_RIGHT:
-		sprite_3d.flip_h = false
-	else:
-		sprite_3d.flip_h = false
+		sprite_3d.flip_h = (diff.x < 0.0)
 
 	attack_area_3d.position = Vector3(dir.x * 0.78, 0.0, dir.z * 0.78)
 
@@ -313,35 +303,13 @@ func _prevent_player_pushing() -> void:
 func _update_enemy_animation(delta: float) -> void:
 	anim_timer += delta
 
-	var is_directional: bool = (current_facing_dir == FacingDir.FRONT_SOUTH or current_facing_dir == FacingDir.BACK_NORTH)
-	var target_tex: Texture2D = TexMeleeDirectional if is_directional else MeleeTexture
-
-	if sprite_3d.texture != target_tex:
-		sprite_3d.texture = target_tex
+	if sprite_3d.texture != MeleeTexture:
+		sprite_3d.texture = MeleeTexture
 		sprite_3d.hframes = 3
 		sprite_3d.vframes = 2
 		sprite_3d.pixel_size = 0.0031
 
-	if is_directional:
-		sprite_3d.flip_h = false
-		var base_frame: int = 0 if current_facing_dir == FacingDir.FRONT_SOUTH else 3
-		if is_recoiling or is_stunned:
-			sprite_3d.frame = base_frame
-			return
-		if is_attacking:
-			sprite_3d.frame = base_frame + 2
-			return
-		if velocity.length() > 0.3:
-			sprite_3d.frame = base_frame + 1 if int(anim_timer * 6.0) % 2 == 0 else base_frame
-		else:
-			sprite_3d.frame = base_frame
-		return
-
-	# Side Facing (MeleeTexture)
-	if current_facing_dir == FacingDir.SIDE_LEFT:
-		sprite_3d.flip_h = true
-	elif current_facing_dir == FacingDir.SIDE_RIGHT:
-		sprite_3d.flip_h = false
+	sprite_3d.flip_h = (current_facing_dir == FacingDir.SIDE_LEFT)
 
 	if is_recoiling or is_stunned:
 		sprite_3d.frame = 3 # Staggered recoil

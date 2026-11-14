@@ -83,6 +83,27 @@ var guard_hold_timer: float = 0.0
 var jump_cooldown_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 
+# V3-024-R1: Frame-by-Frame Boss Fight Screen Coordinate & Camera Visibility Metrics
+var boss_visibility_metrics := {
+	"total_boss_fight_frames": 0,
+	"both_on_screen_frames": 0,
+	"player_off_screen_frames": 0,
+	"boss_off_screen_frames": 0,
+	"player_screen_x_min": 9999.0,
+	"player_screen_x_max": -9999.0,
+	"player_screen_y_min": 9999.0,
+	"player_screen_y_max": -9999.0,
+	"boss_screen_x_min": 9999.0,
+	"boss_screen_x_max": -9999.0,
+	"boss_screen_y_min": 9999.0,
+	"boss_screen_y_max": -9999.0,
+	"dual_camera_active": false,
+	"camera_fov_min": 90.0,
+	"camera_fov_max": 0.0,
+	"all_frames_verified_on_screen": true,
+	"samples": []
+}
+
 var tracked_enemy_ids: Dictionary = {}
 var initial_hp: int = 8
 var last_seen_hp: int = 8
@@ -287,6 +308,52 @@ func _sample_telemetry(_delta: float) -> void:
 				telemetry["boss_patterns_observed"]["shield_charge"] = true
 			boss.Pattern.QUAKE_RING:
 				telemetry["boss_patterns_observed"]["quake_ring"] = true
+
+		# V3-024-R1: Frame-by-frame Boss and Hero screen visibility tracking
+		if camera != null and is_instance_valid(camera) and not boss.get("is_dead"):
+			boss_visibility_metrics["total_boss_fight_frames"] += 1
+			boss_visibility_metrics["dual_camera_active"] = (camera.boss_target == boss)
+			boss_visibility_metrics["camera_fov_min"] = minf(boss_visibility_metrics["camera_fov_min"], camera.fov)
+			boss_visibility_metrics["camera_fov_max"] = maxf(boss_visibility_metrics["camera_fov_max"], camera.fov)
+
+			var p_scr: Vector2 = camera.unproject_position(player.global_position)
+			var b_scr: Vector2 = camera.unproject_position(boss.global_position)
+
+			boss_visibility_metrics["player_screen_x_min"] = minf(boss_visibility_metrics["player_screen_x_min"], p_scr.x)
+			boss_visibility_metrics["player_screen_x_max"] = maxf(boss_visibility_metrics["player_screen_x_max"], p_scr.x)
+			boss_visibility_metrics["player_screen_y_min"] = minf(boss_visibility_metrics["player_screen_y_min"], p_scr.y)
+			boss_visibility_metrics["player_screen_y_max"] = maxf(boss_visibility_metrics["player_screen_y_max"], p_scr.y)
+
+			boss_visibility_metrics["boss_screen_x_min"] = minf(boss_visibility_metrics["boss_screen_x_min"], b_scr.x)
+			boss_visibility_metrics["boss_screen_x_max"] = maxf(boss_visibility_metrics["boss_screen_x_max"], b_scr.x)
+			boss_visibility_metrics["boss_screen_y_min"] = minf(boss_visibility_metrics["boss_screen_y_min"], b_scr.y)
+			boss_visibility_metrics["boss_screen_y_max"] = maxf(boss_visibility_metrics["boss_screen_y_max"], b_scr.y)
+
+			# 1280x720 screen boundaries with margin
+			var p_on: bool = (p_scr.x >= 0.0 and p_scr.x <= 1280.0 and p_scr.y >= 0.0 and p_scr.y <= 720.0)
+			var b_on: bool = (b_scr.x >= 0.0 and b_scr.x <= 1280.0 and b_scr.y >= 0.0 and b_scr.y <= 720.0)
+
+			if p_on and b_on:
+				boss_visibility_metrics["both_on_screen_frames"] += 1
+			if not p_on:
+				boss_visibility_metrics["player_off_screen_frames"] += 1
+				boss_visibility_metrics["all_frames_verified_on_screen"] = false
+			if not b_on:
+				boss_visibility_metrics["boss_off_screen_frames"] += 1
+				boss_visibility_metrics["all_frames_verified_on_screen"] = false
+
+			# Audit sample every 10 frames (~0.16s)
+			if boss_visibility_metrics["total_boss_fight_frames"] % 10 == 0:
+				boss_visibility_metrics["samples"].append({
+					"sim_time": snappedf(sim_time, 0.01),
+					"player_world": [snappedf(player.global_position.x, 0.01), snappedf(player.global_position.y, 0.01), snappedf(player.global_position.z, 0.01)],
+					"boss_world": [snappedf(boss.global_position.x, 0.01), snappedf(boss.global_position.y, 0.01), snappedf(boss.global_position.z, 0.01)],
+					"player_screen_px": [snappedf(p_scr.x, 0.1), snappedf(p_scr.y, 0.1)],
+					"boss_screen_px": [snappedf(b_scr.x, 0.1), snappedf(b_scr.y, 0.1)],
+					"camera_x": snappedf(camera.global_position.x, 0.01),
+					"camera_fov": snappedf(camera.fov, 0.1),
+					"both_actors_on_screen": p_on and b_on
+				})
 
 
 # -----------------------------------------------------------------------------
@@ -719,6 +786,7 @@ func _finalize_e2e_results() -> void:
 	telemetry["max_boss_y_during_boss"] = snappedf(max_boss_y_during_boss, 0.02)
 	telemetry["min_time_scale_seen"] = snappedf(min_time_scale_seen, 0.01)
 	telemetry["max_time_scale_seen"] = snappedf(max_time_scale_seen, 0.01)
+	telemetry["boss_visibility_metrics"] = boss_visibility_metrics
 
 	print("=================================================================")
 	print(">>> [V3-021-R1 NATURAL E2E] HONEST AUDIT SUMMARY <<<")
@@ -738,6 +806,17 @@ func _finalize_e2e_results() -> void:
 	print("  - Attacks Performed: %d" % telemetry["attacks_performed"])
 	print("  - Boss Patterns Observed Naturally: %s" % JSON.stringify(telemetry["boss_patterns_observed"]))
 	print("  - Direct State Mutations: %d (Zero Cheats: %s)" % [telemetry["direct_state_mutations_performed"], str(telemetry["zero_cheats_audit_passed"])])
+	print("-----------------------------------------------------------------")
+	print(">>> [V3-024-R1] BOSS FIGHT SCREEN VISIBILITY VERIFICATION <<<")
+	var total_b_frames: int = boss_visibility_metrics["total_boss_fight_frames"]
+	var on_scr_frames: int = boss_visibility_metrics["both_on_screen_frames"]
+	var pct: float = (float(on_scr_frames) / float(maxi(1, total_b_frames))) * 100.0
+	print("  - Dual Camera Tracking Active: %s (FOV: %.1f° ~ %.1f°)" % [str(boss_visibility_metrics["dual_camera_active"]), boss_visibility_metrics["camera_fov_min"], boss_visibility_metrics["camera_fov_max"]])
+	print("  - Total Boss Duel Physics Frames: %d" % total_b_frames)
+	print("  - Frames Both Combatants On-Screen: %d (%.2f%%)" % [on_scr_frames, pct])
+	print("  - Player Screen Range: X=[%.1f, %.1f]px, Y=[%.1f, %.1f]px" % [boss_visibility_metrics["player_screen_x_min"], boss_visibility_metrics["player_screen_x_max"], boss_visibility_metrics["player_screen_y_min"], boss_visibility_metrics["player_screen_y_max"]])
+	print("  - Boss Screen Range: X=[%.1f, %.1f]px, Y=[%.1f, %.1f]px" % [boss_visibility_metrics["boss_screen_x_min"], boss_visibility_metrics["boss_screen_x_max"], boss_visibility_metrics["boss_screen_y_min"], boss_visibility_metrics["boss_screen_y_max"]])
+	print("  - Zero Off-Screen Incidents Verified: %s" % str(boss_visibility_metrics["all_frames_verified_on_screen"]))
 	print("=================================================================")
 
 	# Save results to JSON
@@ -747,6 +826,14 @@ func _finalize_e2e_results() -> void:
 		file.store_string(JSON.stringify(telemetry, "\t"))
 		file.close()
 		print("[V3-021-R1] Results saved to ", json_path)
+
+	# Save Camera Visibility Trace for V3-024-R1 evidence
+	var vis_path := "res://test_boss_visibility_trace.json"
+	var vfile := FileAccess.open(vis_path, FileAccess.WRITE)
+	if vfile != null:
+		vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
+		vfile.close()
+		print("[V3-024-R1] Visibility trace saved to ", vis_path)
 
 	var exit_code: int = 0 if telemetry["stage_cleared_naturally"] else 1
 	if is_baseline_attack_only:

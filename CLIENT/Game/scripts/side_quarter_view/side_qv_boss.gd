@@ -44,6 +44,12 @@ var frontal_hit_reset_timer: float = 0.0
 @export var charge_speed: float = 12.0
 @export var charge_damage: int = 2
 
+# Arena Boundaries (Sanctuary Duel Containment)
+@export var arena_min_x: float = 69.2
+@export var arena_max_x: float = 85.8
+@export var arena_min_z: float = -2.6
+@export var arena_max_z: float = 2.6
+
 const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 
 var current_phase: int = 1
@@ -245,16 +251,8 @@ func _physics_process(delta: float) -> void:
 	if dir_x != 0.0:
 		facing_dir_x = dir_x
 		attack_area_3d.position.x = 1.2 * facing_dir_x
-
-	if absf(diff.x) >= absf(diff.z) * 1.15:
-		current_facing_dir = FacingDir.SIDE_RIGHT if diff.x > 0.0 else FacingDir.SIDE_LEFT
-		sprite_3d.flip_h = (facing_dir_x < 0.0)
-	elif diff.z > 0.0:
-		current_facing_dir = FacingDir.FRONT_SOUTH
-		sprite_3d.flip_h = false
-	else:
-		current_facing_dir = FacingDir.BACK_NORTH
-		sprite_3d.flip_h = false
+	current_facing_dir = FacingDir.SIDE_RIGHT if facing_dir_x > 0.0 else FacingDir.SIDE_LEFT
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
 
 	pattern_timer -= delta
 
@@ -266,11 +264,27 @@ func _physics_process(delta: float) -> void:
 				_pick_next_pattern(dist)
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
-				var boss_combat_distance := 1.72 # Reach of heavy boss blade; halt to avoid overlapping
-				if dist > boss_combat_distance:
+				var boss_combat_distance := 1.72 # Reach of heavy boss blade
+				var player_is_cornered: bool = (target_player.global_position.x <= arena_min_x + 1.8 or target_player.global_position.x >= arena_max_x - 1.8)
+				var boss_near_wall: bool = (global_position.x <= arena_min_x + 1.2 or global_position.x >= arena_max_x - 1.2)
+
+				if player_is_cornered:
+					boss_combat_distance = 2.35
+
+				if boss_near_wall:
+					# Step away from corner towards sanctuary center
+					var center_x: float = (arena_min_x + arena_max_x) * 0.5
+					var step_dir_x: float = signf(center_x - global_position.x)
+					velocity.x = step_dir_x * spd * 0.8
+					velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+				elif dist > boss_combat_distance:
 					var chase_dir := diff.normalized()
 					velocity.x = chase_dir.x * spd
-					velocity.z = chase_dir.z * (spd * 0.75)
+					if player_is_cornered and absf(diff.z) < 1.0:
+						var z_yield: float = -1.0 if target_player.global_position.z > 0.0 else 1.0
+						velocity.z = z_yield * (spd * 0.65)
+					else:
+						velocity.z = chase_dir.z * (spd * 0.75)
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
@@ -295,12 +309,18 @@ func _physics_process(delta: float) -> void:
 			is_frontal_shield_up = false
 			velocity.x = facing_dir_x * (charge_speed if pattern_timer > 0.22 else 2.0)
 			velocity.z = 0.0
-			# Stop charge upon contact with player
-			if dist <= 1.45 and pattern_timer > 0.22:
+
+			# Anti-Corner Trapping: Wall impact interruption & rebound
+			var at_left_wall: bool = (global_position.x <= arena_min_x + 0.35 and facing_dir_x < 0.0)
+			var at_right_wall: bool = (global_position.x >= arena_max_x - 0.35 and facing_dir_x > 0.0)
+			if (is_on_wall() or at_left_wall or at_right_wall) and pattern_timer > 0.15:
+				_execute_charge_wall_impact()
+			elif dist <= 1.45 and pattern_timer > 0.22:
+				# Stop charge upon contact with player
 				if first_damage_at == 0.0:
 					first_damage_at = Time.get_ticks_msec() / 1000.0
 				_execute_charge_impact()
-			if pattern_timer <= 0.0:
+			elif pattern_timer <= 0.0:
 				sprite_3d.texture = BossTextureNormal
 				attack_area_3d.monitoring = false
 				current_pattern = Pattern.CHASE
@@ -322,7 +342,15 @@ func _physics_process(delta: float) -> void:
 				pattern_timer = 0.60
 
 	move_and_slide()
+	_clamp_arena_bounds()
 	_update_boss_animation(delta)
+
+
+func _clamp_arena_bounds() -> void:
+	global_position.x = clampf(global_position.x, arena_min_x, arena_max_x)
+	global_position.z = clampf(global_position.z, arena_min_z, arena_max_z)
+	if global_position.y < 0.0:
+		global_position.y = 0.0
 
 
 func _prevent_player_pushing() -> void:
@@ -330,12 +358,16 @@ func _prevent_player_pushing() -> void:
 		var diff := target_player.global_position - global_position
 		diff.y = 0.0
 		var dist := diff.length()
-		var min_dist: float = 1.45
+		var min_dist: float = 1.55
 		if dist < min_dist and dist > 0.001:
 			var dir := diff / dist
 			var forward_speed := velocity.dot(dir)
 			if forward_speed > 0.0:
 				velocity -= dir * forward_speed
+			# Anti-corner wedging: push boss back if player is cornered near boundary wall
+			var player_near_wall := (target_player.global_position.x <= arena_min_x + 1.2 or target_player.global_position.x >= arena_max_x - 1.2)
+			if player_near_wall:
+				velocity -= dir * 2.5
 
 
 func _execute_charge_impact() -> void:
@@ -350,36 +382,28 @@ func _execute_charge_impact() -> void:
 			target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
 
 
+func _execute_charge_wall_impact() -> void:
+	attack_area_3d.monitoring = false
+	sprite_3d.texture = BossTextureNormal
+	current_pattern = Pattern.CHASE
+	pattern_phase = "RECOVERY"
+	pattern_timer = 0.65
+	# Wall impact crash: bounce back towards arena center
+	var rebound_dir: float = -facing_dir_x
+	velocity.x = rebound_dir * 3.2
+	velocity.z = 0.0
+	_spawn_boss_shield_sparks()
+	var p := get_parent()
+	if p != null:
+		GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.3, 0.0), "WALL CRASH!", Color(1.2, 0.6, 0.2), true)
+		if "camera" in p and p.camera != null and is_instance_valid(p.camera):
+			p.camera.add_trauma(0.25)
+
+
 func _update_boss_animation(delta: float) -> void:
 	anim_frame_timer += delta
 
-	var is_directional: bool = (current_facing_dir == FacingDir.FRONT_SOUTH or current_facing_dir == FacingDir.BACK_NORTH)
-
-	if is_directional:
-		if sprite_3d.texture != BossTextureDirectional:
-			sprite_3d.texture = BossTextureDirectional
-			sprite_3d.hframes = 3
-			sprite_3d.vframes = 2
-			sprite_3d.pixel_size = 0.0082
-		sprite_3d.flip_h = false
-
-		var base_offset: int = 0 if current_facing_dir == FacingDir.FRONT_SOUTH else 3
-		var frame: int = base_offset
-		match current_pattern:
-			Pattern.IDLE, Pattern.CHASE:
-				frame = base_offset + (int(anim_frame_timer * 4.0) % 2)
-			Pattern.CHARGE_WINDUP, Pattern.CHARGE_ACTIVE, Pattern.SHIELD_CHARGE:
-				frame = base_offset + 2
-			Pattern.TRIPLE_CLEAVE, Pattern.QUAKE_RING:
-				frame = base_offset + 1
-			Pattern.STUNNED:
-				frame = base_offset + 0
-			_:
-				frame = base_offset
-		sprite_3d.frame = frame
-		return
-
-	# Side-facing 4x3 Boss Sheets
+	# Classic Side-Facing 4x3 Boss Sheets (Natural 2.5D Belt-Scroll Presentation)
 	if sprite_3d.hframes != 4 or sprite_3d.vframes != 3:
 		sprite_3d.hframes = 4
 		sprite_3d.vframes = 3

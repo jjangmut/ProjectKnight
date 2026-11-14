@@ -267,7 +267,7 @@ func _build_components() -> void:
 	shadow_mesh.material_override = sh_mat
 	add_child(shadow_mesh)
 
-	# 4.2 Hero Ground Locator Ring & 3D Aim Direction Arrow (Distinguishes Hero vs Enemies/Boss & shows 8-way aim)
+	# 4.2 Hero Ground Locator Ring & Aim Indicator (Disabled per user direction: rely on clean character silhouettes)
 	hero_locator_ring_3d = MeshInstance3D.new()
 	hero_locator_ring_3d.name = "HeroLocatorRing3D"
 	var l_torus := TorusMesh.new()
@@ -283,6 +283,7 @@ func _build_components() -> void:
 	l_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	l_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	hero_locator_ring_3d.material_override = l_mat
+	hero_locator_ring_3d.visible = false
 	add_child(hero_locator_ring_3d)
 
 	hero_aim_arrow_3d = MeshInstance3D.new()
@@ -300,6 +301,7 @@ func _build_components() -> void:
 	a_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	a_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	hero_aim_arrow_3d.material_override = a_mat
+	hero_aim_arrow_3d.visible = false
 	hero_locator_ring_3d.add_child(hero_aim_arrow_3d)
 
 	# 5. Attack Hitbox Area3D (Keep monitoring active so overlaps are always fresh!)
@@ -388,16 +390,9 @@ func _physics_process(delta: float) -> void:
 func _update_depth_sorting_and_locator() -> void:
 	if sprite_3d != null:
 		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
-		# V3-024: Character has true authored 4-direction sprites, so pitch tilt is no longer needed
 		sprite_3d.rotation_degrees.x = 0.0
 	if hero_locator_ring_3d != null and is_instance_valid(hero_locator_ring_3d):
-		hero_locator_ring_3d.global_position = Vector3(global_position.x, 0.025, global_position.z)
-		var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
-		var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
-		hero_locator_ring_3d.rotation_degrees.y = angle_y
-		# V3-024: Subtle directional indicator (not distracting)
-		hero_locator_ring_3d.visible = true
-		hero_locator_ring_3d.rotation_degrees.y = angle_y
+		hero_locator_ring_3d.visible = false
 
 
 func enter_victory_pose() -> void:
@@ -521,15 +516,8 @@ func _process_movement(delta: float) -> void:
 
 		if absf(input_x) > 0.05:
 			facing_dir_x = signf(input_x)
-		facing_attack_dir = Vector3(input_vec.x, 0.0, input_vec.y).normalized()
-
-		# Determine 4-way facing direction with directional hysteresis
-		if absf(input_vec.x) >= absf(input_vec.y) * 1.05:
-			current_facing_dir = FacingDir.SIDE_RIGHT if input_vec.x > 0.0 else FacingDir.SIDE_LEFT
-		elif input_vec.y > 0.0:
-			current_facing_dir = FacingDir.FRONT_SOUTH
-		else:
-			current_facing_dir = FacingDir.BACK_NORTH
+		current_facing_dir = FacingDir.SIDE_RIGHT if facing_dir_x > 0.0 else FacingDir.SIDE_LEFT
+		facing_attack_dir = Vector3(facing_dir_x, 0.0, input_vec.y * 0.40).normalized()
 
 		_align_combat_orientations()
 		move_direction = facing_attack_dir
@@ -789,19 +777,12 @@ func start_attack() -> void:
 			AudioManager.play("player_slash_3")
 
 	# Symmetric Aligned 2D Attack Animation (Starts at windup frame 0)
-	var target_atk_tex: Texture2D = TexAttack
-	match current_facing_dir:
-		FacingDir.FRONT_SOUTH:
-			target_atk_tex = TexFrontAttack
-		FacingDir.BACK_NORTH:
-			target_atk_tex = TexBackAttack
-		_:
-			target_atk_tex = TexAttack
-	sprite_3d.texture = target_atk_tex
+	sprite_3d.texture = TexAttack
 	sprite_3d.hframes = 2
 	sprite_3d.vframes = 2
 	sprite_3d.pixel_size = 0.00282
 	sprite_3d.frame = 0
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
 
 	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
 	attack_area_3d.position = atk_dir * 1.15 + Vector3(0.0, 0.85, 0.0)
@@ -1435,14 +1416,8 @@ func _process_hurt_state(delta: float) -> void:
 func _update_character_animation(delta: float) -> void:
 	anim_timer += delta
 
-	# Head-on mutual facing alignment for side views
-	if current_facing_dir == FacingDir.SIDE_LEFT:
-		sprite_3d.flip_h = true
-	elif current_facing_dir == FacingDir.SIDE_RIGHT:
-		sprite_3d.flip_h = false
-	else:
-		# Front/Back views have authentic non-mirrored silhouettes
-		sprite_3d.flip_h = false
+	# Head-on mutual facing alignment for side views (Natural 2.5D belt-scrolling)
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
 
 	# 0. Dead State
 	if is_dead or current_state == State.DEAD:
@@ -1489,19 +1464,10 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.frame = 2 # Descent
 		return
 
-	# 2. Attack Action (Direction-Aware multi-frame sequence across attack duration: 0 -> 1 -> 2 -> 3)
+	# 2. Attack Action (Multi-frame sequence across attack duration: 0 -> 1 -> 2 -> 3)
 	if is_attacking:
-		var target_atk_tex: Texture2D = TexAttack
-		match current_facing_dir:
-			FacingDir.FRONT_SOUTH:
-				target_atk_tex = TexFrontAttack
-			FacingDir.BACK_NORTH:
-				target_atk_tex = TexBackAttack
-			_:
-				target_atk_tex = TexAttack
-
-		if sprite_3d.texture != target_atk_tex:
-			sprite_3d.texture = target_atk_tex
+		if sprite_3d.texture != TexAttack:
+			sprite_3d.texture = TexAttack
 			sprite_3d.hframes = 2
 			sprite_3d.vframes = 2
 			sprite_3d.pixel_size = 0.00282
@@ -1545,67 +1511,23 @@ func _update_character_animation(delta: float) -> void:
 		sprite_3d.frame = 1
 		return
 
-	# 6. Run / Sprint Action (Direction-Aware)
+	# 6. Run / Sprint Action (Classic 2.5D Belt-Scroll Side View)
 	if current_state == State.MOVE and is_on_floor():
-		var target_move_tex: Texture2D = TexRun
-		var move_hframes: int = 3
-		var move_vframes: int = 2
-		var max_frames: int = 6
-
-		match current_facing_dir:
-			FacingDir.FRONT_SOUTH:
-				target_move_tex = TexFrontWalk
-				move_hframes = 2
-				move_vframes = 2
-				max_frames = 4
-			FacingDir.BACK_NORTH:
-				target_move_tex = TexBackWalk
-				move_hframes = 2
-				move_vframes = 2
-				max_frames = 4
-			_:
-				target_move_tex = TexRun
-				move_hframes = 3
-				move_vframes = 2
-				max_frames = 6
-
-		if sprite_3d.texture != target_move_tex:
-			sprite_3d.texture = target_move_tex
-			sprite_3d.hframes = move_hframes
-			sprite_3d.vframes = move_vframes
+		if sprite_3d.texture != TexRun:
+			sprite_3d.texture = TexRun
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 2
 			sprite_3d.pixel_size = 0.00282
-		sprite_3d.frame = int(anim_timer * 10.0) % max_frames
+		sprite_3d.frame = int(anim_timer * 10.0) % 6
 		return
 
-	# 7. Idle Stance (Direction-Aware)
-	var target_idle_tex: Texture2D = TexIdle
-	var idle_hframes: int = 2
-	var idle_vframes: int = 2
-	var idle_max_frames: int = 4
-
-	match current_facing_dir:
-		FacingDir.FRONT_SOUTH:
-			target_idle_tex = TexFrontWalk
-			idle_hframes = 2
-			idle_vframes = 2
-			idle_max_frames = 2 # Use frame 0 and 1 for front idle breathing
-		FacingDir.BACK_NORTH:
-			target_idle_tex = TexBackWalk
-			idle_hframes = 2
-			idle_vframes = 2
-			idle_max_frames = 2 # Use frame 0 and 1 for back idle breathing
-		_:
-			target_idle_tex = TexIdle
-			idle_hframes = 2
-			idle_vframes = 2
-			idle_max_frames = 4
-
-	if sprite_3d.texture != target_idle_tex:
-		sprite_3d.texture = target_idle_tex
-		sprite_3d.hframes = idle_hframes
-		sprite_3d.vframes = idle_vframes
+	# 7. Idle Stance (Classic 2.5D Belt-Scroll Side View)
+	if sprite_3d.texture != TexIdle:
+		sprite_3d.texture = TexIdle
+		sprite_3d.hframes = 2
+		sprite_3d.vframes = 2
 		sprite_3d.pixel_size = 0.00282
-	sprite_3d.frame = int(anim_timer * 4.0) % idle_max_frames
+	sprite_3d.frame = int(anim_timer * 4.0) % 4
 
 
 func _set_state(new_state: State) -> void:

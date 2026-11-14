@@ -10,8 +10,8 @@ const PlayerScene = preload("res://scripts/side_quarter_view/side_qv_player.gd")
 const MeleeEnemyScene = preload("res://scripts/side_quarter_view/side_qv_enemy.gd")
 const BossScene = preload("res://scripts/side_quarter_view/side_qv_boss.gd")
 
-const CAPTURES_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/"
-const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/"
+const CAPTURES_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024-R1/STUDIO_V3/evidence/V3-024-R1/captures/"
+const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024-R1/STUDIO_V3/evidence/V3-024-R1/"
 
 var world_root: Node3D = null
 var camera: Camera3D = null
@@ -160,10 +160,10 @@ func _test_hero_4way_idle() -> Dictionary:
 	camera.rotation_degrees = Vector3(-24.0, 0.0, 0.0)
 
 	var dirs = [
-		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "flip": true},
-		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "flip": false},
-		{"name": "South (Front +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.FRONT_SOUTH, "flip": false},
-		{"name": "North (Back -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.BACK_NORTH, "flip": false}
+		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0},
+		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0},
+		{"name": "South (Down +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0},
+		{"name": "North (Up -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0}
 	]
 
 	for d in dirs:
@@ -171,6 +171,7 @@ func _test_hero_4way_idle() -> Dictionary:
 		hero.name = "Char_HeroIdle_" + d["name"]
 		world_root.add_child(hero)
 		hero.global_position = Vector3(d["x"], 0.0, 0.0)
+		hero.facing_dir_x = d["facing_x"]
 		hero.current_facing_dir = d["facing"]
 
 	for i in range(3):
@@ -200,10 +201,10 @@ func _test_hero_4way_move() -> Dictionary:
 	camera.position = Vector3(0.0, 3.8, 6.5)
 
 	var dirs = [
-		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "move": Vector3(-1, 0, 0)},
-		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "move": Vector3(1, 0, 0)},
-		{"name": "South (Front +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.FRONT_SOUTH, "move": Vector3(0, 0, 1)},
-		{"name": "North (Back -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.BACK_NORTH, "move": Vector3(0, 0, -1)}
+		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "move": Vector3(-1, 0, 0)},
+		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "move": Vector3(1, 0, 0)},
+		{"name": "South (Down +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "move": Vector3(0, 0, 1)},
+		{"name": "North (Up -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "move": Vector3(0, 0, -1)}
 	]
 
 	for d in dirs:
@@ -211,6 +212,7 @@ func _test_hero_4way_move() -> Dictionary:
 		hero.name = "Char_HeroMove_" + d["name"]
 		world_root.add_child(hero)
 		hero.global_position = Vector3(d["x"], 0.0, 0.0)
+		hero.facing_dir_x = d["facing_x"]
 		hero.current_facing_dir = d["facing"]
 		hero.facing_attack_dir = d["move"]
 		hero.move_direction = d["move"]
@@ -242,10 +244,10 @@ func _test_hero_4way_attack(frame_sync_out: Array[Dictionary]) -> Dictionary:
 	camera.position = Vector3(0.0, 3.8, 6.5)
 
 	var dirs = [
-		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "vec": Vector3(-1, 0, 0)},
-		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "vec": Vector3(1, 0, 0)},
-		{"name": "South (Front +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.FRONT_SOUTH, "vec": Vector3(0, 0, 1)},
-		{"name": "North (Back -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.BACK_NORTH, "vec": Vector3(0, 0, -1)}
+		{"name": "West (Left)", "x": -3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "vec": Vector3(-1, 0, 0)},
+		{"name": "East (Right)", "x": -1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "vec": Vector3(1, 0, 0)},
+		{"name": "South (Down +Z)", "x": 1.1, "facing": PlayerScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "vec": Vector3(1, 0, 0.4)},
+		{"name": "North (Up -Z)", "x": 3.3, "facing": PlayerScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "vec": Vector3(-1, 0, -0.4)}
 	]
 
 	var details: Array[Dictionary] = []
@@ -254,6 +256,7 @@ func _test_hero_4way_attack(frame_sync_out: Array[Dictionary]) -> Dictionary:
 		hero.name = "Char_HeroAtk_" + d["name"]
 		world_root.add_child(hero)
 		hero.global_position = Vector3(d["x"], 0.0, 0.0)
+		hero.facing_dir_x = d["facing_x"]
 		hero.current_facing_dir = d["facing"]
 		hero.facing_attack_dir = d["vec"]
 		hero.start_attack()
@@ -286,10 +289,10 @@ func _test_enemy_4way() -> Dictionary:
 	camera.position = Vector3(0.0, 3.8, 6.5)
 
 	var dirs = [
-		{"name": "West (Left)", "x": -3.3, "facing": MeleeEnemyScene.FacingDir.SIDE_LEFT, "atk": false},
-		{"name": "East (Right)", "x": -1.1, "facing": MeleeEnemyScene.FacingDir.SIDE_RIGHT, "atk": false},
-		{"name": "South (Front +Z)", "x": 1.1, "facing": MeleeEnemyScene.FacingDir.FRONT_SOUTH, "atk": true},
-		{"name": "North (Back -Z)", "x": 3.3, "facing": MeleeEnemyScene.FacingDir.BACK_NORTH, "atk": true}
+		{"name": "West (Left Walk)", "x": -3.3, "facing": MeleeEnemyScene.FacingDir.SIDE_LEFT, "atk": false},
+		{"name": "East (Right Walk)", "x": -1.1, "facing": MeleeEnemyScene.FacingDir.SIDE_RIGHT, "atk": false},
+		{"name": "South (Left Slash)", "x": 1.1, "facing": MeleeEnemyScene.FacingDir.SIDE_LEFT, "atk": true},
+		{"name": "North (Right Slash)", "x": 3.3, "facing": MeleeEnemyScene.FacingDir.SIDE_RIGHT, "atk": true}
 	]
 
 	var details: Array[Dictionary] = []
@@ -324,10 +327,10 @@ func _test_boss_4way() -> Dictionary:
 	camera.position = Vector3(0.0, 4.2, 7.8)
 
 	var dirs = [
-		{"name": "West (Left Cleave)", "x": -3.6, "facing": BossScene.FacingDir.SIDE_LEFT, "pattern": BossScene.Pattern.TRIPLE_CLEAVE},
-		{"name": "East (Right Charge)", "x": -1.2, "facing": BossScene.FacingDir.SIDE_RIGHT, "pattern": BossScene.Pattern.SHIELD_CHARGE},
-		{"name": "South (Front Stomp)", "x": 1.2, "facing": BossScene.FacingDir.FRONT_SOUTH, "pattern": BossScene.Pattern.QUAKE_RING},
-		{"name": "North (Back Charge)", "x": 3.6, "facing": BossScene.FacingDir.BACK_NORTH, "pattern": BossScene.Pattern.SHIELD_CHARGE}
+		{"name": "West (Left Cleave)", "x": -3.6, "facing": BossScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "pattern": BossScene.Pattern.TRIPLE_CLEAVE},
+		{"name": "East (Right Charge)", "x": -1.2, "facing": BossScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "pattern": BossScene.Pattern.SHIELD_CHARGE},
+		{"name": "South (Left Slam)", "x": 1.2, "facing": BossScene.FacingDir.SIDE_LEFT, "facing_x": -1.0, "pattern": BossScene.Pattern.QUAKE_RING},
+		{"name": "North (Right Guard)", "x": 3.6, "facing": BossScene.FacingDir.SIDE_RIGHT, "facing_x": 1.0, "pattern": BossScene.Pattern.CHARGE_WINDUP}
 	]
 
 	var details: Array[Dictionary] = []
@@ -336,6 +339,7 @@ func _test_boss_4way() -> Dictionary:
 		boss.name = "Char_Boss_" + d["name"]
 		world_root.add_child(boss)
 		boss.global_position = Vector3(d["x"], 0.0, 0.0)
+		boss.facing_dir_x = d["facing_x"]
 		boss.current_facing_dir = d["facing"]
 		boss.current_pattern = d["pattern"]
 		boss._update_boss_animation(0.10)

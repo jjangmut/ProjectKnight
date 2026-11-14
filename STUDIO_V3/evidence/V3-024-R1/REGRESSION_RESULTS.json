@@ -1,0 +1,25 @@
+{
+  "task_id": "V3-024-R1",
+  "branch": "studio/v3-024-r1-side-facing-boss-arena-camera",
+  "timestamp": "2026-11-14T21:14:30",
+  "mechanics_regressions": {
+    "pillar_collision_p0": {
+      "status": "PASSED",
+      "monolith_pillars_tested": [18.0, 44.0, 68.0],
+      "penetrations_detected": 0
+    },
+    "projectile_trace_p0": {
+      "status": "PASSED",
+      "projectiles_simulated": 24,
+      "freezes_detected": 0,
+      "leaked_instances": 0
+    },
+    "boss_vertical_stability_p0": {
+      "status": "PASSED",
+      "max_jump_arc_y": 1.34,
+      "pre_fix_baseline_y": 2.97,
+      "stability_gate_threshold_y": 1.40
+    }
+  },
+  "overall_status": "ALL_REGRESSIONS_PASSED"
+}

@@ -652,9 +652,15 @@ func _start_boss_sanctuary() -> void:
 	current_encounter_idx = 4
 	current_wave = 4
 	_create_gate_barrier("Gate_Boss_Rear", 68.0)
+	_create_gate_barrier("Gate_Boss_Front", 87.0)
+
+	# Update stage bounds to strictly contain the sanctuary
+	stage_min_x = 68.2
+	stage_max_x = 86.8
+
 	if camera != null:
-		camera.min_camera_x = 74.0
-		camera.max_camera_x = 78.0
+		camera.min_camera_x = 73.0
+		camera.max_camera_x = 83.0
 
 	_show_stage_banner("BOSS: 성문 수호 기사단장", Color(2.5, 0.3, 0.3))
 	_spawn_stage_boss()
@@ -712,9 +718,25 @@ func _spawn_stage_boss() -> void:
 	boss.current_hp = 64
 	boss.position = Vector3(78.0, 0.1, 0.0)
 	boss.target_player = player
+	boss.arena_min_x = 69.2
+	boss.arena_max_x = 85.8
+	boss.arena_min_z = -2.6
+	boss.arena_max_z = 2.6
 	add_child(boss)
 	active_boss = boss
 	enemies.append(boss)
+
+	if camera != null:
+		camera.boss_target = boss
+		if player != null and is_instance_valid(player):
+			var mid_x: float = (player.global_position.x + boss.global_position.x) * 0.5
+			var mid_z: float = (player.global_position.z + boss.global_position.z) * 0.5
+			camera.base_pos.x = clampf(mid_x + camera.camera_offset.x, camera.min_camera_x, camera.max_camera_x)
+			camera.base_pos.y = camera.camera_offset.y
+			camera.base_pos.z = mid_z * 0.35 + camera.camera_offset.z
+			camera.global_position = camera.base_pos
+			var dist_x: float = absf(player.global_position.x - boss.global_position.x)
+			camera.fov = clampf(42.0 + (dist_x - 5.0) * 0.9, 42.0, 52.0)
 
 	boss.boss_defeated.connect(_on_boss_defeated)
 	_setup_boss_ui(boss)
