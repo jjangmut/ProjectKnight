@@ -1,0 +1,722 @@
+{
+	"branch": "studio/v3-024-r2-boss-depth-escape-agency",
+	"frame_displacement_metrics": {
+		"displacement_rate_pct": 100.0,
+		"displacing_frames": 240,
+		"stuck_frames": 0,
+		"total_input_frames_tested": 240
+	},
+	"overall_pass": true,
+	"scenarios": {
+		"attack_recovery_drift": {
+			"description": "Player can drift move during late attack recovery",
+			"displacement_x": 1.94,
+			"end_x": 76.94,
+			"start_x": 75.0,
+			"status": "PASSED"
+		},
+		"corner_1_top_left": {
+			"description": "Corner escape agency and unstick",
+			"escape_frame": 30,
+			"escape_time_seconds": 0.5,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						72.26,
+						-1.74
+					],
+					"dist_to_boss": 2.24,
+					"frame": 0,
+					"player_pos": [
+						70.1,
+						0.09,
+						-2.34
+					],
+					"player_vel": [
+						5.94,
+						-0.3,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						72.99,
+						-1.01
+					],
+					"dist_to_boss": 2.05,
+					"frame": 10,
+					"player_pos": [
+						71.09,
+						0.0,
+						-1.78
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						73.82,
+						-0.18
+					],
+					"dist_to_boss": 2.03,
+					"frame": 20,
+					"player_pos": [
+						72.08,
+						0.0,
+						-1.21
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						74.24,
+						0.0
+					],
+					"dist_to_boss": 1.33,
+					"frame": 30,
+					"player_pos": [
+						73.07,
+						0.0,
+						-0.65
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						3.39
+					]
+				}
+			],
+			"start_boss": [
+				72.1999969482422,
+				-1.79999995231628
+			],
+			"start_player": [
+				70.0,
+				-2.40000009536743
+			],
+			"status": "PASSED"
+		},
+		"corner_2_top_right": {
+			"description": "Corner escape agency and unstick",
+			"escape_frame": 30,
+			"escape_time_seconds": 0.5,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						82.74,
+						-1.74
+					],
+					"dist_to_boss": 2.24,
+					"frame": 0,
+					"player_pos": [
+						84.9,
+						0.09,
+						-2.34
+					],
+					"player_vel": [
+						-5.94,
+						-0.3,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						82.01,
+						-1.01
+					],
+					"dist_to_boss": 2.05,
+					"frame": 10,
+					"player_pos": [
+						83.91,
+						0.0,
+						-1.78
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						81.18,
+						-0.18
+					],
+					"dist_to_boss": 2.03,
+					"frame": 20,
+					"player_pos": [
+						82.92,
+						0.0,
+						-1.21
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						3.39
+					]
+				},
+				{
+					"boss_pos": [
+						80.76,
+						0.0
+					],
+					"dist_to_boss": 1.33,
+					"frame": 30,
+					"player_pos": [
+						81.93,
+						0.0,
+						-0.65
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						3.39
+					]
+				}
+			],
+			"start_boss": [
+				82.8000030517578,
+				-1.79999995231628
+			],
+			"start_player": [
+				85.0,
+				-2.40000009536743
+			],
+			"status": "PASSED"
+		},
+		"corner_3_bottom_left": {
+			"description": "Corner escape agency and unstick",
+			"escape_frame": 30,
+			"escape_time_seconds": 0.5,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						72.26,
+						1.74
+					],
+					"dist_to_boss": 2.24,
+					"frame": 0,
+					"player_pos": [
+						70.1,
+						0.09,
+						2.34
+					],
+					"player_vel": [
+						5.94,
+						-0.3,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						72.99,
+						1.01
+					],
+					"dist_to_boss": 2.05,
+					"frame": 10,
+					"player_pos": [
+						71.09,
+						0.0,
+						1.78
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						73.82,
+						0.18
+					],
+					"dist_to_boss": 2.03,
+					"frame": 20,
+					"player_pos": [
+						72.08,
+						0.0,
+						1.21
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						74.24,
+						0.0
+					],
+					"dist_to_boss": 1.33,
+					"frame": 30,
+					"player_pos": [
+						73.07,
+						0.0,
+						0.65
+					],
+					"player_vel": [
+						5.94,
+						0.0,
+						-3.39
+					]
+				}
+			],
+			"start_boss": [
+				72.1999969482422,
+				1.79999995231628
+			],
+			"start_player": [
+				70.0,
+				2.40000009536743
+			],
+			"status": "PASSED"
+		},
+		"corner_4_bottom_right": {
+			"description": "Corner escape agency and unstick",
+			"escape_frame": 30,
+			"escape_time_seconds": 0.5,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						82.74,
+						1.74
+					],
+					"dist_to_boss": 2.24,
+					"frame": 0,
+					"player_pos": [
+						84.9,
+						0.09,
+						2.34
+					],
+					"player_vel": [
+						-5.94,
+						-0.3,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						82.01,
+						1.01
+					],
+					"dist_to_boss": 2.05,
+					"frame": 10,
+					"player_pos": [
+						83.91,
+						0.0,
+						1.78
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						81.18,
+						0.18
+					],
+					"dist_to_boss": 2.03,
+					"frame": 20,
+					"player_pos": [
+						82.92,
+						0.0,
+						1.21
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						-3.39
+					]
+				},
+				{
+					"boss_pos": [
+						80.76,
+						0.0
+					],
+					"dist_to_boss": 1.33,
+					"frame": 30,
+					"player_pos": [
+						81.93,
+						0.0,
+						0.65
+					],
+					"player_vel": [
+						-5.94,
+						0.0,
+						-3.39
+					]
+				}
+			],
+			"start_boss": [
+				82.8000030517578,
+				1.79999995231628
+			],
+			"start_player": [
+				85.0,
+				2.40000009536743
+			],
+			"status": "PASSED"
+		},
+		"dash_phase_through_boss": {
+			"boss_x": 72.0,
+			"crossed_boss_successfully": true,
+			"description": "Player dashes through boss collider without getting blocked",
+			"final_mask_layer_2": true,
+			"initial_mask_layer_2": false,
+			"player_end_x": 75.88,
+			"player_start_x": 70.0,
+			"samples": [
+				{
+					"frame": 0,
+					"mask_layer_2": false,
+					"player_x": 70.27,
+					"state": 2
+				},
+				{
+					"frame": 5,
+					"mask_layer_2": false,
+					"player_x": 71.61,
+					"state": 2
+				},
+				{
+					"frame": 10,
+					"mask_layer_2": false,
+					"player_x": 72.95,
+					"state": 2
+				},
+				{
+					"frame": 15,
+					"mask_layer_2": true,
+					"player_x": 74.26,
+					"state": 0
+				},
+				{
+					"frame": 20,
+					"mask_layer_2": true,
+					"player_x": 75.29,
+					"state": 0
+				},
+				{
+					"frame": 24,
+					"mask_layer_2": true,
+					"player_x": 75.88,
+					"state": 0
+				}
+			],
+			"status": "PASSED"
+		},
+		"depth_rail_bottom_trapped": {
+			"description": "Depth rail unstick and vertical corridor traversal",
+			"escape_frame": 57,
+			"escape_time_seconds": 0.95,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						77.61,
+						1.5
+					],
+					"dist_to_boss": 1.01,
+					"frame": 0,
+					"player_pos": [
+						77.5,
+						0.09,
+						2.5
+					],
+					"player_vel": [
+						0.0,
+						-0.3,
+						2.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.7,
+						0.45
+					],
+					"dist_to_boss": 1.45,
+					"frame": 10,
+					"player_pos": [
+						77.48,
+						0.0,
+						1.88
+					],
+					"player_vel": [
+						0.0,
+						0.0,
+						-4.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.79,
+						-0.1
+					],
+					"dist_to_boss": 1.22,
+					"frame": 20,
+					"player_pos": [
+						77.48,
+						0.0,
+						1.08
+					],
+					"player_vel": [
+						0.0,
+						0.0,
+						-4.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.46,
+						-0.19
+					],
+					"dist_to_boss": 1.16,
+					"frame": 30,
+					"player_pos": [
+						77.33,
+						0.0,
+						0.97
+					],
+					"player_vel": [
+						-0.67,
+						0.0,
+						-0.1
+					]
+				},
+				{
+					"boss_pos": [
+						77.55,
+						-0.18
+					],
+					"dist_to_boss": 1.17,
+					"frame": 40,
+					"player_pos": [
+						77.17,
+						0.0,
+						0.93
+					],
+					"player_vel": [
+						-1.18,
+						0.0,
+						-0.31
+					]
+				},
+				{
+					"boss_pos": [
+						77.54,
+						-0.19
+					],
+					"dist_to_boss": 1.18,
+					"frame": 50,
+					"player_pos": [
+						76.88,
+						0.0,
+						0.8
+					],
+					"player_vel": [
+						-2.17,
+						0.0,
+						-1.36
+					]
+				},
+				{
+					"boss_pos": [
+						77.54,
+						-0.18
+					],
+					"dist_to_boss": 1.2,
+					"frame": 57,
+					"player_pos": [
+						76.61,
+						0.0,
+						0.57
+					],
+					"player_vel": [
+						-2.39,
+						0.0,
+						-2.65
+					]
+				}
+			],
+			"start_boss": [
+				77.5,
+				1.60000002384186
+			],
+			"start_player": [
+				77.5,
+				2.45000004768372
+			],
+			"status": "PASSED"
+		},
+		"depth_rail_top_trapped": {
+			"description": "Depth rail unstick and vertical corridor traversal",
+			"escape_frame": 57,
+			"escape_time_seconds": 0.95,
+			"escaped_to_safe_zone": true,
+			"samples": [
+				{
+					"boss_pos": [
+						77.61,
+						-1.5
+					],
+					"dist_to_boss": 1.01,
+					"frame": 0,
+					"player_pos": [
+						77.5,
+						0.09,
+						-2.5
+					],
+					"player_vel": [
+						0.0,
+						-0.3,
+						-2.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.7,
+						-0.45
+					],
+					"dist_to_boss": 1.45,
+					"frame": 10,
+					"player_pos": [
+						77.48,
+						0.0,
+						-1.88
+					],
+					"player_vel": [
+						0.0,
+						0.0,
+						4.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.79,
+						0.1
+					],
+					"dist_to_boss": 1.22,
+					"frame": 20,
+					"player_pos": [
+						77.48,
+						0.0,
+						-1.08
+					],
+					"player_vel": [
+						0.0,
+						0.0,
+						4.8
+					]
+				},
+				{
+					"boss_pos": [
+						77.46,
+						0.19
+					],
+					"dist_to_boss": 1.16,
+					"frame": 30,
+					"player_pos": [
+						77.33,
+						0.0,
+						-0.97
+					],
+					"player_vel": [
+						-0.67,
+						0.0,
+						0.1
+					]
+				},
+				{
+					"boss_pos": [
+						77.55,
+						0.18
+					],
+					"dist_to_boss": 1.17,
+					"frame": 40,
+					"player_pos": [
+						77.17,
+						0.0,
+						-0.93
+					],
+					"player_vel": [
+						-1.18,
+						0.0,
+						0.31
+					]
+				},
+				{
+					"boss_pos": [
+						77.54,
+						0.19
+					],
+					"dist_to_boss": 1.18,
+					"frame": 50,
+					"player_pos": [
+						76.88,
+						0.0,
+						-0.8
+					],
+					"player_vel": [
+						-2.17,
+						0.0,
+						1.36
+					]
+				},
+				{
+					"boss_pos": [
+						77.54,
+						0.18
+					],
+					"dist_to_boss": 1.2,
+					"frame": 57,
+					"player_pos": [
+						76.61,
+						0.0,
+						-0.57
+					],
+					"player_vel": [
+						-2.39,
+						0.0,
+						2.65
+					]
+				}
+			],
+			"start_boss": [
+				77.5,
+				-1.60000002384186
+			],
+			"start_player": [
+				77.5,
+				-2.45000004768372
+			],
+			"status": "PASSED"
+		},
+		"guard_walk_mobility": {
+			"description": "Player can walk at 40% speed while keeping guard raised",
+			"displacement_x": 1.74,
+			"end_x": 76.74,
+			"start_x": 75.0,
+			"status": "PASSED"
+		}
+	},
+	"sprite_separation_metrics": {
+		"min_combat_distance_seen": 1.0072203874588,
+		"overlap_incidents_detected": 0
+	},
+	"task_id": "V3-024-R2",
+	"timestamp": "2026-11-15T01:37:03"
+}

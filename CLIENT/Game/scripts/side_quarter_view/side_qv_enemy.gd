@@ -164,7 +164,7 @@ const ATTACK_DURATION: float = 0.52
 
 func _physics_process(delta: float) -> void:
 	if sprite_3d != null and is_instance_valid(sprite_3d):
-		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+		sprite_3d.sorting_offset = clampf(global_position.z * 1.5, -3.0, 3.0)
 
 	if hit_combo_reset_timer > 0.0:
 		hit_combo_reset_timer -= delta

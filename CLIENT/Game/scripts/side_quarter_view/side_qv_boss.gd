@@ -181,7 +181,7 @@ func _build_components() -> void:
 
 func _physics_process(delta: float) -> void:
 	if sprite_3d != null and is_instance_valid(sprite_3d):
-		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+		sprite_3d.sorting_offset = clampf(global_position.z * 1.5, -3.0, 3.0)
 
 	if frontal_hit_reset_timer > 0.0:
 		frontal_hit_reset_timer -= delta
@@ -265,26 +265,94 @@ func _physics_process(delta: float) -> void:
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
 				var boss_combat_distance := 1.72 # Reach of heavy boss blade
-				var player_is_cornered: bool = (target_player.global_position.x <= arena_min_x + 1.8 or target_player.global_position.x >= arena_max_x - 1.8)
-				var boss_near_wall: bool = (global_position.x <= arena_min_x + 1.2 or global_position.x >= arena_max_x - 1.2)
 
-				if player_is_cornered:
-					boss_combat_distance = 2.35
+				# Full 2D (X and Z) Arena Boundary & Corner Detection
+				var p_pos := target_player.global_position
+				var p_dist_left: float = p_pos.x - arena_min_x
+				var p_dist_right: float = arena_max_x - p_pos.x
+				var p_dist_top: float = p_pos.z - arena_min_z     # top depth rail (Z ~ -2.6)
+				var p_dist_bottom: float = arena_max_z - p_pos.z  # bottom depth rail (Z ~ +2.6)
 
-				if boss_near_wall:
-					# Step away from corner towards sanctuary center
-					var center_x: float = (arena_min_x + arena_max_x) * 0.5
+				var player_near_x_wall: bool = (p_dist_left <= 3.2 or p_dist_right <= 3.2)
+				var player_near_z_wall: bool = (p_dist_top <= 1.6 or p_dist_bottom <= 1.6)
+				var player_in_corner: bool = (player_near_x_wall and player_near_z_wall)
+				var player_is_cornered: bool = (player_near_x_wall or player_near_z_wall)
+
+				var boss_dist_left: float = global_position.x - arena_min_x
+				var boss_dist_right: float = arena_max_x - global_position.x
+				var boss_dist_top: float = global_position.z - arena_min_z
+				var boss_dist_bottom: float = arena_max_z - global_position.z
+				var boss_near_wall: bool = (boss_dist_left <= 1.4 or boss_dist_right <= 1.4 or boss_dist_top <= 0.9 or boss_dist_bottom <= 0.9)
+
+				var center_x: float = (arena_min_x + arena_max_x) * 0.5
+
+				if player_in_corner:
+					# Player is trapped in a 2D corner! Standoff expands to 3.2m, boss retreats towards center
+					boss_combat_distance = 3.2
 					var step_dir_x: float = signf(center_x - global_position.x)
-					velocity.x = step_dir_x * spd * 0.8
-					velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+					var step_dir_z: float = signf(0.0 - global_position.z)
+					velocity.x = step_dir_x * spd * 0.90
+					velocity.z = step_dir_z * spd * 0.90
+					_prevent_player_pushing()
+				elif player_near_z_wall:
+					# Player trapped on top/bottom depth rail!
+					boss_combat_distance = 2.65
+					# If boss is directly blocking player's vertical corridor, yield sideways in X consistently:
+					if absf(diff.x) < 1.4:
+						var yield_x: float = -1.0 if diff.x > 0.05 else 1.0
+						velocity.x = yield_x * (spd * 0.90)
+					elif dist > boss_combat_distance:
+						var chase_dir := diff.normalized()
+						velocity.x = chase_dir.x * spd
+					else:
+						# Back off slightly horizontally toward center to open diagonal exit
+						velocity.x = signf(center_x - global_position.x) * (spd * 0.60)
+
+					# Critical Depth Unstick: Boss yields depth corridor toward arena center (Z ~ 0.0)
+					if p_dist_top <= 1.6:
+						# Player at top rail (Z <= -1.0): Boss steps down towards Z >= 0.2
+						if global_position.z < 0.2:
+							velocity.z = spd * 0.85
+						else:
+							velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+					elif p_dist_bottom <= 1.6:
+						# Player at bottom rail (Z >= 1.0): Boss steps up towards Z <= -0.2
+						if global_position.z > -0.2:
+							velocity.z = -spd * 0.85
+						else:
+							velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+					_prevent_player_pushing()
+				elif player_near_x_wall:
+					# Player trapped near left/right gate
+					boss_combat_distance = 2.65
+					if dist > boss_combat_distance:
+						var chase_dir := diff.normalized()
+						velocity.x = chase_dir.x * spd
+						# Yield Z escape corridor
+						var z_yield: float = -1.0 if p_pos.z >= 0.0 else 1.0
+						velocity.z = z_yield * (spd * 0.75)
+					else:
+						# Back away in X towards center
+						velocity.x = signf(center_x - global_position.x) * (spd * 0.60)
+						velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+					_prevent_player_pushing()
+				elif boss_near_wall:
+					# Step away from wall towards center
+					var step_dir_x: float = signf(center_x - global_position.x)
+					var step_dir_z: float = signf(0.0 - global_position.z)
+					velocity.x = step_dir_x * spd * 0.85
+					velocity.z = step_dir_z * spd * 0.65
 				elif dist > boss_combat_distance:
 					var chase_dir := diff.normalized()
 					velocity.x = chase_dir.x * spd
-					if player_is_cornered and absf(diff.z) < 1.0:
-						var z_yield: float = -1.0 if target_player.global_position.z > 0.0 else 1.0
-						velocity.z = z_yield * (spd * 0.65)
-					else:
-						velocity.z = chase_dir.z * (spd * 0.75)
+					velocity.z = chase_dir.z * (spd * 0.75)
+					_prevent_player_pushing()
+				elif dist < 1.65:
+					# Maintain combat distance: boss yields space toward center
+					var step_dir_x: float = signf(center_x - global_position.x)
+					var step_dir_z: float = signf(0.0 - global_position.z)
+					velocity.x = step_dir_x * (spd * 0.75)
+					velocity.z = step_dir_z * (spd * 0.60)
 					_prevent_player_pushing()
 				else:
 					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
@@ -311,9 +379,11 @@ func _physics_process(delta: float) -> void:
 			velocity.z = 0.0
 
 			# Anti-Corner Trapping: Wall impact interruption & rebound
-			var at_left_wall: bool = (global_position.x <= arena_min_x + 0.35 and facing_dir_x < 0.0)
-			var at_right_wall: bool = (global_position.x >= arena_max_x - 0.35 and facing_dir_x > 0.0)
-			if (is_on_wall() or at_left_wall or at_right_wall) and pattern_timer > 0.15:
+			var at_left_wall: bool = (global_position.x <= arena_min_x + 0.45 and facing_dir_x < 0.0)
+			var at_right_wall: bool = (global_position.x >= arena_max_x - 0.45 and facing_dir_x > 0.0)
+			var at_top_wall: bool = (global_position.z <= arena_min_z + 0.45)
+			var at_bottom_wall: bool = (global_position.z >= arena_max_z - 0.45)
+			if (is_on_wall() or at_left_wall or at_right_wall or at_top_wall or at_bottom_wall) and pattern_timer > 0.15:
 				_execute_charge_wall_impact()
 			elif dist <= 1.45 and pattern_timer > 0.22:
 				# Stop charge upon contact with player
@@ -358,16 +428,29 @@ func _prevent_player_pushing() -> void:
 		var diff := target_player.global_position - global_position
 		diff.y = 0.0
 		var dist := diff.length()
-		var min_dist: float = 1.55
+		var min_dist: float = 1.95 # Generous separation to eliminate sprite overlap
 		if dist < min_dist and dist > 0.001:
 			var dir := diff / dist
 			var forward_speed := velocity.dot(dir)
 			if forward_speed > 0.0:
 				velocity -= dir * forward_speed
-			# Anti-corner wedging: push boss back if player is cornered near boundary wall
-			var player_near_wall := (target_player.global_position.x <= arena_min_x + 1.2 or target_player.global_position.x >= arena_max_x - 1.2)
-			if player_near_wall:
-				velocity -= dir * 2.5
+			# Full 2D Anti-boundary wedging: push boss back toward center if player is near ANY wall
+			var p_pos := target_player.global_position
+			var p_dist_left: float = p_pos.x - arena_min_x
+			var p_dist_right: float = arena_max_x - p_pos.x
+			var p_dist_top: float = p_pos.z - arena_min_z
+			var p_dist_bottom: float = arena_max_z - p_pos.z
+			var p_near_any_wall: bool = (p_dist_left <= 3.2 or p_dist_right <= 3.2 or p_dist_top <= 1.6 or p_dist_bottom <= 1.6)
+			if p_near_any_wall:
+				var center_x := (arena_min_x + arena_max_x) * 0.5
+				var step_x := signf(center_x - global_position.x)
+				if step_x == 0.0:
+					step_x = 1.0 if diff.x <= 0.0 else -1.0
+				var step_z := signf(0.0 - global_position.z)
+				if step_z == 0.0:
+					step_z = 1.0 if diff.z <= 0.0 else -1.0
+				var to_center := Vector3(step_x, 0.0, step_z).normalized()
+				velocity += to_center * 4.2
 
 
 func _execute_charge_impact() -> void:
@@ -387,11 +470,12 @@ func _execute_charge_wall_impact() -> void:
 	sprite_3d.texture = BossTextureNormal
 	current_pattern = Pattern.CHASE
 	pattern_phase = "RECOVERY"
-	pattern_timer = 0.65
-	# Wall impact crash: bounce back towards arena center
-	var rebound_dir: float = -facing_dir_x
-	velocity.x = rebound_dir * 3.2
-	velocity.z = 0.0
+	pattern_timer = 0.85
+	# Wall impact crash: bounce back diagonally towards arena center
+	var center_x: float = (arena_min_x + arena_max_x) * 0.5
+	var rebound_x: float = signf(center_x - global_position.x)
+	var rebound_z: float = signf(0.0 - global_position.z)
+	velocity = Vector3(rebound_x * 3.6, 0.0, rebound_z * 1.5)
 	_spawn_boss_shield_sparks()
 	var p := get_parent()
 	if p != null:

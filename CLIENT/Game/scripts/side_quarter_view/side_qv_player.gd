@@ -389,7 +389,7 @@ func _physics_process(delta: float) -> void:
 
 func _update_depth_sorting_and_locator() -> void:
 	if sprite_3d != null:
-		sprite_3d.sorting_offset = clampf(global_position.z * 0.25, -2.0, 2.0)
+		sprite_3d.sorting_offset = clampf(global_position.z * 1.5 + 0.05, -3.0, 3.0)
 		sprite_3d.rotation_degrees.x = 0.0
 	if hero_locator_ring_3d != null and is_instance_valid(hero_locator_ring_3d):
 		hero_locator_ring_3d.visible = false
@@ -425,6 +425,8 @@ func _clamp_arena_bounds() -> void:
 
 
 func _prevent_enemy_pushing() -> void:
+	if current_state == State.DASH:
+		return
 	# Maintain readable melee combat spacing in 2.5D (X/Z) so hero and enemies/boss never stack on top of each other
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
@@ -436,8 +438,8 @@ func _prevent_enemy_pushing() -> void:
 		var diff := enemy_3d.global_position - global_position
 		diff.y = 0.0
 		var dist := diff.length()
-		var enemy_radius: float = 0.95 if enemy_3d.is_in_group("bosses") else 0.65
-		var min_dist: float = 0.45 + enemy_radius # 1.40m for boss, 1.10m for enemies
+		var enemy_radius: float = 0.75 if enemy_3d.is_in_group("bosses") else 0.55
+		var min_dist: float = 0.45 + enemy_radius # 1.20m for boss, 1.00m for enemies
 		if dist < min_dist and dist > 0.001:
 			var dir := diff.normalized()
 			var speed_towards := velocity.dot(dir)
@@ -576,6 +578,7 @@ func start_dash() -> void:
 	dash_time_remaining = DASH_DURATION
 	ghost_timer = 0.0
 	is_invulnerable = true
+	set_collision_mask_value(2, false) # Phase through Enemy Layer (2) during dash
 	dash_hit_enemies.clear()
 	var dash_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
 	velocity.x = dash_dir.x * dash_speed
@@ -597,7 +600,24 @@ func _process_dash(delta: float) -> void:
 		_check_thunder_step_hits()
 	if dash_time_remaining <= 0.0:
 		is_invulnerable = false
+		set_collision_mask_value(2, true) # Re-enable Enemy Layer (2) collision
+		_resolve_enemy_overlap()
 		_set_state(State.IDLE)
+
+
+func _resolve_enemy_overlap() -> void:
+	var enemies := get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		if not is_instance_valid(enemy) or enemy == self or not (enemy is Node3D):
+			continue
+		var e3d := enemy as Node3D
+		var diff := global_position - e3d.global_position
+		diff.y = 0.0
+		var dist := diff.length()
+		var min_safe_dist: float = 1.25
+		if dist < min_safe_dist:
+			var push_dir := diff.normalized() if dist > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
+			global_position += push_dir * (min_safe_dist - dist)
 
 
 func _spawn_dash_ghost() -> void:
@@ -940,8 +960,6 @@ func _fire_sword_beam() -> void:
 
 
 func _process_attack_state(delta: float) -> void:
-	velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-	velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 	attack_duration_remaining -= delta
 
 	# Attack Recovery Cancel into Dash or Guard (fluid high-tier combat responsiveness)
@@ -957,6 +975,30 @@ func _process_attack_state(delta: float) -> void:
 			is_attacking = false
 			start_guard()
 			return
+
+	# Movement Drift during Late Recovery (t <= 0.10s) to prevent input lock
+	if attack_duration_remaining <= 0.10:
+		var input_x := 0.0
+		if Input.is_action_pressed("move_left"):
+			input_x -= 1.0
+		if Input.is_action_pressed("move_right"):
+			input_x += 1.0
+		var input_z := 0.0
+		if Input.is_action_pressed("move_up"):
+			input_z -= 1.0
+		if Input.is_action_pressed("move_down"):
+			input_z += 1.0
+
+		if input_x != 0.0 or input_z != 0.0:
+			var input_vec := Vector2(input_x, input_z).normalized()
+			velocity.x = input_vec.x * (move_speed_x * 0.55)
+			velocity.z = input_vec.y * (move_speed_z * 0.55)
+		else:
+			velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+			velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 
 	if attack_duration_remaining <= 0.0:
 		slash_visual_3d.visible = false
@@ -985,11 +1027,38 @@ func release_guard() -> void:
 		_set_state(State.IDLE)
 
 
-func _process_guard_state(_delta: float) -> void:
-	velocity.x = 0.0
-	velocity.z = 0.0
+func _process_guard_state(delta: float) -> void:
+	# Immediate dash cancel from guard
+	if (Input.is_action_just_pressed("dash") or dash_buffer_timer > 0.0) and (is_on_floor() or can_air_dash):
+		dash_buffer_timer = 0.0
+		release_guard()
+		start_dash()
+		return
+
 	if not Input.is_action_pressed("guard"):
 		release_guard()
+		return
+
+	# Guard Walk: Tactical defensive movement at 40% speed while keeping shield raised
+	var input_x := 0.0
+	if Input.is_action_pressed("move_left"):
+		input_x -= 1.0
+	if Input.is_action_pressed("move_right"):
+		input_x += 1.0
+
+	var input_z := 0.0
+	if Input.is_action_pressed("move_up"):
+		input_z -= 1.0
+	if Input.is_action_pressed("move_down"):
+		input_z += 1.0
+
+	if input_x != 0.0 or input_z != 0.0:
+		var input_vec := Vector2(input_x, input_z).normalized()
+		velocity.x = input_vec.x * (move_speed_x * 0.40)
+		velocity.z = input_vec.y * (move_speed_z * 0.40)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, 45.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 45.0 * delta)
 
 
 func receive_incoming_attack(amount: int, attacker: Node, _attack_dir: Vector3) -> bool:

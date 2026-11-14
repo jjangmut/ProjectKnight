@@ -1,0 +1,1664 @@
+﻿{
+    "task_id":  "V3-024-R2",
+    "branch":  "studio/v3-024-r2-boss-depth-escape-agency",
+    "recording_mode":  "Godot 4.7.2 Movie Maker (--write-movie --fixed-fps 60) -\u003e FFmpeg H.264 MP4 (-r 60)",
+    "playtest_classification":  "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+    "human_playtest_status":  "HUMAN_PLAYTEST_PENDING",
+    "videos":  {
+                   "full_playthrough":  {
+                                            "path":  "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R2/Stage1_Full_Playthrough_1x.mp4",
+                                            "sha256":  "8dc1851aa01441a5cbc90bfb36a176dcc500f5ea891008aeae25ab8d77866ca6",
+                                            "size_bytes":  80034432,
+                                            "duration_seconds":  35.13,
+                                            "fps":  60,
+                                            "resolution":  "1280x720"
+                                        },
+                   "corner_escape_audit":  {
+                                               "path":  "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R2/Boss_Corner_Escape_Audit_1x.mp4",
+                                               "sha256":  "1ed4aeafd875512a0e530bdec7733d60f363a21821f99ebf770a32368f3467c1",
+                                               "size_bytes":  16566598,
+                                               "fps":  60,
+                                               "resolution":  "1280x720"
+                                           }
+               },
+    "gameplay_telemetry":  {
+                               "attacks_performed":  47,
+                               "attempt_count":  1,
+                               "bolts_observed_count":  4,
+                               "boss_patterns_observed":  {
+                                                              "ground_fissure":  true,
+                                                              "quake_ring":  true,
+                                                              "shield_charge":  true
+                                                          },
+                               "boss_visibility_metrics":  {
+                                                               "all_frames_verified_on_screen":  true,
+                                                               "boss_off_screen_frames":  0,
+                                                               "boss_screen_x_max":  1032.18359375,
+                                                               "boss_screen_x_min":  438.738220214844,
+                                                               "boss_screen_y_max":  447.797821044922,
+                                                               "boss_screen_y_min":  380.507843017578,
+                                                               "both_on_screen_frames":  655,
+                                                               "camera_fov_max":  45.0602264404297,
+                                                               "camera_fov_min":  42.0000267028809,
+                                                               "dual_camera_active":  true,
+                                                               "player_off_screen_frames":  0,
+                                                               "player_screen_x_max":  936.23388671875,
+                                                               "player_screen_x_min":  270.402282714844,
+                                                               "player_screen_y_max":  382.499725341797,
+                                                               "player_screen_y_min":  297.183563232422,
+                                                               "samples":  [
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          993.9,
+                                                                                                          388.1
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      78.0,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  44.7,
+                                                                                   "camera_x":  74.23,
+                                                                                   "player_screen_px":  [
+                                                                                                            339.1,
+                                                                                                            375.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        70.95,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          921.7,
+                                                                                                          388.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.82,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  43.9,
+                                                                                   "camera_x":  74.88,
+                                                                                   "player_screen_px":  [
+                                                                                                            402.8,
+                                                                                                            376.0
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        72.35,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          852.0,
+                                                                                                          389.3
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.59,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  43.0,
+                                                                                   "camera_x":  75.43,
+                                                                                   "player_screen_px":  [
+                                                                                                            478.8,
+                                                                                                            376.4
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        73.75,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          783.6,
+                                                                                                          389.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.5,
+                                                                                   "camera_x":  76.08,
+                                                                                   "player_screen_px":  [
+                                                                                                            535.9,
+                                                                                                            376.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        75.01,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          762.5,
+                                                                                                          388.2
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.3,
+                                                                                   "camera_x":  76.3,
+                                                                                   "player_screen_px":  [
+                                                                                                            542.5,
+                                                                                                            374.7
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        75.3,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          745.6,
+                                                                                                          394.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.2,
+                                                                                   "camera_x":  76.47,
+                                                                                   "player_screen_px":  [
+                                                                                                            591.8,
+                                                                                                            380.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        75.97,
+                                                                                                        0.0,
+                                                                                                        -0.24
+                                                                                                    ],
+                                                                                   "sim_time":  21.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          702.6,
+                                                                                                          390.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.1,
+                                                                                   "camera_x":  76.9,
+                                                                                   "player_screen_px":  [
+                                                                                                            594.6,
+                                                                                                            371.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        76.44,
+                                                                                                        0.0,
+                                                                                                        -0.33
+                                                                                                    ],
+                                                                                   "sim_time":  22.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          695.3,
+                                                                                                          391.2
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.1,
+                                                                                   "camera_x":  76.98,
+                                                                                   "player_screen_px":  [
+                                                                                                            588.9,
+                                                                                                            369.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        76.45,
+                                                                                                        0.0,
+                                                                                                        -0.39
+                                                                                                    ],
+                                                                                   "sim_time":  22.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          692.7,
+                                                                                                          392.7
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.0
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.01,
+                                                                                   "player_screen_px":  [
+                                                                                                            596.2,
+                                                                                                            360.7
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        76.55,
+                                                                                                        0.0,
+                                                                                                        -0.6
+                                                                                                    ],
+                                                                                   "sim_time":  22.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          688.5,
+                                                                                                          394.8
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.52,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.04,
+                                                                                   "player_screen_px":  [
+                                                                                                            594.3,
+                                                                                                            359.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        76.56,
+                                                                                                        0.0,
+                                                                                                        -0.65
+                                                                                                    ],
+                                                                                   "sim_time":  22.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          681.6,
+                                                                                                          396.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.53,
+                                                                                                      0.0,
+                                                                                                      0.01
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.12,
+                                                                                   "player_screen_px":  [
+                                                                                                            614.8,
+                                                                                                            345.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        76.85,
+                                                                                                        0.0,
+                                                                                                        -0.95
+                                                                                                    ],
+                                                                                   "sim_time":  22.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          630.4,
+                                                                                                          398.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.51,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.61,
+                                                                                   "player_screen_px":  [
+                                                                                                            724.4,
+                                                                                                            345.2
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        78.51,
+                                                                                                        0.0,
+                                                                                                        -0.98
+                                                                                                    ],
+                                                                                   "sim_time":  22.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          507.3,
+                                                                                                          398.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.51,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  78.82,
+                                                                                   "player_screen_px":  [
+                                                                                                            845.2,
+                                                                                                            342.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.03,
+                                                                                                        0.0,
+                                                                                                        -1.04
+                                                                                                    ],
+                                                                                   "sim_time":  23.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          453.4,
+                                                                                                          400.3
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.71,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  79.54,
+                                                                                   "player_screen_px":  [
+                                                                                                            868.3,
+                                                                                                            338.7
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        82.02,
+                                                                                                        0.0,
+                                                                                                        -1.15
+                                                                                                    ],
+                                                                                   "sim_time":  23.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          525.4,
+                                                                                                          401.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      79.71,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  80.83,
+                                                                                   "player_screen_px":  [
+                                                                                                            893.3,
+                                                                                                            326.3
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.64,
+                                                                                                        0.0,
+                                                                                                        -1.45
+                                                                                                    ],
+                                                                                   "sim_time":  23.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          545.8,
+                                                                                                          407.9
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      81.71,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.62,
+                                                                                   "player_screen_px":  [
+                                                                                                            929.5,
+                                                                                                            299.7
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        86.0,
+                                                                                                        0.0,
+                                                                                                        -2.18
+                                                                                                    ],
+                                                                                   "sim_time":  23.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          683.4,
+                                                                                                          407.9
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.38,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.96,
+                                                                                   "player_screen_px":  [
+                                                                                                            830.8,
+                                                                                                            318.0
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        85.11,
+                                                                                                        0.0,
+                                                                                                        -1.74
+                                                                                                    ],
+                                                                                   "sim_time":  23.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          708.0,
+                                                                                                          405.1
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.65,
+                                                                                                      0.0,
+                                                                                                      0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.99,
+                                                                                   "player_screen_px":  [
+                                                                                                            745.5,
+                                                                                                            323.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        84.17,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  23.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.8,
+                                                                                                          405.1
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            673.4,
+                                                                                                            323.0
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.37,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.7,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            638.8,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        82.99,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.8,
+                                                                                                          405.7
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            659.6,
+                                                                                                            323.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.22,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.7,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            680.2,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.45,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.7,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            665.5,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.28,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.7,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            653.6,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.15,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  24.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          654.6,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.99,
+                                                                                   "player_screen_px":  [
+                                                                                                            623.4,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        82.81,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          655.1,
+                                                                                                          404.9
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.99,
+                                                                                   "player_screen_px":  [
+                                                                                                            653.9,
+                                                                                                            322.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.14,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.9,
+                                                                                                          405.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      83.13,
+                                                                                                      0.0,
+                                                                                                      0.04
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  83.0,
+                                                                                   "player_screen_px":  [
+                                                                                                            680.4,
+                                                                                                            322.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        83.45,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          566.4,
+                                                                                                          401.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      82.04,
+                                                                                                      0.0,
+                                                                                                      -0.02
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  82.76,
+                                                                                   "player_screen_px":  [
+                                                                                                            629.3,
+                                                                                                            322.7
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        82.64,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          567.8,
+                                                                                                          413.8
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.56,
+                                                                                   "player_screen_px":  [
+                                                                                                            619.0,
+                                                                                                            321.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.32,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          615.6,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.1,
+                                                                                   "player_screen_px":  [
+                                                                                                            651.1,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  25.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          620.7,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            655.5,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.2,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  26.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  27.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          621.3,
+                                                                                                          413.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      80.87,
+                                                                                                      0.0,
+                                                                                                      0.21
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  81.05,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.0,
+                                                                                                            321.6
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        81.23,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  27.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          554.7,
+                                                                                                          420.3
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      79.99,
+                                                                                                      0.0,
+                                                                                                      0.32
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  80.8,
+                                                                                   "player_screen_px":  [
+                                                                                                            653.9,
+                                                                                                            321.4
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        80.95,
+                                                                                                        0.0,
+                                                                                                        -1.57
+                                                                                                    ],
+                                                                                   "sim_time":  27.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          542.9,
+                                                                                                          421.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      79.02,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  79.94,
+                                                                                   "player_screen_px":  [
+                                                                                                            652.9,
+                                                                                                            323.0
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        80.08,
+                                                                                                        0.0,
+                                                                                                        -1.51
+                                                                                                    ],
+                                                                                   "sim_time":  27.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          534.9,
+                                                                                                          420.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      78.22,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  79.21,
+                                                                                   "player_screen_px":  [
+                                                                                                            649.3,
+                                                                                                            328.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        79.32,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  27.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          533.2,
+                                                                                                          419.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.24,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  78.26,
+                                                                                   "player_screen_px":  [
+                                                                                                            657.8,
+                                                                                                            328.2
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        78.45,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  27.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          589.0,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.24,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.73,
+                                                                                   "player_screen_px":  [
+                                                                                                            658.3,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.93,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          635.5,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.42,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.46,
+                                                                                   "player_screen_px":  [
+                                                                                                            636.7,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.43,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.3,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.65,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.52,
+                                                                                   "player_screen_px":  [
+                                                                                                            646.3,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.59,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          634.1,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.59,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.64,
+                                                                                   "player_screen_px":  [
+                                                                                                            630.6,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.54,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          625.4,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.25,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.39,
+                                                                                   "player_screen_px":  [
+                                                                                                            648.7,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.48,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          616.2,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.24,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.47,
+                                                                                   "player_screen_px":  [
+                                                                                                            656.3,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.65,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  28.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          660.4,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.62,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.43,
+                                                                                   "player_screen_px":  [
+                                                                                                            634.6,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.37,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  29.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          639.0,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.65,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.66,
+                                                                                   "player_screen_px":  [
+                                                                                                            649.3,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.76,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  29.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          653.0,
+                                                                                                          419.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.65,
+                                                                                                      0.0,
+                                                                                                      0.37
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.53,
+                                                                                   "player_screen_px":  [
+                                                                                                            615.7,
+                                                                                                            328.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.26,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  29.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          677.4,
+                                                                                                          408.7
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      78.14,
+                                                                                                      0.0,
+                                                                                                      0.17
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.78,
+                                                                                   "player_screen_px":  [
+                                                                                                            643.5,
+                                                                                                            329.2
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.82,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  29.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          577.1,
+                                                                                                          410.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      77.56,
+                                                                                                      0.0,
+                                                                                                      0.19
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  78.17,
+                                                                                   "player_screen_px":  [
+                                                                                                            690.2,
+                                                                                                            329.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        78.72,
+                                                                                                        0.0,
+                                                                                                        -1.36
+                                                                                                    ],
+                                                                                   "sim_time":  29.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          527.0,
+                                                                                                          446.4
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.75,
+                                                                                                      0.0,
+                                                                                                      0.86
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.78,
+                                                                                   "player_screen_px":  [
+                                                                                                            677.7,
+                                                                                                            338.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        78.19,
+                                                                                                        0.0,
+                                                                                                        -1.06
+                                                                                                    ],
+                                                                                   "sim_time":  29.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          592.1,
+                                                                                                          436.6
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.82,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  77.26,
+                                                                                   "player_screen_px":  [
+                                                                                                            639.3,
+                                                                                                            343.4
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        77.25,
+                                                                                                        0.0,
+                                                                                                        -0.89
+                                                                                                    ],
+                                                                                   "sim_time":  30.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          698.7,
+                                                                                                          435.8
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.82,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  76.27,
+                                                                                   "player_screen_px":  [
+                                                                                                            497.8,
+                                                                                                            342.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.74,
+                                                                                                        0.0,
+                                                                                                        -0.89
+                                                                                                    ],
+                                                                                   "sim_time":  30.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          816.1,
+                                                                                                          437.2
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.82,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  75.19,
+                                                                                   "player_screen_px":  [
+                                                                                                            453.7,
+                                                                                                            329.0
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        73.13,
+                                                                                                        0.0,
+                                                                                                        -1.21
+                                                                                                    ],
+                                                                                   "sim_time":  30.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          763.0,
+                                                                                                          438.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.09,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.96,
+                                                                                   "player_screen_px":  [
+                                                                                                            491.0,
+                                                                                                            335.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        73.33,
+                                                                                                        0.0,
+                                                                                                        -1.1
+                                                                                                    ],
+                                                                                   "sim_time":  30.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          616.0,
+                                                                                                          436.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      74.36,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.58,
+                                                                                   "player_screen_px":  [
+                                                                                                            597.1,
+                                                                                                            347.1
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.12,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  30.82
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          661.2,
+                                                                                                          435.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      74.84,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.65,
+                                                                                   "player_screen_px":  [
+                                                                                                            647.1,
+                                                                                                            345.9
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.72,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  30.98
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          603.5,
+                                                                                                          434.9
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      74.3,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.64,
+                                                                                   "player_screen_px":  [
+                                                                                                            625.8,
+                                                                                                            345.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.49,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  31.15
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          637.1,
+                                                                                                          434.9
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      74.44,
+                                                                                                      0.0,
+                                                                                                      0.78
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.47,
+                                                                                   "player_screen_px":  [
+                                                                                                            633.9,
+                                                                                                            345.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.4,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  31.32
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          662.6,
+                                                                                                          435.5
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      74.85,
+                                                                                                      0.0,
+                                                                                                      0.79
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  74.64,
+                                                                                   "player_screen_px":  [
+                                                                                                            654.0,
+                                                                                                            345.8
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        74.79,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  31.48
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          685.8,
+                                                                                                          433.2
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      75.53,
+                                                                                                      0.0,
+                                                                                                      0.76
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  75.1,
+                                                                                   "player_screen_px":  [
+                                                                                                            662.6,
+                                                                                                            345.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        75.35,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  31.65
+                                                                               },
+                                                                               {
+                                                                                   "boss_screen_px":  [
+                                                                                                          705.1,
+                                                                                                          424.0
+                                                                                                      ],
+                                                                                   "boss_world":  [
+                                                                                                      76.34,
+                                                                                                      0.0,
+                                                                                                      0.6
+                                                                                                  ],
+                                                                                   "both_actors_on_screen":  true,
+                                                                                   "camera_fov":  42.0,
+                                                                                   "camera_x":  75.73,
+                                                                                   "player_screen_px":  [
+                                                                                                            640.5,
+                                                                                                            346.5
+                                                                                                        ],
+                                                                                   "player_world":  [
+                                                                                                        75.73,
+                                                                                                        0.0,
+                                                                                                        -0.81
+                                                                                                    ],
+                                                                                   "sim_time":  31.82
+                                                                               }
+                                                                           ],
+                                                               "total_boss_fight_frames":  655
+                                                           },
+                               "camera_x_max":  83.0010375976563,
+                               "camera_x_min":  -6.80000019073486,
+                               "damage_taken_total":  1,
+                               "dashes_performed":  5,
+                               "direct_state_mutations_performed":  0,
+                               "duration_seconds":  35.13,
+                               "encounter_timestamps":  {
+                                                            "boss_defeated_sec":  31.92,
+                                                            "boss_started_sec":  21.0,
+                                                            "encounter_1_cleared_sec":  2.35,
+                                                            "encounter_2_cleared_sec":  10.52,
+                                                            "encounter_2_started_sec":  4.95,
+                                                            "encounter_3_cleared_sec":  19.53,
+                                                            "encounter_3_started_sec":  12.42,
+                                                            "run_started_sec":  0.0
+                                                        },
+                               "final_boss_hp":  0,
+                               "final_player_hp":  9,
+                               "max_boss_y_during_boss":  0.1,
+                               "max_player_y_during_boss":  0.0,
+                               "max_time_scale_seen":  1.0,
+                               "min_time_scale_seen":  0.04,
+                               "mode":  "NATURAL_INPUT_E2E",
+                               "parries_performed":  44,
+                               "physics_tick_count":  2107,
+                               "player_death_occurred":  false,
+                               "rendered_frame_count":  2108,
+                               "run_id":  "V3-022-R1-E2E-1794673949",
+                               "stage_cleared_naturally":  true,
+                               "total_enemies_defeated_naturally":  12,
+                               "vitality_orbs_collected":  1,
+                               "wall_elapsed_seconds":  33.96,
+                               "x_max":  86.0,
+                               "x_min":  -6.0,
+                               "z_max":  1.47276341915131,
+                               "z_min":  -2.24935269355774,
+                               "z_span_verified":  false,
+                               "zero_cheats_audit_passed":  true
+                           },
+    "extracted_verification_frames":  [
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_01.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_02.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_03.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_04.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_05.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/playthrough_frame_06.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/escape_corner_01.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/escape_corner_02.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/escape_corner_03.png",
+                                          "STUDIO_V3/evidence/V3-024-R2/captures/escape_corner_04.png"
+                                      ]
+}

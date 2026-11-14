@@ -488,10 +488,19 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 				_trigger_jump()
 				return
 
+		# Depth evasion direction: always steer towards the open arena center if near Z boundaries
+		var evade_z_dir: float = 1.0
+		if player.global_position.z <= -1.2:
+			evade_z_dir = 1.0 # Escape toward open arena center (+Z)
+		elif player.global_position.z >= 1.2:
+			evade_z_dir = -1.0 # Escape toward open arena center (-Z)
+		else:
+			evade_z_dir = -1.0 if b.global_position.z >= 0.0 else 1.0
+
 		# Pattern 2: Shield Line Charge -> Sidestep depth lane + dash!
 		if b.current_pattern == b.Pattern.CHARGE_WINDUP or b.current_pattern == b.Pattern.CHARGE_ACTIVE:
 			if absf(dz) < 1.55:
-				_steer_depth(-1.0 if b.global_position.z >= 0.0 else 1.0)
+				_steer_depth(evade_z_dir)
 				_trigger_dash()
 				return
 
@@ -504,7 +513,7 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 
 		# If Boss has Frontal Shield Guard up, flank in Z and dash behind!
 		if b.get("is_frontal_shield_up"):
-			_steer_depth(-1.0 if b.global_position.z >= 0.0 else 1.0)
+			_steer_depth(evade_z_dir)
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			if dist_h < 2.4:
 				_trigger_dash()

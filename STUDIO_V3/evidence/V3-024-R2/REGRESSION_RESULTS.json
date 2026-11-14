@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-11-15T01:32:05",
+  "branch": "studio/v3-024-r2-boss-depth-escape-agency",
+  "status": "ALL_TESTS_PASSED",
+  "suites": {
+    "PILLAR-P0": {
+      "name": "Pillar Collision Suite",
+      "status": "PASSED",
+      "description": "Verifies pillar obstacle collision masks and navigation raycasts do not snag characters"
+    },
+    "PROJECTILE-P0": {
+      "name": "Projectile Trace Suite",
+      "status": "PASSED",
+      "description": "Verifies arrows, crossbow bolts, and energy waves travel on fixed depth lanes without despawn glitches"
+    },
+    "BOSS-AIR-P0": {
+      "name": "Boss Vertical Stability Suite",
+      "status": "PASSED",
+      "description": "Verifies boss stays grounded during charge and cleave, no bouncing into the sky",
+      "max_jump_arc_y": 1.34,
+      "pre_fix_arc_y": 2.97
+    }
+  }
+}
