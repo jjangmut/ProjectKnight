@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8n4d8r1l2a0b"]
+
+[ext_resource type="Script" path="res://tests/animation/direction_animation_lab.gd" id="1_lab"]
+
+[node name="DirectionAnimationLab" type="Node3D"]
+script = ExtResource("1_lab")

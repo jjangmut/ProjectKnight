@@ -1,0 +1,95 @@
+{
+  "slash_sync_verified": true,
+  "task_id": "V3-024",
+  "timestamp": "2026-11-14T12:22:31",
+  "traces": [
+    {
+      "attack_frame": 2,
+      "direction": "West (Left)",
+      "hitbox_position": [
+        -1.14999997615814,
+        0.850000023841858,
+        0.0
+      ],
+      "pitch_tilt_degrees": 0.0,
+      "slash_position": [
+        -0.720000028610229,
+        0.949999988079071,
+        0.0
+      ],
+      "slash_rotation": [
+        0.0,
+        -180.0,
+        -30.0
+      ],
+      "slash_visible": true,
+      "texture": "res://assets/player_frames/attack_v1_aligned.png"
+    },
+    {
+      "attack_frame": 2,
+      "direction": "East (Right)",
+      "hitbox_position": [
+        1.14999997615814,
+        0.850000023841858,
+        0.0
+      ],
+      "pitch_tilt_degrees": 0.0,
+      "slash_position": [
+        0.720000028610229,
+        0.949999988079071,
+        0.0
+      ],
+      "slash_rotation": [
+        0.0,
+        0.0,
+        -30.0
+      ],
+      "slash_visible": true,
+      "texture": "res://assets/player_frames/attack_v1_aligned.png"
+    },
+    {
+      "attack_frame": 2,
+      "direction": "South (Front +Z)",
+      "hitbox_position": [
+        0.0,
+        0.850000023841858,
+        1.14999997615814
+      ],
+      "pitch_tilt_degrees": 0.0,
+      "slash_position": [
+        0.0,
+        0.949999988079071,
+        0.720000028610229
+      ],
+      "slash_rotation": [
+        67.9999847412109,
+        -90.0,
+        -30.0
+      ],
+      "slash_visible": true,
+      "texture": "res://assets/player_frames/directional/hero_front_attack_aligned.png"
+    },
+    {
+      "attack_frame": 2,
+      "direction": "North (Back -Z)",
+      "hitbox_position": [
+        0.0,
+        0.850000023841858,
+        -1.14999997615814
+      ],
+      "pitch_tilt_degrees": 0.0,
+      "slash_position": [
+        0.0,
+        0.949999988079071,
+        -0.720000028610229
+      ],
+      "slash_rotation": [
+        67.9999847412109,
+        90.0,
+        -30.0
+      ],
+      "slash_visible": true,
+      "texture": "res://assets/player_frames/directional/hero_back_attack_aligned.png"
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+	"build_branch": "studio/v3-023-stage1-gameplay-polish",
+	"directional_alignment_audit": {
+		"cases": [
+			{
+				"aligned_pass": true,
+				"attack_area_local_pos": [
+					1.15,
+					0.85,
+					0.0
+				],
+				"capture": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/after_v3_023_attack_dir_right.png",
+				"direction_case": "right_x_plus",
+				"dot_alignment": 1.0,
+				"facing_attack_dir": [
+					1.0,
+					0.0,
+					0.0
+				],
+				"slash_vfx_rotation_deg": [
+					0.0,
+					0.0,
+					17.3
+				]
+			},
+			{
+				"aligned_pass": true,
+				"attack_area_local_pos": [
+					-1.15,
+					0.85,
+					0.0
+				],
+				"capture": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/after_v3_023_attack_dir_left.png",
+				"direction_case": "left_x_minus",
+				"dot_alignment": 1.0,
+				"facing_attack_dir": [
+					-1.0,
+					0.0,
+					0.0
+				],
+				"slash_vfx_rotation_deg": [
+					0.0,
+					-180.0,
+					-24.6
+				]
+			},
+			{
+				"aligned_pass": true,
+				"attack_area_local_pos": [
+					0.0,
+					0.85,
+					-1.15
+				],
+				"capture": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/after_v3_023_attack_dir_up_z_minus.png",
+				"direction_case": "up_z_minus",
+				"dot_alignment": 1.0,
+				"facing_attack_dir": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"slash_vfx_rotation_deg": [
+					68.0,
+					90.0,
+					-55.3
+				]
+			},
+			{
+				"aligned_pass": true,
+				"attack_area_local_pos": [
+					0.0,
+					0.85,
+					1.15
+				],
+				"capture": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/after_v3_023_attack_dir_down_z_plus.png",
+				"direction_case": "down_z_plus",
+				"dot_alignment": 1.0,
+				"facing_attack_dir": [
+					0.0,
+					0.0,
+					1.0
+				],
+				"slash_vfx_rotation_deg": [
+					68.0,
+					-90.0,
+					21.8
+				]
+			},
+			{
+				"aligned_pass": true,
+				"attack_area_local_pos": [
+					0.81,
+					0.85,
+					-0.81
+				],
+				"capture": "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/after_v3_023_attack_dir_diag.png",
+				"direction_case": "diag_right_up",
+				"dot_alignment": 1.0,
+				"facing_attack_dir": [
+					0.71,
+					0.0,
+					-0.71
+				],
+				"slash_vfx_rotation_deg": [
+					68.0,
+					45.0,
+					24.6
+				]
+			}
+		],
+		"directional_art_status": "DIRECTIONAL_ART_MISSING: Dedicated 2D front/back (+Z/-Z) character sprite sheets do not exist; mitigated in 3D via Golden Directional Aim Arrow + X-axis tilted 3D Slash Arc."
+	},
+	"policies": {
+		"forward_attack_spam": {
+			"attacks_used": 230,
+			"boss_fight_duration_sec": 0.0,
+			"cleared": false,
+			"damage_taken": 13,
+			"dashes_used": 0,
+			"duration_sec": 53.63,
+			"encounter_timestamps": {
+				"boss_defeat": 0.0,
+				"boss_start": 0.0,
+				"enc1_clear": 3.78,
+				"enc2_clear": 29.87,
+				"enc2_start": 23.87,
+				"enc3_clear": 0.0,
+				"enc3_start": 48.67
+			},
+			"enemies_defeated": 9,
+			"final_hp": 0,
+			"final_player_x": 51.3,
+			"min_boss_player_dist_m": 999.0,
+			"min_enemy_player_dist_m": 1.04,
+			"min_inter_enemy_dist_m": 0.34,
+			"parries_used": 0,
+			"player_died": true,
+			"policy": "forward_attack_spam",
+			"vitality_orbs_collected": 2
+		},
+		"stationary_attack_only": {
+			"attacks_used": 381,
+			"boss_fight_duration_sec": 0.0,
+			"cleared": false,
+			"damage_taken": 0,
+			"dashes_used": 0,
+			"duration_sec": 95.02,
+			"encounter_timestamps": {
+				"boss_defeat": 0.0,
+				"boss_start": 0.0,
+				"enc1_clear": 4.48,
+				"enc2_clear": 0.0,
+				"enc2_start": 0.0,
+				"enc3_clear": 0.0,
+				"enc3_start": 0.0
+			},
+			"enemies_defeated": 3,
+			"final_hp": 9,
+			"final_player_x": -6.0,
+			"min_boss_player_dist_m": 999.0,
+			"min_enemy_player_dist_m": 2.88,
+			"min_inter_enemy_dist_m": 1.66,
+			"parries_used": 0,
+			"player_died": false,
+			"policy": "stationary_attack_only",
+			"vitality_orbs_collected": 0
+		},
+		"tactical_full_play": {
+			"attacks_used": 51,
+			"boss_fight_duration_sec": 14.92,
+			"cleared": true,
+			"damage_taken": 7,
+			"dashes_used": 8,
+			"duration_sec": 37.57,
+			"encounter_timestamps": {
+				"boss_defeat": 34.57,
+				"boss_start": 19.65,
+				"enc1_clear": 2.9,
+				"enc2_clear": 9.23,
+				"enc2_start": 5.17,
+				"enc3_clear": 17.73,
+				"enc3_start": 10.57
+			},
+			"enemies_defeated": 13,
+			"final_hp": 3,
+			"final_player_x": 76.18,
+			"min_boss_player_dist_m": 1.26,
+			"min_enemy_player_dist_m": 1.0,
+			"min_inter_enemy_dist_m": 0.2,
+			"parries_used": 53,
+			"player_died": false,
+			"policy": "tactical_full_play",
+			"vitality_orbs_collected": 1
+		},
+		"xz_move_attack_no_defense": {
+			"attacks_used": 18,
+			"boss_fight_duration_sec": 0.0,
+			"cleared": false,
+			"damage_taken": 9,
+			"dashes_used": 0,
+			"duration_sec": 12.87,
+			"encounter_timestamps": {
+				"boss_defeat": 0.0,
+				"boss_start": 0.0,
+				"enc1_clear": 2.48,
+				"enc2_clear": 10.53,
+				"enc2_start": 4.78,
+				"enc3_clear": 0.0,
+				"enc3_start": 11.28
+			},
+			"enemies_defeated": 8,
+			"final_hp": 0,
+			"final_player_x": 48.92,
+			"min_boss_player_dist_m": 999.0,
+			"min_enemy_player_dist_m": 0.96,
+			"min_inter_enemy_dist_m": 0.7,
+			"parries_used": 0,
+			"player_died": true,
+			"policy": "xz_move_attack_no_defense",
+			"vitality_orbs_collected": 0
+		}
+	},
+	"task_id": "V3-023",
+	"verdict": {
+		"forward_attack_spam_fails_or_heavily_punished": true,
+		"tactical_full_play_clears_reliably": true,
+		"xz_no_defense_worse_than_tactical": true
+	}
+}

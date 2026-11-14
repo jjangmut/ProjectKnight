@@ -1,0 +1,77 @@
+{
+  "source": "D:\\JUNYPAPA_STUDIO\\Worktrees\\ProjectKnight\\V3-024\\TOOLS\\sprite_pipeline\\raw\\hero_front_move_raw.jpg",
+  "raw_size": [
+    1264,
+    848
+  ],
+  "raw_grid": [
+    3,
+    2
+  ],
+  "cell": 780,
+  "foot_y": 700,
+  "pivot": [
+    390,
+    700
+  ],
+  "uniform_scale": 1.5701,
+  "ref_height_px": 367.5,
+  "out_grid": [
+    2,
+    2
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "source_cell": 0,
+      "bbox": [
+        176,
+        119,
+        605,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 136712,
+      "clipped": false
+    },
+    {
+      "index": 1,
+      "source_cell": 1,
+      "bbox": [
+        179,
+        127,
+        602,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 135420,
+      "clipped": false
+    },
+    {
+      "index": 2,
+      "source_cell": 2,
+      "bbox": [
+        173,
+        119,
+        607,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 136302,
+      "clipped": false
+    },
+    {
+      "index": 3,
+      "source_cell": 5,
+      "bbox": [
+        179,
+        146,
+        600,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 126013,
+      "clipped": false
+    }
+  ]
+}

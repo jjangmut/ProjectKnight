@@ -1,0 +1,253 @@
+{
+  "gate_passed": true,
+  "matrix": [
+    {
+      "details": [
+        {
+          "direction": "West (Left)",
+          "flip_h": true,
+          "frame": 0,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/idle_v1_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "East (Right)",
+          "flip_h": false,
+          "frame": 0,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/idle_v1_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "South (Front +Z)",
+          "flip_h": false,
+          "frame": 0,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/directional/hero_front_walk_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "North (Back -Z)",
+          "flip_h": false,
+          "frame": 0,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/directional/hero_back_walk_aligned.png",
+          "vframes": 2
+        }
+      ],
+      "passed": true,
+      "suite": "hero_4way_idle"
+    },
+    {
+      "details": [
+        {
+          "direction": "West (Left)",
+          "flip_h": true,
+          "frame": 1,
+          "hframes": 3,
+          "texture": "res://assets/player_frames/run_v2_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "East (Right)",
+          "flip_h": false,
+          "frame": 1,
+          "hframes": 3,
+          "texture": "res://assets/player_frames/run_v2_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "South (Front +Z)",
+          "flip_h": false,
+          "frame": 1,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/directional/hero_front_walk_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "North (Back -Z)",
+          "flip_h": false,
+          "frame": 1,
+          "hframes": 2,
+          "texture": "res://assets/player_frames/directional/hero_back_walk_aligned.png",
+          "vframes": 2
+        }
+      ],
+      "passed": true,
+      "suite": "hero_4way_walk"
+    },
+    {
+      "details": [
+        {
+          "attack_frame": 2,
+          "direction": "West (Left)",
+          "hitbox_position": [
+            -1.14999997615814,
+            0.850000023841858,
+            0.0
+          ],
+          "pitch_tilt_degrees": 0.0,
+          "slash_position": [
+            -0.720000028610229,
+            0.949999988079071,
+            0.0
+          ],
+          "slash_rotation": [
+            0.0,
+            -180.0,
+            -30.0
+          ],
+          "slash_visible": true,
+          "texture": "res://assets/player_frames/attack_v1_aligned.png"
+        },
+        {
+          "attack_frame": 2,
+          "direction": "East (Right)",
+          "hitbox_position": [
+            1.14999997615814,
+            0.850000023841858,
+            0.0
+          ],
+          "pitch_tilt_degrees": 0.0,
+          "slash_position": [
+            0.720000028610229,
+            0.949999988079071,
+            0.0
+          ],
+          "slash_rotation": [
+            0.0,
+            0.0,
+            -30.0
+          ],
+          "slash_visible": true,
+          "texture": "res://assets/player_frames/attack_v1_aligned.png"
+        },
+        {
+          "attack_frame": 2,
+          "direction": "South (Front +Z)",
+          "hitbox_position": [
+            0.0,
+            0.850000023841858,
+            1.14999997615814
+          ],
+          "pitch_tilt_degrees": 0.0,
+          "slash_position": [
+            0.0,
+            0.949999988079071,
+            0.720000028610229
+          ],
+          "slash_rotation": [
+            67.9999847412109,
+            -90.0,
+            -30.0
+          ],
+          "slash_visible": true,
+          "texture": "res://assets/player_frames/directional/hero_front_attack_aligned.png"
+        },
+        {
+          "attack_frame": 2,
+          "direction": "North (Back -Z)",
+          "hitbox_position": [
+            0.0,
+            0.850000023841858,
+            -1.14999997615814
+          ],
+          "pitch_tilt_degrees": 0.0,
+          "slash_position": [
+            0.0,
+            0.949999988079071,
+            -0.720000028610229
+          ],
+          "slash_rotation": [
+            67.9999847412109,
+            90.0,
+            -30.0
+          ],
+          "slash_visible": true,
+          "texture": "res://assets/player_frames/directional/hero_back_attack_aligned.png"
+        }
+      ],
+      "passed": true,
+      "suite": "hero_4way_attack"
+    },
+    {
+      "details": [
+        {
+          "direction": "West (Left)",
+          "flip_h": true,
+          "frame": 0,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/melee_v1.png",
+          "vframes": 2
+        },
+        {
+          "direction": "East (Right)",
+          "flip_h": false,
+          "frame": 0,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/melee_v1.png",
+          "vframes": 2
+        },
+        {
+          "direction": "South (Front +Z)",
+          "flip_h": false,
+          "frame": 2,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/directional/melee_directional_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "North (Back -Z)",
+          "flip_h": false,
+          "frame": 5,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/directional/melee_directional_aligned.png",
+          "vframes": 2
+        }
+      ],
+      "passed": true,
+      "suite": "enemy_4way_stances"
+    },
+    {
+      "details": [
+        {
+          "direction": "West (Left Cleave)",
+          "flip_h": true,
+          "frame": 9,
+          "hframes": 4,
+          "texture": "res://assets/enemy_frames/boss_commander_v2.png",
+          "vframes": 3
+        },
+        {
+          "direction": "East (Right Charge)",
+          "flip_h": true,
+          "frame": 1,
+          "hframes": 4,
+          "texture": "res://assets/enemy_frames/boss_commander_v2_defense.png",
+          "vframes": 3
+        },
+        {
+          "direction": "South (Front Stomp)",
+          "flip_h": false,
+          "frame": 1,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/directional/boss_directional_aligned.png",
+          "vframes": 2
+        },
+        {
+          "direction": "North (Back Charge)",
+          "flip_h": false,
+          "frame": 5,
+          "hframes": 3,
+          "texture": "res://assets/enemy_frames/directional/boss_directional_aligned.png",
+          "vframes": 2
+        }
+      ],
+      "passed": true,
+      "suite": "boss_4way_combat"
+    }
+  ],
+  "task_id": "V3-024",
+  "timestamp": "2026-11-14T12:22:31"
+}

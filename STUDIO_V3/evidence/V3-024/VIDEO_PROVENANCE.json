@@ -1,0 +1,79 @@
+﻿{
+    "task_id":  "V3-024",
+    "branch":  "studio/v3-024-directional-animation-art",
+    "recording_mode":  "Godot 4.7.2 Movie Maker (--write-movie --fixed-fps 60) -\u003e FFmpeg H.264 MP4 (-r 60)",
+    "playtest_classification":  "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+    "human_playtest_status":  "HUMAN_PLAYTEST_NOT_TESTED",
+    "video_file":  {
+                       "path":  "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024/Stage1_DirectionalAnimation_1x.mp4",
+                       "sha256":  "4e180b5dee8cce06acf34d9f7facb88ff1aa87c10fb949747fcadb4e74e0a8e2",
+                       "size_bytes":  86454042,
+                       "codec":  "h264 (High, yuv420p)",
+                       "resolution":  "1280x720",
+                       "fps":  60
+                   },
+    "simulation_timing":  {
+                              "sim_seconds":  48.43,
+                              "speed_ratio_sim_to_video":  1,
+                              "is_exact_1x_speed":  true
+                          },
+    "gameplay_telemetry":  {
+                               "attacks_performed":  72,
+                               "attempt_count":  1,
+                               "bolts_observed_count":  5,
+                               "boss_patterns_observed":  {
+                                                              "ground_fissure":  true,
+                                                              "quake_ring":  true,
+                                                              "shield_charge":  true
+                                                          },
+                               "camera_x_max":  87.1999816894531,
+                               "camera_x_min":  -6.80000019073486,
+                               "damage_taken_total":  9,
+                               "dashes_performed":  6,
+                               "direct_state_mutations_performed":  0,
+                               "duration_seconds":  48.43,
+                               "encounter_timestamps":  {
+                                                            "boss_defeated_sec":  45.22,
+                                                            "boss_started_sec":  22.3,
+                                                            "encounter_1_cleared_sec":  3.52,
+                                                            "encounter_2_cleared_sec":  13.9,
+                                                            "encounter_2_started_sec":  6.12,
+                                                            "encounter_3_cleared_sec":  20.17,
+                                                            "encounter_3_started_sec":  14.7,
+                                                            "run_started_sec":  0.0
+                                                        },
+                               "final_boss_hp":  0,
+                               "final_player_hp":  3,
+                               "max_boss_y_during_boss":  0.1,
+                               "max_player_y_during_boss":  0.0,
+                               "max_time_scale_seen":  1.0,
+                               "min_time_scale_seen":  0.04,
+                               "mode":  "NATURAL_INPUT_E2E",
+                               "parries_performed":  80,
+                               "physics_tick_count":  2905,
+                               "player_death_occurred":  false,
+                               "rendered_frame_count":  2906,
+                               "run_id":  "V3-022-R1-E2E-1794626820",
+                               "stage_cleared_naturally":  true,
+                               "total_enemies_defeated_naturally":  12,
+                               "vitality_orbs_collected":  3,
+                               "wall_elapsed_seconds":  55.79,
+                               "x_max":  87.1999969482422,
+                               "x_min":  -6.0,
+                               "z_max":  2.32266592979431,
+                               "z_min":  -2.44905638694763,
+                               "z_span_verified":  true,
+                               "zero_cheats_audit_passed":  true
+                           },
+    "extracted_verification_frames":  [
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_01.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_02.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_03.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_04.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_05.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_06.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_07.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_08.png",
+                                          "STUDIO_V3/evidence/V3-024/captures/video_frame_09.png"
+                                      ]
+}

@@ -1,0 +1,77 @@
+{
+  "source": "D:\\JUNYPAPA_STUDIO\\Worktrees\\ProjectKnight\\V3-024\\TOOLS\\sprite_pipeline\\raw\\hero_back_walk_raw.jpg",
+  "raw_size": [
+    1264,
+    848
+  ],
+  "raw_grid": [
+    3,
+    2
+  ],
+  "cell": 780,
+  "foot_y": 700,
+  "pivot": [
+    390,
+    700
+  ],
+  "uniform_scale": 1.6072,
+  "ref_height_px": 359.0,
+  "out_grid": [
+    2,
+    2
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "source_cell": 0,
+      "bbox": [
+        172,
+        123,
+        608,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 131213,
+      "clipped": false
+    },
+    {
+      "index": 1,
+      "source_cell": 1,
+      "bbox": [
+        171,
+        123,
+        609,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 132022,
+      "clipped": false
+    },
+    {
+      "index": 2,
+      "source_cell": 2,
+      "bbox": [
+        169,
+        121,
+        610,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 127969,
+      "clipped": false
+    },
+    {
+      "index": 3,
+      "source_cell": 3,
+      "bbox": [
+        170,
+        115,
+        611,
+        700
+      ],
+      "feet_y": 700,
+      "opaque_px": 129611,
+      "clipped": false
+    }
+  ]
+}

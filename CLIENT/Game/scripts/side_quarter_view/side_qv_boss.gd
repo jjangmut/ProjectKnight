@@ -63,6 +63,10 @@ var ground_shadow: MeshInstance3D = null
 
 const BossTextureNormal = preload("res://assets/enemy_frames/boss_commander_v2.png")
 const BossTextureDefense = preload("res://assets/enemy_frames/boss_commander_v2_defense.png")
+const BossTextureDirectional = preload("res://assets/enemy_frames/directional/boss_directional_aligned.png")
+
+enum FacingDir { SIDE_RIGHT, SIDE_LEFT, FRONT_SOUTH, BACK_NORTH }
+var current_facing_dir: FacingDir = FacingDir.SIDE_LEFT
 
 # VIS-009 Boss Combat VFX Textures
 const TexBossFissure = preload("res://assets/vfx/vfx_boss_fissure_magma.png")
@@ -240,9 +244,17 @@ func _physics_process(delta: float) -> void:
 	var dir_x: float = signf(diff.x)
 	if dir_x != 0.0:
 		facing_dir_x = dir_x
-		# Boss sprite natively faces Right; flip_h = true faces Left towards player!
-		sprite_3d.flip_h = (facing_dir_x < 0.0)
 		attack_area_3d.position.x = 1.2 * facing_dir_x
+
+	if absf(diff.x) >= absf(diff.z) * 1.15:
+		current_facing_dir = FacingDir.SIDE_RIGHT if diff.x > 0.0 else FacingDir.SIDE_LEFT
+		sprite_3d.flip_h = (facing_dir_x < 0.0)
+	elif diff.z > 0.0:
+		current_facing_dir = FacingDir.FRONT_SOUTH
+		sprite_3d.flip_h = false
+	else:
+		current_facing_dir = FacingDir.BACK_NORTH
+		sprite_3d.flip_h = false
 
 	pattern_timer -= delta
 
@@ -340,6 +352,40 @@ func _execute_charge_impact() -> void:
 
 func _update_boss_animation(delta: float) -> void:
 	anim_frame_timer += delta
+
+	var is_directional: bool = (current_facing_dir == FacingDir.FRONT_SOUTH or current_facing_dir == FacingDir.BACK_NORTH)
+
+	if is_directional:
+		if sprite_3d.texture != BossTextureDirectional:
+			sprite_3d.texture = BossTextureDirectional
+			sprite_3d.hframes = 3
+			sprite_3d.vframes = 2
+			sprite_3d.pixel_size = 0.0082
+		sprite_3d.flip_h = false
+
+		var base_offset: int = 0 if current_facing_dir == FacingDir.FRONT_SOUTH else 3
+		var frame: int = base_offset
+		match current_pattern:
+			Pattern.IDLE, Pattern.CHASE:
+				frame = base_offset + (int(anim_frame_timer * 4.0) % 2)
+			Pattern.CHARGE_WINDUP, Pattern.CHARGE_ACTIVE, Pattern.SHIELD_CHARGE:
+				frame = base_offset + 2
+			Pattern.TRIPLE_CLEAVE, Pattern.QUAKE_RING:
+				frame = base_offset + 1
+			Pattern.STUNNED:
+				frame = base_offset + 0
+			_:
+				frame = base_offset
+		sprite_3d.frame = frame
+		return
+
+	# Side-facing 4x3 Boss Sheets
+	if sprite_3d.hframes != 4 or sprite_3d.vframes != 3:
+		sprite_3d.hframes = 4
+		sprite_3d.vframes = 3
+		sprite_3d.pixel_size = 0.0082
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
+
 	var fps := 8.0
 	var start_frame := 0
 	var frame_count := 4

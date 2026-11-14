@@ -12,8 +12,8 @@ const SideQVEnemyClass = preload("res://scripts/side_quarter_view/side_qv_enemy.
 const SideQVBossClass = preload("res://scripts/side_quarter_view/side_qv_boss.gd")
 const SideQVVitalityOrbClass = preload("res://scripts/side_quarter_view/side_qv_vitality_orb.gd")
 
-const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-023/STUDIO_V3/evidence/V3-023/"
-const CAPTURES_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-023/STUDIO_V3/evidence/V3-023/captures/"
+const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/"
+const CAPTURES_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-024/STUDIO_V3/evidence/V3-024/captures/"
 
 
 func _init() -> void:

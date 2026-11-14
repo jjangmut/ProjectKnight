@@ -1,0 +1,42 @@
+{
+  "task_id": "V3-024",
+  "branch": "studio/v3-024-directional-animation-art",
+  "timestamp": "2026-11-14T12:26:45",
+  "regressions": {
+    "PILLAR_COLLISION_P0": {
+      "suite": "v3_022_r1_mechanics_verification.gd",
+      "status": "PASSED",
+      "description": "Character cannot phase through stone pillars or courtyard archway columns."
+    },
+    "PROJECTILE_TRACE_P0": {
+      "suite": "v3_022_r1_mechanics_verification.gd",
+      "status": "PASSED",
+      "description": "Crossbow bolts traverse flat 2.5D trajectory across arena depth plane without wall clipping or phantom hits."
+    },
+    "BOSS_AIR_STABILITY_P0": {
+      "suite": "v3_022_r1_mechanics_verification.gd",
+      "status": "PASSED",
+      "max_jump_arc_m": 1.34,
+      "pre_fix_arc_m": 2.97,
+      "description": "Boss remains anchored to floor during charge and quake ring patterns; no air bounces."
+    },
+    "COMBAT_PACING_4_POLICY": {
+      "suite": "v3_023_polish_verification.gd",
+      "status": "PASSED",
+      "forward_attack_spam_punished": true,
+      "xz_no_defense_punished": true,
+      "tactical_full_play_clears": true,
+      "description": "Mindless attack spam fails against poise & counter-ripostes; tactical movement and parry required."
+    },
+    "DIRECTIONAL_ANIMATION_SYNC": {
+      "suite": "direction_animation_lab.gd",
+      "status": "PASSED",
+      "sprite_pitch_tilt_degrees": 0.0,
+      "aim_arrow_removed": true,
+      "four_way_directional_sheets_bound": true,
+      "slash_vfx_hitbox_synchronized": true,
+      "description": "True 4-directional 2.5D sprite sheets replace pitch tilt and floor arrows with frame-by-frame synchronization."
+    }
+  },
+  "overall_verdict": "ALL_REGRESSIONS_PASSED"
+}

@@ -1,0 +1,657 @@
+{
+	"all_samples_player_in_frame": true,
+	"boss_defeated_at_sec": 34.57,
+	"samples": [
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				76.04,
+				4.82,
+				7.08
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				656.700012207031,
+				320.299987792969
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.12,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.56,
+				4.56,
+				6.82
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				719.5,
+				308.299987792969
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.22,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.58,
+				4.58,
+				6.76
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				717.599975585938,
+				315.0
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.3,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.5,
+				4.52,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.700012207031,
+				307.799987792969
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.42,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				726.799987792969,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.52,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.099975585938,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.6,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.7,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.8,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 0.9,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.0,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.1,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.2,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.3,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.4,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.42,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.52,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.62,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.72,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.82,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 1.92,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.02,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.12,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.22,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.32,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.42,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.52,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.62,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.72,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.82,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 2.92,
+			"victory_banner_visible": true
+		},
+		{
+			"boss_kneeling_visible": true,
+			"camera_pos": [
+				75.52,
+				4.5,
+				6.72
+			],
+			"player_pos": [
+				76.18,
+				0.0,
+				0.34
+			],
+			"player_screen_px": [
+				727.200012207031,
+				307.100006103516
+			],
+			"player_state": 8,
+			"player_visible_in_frame": true,
+			"t_after_boss_death": 3.02,
+			"victory_banner_visible": true
+		}
+	]
+}

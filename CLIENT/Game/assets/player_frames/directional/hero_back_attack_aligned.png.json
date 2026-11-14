@@ -1,0 +1,77 @@
+{
+  "source": "D:\\JUNYPAPA_STUDIO\\Worktrees\\ProjectKnight\\V3-024\\TOOLS\\sprite_pipeline\\raw\\hero_back_attack_raw.jpg",
+  "raw_size": [
+    1024,
+    1024
+  ],
+  "raw_grid": [
+    2,
+    2
+  ],
+  "cell": 780,
+  "foot_y": 700,
+  "pivot": [
+    390,
+    700
+  ],
+  "uniform_scale": 1.5305,
+  "ref_height_px": 377.0,
+  "out_grid": [
+    2,
+    2
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "source_cell": 0,
+      "bbox": [
+        234,
+        111,
+        612,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 131867,
+      "clipped": false
+    },
+    {
+      "index": 1,
+      "source_cell": 1,
+      "bbox": [
+        187,
+        135,
+        731,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 141019,
+      "clipped": false
+    },
+    {
+      "index": 2,
+      "source_cell": 2,
+      "bbox": [
+        234,
+        123,
+        779,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 132418,
+      "clipped": true
+    },
+    {
+      "index": 3,
+      "source_cell": 3,
+      "bbox": [
+        129,
+        137,
+        651,
+        701
+      ],
+      "feet_y": 701,
+      "opaque_px": 136672,
+      "clipped": false
+    }
+  ]
+}
