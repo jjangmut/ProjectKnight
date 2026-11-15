@@ -1,0 +1,112 @@
+{
+	"encounters": [
+		{
+			"design_intent_verified": true,
+			"encounter_id": 1,
+			"enemy_attack_profile": "Committed horizontal slash with 0.28s amber sweeping arc tell, 0.14s active strike, 0.22s recovery opening",
+			"enemy_types": [
+				"Citadel Melee Grunt (x3)"
+			],
+			"name": "성문 외곽 전초 (Citadel Outer Terrace Gate)",
+			"player_counterplay_options": [
+				{
+					"option": "Spacing & Whiff Punish",
+					"risk": "Low",
+					"tactical_value": "Step back during 0.28s tell arc, punish during 0.22s vulnerable recovery"
+				},
+				{
+					"option": "Timed Just Parry",
+					"risk": "Medium",
+					"tactical_value": "Raise guard within 0.16s clash window; inflicts 1.6s parry stun and grants 3x counter buff"
+				},
+				{
+					"option": "Attack Mash / Face Tank",
+					"risk": "Fatal",
+					"tactical_value": "Gets staggered and hit by simultaneous flankers; loses ~6-8 HP"
+				}
+			]
+		},
+		{
+			"design_intent_verified": true,
+			"encounter_id": 2,
+			"enemy_attack_profile": "Crossbow sniper tracking with 0.28s dynamic amber beam, 0.14s frozen crimson lock cue + muzzle flare, high-speed bolt projectile",
+			"enemy_types": [
+				"Citadel Crossbow Minion (x2)",
+				"Melee Grunt (x2)"
+			],
+			"name": "폐허 성벽 궁병 진지 (Ruined Crossbow Bastion)",
+			"player_counterplay_options": [
+				{
+					"option": "Z-Depth Sidestep",
+					"risk": "Low",
+					"tactical_value": "Move along W/S axis during 0.14s crimson lock; bolt passes harmlessly overhead"
+				},
+				{
+					"option": "Bolt Reflection Parry",
+					"risk": "Medium",
+					"tactical_value": "Face oncoming bolt and parry within 2.8m; reflects bolt back to stun or kill archer"
+				},
+				{
+					"option": "Sprint Straight Ahead",
+					"risk": "High",
+					"tactical_value": "Takes heavy direct damage (2 HP per bolt) and stumble knockdown"
+				}
+			]
+		},
+		{
+			"design_intent_verified": true,
+			"encounter_id": 3,
+			"enemy_attack_profile": "Frontal barrier blocks all head-on spam; 0.35s runic runway tell shield surge bash with 0.42s vulnerable lowered-shield recovery",
+			"enemy_types": [
+				"Heavy Shield Knight (x1)",
+				"Crossbow Minion (x1)",
+				"Melee Grunt (x2)"
+			],
+			"name": "성채 테라스 회랑 (Citadel Terrace Corridor)",
+			"player_counterplay_options": [
+				{
+					"option": "Z-Axis Flanking & Dash",
+					"risk": "Low",
+					"tactical_value": "Sidestep to Z ±1.2m and dash behind knight while shield faces forward"
+				},
+				{
+					"option": "Bait Bash & Punish Whiff",
+					"risk": "Medium",
+					"tactical_value": "Stand in front to trigger 0.35s bash runway, sidestep surge, and strike during 0.42s opening"
+				},
+				{
+					"option": "Frontal Attack Spam",
+					"risk": "Futile / Fatal",
+					"tactical_value": "100% of frontal strikes clanged and deflected; player staggered and hit by bash"
+				}
+			]
+		},
+		{
+			"design_intent_verified": true,
+			"encounter_id": 4,
+			"enemy_attack_profile": "Triple Cleave (0.28s ground arc tell), Shield Line Charge (9.5m runway tell), Quake Ring (circular tell), Frontal Guard",
+			"enemy_types": [
+				"Citadel Boss Commander"
+			],
+			"name": "기사의 성소 (Knight Commander Sanctuary)",
+			"player_counterplay_options": [
+				{
+					"option": "Z-Dodge Evasion on Charge",
+					"risk": "Low",
+					"tactical_value": "Step outside 1.35m runway lane; boss crashes into wall with 0.45s recoil stun"
+				},
+				{
+					"option": "Just Parry Cleave / Quake",
+					"risk": "Medium",
+					"tactical_value": "Deflect sword strike with precise timing; stuns boss for 0.72s"
+				},
+				{
+					"option": "Corner Squeeze / Attack Mash",
+					"risk": "Fatal",
+					"tactical_value": "Boss cleave combo deals up to 6 HP; mindless spam results in rapid defeat"
+				}
+			]
+		}
+	],
+	"task_id": "V3-025"
+}

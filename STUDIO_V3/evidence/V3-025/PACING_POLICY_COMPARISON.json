@@ -1,0 +1,151 @@
+{
+	"build_branch": "studio/v3-025-stage1-combat-readability-pacing",
+	"policies": {
+		"forward_attack_spam": {
+			"attacks_performed": 104,
+			"boss_defeated": false,
+			"cleared": false,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 13,
+			"dashes_performed": 0,
+			"duration_sec": 24.12,
+			"encounter_timestamps": {
+				"boss_defeated": 0.0,
+				"boss_started": 0.0,
+				"encounter_1_cleared": 2.84,
+				"encounter_2_cleared": 11.04,
+				"encounter_2_started": 6.84,
+				"encounter_3_cleared": 0.0,
+				"encounter_3_started": 14.66
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 0,
+			"policy": "forward_attack_spam",
+			"vitality_orbs_collected": 2
+		},
+		"stationary_attack_only": {
+			"attacks_performed": 37,
+			"boss_defeated": false,
+			"cleared": false,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 9,
+			"dashes_performed": 0,
+			"duration_sec": 8.56,
+			"encounter_timestamps": {
+				"boss_defeated": 0.0,
+				"boss_started": 0.0,
+				"encounter_1_cleared": 0.0,
+				"encounter_2_cleared": 0.0,
+				"encounter_2_started": 0.0,
+				"encounter_3_cleared": 0.0,
+				"encounter_3_started": 0.0
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 0,
+			"policy": "stationary_attack_only",
+			"vitality_orbs_collected": 0
+		},
+		"tactical_counterplay": {
+			"attacks_performed": 58,
+			"boss_defeated": true,
+			"cleared": true,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 6,
+			"dashes_performed": 4,
+			"duration_sec": 27.7,
+			"encounter_timestamps": {
+				"boss_defeated": 27.7,
+				"boss_started": 18.64,
+				"encounter_1_cleared": 2.46,
+				"encounter_2_cleared": 8.7,
+				"encounter_2_started": 4.46,
+				"encounter_3_cleared": 16.86,
+				"encounter_3_started": 10.06
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 199,
+			"policy": "tactical_counterplay",
+			"vitality_orbs_collected": 2
+		},
+		"tactical_latency_250ms": {
+			"attacks_performed": 53,
+			"boss_defeated": true,
+			"cleared": true,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 5,
+			"dashes_performed": 4,
+			"duration_sec": 26.26,
+			"encounter_timestamps": {
+				"boss_defeated": 26.26,
+				"boss_started": 17.66,
+				"encounter_1_cleared": 2.44,
+				"encounter_2_cleared": 9.3,
+				"encounter_2_started": 4.44,
+				"encounter_3_cleared": 15.68,
+				"encounter_3_started": 10.76
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 191,
+			"policy": "tactical_latency_250ms",
+			"vitality_orbs_collected": 1
+		},
+		"tactical_latency_450ms": {
+			"attacks_performed": 55,
+			"boss_defeated": true,
+			"cleared": true,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 8,
+			"dashes_performed": 6,
+			"duration_sec": 26.92,
+			"encounter_timestamps": {
+				"boss_defeated": 26.92,
+				"boss_started": 20.62,
+				"encounter_1_cleared": 2.4,
+				"encounter_2_cleared": 8.92,
+				"encounter_2_started": 4.4,
+				"encounter_3_cleared": 18.98,
+				"encounter_3_started": 10.18
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 20,
+			"policy": "tactical_latency_450ms",
+			"vitality_orbs_collected": 3
+		},
+		"xz_move_attack_no_defense": {
+			"attacks_performed": 40,
+			"boss_defeated": false,
+			"cleared": false,
+			"confirmed_parries_deflected": 0,
+			"damage_taken": 9,
+			"dashes_performed": 0,
+			"duration_sec": 11.36,
+			"encounter_timestamps": {
+				"boss_defeated": 0.0,
+				"boss_started": 0.0,
+				"encounter_1_cleared": 0.0,
+				"encounter_2_cleared": 0.0,
+				"encounter_2_started": 0.0,
+				"encounter_3_cleared": 0.0,
+				"encounter_3_started": 0.0
+			},
+			"enemies_defeated": 0,
+			"final_player_hp": 0,
+			"guard_inputs_attempted": 0,
+			"policy": "xz_move_attack_no_defense",
+			"vitality_orbs_collected": 0
+		}
+	},
+	"task_id": "V3-025",
+	"timestamp_unix": 1794745295,
+	"verdict": {
+		"forward_spam_fails_or_heavily_punished": true,
+		"reaction_delay_demonstrates_human_fairness_gap": true,
+		"tactical_counterplay_clears_reliably": true,
+		"xz_no_defense_worse_than_tactical": true
+	}
+}

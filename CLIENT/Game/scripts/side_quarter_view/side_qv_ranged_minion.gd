@@ -23,6 +23,10 @@ var anim_timer: float = 0.0
 var sprite_3d: Sprite3D
 var ground_shadow: MeshInstance3D = null
 var aim_laser_3d: MeshInstance3D = null
+var aim_laser_root: Node3D = null
+var aim_laser_beam: MeshInstance3D = null
+var aim_laser_reticle: MeshInstance3D = null
+var aim_laser_mat: StandardMaterial3D = null
 var hp_bar_fill: MeshInstance3D = null
 var facing_dir_x: float = -1.0
 var is_dead: bool = false
@@ -85,25 +89,42 @@ func _build_components() -> void:
 	shadow_mesh.material_override = sh_mat
 	add_child(shadow_mesh)
 
-	# Aiming Laser Telegraph Line on Floor
-	aim_laser_3d = MeshInstance3D.new()
-	aim_laser_3d.name = "CrossbowAimLaser3D"
+	# Dynamic Shape-Accurate Aiming Laser Telegraph Root
+	aim_laser_root = Node3D.new()
+	aim_laser_root.name = "CrossbowAimLaser3D"
+	aim_laser_root.visible = false
+
+	aim_laser_beam = MeshInstance3D.new()
+	aim_laser_beam.name = "LaserBeamQuad"
 	var l_quad := QuadMesh.new()
-	l_quad.size = Vector2(6.5, 0.08)
-	aim_laser_3d.mesh = l_quad
-	aim_laser_3d.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
-	aim_laser_3d.position = Vector3(-3.25, 0.05, 0.0)
-	var l_mat := StandardMaterial3D.new()
-	l_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	l_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	l_mat.albedo_color = Color(1.6, 0.25, 0.2, 0.85)
-	l_mat.emission_enabled = true
-	l_mat.emission = Color(1.6, 0.25, 0.2, 1.0)
-	l_mat.emission_energy_multiplier = 1.35
-	l_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	aim_laser_3d.material_override = l_mat
-	aim_laser_3d.visible = false
-	add_child(aim_laser_3d)
+	l_quad.size = Vector2(0.045, 6.0)
+	aim_laser_beam.mesh = l_quad
+	aim_laser_beam.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+
+	aim_laser_mat = StandardMaterial3D.new()
+	aim_laser_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	aim_laser_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	aim_laser_mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	aim_laser_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	aim_laser_mat.albedo_color = Color(1.3, 0.75, 0.2, 0.60)
+	aim_laser_mat.emission_enabled = true
+	aim_laser_mat.emission = Color(1.3, 0.75, 0.2, 1.0)
+	aim_laser_mat.emission_energy_multiplier = 1.2
+	aim_laser_beam.material_override = aim_laser_mat
+	aim_laser_root.add_child(aim_laser_beam)
+
+	# Target Reticle at the end of the aim laser
+	aim_laser_reticle = MeshInstance3D.new()
+	aim_laser_reticle.name = "TargetReticle"
+	var r_quad := QuadMesh.new()
+	r_quad.size = Vector2(0.32, 0.32)
+	aim_laser_reticle.mesh = r_quad
+	aim_laser_reticle.rotation_degrees = Vector3(-90.0, 45.0, 0.0)
+	aim_laser_reticle.material_override = aim_laser_mat
+	aim_laser_root.add_child(aim_laser_reticle)
+
+	add_child(aim_laser_root)
+	aim_laser_3d = aim_laser_beam
 
 
 func _build_overhead_hp_bar() -> void:
@@ -243,44 +264,97 @@ func _prevent_player_pushing() -> void:
 				velocity -= dir * speed_towards
 
 
+func _update_aim_laser(from_pt: Vector3, to_pt: Vector3, is_locked: bool) -> void:
+	if aim_laser_root == null or not is_instance_valid(aim_laser_root):
+		return
+	var diff := to_pt - from_pt
+	diff.y = 0.0
+	var dist := clampf(diff.length(), 0.5, 9.5)
+	var dir := diff.normalized() if diff.length_squared() > 0.001 else Vector3(facing_dir_x, 0.0, 0.0)
+
+	aim_laser_root.global_position = Vector3(from_pt.x, 0.035, from_pt.z)
+	aim_laser_root.look_at(aim_laser_root.global_position + dir * 5.0, Vector3.UP)
+
+	if aim_laser_beam != null and is_instance_valid(aim_laser_beam):
+		var q := aim_laser_beam.mesh as QuadMesh
+		if q != null:
+			q.size = Vector2(0.045, dist)
+		aim_laser_beam.position = Vector3(0.0, 0.0, -dist * 0.5)
+
+	if aim_laser_reticle != null and is_instance_valid(aim_laser_reticle):
+		aim_laser_reticle.position = Vector3(0.0, 0.005, -dist)
+
+	if aim_laser_mat != null:
+		if is_locked:
+			aim_laser_mat.albedo_color = Color(2.4, 0.45, 0.2, 0.95)
+			aim_laser_mat.emission = Color(2.4, 0.45, 0.2, 1.0)
+			aim_laser_mat.emission_energy_multiplier = 1.6
+		else:
+			aim_laser_mat.albedo_color = Color(1.3, 0.75, 0.2, 0.60)
+			aim_laser_mat.emission = Color(1.3, 0.75, 0.2, 1.0)
+			aim_laser_mat.emission_energy_multiplier = 1.1
+
+
 func _execute_shoot() -> void:
 	is_aiming = true
 	shoot_timer = shoot_interval + randf_range(-0.25, 0.35)
 	sprite_3d.frame = 1 # Aim frame
+	if aim_laser_root != null:
+		aim_laser_root.visible = true
 
-	if aim_laser_3d != null and is_instance_valid(aim_laser_3d):
-		aim_laser_3d.visible = true
-		aim_laser_3d.position = Vector3(facing_dir_x * 3.25, 0.06, 0.0)
+	# TELL Phase 1: Dynamic Tracking (0.28s)
+	var track_time: float = 0.28
+	var fire_pt := global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
+	var target_pt := target_player.global_position if (target_player != null and is_instance_valid(target_player)) else fire_pt + Vector3(facing_dir_x * 5.0, 0.0, 0.0)
 
-	# Aiming visual telegraph flash
+	var elapsed: float = 0.0
+	while elapsed < track_time:
+		await get_tree().process_frame
+		elapsed += get_process_delta_time()
+		if not is_instance_valid(self) or is_stunned or is_dead or current_hp <= 0:
+			if aim_laser_root != null:
+				aim_laser_root.visible = false
+			is_aiming = false
+			return
+		if target_player != null and is_instance_valid(target_player):
+			target_pt = target_player.global_position
+		fire_pt = global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
+		_update_aim_laser(fire_pt, target_pt, false)
+
+	# TELL Phase 2: Lock & Charge Flash (0.14s)
+	var locked_aim_dir := (target_pt - fire_pt)
+	locked_aim_dir.y = 0.0
+	if locked_aim_dir.length_squared() < 0.001:
+		locked_aim_dir = Vector3(facing_dir_x, 0.0, 0.0)
+	else:
+		locked_aim_dir = locked_aim_dir.normalized()
+
+	_update_aim_laser(fire_pt, fire_pt + locked_aim_dir * 8.0, true)
 	if sprite_3d != null:
 		var tw := create_tween()
 		if tw:
-			sprite_3d.modulate = Color(2.5, 0.6, 0.6, 1.0)
-			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.38)
+			sprite_3d.modulate = Color(3.0, 0.8, 0.4, 1.0)
+			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.14)
 
-	await get_tree().create_timer(0.38).timeout
-	if aim_laser_3d != null and is_instance_valid(aim_laser_3d):
-		aim_laser_3d.visible = false
+	var lock_elapsed: float = 0.0
+	while lock_elapsed < 0.14:
+		await get_tree().process_frame
+		lock_elapsed += get_process_delta_time()
+	if aim_laser_root != null:
+		aim_laser_root.visible = false
 	if not is_instance_valid(self) or is_stunned or is_dead or current_hp <= 0:
 		is_aiming = false
 		return
 
+	# ACTIVE Phase: Fire Projectile along exact locked trajectory!
 	sprite_3d.frame = 2 # Fire frame
-	if target_player != null and is_instance_valid(target_player):
-		var target_pt := target_player.global_position + Vector3(0.0, 0.85, 0.0)
-		var fire_pt := global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
-		var aim_dir := (target_pt - fire_pt)
-		aim_dir.y = 0.0 # Horizontal 2.5D trajectory so bolts fly cleanly across the arena plane
-		if aim_dir.length_squared() < 0.001:
-			aim_dir = Vector3(facing_dir_x, 0.0, 0.0)
-		else:
-			aim_dir = aim_dir.normalized()
-		var bolt := CrossbowBoltScene.new()
-		get_parent().add_child(bolt)
-		bolt.launch(fire_pt, aim_dir, self, 16.5, 1, false)
+	fire_pt = global_position + Vector3(facing_dir_x * 0.5, 0.85, 0.0)
+	var bolt := CrossbowBoltScene.new()
+	get_parent().add_child(bolt)
+	bolt.launch(fire_pt, locked_aim_dir, self, 16.5, 1, false)
 
-	await get_tree().create_timer(0.25).timeout
+	# RECOVERY Phase: 0.28s recoil recovery
+	await get_tree().create_timer(0.28).timeout
 	if is_instance_valid(self):
 		is_aiming = false
 
@@ -308,6 +382,8 @@ func apply_parry_stun(duration: float = 2.0) -> void:
 	is_stunned = true
 	stun_timer = duration
 	is_aiming = false
+	if aim_laser_root != null:
+		aim_laser_root.visible = false
 	velocity = Vector3.ZERO
 	sprite_3d.frame = 4
 
@@ -354,6 +430,8 @@ func _die(is_counter: bool = false) -> void:
 	is_dead = true
 	is_recoiling = false
 	is_aiming = false
+	if aim_laser_root != null:
+		aim_laser_root.visible = false
 
 	# Immediate collision de-registration & attack prevention
 	collision_layer = 0

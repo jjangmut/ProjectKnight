@@ -279,7 +279,7 @@ func _build_distinct_encounter_zones() -> void:
 		"Zone2_SiegeBarricade_South"
 	)
 
-	# === ZONE 3 (X: 44..68): Royal Terrace Colonnade (Crimson Royal Carpet & Twin Flanking Columns) ===
+	# === ZONE 3 (X: 44..68): Royal Terrace Colonnade (Textured Flagstone Colonnade & Twin Flanking Columns) ===
 	var z3_carpet := MeshInstance3D.new()
 	z3_carpet.name = "Zone3_RoyalCrimsonCarpet"
 	var z3_quad := QuadMesh.new()
@@ -288,13 +288,15 @@ func _build_distinct_encounter_zones() -> void:
 	z3_carpet.position = Vector3(56.0, 0.018, 0.0)
 	z3_carpet.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 	var z3_mat := StandardMaterial3D.new()
-	z3_mat.albedo_color = Color(0.68, 0.14, 0.18, 0.94)
-	z3_mat.roughness = 0.78
+	z3_mat.albedo_texture = TexFlagstone
+	z3_mat.uv1_scale = Vector3(6.5, 1.2, 1.0)
+	z3_mat.albedo_color = Color(0.42, 0.22, 0.26, 0.88) # Muted wine-tinted flagstone terrace
+	z3_mat.roughness = 0.82
 	z3_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	z3_carpet.material_override = z3_mat
 	add_child(z3_carpet)
 
-	# Golden trim borders on the Royal Carpet
+	# Architectural stone trim borders along Colonnade path (Non-emissive, architectural)
 	for z_trim in [-1.42, 1.42]:
 		var trim := MeshInstance3D.new()
 		var t_quad := QuadMesh.new()
@@ -303,10 +305,8 @@ func _build_distinct_encounter_zones() -> void:
 		trim.position = Vector3(56.0, 0.020, z_trim)
 		trim.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
 		var t_mat := StandardMaterial3D.new()
-		t_mat.albedo_color = Color(1.2, 0.92, 0.32, 0.95)
-		t_mat.emission_enabled = true
-		t_mat.emission = Color(1.2, 0.92, 0.32, 1.0)
-		t_mat.emission_energy_multiplier = 1.2
+		t_mat.albedo_color = Color(0.60, 0.54, 0.44, 0.85) # Weathered brass/stone curb
+		t_mat.roughness = 0.65
 		t_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		trim.material_override = t_mat
 		add_child(trim)
@@ -778,7 +778,7 @@ func _on_stage_enemy_defeated(defeated_enemy: Node) -> void:
 				_spawn_vitality_orb(Vector3(64.0, 0.45, 0.0), 3)
 
 
-func _spawn_vitality_orb(pos: Vector3, heal_val: int = 2) -> SideQVVitalityOrb:
+func _spawn_vitality_orb(pos: Vector3, heal_val: int = 2) -> Node3D:
 	var orb := SideQVVitalityOrbClass.new()
 	orb.heal_amount = heal_val
 	add_child(orb)

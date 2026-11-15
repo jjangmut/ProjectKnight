@@ -13,6 +13,7 @@ const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
 const TexShieldAlbedo = preload("res://assets/props/heavy_shield_albedo.png")
 const TexShieldNormal = preload("res://assets/props/heavy_shield_normal.png")
 const TexShieldPBR = preload("res://assets/props/heavy_shield_metallic_roughness.png")
+const TexEnergyBarrierRunic = preload("res://assets/vfx/vfx_energy_barrier_runic.png")
 
 var void_aura_ring: MeshInstance3D
 var shield_socket: Node3D
@@ -187,7 +188,7 @@ static func _generate_heater_shield_mesh() -> ArrayMesh:
 func _physics_process(delta: float) -> void:
 	if post_attack_recovery > 0.0:
 		post_attack_recovery -= delta
-		if post_attack_recovery <= 0.0:
+		if post_attack_recovery <= 0.0 and not is_attacking:
 			is_shield_guarding = true
 
 	# Dynamic shield positioning & rotation based on combat state and facing direction
@@ -196,20 +197,59 @@ func _physics_process(delta: float) -> void:
 		var target_pos: Vector3
 		var target_rot: Vector3
 		if is_attacking:
-			# Shield Bash forward lunge
-			target_pos = Vector3(face_x * 0.58, 0.82, 0.02)
-			target_rot = Vector3(0.0, 90.0 if face_x > 0 else -90.0, 4.0 * face_x)
+			if attack_phase == "TELL":
+				target_pos = Vector3(face_x * 0.30, 0.88, 0.08)
+				target_rot = Vector3(-14.0, 95.0 if face_x > 0 else -95.0, 8.0 * face_x)
+			elif attack_phase == "ACTIVE":
+				target_pos = Vector3(face_x * 0.65, 0.82, 0.02)
+				target_rot = Vector3(0.0, 90.0 if face_x > 0 else -90.0, 4.0 * face_x)
+			else:
+				target_pos = Vector3(face_x * 0.38, 0.52, 0.16)
+				target_rot = Vector3(16.0, 50.0 if face_x > 0 else -50.0, -12.0 * face_x)
 		elif is_shield_guarding:
-			# Defensive frontal guard
 			target_pos = Vector3(face_x * 0.44, 0.80, 0.04)
 			target_rot = Vector3(0.0, 88.0 if face_x > 0 else -88.0, 0.0)
 		else:
-			# Relaxed forearm carry
 			target_pos = Vector3(face_x * 0.38, 0.72, 0.14)
 			target_rot = Vector3(6.0, 62.0 if face_x > 0 else -62.0, -8.0 * face_x)
 
-		shield_socket.position = shield_socket.position.lerp(target_pos, delta * 12.0)
-		shield_socket.rotation_degrees = shield_socket.rotation_degrees.lerp(target_rot, delta * 12.0)
+		shield_socket.position = shield_socket.position.lerp(target_pos, delta * 14.0)
+		shield_socket.rotation_degrees = shield_socket.rotation_degrees.lerp(target_rot, delta * 14.0)
+
+	# Elite Knight custom bash attack cycle
+	if is_attacking:
+		attack_timer += delta
+		var face_x: float = -1.0 if (sprite_3d != null and sprite_3d.flip_h) else 1.0
+		if attack_timer < 0.35:
+			attack_phase = "TELL"
+			attack_area_3d.monitoring = false
+			is_shield_guarding = false
+		elif attack_timer < 0.53:
+			if attack_phase != "ACTIVE":
+				attack_phase = "ACTIVE"
+				_trigger_active_bash_vfx(face_x)
+			velocity.x = face_x * 3.2
+			attack_area_3d.monitoring = true
+			is_shield_guarding = false
+		elif attack_timer < 0.95:
+			if attack_phase != "RECOVERY":
+				attack_phase = "RECOVERY"
+				_clear_attack_telegraph()
+			velocity.x = move_toward(velocity.x, 0.0, 16.0 * delta)
+			attack_area_3d.monitoring = false
+			is_shield_guarding = false # Opening during recovery!
+		else:
+			is_attacking = false
+			is_counter_riposte = false
+			attack_phase = "IDLE"
+			_clear_attack_telegraph()
+			attack_area_3d.monitoring = false
+			is_shield_guarding = true
+
+		_apply_enemy_separation(delta)
+		move_and_slide()
+		_update_enemy_animation(delta)
+		return
 
 	super._physics_process(delta)
 
@@ -223,12 +263,98 @@ func _execute_attack(as_riposte: bool = false) -> void:
 	attack_timer = 0.0
 	attack_phase = "TELL"
 	velocity = Vector3.ZERO
+	var face_x: float = -1.0 if (sprite_3d != null and sprite_3d.flip_h) else 1.0
 	if sprite_3d != null:
 		var tw := create_tween()
 		if tw:
-			sprite_3d.modulate = Color(3.0, 1.2, 0.3, 1.0)
-			tw.tween_property(sprite_3d, "modulate", Color(0.9, 0.8, 1.2, 1.0), 0.22)
-	_spawn_windup_telegraph_ring()
+			sprite_3d.modulate = Color(3.2, 1.4, 0.4, 1.0)
+			tw.tween_property(sprite_3d, "modulate", Color(0.9, 0.8, 1.2, 1.0), 0.25)
+	_spawn_shield_bash_telegraph(face_x, 0.35)
+
+
+func _spawn_shield_bash_telegraph(face_x: float, duration: float) -> void:
+	_clear_attack_telegraph()
+	var p := get_parent()
+	if p == null:
+		return
+
+	var root := Node3D.new()
+	root.name = "KnightBashTelegraph3D"
+	active_telegraph_node = root
+	p.add_child(root)
+	root.global_position = global_position + Vector3(face_x * 0.95, 0.025, 0.0)
+
+	# Directional bash runway matching the 1.85m x 0.95m bash collision lane
+	var bash_mesh := MeshInstance3D.new()
+	bash_mesh.name = "BashLaneFloor"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.85, 0.95)
+	bash_mesh.mesh = quad
+	bash_mesh.rotation_degrees = Vector3(-90.0, 0.0 if face_x > 0.0 else 180.0, 0.0)
+
+	var bmat := StandardMaterial3D.new()
+	bmat.albedo_texture = TexEnergyBarrierRunic
+	bmat.albedo_color = Color(1.6, 0.65, 0.25, 0.65)
+	bmat.emission_enabled = true
+	bmat.emission_texture = TexEnergyBarrierRunic
+	bmat.emission = Color(1.6, 0.65, 0.25, 1.0)
+	bmat.emission_energy_multiplier = 1.35
+	bmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	bmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	bmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	bmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	bash_mesh.material_override = bmat
+	root.add_child(bash_mesh)
+
+	bash_mesh.scale = Vector3(0.70, 0.70, 0.70)
+	var tw := bash_mesh.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(bash_mesh, "scale", Vector3(1.10, 1.10, 1.10), duration)
+		tw.tween_property(bmat, "albedo_color:a", 0.90, duration)
+
+
+func _trigger_active_bash_vfx(face_x: float) -> void:
+	if active_telegraph_node != null and is_instance_valid(active_telegraph_node):
+		var floor_lane = active_telegraph_node.get_node_or_null("BashLaneFloor")
+		if floor_lane != null and floor_lane.material_override != null:
+			var mat: StandardMaterial3D = floor_lane.material_override
+			mat.albedo_color = Color(2.8, 1.4, 0.45, 0.95)
+			mat.emission = Color(2.8, 1.4, 0.45, 1.0)
+			mat.emission_energy_multiplier = 1.9
+
+	# Concussive Bash Shockwave Burst
+	var p := get_parent()
+	if p == null:
+		return
+	var wave := MeshInstance3D.new()
+	wave.name = "ActiveBashWave3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.6, 1.6)
+	wave.mesh = quad
+	wave.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	wave.position = global_position + Vector3(face_x * 0.95, 0.04, 0.0)
+
+	var wmat := StandardMaterial3D.new()
+	wmat.albedo_texture = TexShockwaveRing
+	wmat.albedo_color = Color(1.8, 1.0, 0.3, 0.95)
+	wmat.emission_enabled = true
+	wmat.emission_texture = TexShockwaveRing
+	wmat.emission = Color(1.8, 1.0, 0.3, 1.0)
+	wmat.emission_energy_multiplier = 1.6
+	wmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	wmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	wmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	wmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	wave.material_override = wmat
+	p.add_child(wave)
+
+	var wtw := wave.create_tween()
+	if wtw:
+		wtw.set_parallel(true)
+		wtw.tween_property(wave, "scale", Vector3(1.8, 1.8, 1.8), 0.18)
+		wtw.tween_property(wmat, "albedo_color:a", 0.0, 0.18)
+		wtw.chain().tween_callback(wave.queue_free)
 
 
 func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool = false) -> void:
@@ -240,14 +366,17 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 	var face_x: float = -1.0 if (sprite_3d != null and sprite_3d.flip_h) else 1.0
 	var incoming_x: float = hit_dir.x
 
-	# Hit comes from the front if incoming_x opposes facing direction (or player is in front)
-	var is_frontal_hit: bool = (incoming_x * face_x < -0.1) # hit pushes opposite to facing direction
+	# Hit comes from the front only if player is in front in X AND within narrow shield depth lane (|dz| < 0.42)
+	var is_frontal_hit: bool = false
 	if target_player != null and is_instance_valid(target_player):
 		var to_player: Vector3 = target_player.global_position - global_position
-		if to_player.x * face_x > 0.2 and absf(to_player.z) < 1.0:
+		if to_player.x * face_x > 0.15 and absf(to_player.z) < 0.42:
 			is_frontal_hit = true
+	elif incoming_x * face_x < -0.1:
+		is_frontal_hit = true
 
-	if is_shield_guarding and is_frontal_hit and not is_stunned and not is_counter and post_attack_recovery <= 0.0:
+	# Shield only blocks if guarding AND not in attack/recovery opening!
+	if is_shield_guarding and not is_attacking and is_frontal_hit and not is_stunned and not is_counter and post_attack_recovery <= 0.0:
 		# FRONT BLOCKED: Clang! 0 damage, player attack bounces!
 		_spawn_shield_block_sparks()
 		AudioManager.play("guard_block")
@@ -266,12 +395,11 @@ func receive_hit(amount: int, hit_dir: Vector3 = Vector3.ZERO, is_counter: bool 
 				rtw.chain().tween_property(shield_socket, "position", shield_socket.position, 0.12)
 				rtw.parallel().tween_property(shield_socket, "rotation_degrees", shield_socket.rotation_degrees, 0.12)
 
-		# Retaliate with immediate heavy shield bash counter-strike while keeping frontal shield up!
+		# Retaliate with heavy shield bash counter-strike!
 		velocity.x = face_x * 2.5
 		is_recoiling = false
 		if not is_attacking:
 			_execute_attack(true)
-			is_shield_guarding = true # Keep shield active until flanked or parried
 		return
 
 	# If hit from flank, back, or during recovery/stun: Takes full damage!

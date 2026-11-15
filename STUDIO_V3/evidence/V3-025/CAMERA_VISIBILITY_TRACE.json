@@ -1,0 +1,4964 @@
+{
+	"all_frames_verified_on_screen": false,
+	"boss_off_screen_frames": 708,
+	"boss_screen_x_max": 1362.81640625,
+	"boss_screen_x_min": 160.56510925293,
+	"boss_screen_y_max": 842.804321289063,
+	"boss_screen_y_min": 641.072021484375,
+	"both_on_screen_frames": 988,
+	"camera_fov_max": 45.0719146728516,
+	"camera_fov_min": 42.0000267028809,
+	"dual_camera_active": true,
+	"player_off_screen_frames": 1045,
+	"player_screen_x_max": 1290.12780761719,
+	"player_screen_x_min": -36.0373687744141,
+	"player_screen_y_max": 908.202087402344,
+	"player_screen_y_min": 661.466796875,
+	"samples": [
+		{
+			"boss_screen_px": [
+				1266.8,
+				699.8
+			],
+			"boss_world": [
+				77.54,
+				0.07,
+				0.21
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 45.0,
+			"camera_x": 73.84,
+			"player_screen_px": [
+				16.4,
+				675.3
+			],
+			"player_world": [
+				70.02,
+				0.0,
+				-0.16
+			],
+			"sim_time": 53.12
+		},
+		{
+			"boss_screen_px": [
+				1168.6,
+				688.1
+			],
+			"boss_world": [
+				76.97,
+				0.0,
+				0.02
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 44.7,
+			"camera_x": 73.79,
+			"player_screen_px": [
+				85.3,
+				687.1
+			],
+			"player_world": [
+				70.46,
+				0.0,
+				0.01
+			],
+			"sim_time": 53.28
+		},
+		{
+			"boss_screen_px": [
+				1192.6,
+				662.4
+			],
+			"boss_world": [
+				77.24,
+				0.0,
+				-0.28
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 44.3,
+			"camera_x": 73.87,
+			"player_screen_px": [
+				155.8,
+				684.3
+			],
+			"player_world": [
+				70.98,
+				0.0,
+				-0.04
+			],
+			"sim_time": 53.45
+		},
+		{
+			"boss_screen_px": [
+				1263.1,
+				678.7
+			],
+			"boss_world": [
+				77.93,
+				0.0,
+				-0.12
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 44.0,
+			"camera_x": 74.22,
+			"player_screen_px": [
+				187.2,
+				685.8
+			],
+			"player_world": [
+				71.54,
+				0.0,
+				-0.04
+			],
+			"sim_time": 53.62
+		},
+		{
+			"boss_screen_px": [
+				1190.6,
+				681.0
+			],
+			"boss_world": [
+				77.92,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 43.8,
+			"camera_x": 74.66,
+			"player_screen_px": [
+				204.8,
+				685.6
+			],
+			"player_world": [
+				72.1,
+				0.0,
+				-0.04
+			],
+			"sim_time": 53.78
+		},
+		{
+			"boss_screen_px": [
+				1117.7,
+				681.1
+			],
+			"boss_world": [
+				77.76,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 43.4,
+			"camera_x": 74.96,
+			"player_screen_px": [
+				246.3,
+				685.7
+			],
+			"player_world": [
+				72.66,
+				0.0,
+				-0.04
+			],
+			"sim_time": 53.95
+		},
+		{
+			"boss_screen_px": [
+				1056.0,
+				681.4
+			],
+			"boss_world": [
+				77.69,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 43.0,
+			"camera_x": 75.27,
+			"player_screen_px": [
+				308.8,
+				686.1
+			],
+			"player_world": [
+				73.36,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.12
+		},
+		{
+			"boss_screen_px": [
+				1013.1,
+				681.6
+			],
+			"boss_world": [
+				77.69,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.8,
+			"camera_x": 75.54,
+			"player_screen_px": [
+				358.6,
+				686.3
+			],
+			"player_world": [
+				73.92,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.28
+		},
+		{
+			"boss_screen_px": [
+				967.3,
+				681.8
+			],
+			"boss_world": [
+				77.69,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.6,
+			"camera_x": 75.81,
+			"player_screen_px": [
+				407.5,
+				686.5
+			],
+			"player_world": [
+				74.48,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.45
+		},
+		{
+			"boss_screen_px": [
+				894.7,
+				681.9
+			],
+			"boss_world": [
+				77.51,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.4,
+			"camera_x": 76.05,
+			"player_screen_px": [
+				437.3,
+				686.7
+			],
+			"player_world": [
+				74.9,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.62
+		},
+		{
+			"boss_screen_px": [
+				856.1,
+				682.0
+			],
+			"boss_world": [
+				77.35,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.3,
+			"camera_x": 76.12,
+			"player_screen_px": [
+				425.0,
+				686.8
+			],
+			"player_world": [
+				74.9,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.78
+		},
+		{
+			"boss_screen_px": [
+				845.8,
+				682.1
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.3,
+			"camera_x": 76.11,
+			"player_screen_px": [
+				426.0,
+				686.9
+			],
+			"player_world": [
+				74.9,
+				0.0,
+				-0.04
+			],
+			"sim_time": 54.95
+		},
+		{
+			"boss_screen_px": [
+				845.1,
+				682.2
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.2,
+			"camera_x": 76.12,
+			"player_screen_px": [
+				445.0,
+				687.0
+			],
+			"player_world": [
+				75.01,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.12
+		},
+		{
+			"boss_screen_px": [
+				831.3,
+				682.2
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.1,
+			"camera_x": 76.2,
+			"player_screen_px": [
+				470.2,
+				687.0
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.28
+		},
+		{
+			"boss_screen_px": [
+				824.9,
+				682.3
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.1,
+			"camera_x": 76.23,
+			"player_screen_px": [
+				463.4,
+				687.1
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.45
+		},
+		{
+			"boss_screen_px": [
+				822.3,
+				682.3
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.1,
+			"camera_x": 76.25,
+			"player_screen_px": [
+				460.6,
+				687.1
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.62
+		},
+		{
+			"boss_screen_px": [
+				821.3,
+				682.3
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.1,
+			"camera_x": 76.25,
+			"player_screen_px": [
+				459.4,
+				687.1
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.78
+		},
+		{
+			"boss_screen_px": [
+				820.9,
+				682.3
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.26,
+			"player_screen_px": [
+				458.9,
+				687.1
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 55.95
+		},
+		{
+			"boss_screen_px": [
+				820.8,
+				682.4
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.26,
+			"player_screen_px": [
+				458.7,
+				687.2
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.12
+		},
+		{
+			"boss_screen_px": [
+				820.8,
+				682.4
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.26,
+			"player_screen_px": [
+				458.6,
+				687.2
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.28
+		},
+		{
+			"boss_screen_px": [
+				820.8,
+				682.4
+			],
+			"boss_world": [
+				77.28,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.26,
+			"player_screen_px": [
+				458.5,
+				687.2
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.45
+		},
+		{
+			"boss_screen_px": [
+				828.8,
+				682.4
+			],
+			"boss_world": [
+				77.33,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.26,
+			"player_screen_px": [
+				458.4,
+				687.2
+			],
+			"player_world": [
+				75.24,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.62
+		},
+		{
+			"boss_screen_px": [
+				846.3,
+				682.4
+			],
+			"boss_world": [
+				77.51,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.34,
+			"player_screen_px": [
+				483.4,
+				687.2
+			],
+			"player_world": [
+				75.46,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.78
+		},
+		{
+			"boss_screen_px": [
+				854.7,
+				682.5
+			],
+			"boss_world": [
+				77.64,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.42,
+			"player_screen_px": [
+				494.1,
+				687.3
+			],
+			"player_world": [
+				75.6,
+				0.0,
+				-0.04
+			],
+			"sim_time": 56.95
+		},
+		{
+			"boss_screen_px": [
+				852.6,
+				682.4
+			],
+			"boss_world": [
+				77.76,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.56,
+			"player_screen_px": [
+				469.9,
+				687.2
+			],
+			"player_world": [
+				75.6,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.12
+		},
+		{
+			"boss_screen_px": [
+				840.7,
+				682.4
+			],
+			"boss_world": [
+				77.77,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.63,
+			"player_screen_px": [
+				456.8,
+				687.2
+			],
+			"player_world": [
+				75.6,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.28
+		},
+		{
+			"boss_screen_px": [
+				850.3,
+				682.4
+			],
+			"boss_world": [
+				77.92,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.73,
+			"player_screen_px": [
+				480.0,
+				687.2
+			],
+			"player_world": [
+				75.83,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.45
+		},
+		{
+			"boss_screen_px": [
+				857.2,
+				682.2
+			],
+			"boss_world": [
+				78.08,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.85,
+			"player_screen_px": [
+				485.8,
+				687.1
+			],
+			"player_world": [
+				75.98,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.62
+		},
+		{
+			"boss_screen_px": [
+				846.4,
+				682.4
+			],
+			"boss_world": [
+				78.16,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.99,
+			"player_screen_px": [
+				460.8,
+				687.2
+			],
+			"player_world": [
+				75.98,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.78
+		},
+		{
+			"boss_screen_px": [
+				891.1,
+				682.4
+			],
+			"boss_world": [
+				78.74,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 77.32,
+			"player_screen_px": [
+				593.2,
+				687.2
+			],
+			"player_world": [
+				77.06,
+				0.0,
+				-0.04
+			],
+			"sim_time": 57.95
+		},
+		{
+			"boss_screen_px": [
+				935.7,
+				682.4
+			],
+			"boss_world": [
+				79.67,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 78.0,
+			"player_screen_px": [
+				663.3,
+				687.2
+			],
+			"player_world": [
+				78.13,
+				0.0,
+				-0.04
+			],
+			"sim_time": 58.12
+		},
+		{
+			"boss_screen_px": [
+				887.3,
+				686.8
+			],
+			"boss_world": [
+				80.21,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 78.81,
+			"player_screen_px": [
+				709.3,
+				686.8
+			],
+			"player_world": [
+				79.2,
+				0.0,
+				-0.04
+			],
+			"sim_time": 58.28
+		},
+		{
+			"boss_screen_px": [
+				878.5,
+				686.3
+			],
+			"boss_world": [
+				80.83,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 79.49,
+			"player_screen_px": [
+				624.2,
+				693.5
+			],
+			"player_world": [
+				79.4,
+				0.0,
+				0.03
+			],
+			"sim_time": 58.45
+		},
+		{
+			"boss_screen_px": [
+				863.8,
+				683.5
+			],
+			"boss_world": [
+				81.4,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 80.14,
+			"player_screen_px": [
+				693.8,
+				720.4
+			],
+			"player_world": [
+				80.43,
+				0.0,
+				0.32
+			],
+			"sim_time": 58.62
+		},
+		{
+			"boss_screen_px": [
+				832.2,
+				677.4
+			],
+			"boss_world": [
+				82.0,
+				0.0,
+				-0.06
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 80.91,
+			"player_screen_px": [
+				744.0,
+				747.3
+			],
+			"player_world": [
+				81.47,
+				0.0,
+				0.62
+			],
+			"sim_time": 58.78
+		},
+		{
+			"boss_screen_px": [
+				694.2,
+				657.6
+			],
+			"boss_world": [
+				82.11,
+				0.0,
+				-0.23
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 81.79,
+			"player_screen_px": [
+				826.7,
+				783.9
+			],
+			"player_world": [
+				82.76,
+				0.0,
+				0.98
+			],
+			"sim_time": 58.95
+		},
+		{
+			"boss_screen_px": [
+				592.6,
+				653.8
+			],
+			"boss_world": [
+				82.11,
+				0.0,
+				-0.23
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.38,
+			"player_screen_px": [
+				919.4,
+				813.9
+			],
+			"player_world": [
+				83.79,
+				0.0,
+				1.27
+			],
+			"sim_time": 59.12
+		},
+		{
+			"boss_screen_px": [
+				546.7,
+				657.9
+			],
+			"boss_world": [
+				82.21,
+				0.0,
+				-0.13
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.75,
+			"player_screen_px": [
+				1061.9,
+				843.7
+			],
+			"player_world": [
+				84.82,
+				0.0,
+				1.56
+			],
+			"sim_time": 59.28
+		},
+		{
+			"boss_screen_px": [
+				659.0,
+				652.8
+			],
+			"boss_world": [
+				83.01,
+				0.0,
+				-0.13
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.9,
+			"player_screen_px": [
+				1256.4,
+				875.0
+			],
+			"player_world": [
+				85.86,
+				0.0,
+				1.86
+			],
+			"sim_time": 59.45
+		},
+		{
+			"boss_screen_px": [
+				785.4,
+				647.9
+			],
+			"boss_world": [
+				83.81,
+				0.0,
+				-0.13
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.96,
+			"player_screen_px": [
+				1290.1,
+				908.2
+			],
+			"player_world": [
+				86.0,
+				0.0,
+				2.15
+			],
+			"sim_time": 59.62
+		},
+		{
+			"boss_screen_px": [
+				917.8,
+				646.6
+			],
+			"boss_world": [
+				84.61,
+				0.0,
+				-0.13
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.98,
+			"player_screen_px": [
+				1185.9,
+				874.8
+			],
+			"player_world": [
+				85.6,
+				0.0,
+				1.92
+			],
+			"sim_time": 59.78
+		},
+		{
+			"boss_screen_px": [
+				947.8,
+				665.4
+			],
+			"boss_world": [
+				84.76,
+				0.0,
+				0.06
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.99,
+			"player_screen_px": [
+				1078.5,
+				867.9
+			],
+			"player_world": [
+				85.11,
+				0.0,
+				1.87
+			],
+			"sim_time": 59.95
+		},
+		{
+			"boss_screen_px": [
+				825.7,
+				658.8
+			],
+			"boss_world": [
+				84.07,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				975.1,
+				865.6
+			],
+			"player_world": [
+				84.62,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.12
+		},
+		{
+			"boss_screen_px": [
+				729.9,
+				658.1
+			],
+			"boss_world": [
+				83.52,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				911.7,
+				865.0
+			],
+			"player_world": [
+				84.31,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.28
+		},
+		{
+			"boss_screen_px": [
+				634.4,
+				657.7
+			],
+			"boss_world": [
+				82.97,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				847.9,
+				864.9
+			],
+			"player_world": [
+				84.01,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.45
+		},
+		{
+			"boss_screen_px": [
+				554.2,
+				667.3
+			],
+			"boss_world": [
+				82.51,
+				0.0,
+				0.11
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				801.5,
+				864.8
+			],
+			"player_world": [
+				83.78,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.62
+		},
+		{
+			"boss_screen_px": [
+				520.2,
+				687.0
+			],
+			"boss_world": [
+				82.33,
+				0.0,
+				0.33
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				782.3,
+				862.5
+			],
+			"player_world": [
+				83.69,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.78
+		},
+		{
+			"boss_screen_px": [
+				500.1,
+				706.1
+			],
+			"boss_world": [
+				82.14,
+				0.0,
+				0.55
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.92,
+			"player_screen_px": [
+				735.5,
+				858.5
+			],
+			"player_world": [
+				83.38,
+				0.0,
+				1.87
+			],
+			"sim_time": 60.95
+		},
+		{
+			"boss_screen_px": [
+				496.9,
+				725.3
+			],
+			"boss_world": [
+				81.96,
+				0.0,
+				0.77
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.74,
+			"player_screen_px": [
+				710.1,
+				853.9
+			],
+			"player_world": [
+				83.08,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.12
+		},
+		{
+			"boss_screen_px": [
+				495.9,
+				750.1
+			],
+			"boss_world": [
+				81.73,
+				0.0,
+				1.05
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.5,
+			"player_screen_px": [
+				714.0,
+				847.8
+			],
+			"player_world": [
+				82.86,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.28
+		},
+		{
+			"boss_screen_px": [
+				491.6,
+				770.1
+			],
+			"boss_world": [
+				81.55,
+				0.0,
+				1.26
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.33,
+			"player_screen_px": [
+				711.6,
+				842.9
+			],
+			"player_world": [
+				82.68,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.45
+		},
+		{
+			"boss_screen_px": [
+				388.3,
+				784.5
+			],
+			"boss_world": [
+				80.76,
+				0.0,
+				1.43
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 82.06,
+			"player_screen_px": [
+				729.8,
+				838.3
+			],
+			"player_world": [
+				82.5,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.62
+		},
+		{
+			"boss_screen_px": [
+				379.5,
+				789.0
+			],
+			"boss_world": [
+				80.62,
+				0.0,
+				1.46
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 81.97,
+			"player_screen_px": [
+				756.6,
+				838.5
+			],
+			"player_world": [
+				82.54,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.78
+		},
+		{
+			"boss_screen_px": [
+				381.5,
+				799.4
+			],
+			"boss_world": [
+				80.42,
+				0.0,
+				1.59
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 81.74,
+			"player_screen_px": [
+				862.9,
+				832.9
+			],
+			"player_world": [
+				82.85,
+				0.0,
+				1.87
+			],
+			"sim_time": 61.95
+		},
+		{
+			"boss_screen_px": [
+				406.6,
+				799.8
+			],
+			"boss_world": [
+				80.26,
+				0.0,
+				1.61
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 81.45,
+			"player_screen_px": [
+				705.9,
+				830.7
+			],
+			"player_world": [
+				81.78,
+				0.0,
+				1.87
+			],
+			"sim_time": 62.12
+		},
+		{
+			"boss_screen_px": [
+				405.5,
+				798.8
+			],
+			"boss_world": [
+				79.71,
+				0.0,
+				1.61
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 80.91,
+			"player_screen_px": [
+				598.4,
+				829.8
+			],
+			"player_world": [
+				80.7,
+				0.0,
+				1.87
+			],
+			"sim_time": 62.28
+		},
+		{
+			"boss_screen_px": [
+				382.3,
+				796.1
+			],
+			"boss_world": [
+				78.67,
+				0.0,
+				1.6
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 79.98,
+			"player_screen_px": [
+				515.3,
+				829.2
+			],
+			"player_world": [
+				79.36,
+				0.0,
+				1.87
+			],
+			"sim_time": 62.45
+		},
+		{
+			"boss_screen_px": [
+				380.2,
+				772.0
+			],
+			"boss_world": [
+				77.99,
+				0.0,
+				1.4
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 79.35,
+			"player_screen_px": [
+				701.0,
+				853.0
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 62.62
+		},
+		{
+			"boss_screen_px": [
+				411.2,
+				751.5
+			],
+			"boss_world": [
+				77.79,
+				0.0,
+				1.2
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 79.01,
+			"player_screen_px": [
+				770.5,
+				855.0
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 62.78
+		},
+		{
+			"boss_screen_px": [
+				414.7,
+				732.9
+			],
+			"boss_world": [
+				77.59,
+				0.0,
+				1.0
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.81,
+			"player_screen_px": [
+				811.4,
+				858.5
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 62.95
+		},
+		{
+			"boss_screen_px": [
+				423.7,
+				715.3
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.8
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.68,
+			"player_screen_px": [
+				838.6,
+				862.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.12
+		},
+		{
+			"boss_screen_px": [
+				437.4,
+				698.5
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.6
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.62,
+			"player_screen_px": [
+				851.3,
+				867.1
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.28
+		},
+		{
+			"boss_screen_px": [
+				444.6,
+				682.3
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.41
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.6,
+			"player_screen_px": [
+				857.0,
+				871.7
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.45
+		},
+		{
+			"boss_screen_px": [
+				449.1,
+				666.6
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.21
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.59,
+			"player_screen_px": [
+				859.8,
+				876.3
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.62
+		},
+		{
+			"boss_screen_px": [
+				452.5,
+				651.3
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.59,
+			"player_screen_px": [
+				861.4,
+				881.0
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.78
+		},
+		{
+			"boss_screen_px": [
+				462.1,
+				649.7
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.2,
+				885.3
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 63.95
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				650.5
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.5,
+				886.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.12
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				650.9
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.6,
+				887.1
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.28
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				651.0
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.7,
+				887.3
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.45
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				651.1
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.7,
+				887.4
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.62
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				651.1
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.7,
+				887.4
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.78
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				651.1
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.7,
+				887.5
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 64.95
+		},
+		{
+			"boss_screen_px": [
+				462.0,
+				651.1
+			],
+			"boss_world": [
+				77.54,
+				0.0,
+				-0.04
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.7,
+				887.5
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.12
+		},
+		{
+			"boss_screen_px": [
+				452.2,
+				655.8
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.2,
+				887.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.28
+		},
+		{
+			"boss_screen_px": [
+				452.2,
+				655.8
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.2,
+				887.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.45
+		},
+		{
+			"boss_screen_px": [
+				452.2,
+				655.8
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.2,
+				887.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.62
+		},
+		{
+			"boss_screen_px": [
+				452.2,
+				655.8
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.01
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				863.2,
+				887.6
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.78
+		},
+		{
+			"boss_screen_px": [
+				440.1,
+				645.5
+			],
+			"boss_world": [
+				77.41,
+				0.0,
+				-0.11
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.58,
+			"player_screen_px": [
+				864.8,
+				888.2
+			],
+			"player_world": [
+				79.65,
+				0.0,
+				2.06
+			],
+			"sim_time": 65.95
+		},
+		{
+			"boss_screen_px": [
+				458.9,
+				663.1
+			],
+			"boss_world": [
+				77.5,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.54,
+			"player_screen_px": [
+				828.3,
+				873.3
+			],
+			"player_world": [
+				79.45,
+				0.0,
+				1.95
+			],
+			"sim_time": 66.12
+		},
+		{
+			"boss_screen_px": [
+				448.8,
+				684.6
+			],
+			"boss_world": [
+				77.32,
+				0.0,
+				0.3
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.4,
+			"player_screen_px": [
+				773.0,
+				843.8
+			],
+			"player_world": [
+				79.05,
+				0.0,
+				1.72
+			],
+			"sim_time": 66.28
+		},
+		{
+			"boss_screen_px": [
+				461.0,
+				710.9
+			],
+			"boss_world": [
+				77.09,
+				0.0,
+				0.58
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 78.08,
+			"player_screen_px": [
+				713.8,
+				834.8
+			],
+			"player_world": [
+				78.44,
+				0.0,
+				1.66
+			],
+			"sim_time": 66.45
+		},
+		{
+			"boss_screen_px": [
+				477.1,
+				731.0
+			],
+			"boss_world": [
+				76.91,
+				0.0,
+				0.8
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 77.79,
+			"player_screen_px": [
+				695.5,
+				831.2
+			],
+			"player_world": [
+				78.07,
+				0.0,
+				1.66
+			],
+			"sim_time": 66.62
+		},
+		{
+			"boss_screen_px": [
+				489.8,
+				750.9
+			],
+			"boss_world": [
+				76.73,
+				0.0,
+				1.02
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 77.52,
+			"player_screen_px": [
+				687.4,
+				826.8
+			],
+			"player_world": [
+				77.76,
+				0.0,
+				1.66
+			],
+			"sim_time": 66.78
+		},
+		{
+			"boss_screen_px": [
+				382.1,
+				766.5
+			],
+			"boss_world": [
+				75.84,
+				0.0,
+				1.19
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 77.19,
+			"player_screen_px": [
+				691.7,
+				822.6
+			],
+			"player_world": [
+				77.45,
+				0.0,
+				1.66
+			],
+			"sim_time": 66.95
+		},
+		{
+			"boss_screen_px": [
+				374.4,
+				775.2
+			],
+			"boss_world": [
+				75.54,
+				0.0,
+				1.29
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.93,
+			"player_screen_px": [
+				794.5,
+				819.5
+			],
+			"player_world": [
+				77.7,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.12
+		},
+		{
+			"boss_screen_px": [
+				403.7,
+				783.8
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.39
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.78,
+			"player_screen_px": [
+				869.8,
+				816.4
+			],
+			"player_world": [
+				77.94,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.28
+		},
+		{
+			"boss_screen_px": [
+				405.5,
+				798.1
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.76,
+			"player_screen_px": [
+				859.2,
+				812.9
+			],
+			"player_world": [
+				77.87,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.45
+		},
+		{
+			"boss_screen_px": [
+				422.5,
+				796.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.68,
+			"player_screen_px": [
+				831.5,
+				810.9
+			],
+			"player_world": [
+				77.64,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.62
+		},
+		{
+			"boss_screen_px": [
+				434.2,
+				795.6
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.62,
+			"player_screen_px": [
+				832.0,
+				810.3
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.78
+		},
+		{
+			"boss_screen_px": [
+				439.0,
+				795.4
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.59,
+			"player_screen_px": [
+				836.8,
+				810.1
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 67.95
+		},
+		{
+			"boss_screen_px": [
+				441.0,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				838.7,
+				810.0
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.12
+		},
+		{
+			"boss_screen_px": [
+				441.8,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				839.5,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.28
+		},
+		{
+			"boss_screen_px": [
+				442.1,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				839.9,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.45
+		},
+		{
+			"boss_screen_px": [
+				442.2,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.0,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.62
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.78
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 68.95
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.12
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.28
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.45
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.62
+		},
+		{
+			"boss_screen_px": [
+				433.7,
+				788.8
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.62,
+			"player_screen_px": [
+				832.5,
+				802.7
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.78
+		},
+		{
+			"boss_screen_px": [
+				410.3,
+				771.6
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.73,
+			"player_screen_px": [
+				811.8,
+				784.2
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 69.95
+		},
+		{
+			"boss_screen_px": [
+				429.0,
+				793.5
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.64,
+			"player_screen_px": [
+				826.4,
+				811.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.12
+		},
+		{
+			"boss_screen_px": [
+				458.5,
+				795.0
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.49,
+			"player_screen_px": [
+				856.1,
+				813.3
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.28
+		},
+		{
+			"boss_screen_px": [
+				432.6,
+				794.4
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.63,
+			"player_screen_px": [
+				830.7,
+				807.0
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.45
+		},
+		{
+			"boss_screen_px": [
+				444.6,
+				797.5
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.57,
+			"player_screen_px": [
+				842.1,
+				811.0
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.62
+		},
+		{
+			"boss_screen_px": [
+				449.7,
+				788.9
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.53,
+			"player_screen_px": [
+				848.5,
+				803.8
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.78
+		},
+		{
+			"boss_screen_px": [
+				439.5,
+				797.8
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.59,
+			"player_screen_px": [
+				836.7,
+				813.4
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 70.95
+		},
+		{
+			"boss_screen_px": [
+				442.2,
+				794.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				808.8
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.12
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.28
+		},
+		{
+			"boss_screen_px": [
+				441.7,
+				796.0
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				839.4,
+				810.4
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.45
+		},
+		{
+			"boss_screen_px": [
+				442.2,
+				795.1
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.0,
+				809.8
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.62
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.78
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 71.95
+		},
+		{
+			"boss_screen_px": [
+				442.5,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.57,
+			"player_screen_px": [
+				840.3,
+				810.0
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.12
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.28
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.45
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.62
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.3
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.78
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 72.95
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.12
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.28
+		},
+		{
+			"boss_screen_px": [
+				443.1,
+				795.9
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.57,
+			"player_screen_px": [
+				840.8,
+				810.6
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.45
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.1
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.57,
+			"player_screen_px": [
+				840.1,
+				809.8
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.62
+		},
+		{
+			"boss_screen_px": [
+				442.3,
+				795.2
+			],
+			"boss_world": [
+				75.56,
+				0.0,
+				1.54
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.78
+		},
+		{
+			"boss_screen_px": [
+				427.4,
+				796.3
+			],
+			"boss_world": [
+				75.49,
+				0.0,
+				1.55
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.58,
+			"player_screen_px": [
+				840.1,
+				809.9
+			],
+			"player_world": [
+				77.59,
+				0.0,
+				1.66
+			],
+			"sim_time": 73.95
+		},
+		{
+			"boss_screen_px": [
+				397.3,
+				798.2
+			],
+			"boss_world": [
+				75.25,
+				0.0,
+				1.57
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.49,
+			"player_screen_px": [
+				809.2,
+				809.8
+			],
+			"player_world": [
+				77.35,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.12
+		},
+		{
+			"boss_screen_px": [
+				383.1,
+				797.9
+			],
+			"boss_world": [
+				74.98,
+				0.0,
+				1.57
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.29,
+			"player_screen_px": [
+				805.1,
+				809.5
+			],
+			"player_world": [
+				77.13,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.28
+		},
+		{
+			"boss_screen_px": [
+				393.8,
+				797.8
+			],
+			"boss_world": [
+				74.85,
+				0.0,
+				1.57
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 76.11,
+			"player_screen_px": [
+				823.8,
+				809.4
+			],
+			"player_world": [
+				77.04,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.45
+		},
+		{
+			"boss_screen_px": [
+				406.2,
+				809.0
+			],
+			"boss_world": [
+				74.73,
+				0.0,
+				1.66
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 75.91,
+			"player_screen_px": [
+				763.5,
+				809.0
+			],
+			"player_world": [
+				76.54,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.62
+		},
+		{
+			"boss_screen_px": [
+				408.7,
+				808.0
+			],
+			"boss_world": [
+				74.31,
+				0.0,
+				1.66
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 75.48,
+			"player_screen_px": [
+				636.5,
+				808.0
+			],
+			"player_world": [
+				75.47,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.78
+		},
+		{
+			"boss_screen_px": [
+				392.7,
+				807.5
+			],
+			"boss_world": [
+				73.4,
+				0.0,
+				1.66
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 74.65,
+			"player_screen_px": [
+				536.4,
+				807.5
+			],
+			"player_world": [
+				74.13,
+				0.0,
+				1.66
+			],
+			"sim_time": 74.95
+		},
+		{
+			"boss_screen_px": [
+				348.7,
+				807.4
+			],
+			"boss_world": [
+				72.32,
+				0.0,
+				1.66
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.8,
+			"player_screen_px": [
+				492.3,
+				807.4
+			],
+			"player_world": [
+				73.05,
+				0.0,
+				1.66
+			],
+			"sim_time": 75.12
+		},
+		{
+			"boss_screen_px": [
+				320.2,
+				809.0
+			],
+			"boss_world": [
+				71.71,
+				0.0,
+				1.66
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.33,
+			"player_screen_px": [
+				553.3,
+				782.9
+			],
+			"player_world": [
+				72.88,
+				0.0,
+				1.44
+			],
+			"sim_time": 75.28
+		},
+		{
+			"boss_screen_px": [
+				220.3,
+				813.7
+			],
+			"boss_world": [
+				71.02,
+				0.0,
+				1.67
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.13,
+			"player_screen_px": [
+				397.2,
+				753.7
+			],
+			"player_world": [
+				71.85,
+				0.0,
+				1.15
+			],
+			"sim_time": 75.45
+		},
+		{
+			"boss_screen_px": [
+				160.6,
+				841.2
+			],
+			"boss_world": [
+				70.69,
+				0.0,
+				1.85
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.06,
+			"player_screen_px": [
+				227.5,
+				726.4
+			],
+			"player_world": [
+				70.81,
+				0.0,
+				0.86
+			],
+			"sim_time": 75.62
+		},
+		{
+			"boss_screen_px": [
+				273.1,
+				794.1
+			],
+			"boss_world": [
+				71.13,
+				0.0,
+				1.42
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.01,
+			"player_screen_px": [
+				59.4,
+				701.5
+			],
+			"player_world": [
+				69.78,
+				0.0,
+				0.57
+			],
+			"sim_time": 75.78
+		},
+		{
+			"boss_screen_px": [
+				451.5,
+				723.8
+			],
+			"boss_world": [
+				71.99,
+				0.0,
+				0.7
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.01,
+			"player_screen_px": [
+				76.3,
+				710.2
+			],
+			"player_world": [
+				69.9,
+				0.0,
+				0.57
+			],
+			"sim_time": 75.95
+		},
+		{
+			"boss_screen_px": [
+				517.2,
+				661.8
+			],
+			"boss_world": [
+				72.3,
+				0.0,
+				-0.09
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				16.2,
+				727.0
+			],
+			"player_world": [
+				69.62,
+				0.0,
+				0.57
+			],
+			"sim_time": 76.12
+		},
+		{
+			"boss_screen_px": [
+				541.3,
+				671.7
+			],
+			"boss_world": [
+				72.44,
+				0.0,
+				-0.05
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				59.7,
+				721.1
+			],
+			"player_world": [
+				69.83,
+				0.0,
+				0.44
+			],
+			"sim_time": 76.28
+		},
+		{
+			"boss_screen_px": [
+				625.8,
+				690.6
+			],
+			"boss_world": [
+				72.92,
+				0.0,
+				0.11
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				118.4,
+				714.7
+			],
+			"player_world": [
+				70.14,
+				0.0,
+				0.35
+			],
+			"sim_time": 76.45
+		},
+		{
+			"boss_screen_px": [
+				711.7,
+				688.8
+			],
+			"boss_world": [
+				73.4,
+				0.0,
+				0.07
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				214.5,
+				710.8
+			],
+			"player_world": [
+				70.66,
+				0.0,
+				0.29
+			],
+			"sim_time": 76.62
+		},
+		{
+			"boss_screen_px": [
+				797.4,
+				687.4
+			],
+			"boss_world": [
+				73.89,
+				0.0,
+				0.04
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				304.1,
+				701.5
+			],
+			"player_world": [
+				71.13,
+				0.0,
+				0.18
+			],
+			"sim_time": 76.78
+		},
+		{
+			"boss_screen_px": [
+				759.0,
+				692.0
+			],
+			"boss_world": [
+				73.67,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				379.5,
+				702.3
+			],
+			"player_world": [
+				71.55,
+				0.0,
+				0.18
+			],
+			"sim_time": 76.95
+		},
+		{
+			"boss_screen_px": [
+				826.1,
+				692.8
+			],
+			"boss_world": [
+				74.04,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.0,
+			"player_screen_px": [
+				455.1,
+				702.4
+			],
+			"player_world": [
+				71.97,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.12
+		},
+		{
+			"boss_screen_px": [
+				854.8,
+				693.9
+			],
+			"boss_world": [
+				74.24,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.04,
+			"player_screen_px": [
+				474.0,
+				703.6
+			],
+			"player_world": [
+				72.11,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.28
+		},
+		{
+			"boss_screen_px": [
+				869.4,
+				692.6
+			],
+			"boss_world": [
+				74.44,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.15,
+			"player_screen_px": [
+				452.9,
+				702.3
+			],
+			"player_world": [
+				72.11,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.45
+		},
+		{
+			"boss_screen_px": [
+				889.2,
+				692.8
+			],
+			"boss_world": [
+				74.78,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.39,
+			"player_screen_px": [
+				555.5,
+				702.4
+			],
+			"player_world": [
+				72.92,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.62
+		},
+		{
+			"boss_screen_px": [
+				864.0,
+				692.8
+			],
+			"boss_world": [
+				75.18,
+				0.0,
+				0.08
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 73.92,
+			"player_screen_px": [
+				652.4,
+				702.4
+			],
+			"player_world": [
+				73.99,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.78
+		},
+		{
+			"boss_screen_px": [
+				849.6,
+				693.6
+			],
+			"boss_world": [
+				75.79,
+				0.0,
+				0.09
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 74.62,
+			"player_screen_px": [
+				720.0,
+				702.4
+			],
+			"player_world": [
+				75.07,
+				0.0,
+				0.18
+			],
+			"sim_time": 77.95
+		},
+		{
+			"boss_screen_px": [
+				904.9,
+				688.7
+			],
+			"boss_world": [
+				76.86,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.37,
+			"player_screen_px": [
+				623.1,
+				710.0
+			],
+			"player_world": [
+				75.28,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.12
+		},
+		{
+			"boss_screen_px": [
+				859.7,
+				688.5
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.75,
+			"player_screen_px": [
+				502.0,
+				709.7
+			],
+			"player_world": [
+				74.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.28
+		},
+		{
+			"boss_screen_px": [
+				842.6,
+				688.4
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.85,
+			"player_screen_px": [
+				440.7,
+				709.6
+			],
+			"player_world": [
+				74.75,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.45
+		},
+		{
+			"boss_screen_px": [
+				841.1,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				437.2,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.62
+		},
+		{
+			"boss_screen_px": [
+				840.4,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.5,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.78
+		},
+		{
+			"boss_screen_px": [
+				840.2,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.3,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 78.95
+		},
+		{
+			"boss_screen_px": [
+				840.1,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.2,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.12
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.28
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.45
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.62
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.78
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 79.95
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.12
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.28
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.45
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.62
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.78
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 80.95
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.12
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.28
+		},
+		{
+			"boss_screen_px": [
+				840.0,
+				688.3
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.5
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.45
+		},
+		{
+			"boss_screen_px": [
+				841.0,
+				693.6
+			],
+			"boss_world": [
+				76.99,
+				0.0,
+				0.1
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.86,
+			"player_screen_px": [
+				436.1,
+				709.2
+			],
+			"player_world": [
+				74.74,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.62
+		},
+		{
+			"boss_screen_px": [
+				852.0,
+				697.1
+			],
+			"boss_world": [
+				77.09,
+				0.0,
+				0.14
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 75.9,
+			"player_screen_px": [
+				479.9,
+				708.6
+			],
+			"player_world": [
+				75.02,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.78
+		},
+		{
+			"boss_screen_px": [
+				882.8,
+				698.2
+			],
+			"boss_world": [
+				77.47,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.12,
+			"player_screen_px": [
+				516.5,
+				708.0
+			],
+			"player_world": [
+				75.44,
+				0.0,
+				0.26
+			],
+			"sim_time": 81.95
+		},
+		{
+			"boss_screen_px": [
+				892.3,
+				697.9
+			],
+			"boss_world": [
+				77.84,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.43,
+			"player_screen_px": [
+				511.9,
+				707.7
+			],
+			"player_world": [
+				75.73,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.12
+		},
+		{
+			"boss_screen_px": [
+				886.6,
+				697.7
+			],
+			"boss_world": [
+				78.05,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.67,
+			"player_screen_px": [
+				469.0,
+				707.5
+			],
+			"player_world": [
+				75.73,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.28
+		},
+		{
+			"boss_screen_px": [
+				867.4,
+				697.7
+			],
+			"boss_world": [
+				78.1,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 76.83,
+			"player_screen_px": [
+				468.1,
+				707.5
+			],
+			"player_world": [
+				75.88,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.45
+		},
+		{
+			"boss_screen_px": [
+				867.7,
+				697.7
+			],
+			"boss_world": [
+				78.27,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 77.0,
+			"player_screen_px": [
+				493.8,
+				707.5
+			],
+			"player_world": [
+				76.19,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.62
+		},
+		{
+			"boss_screen_px": [
+				878.1,
+				697.7
+			],
+			"boss_world": [
+				78.5,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 77.17,
+			"player_screen_px": [
+				500.2,
+				707.5
+			],
+			"player_world": [
+				76.4,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.78
+		},
+		{
+			"boss_screen_px": [
+				887.9,
+				697.7
+			],
+			"boss_world": [
+				78.81,
+				0.0,
+				0.16
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 77.43,
+			"player_screen_px": [
+				525.2,
+				707.5
+			],
+			"player_world": [
+				76.8,
+				0.0,
+				0.26
+			],
+			"sim_time": 82.95
+		},
+		{
+			"boss_screen_px": [
+				914.9,
+				706.6
+			],
+			"boss_world": [
+				79.44,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 77.92,
+			"player_screen_px": [
+				631.0,
+				706.6
+			],
+			"player_world": [
+				77.87,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.12
+		},
+		{
+			"boss_screen_px": [
+				1098.0,
+				706.1
+			],
+			"boss_world": [
+				81.34,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 78.8,
+			"player_screen_px": [
+				665.6,
+				706.1
+			],
+			"player_world": [
+				78.94,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.28
+		},
+		{
+			"boss_screen_px": [
+				1270.4,
+				705.8
+			],
+			"boss_world": [
+				83.93,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 80.44,
+			"player_screen_px": [
+				611.9,
+				705.9
+			],
+			"player_world": [
+				80.29,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.45
+		},
+		{
+			"boss_screen_px": [
+				1362.8,
+				705.8
+			],
+			"boss_world": [
+				85.8,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": false,
+			"camera_fov": 42.0,
+			"camera_x": 81.8,
+			"player_screen_px": [
+				490.9,
+				705.8
+			],
+			"player_world": [
+				80.97,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.62
+		},
+		{
+			"boss_screen_px": [
+				1194.2,
+				705.7
+			],
+			"boss_world": [
+				85.58,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 82.51,
+			"player_screen_px": [
+				464.0,
+				705.8
+			],
+			"player_world": [
+				81.53,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.78
+		},
+		{
+			"boss_screen_px": [
+				1117.2,
+				705.7
+			],
+			"boss_world": [
+				85.44,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 82.8,
+			"player_screen_px": [
+				512.7,
+				705.7
+			],
+			"player_world": [
+				82.09,
+				0.0,
+				0.26
+			],
+			"sim_time": 83.95
+		},
+		{
+			"boss_screen_px": [
+				1087.3,
+				705.7
+			],
+			"boss_world": [
+				85.39,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 82.92,
+			"player_screen_px": [
+				592.4,
+				705.7
+			],
+			"player_world": [
+				82.65,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.12
+		},
+		{
+			"boss_screen_px": [
+				1078.5,
+				705.7
+			],
+			"boss_world": [
+				85.39,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 82.97,
+			"player_screen_px": [
+				583.6,
+				705.7
+			],
+			"player_world": [
+				82.65,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.28
+		},
+		{
+			"boss_screen_px": [
+				1074.9,
+				705.7
+			],
+			"boss_world": [
+				85.39,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 82.99,
+			"player_screen_px": [
+				580.0,
+				705.7
+			],
+			"player_world": [
+				82.65,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.45
+		},
+		{
+			"boss_screen_px": [
+				1032.6,
+				705.7
+			],
+			"boss_world": [
+				85.17,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				598.5,
+				705.7
+			],
+			"player_world": [
+				82.77,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.62
+		},
+		{
+			"boss_screen_px": [
+				1007.7,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				628.4,
+				705.7
+			],
+			"player_world": [
+				82.93,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.78
+		},
+		{
+			"boss_screen_px": [
+				1007.5,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.3,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 84.95
+		},
+		{
+			"boss_screen_px": [
+				1007.4,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.12
+		},
+		{
+			"boss_screen_px": [
+				1007.4,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.28
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.45
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.62
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.78
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 85.95
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.12
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.28
+		},
+		{
+			"boss_screen_px": [
+				1007.3,
+				705.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.26
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.45
+		},
+		{
+			"boss_screen_px": [
+				1005.0,
+				698.6
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.19
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				705.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.62
+		},
+		{
+			"boss_screen_px": [
+				1001.0,
+				686.7
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				707.8
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.78
+		},
+		{
+			"boss_screen_px": [
+				1001.7,
+				688.8
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				709.2
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 86.95
+		},
+		{
+			"boss_screen_px": [
+				1001.9,
+				689.3
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				709.7
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 87.12
+		},
+		{
+			"boss_screen_px": [
+				1002.0,
+				689.5
+			],
+			"boss_world": [
+				85.03,
+				0.0,
+				0.05
+			],
+			"both_actors_on_screen": true,
+			"camera_fov": 42.0,
+			"camera_x": 83.0,
+			"player_screen_px": [
+				638.2,
+				709.9
+			],
+			"player_world": [
+				82.99,
+				0.0,
+				0.26
+			],
+			"sim_time": 87.28
+		}
+	],
+	"total_boss_fight_frames": 2068
+}

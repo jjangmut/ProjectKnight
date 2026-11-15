@@ -41,6 +41,8 @@ var telemetry := {
 	"camera_x_max": 0.0,
 	"damage_taken_total": 0,
 	"vitality_orbs_collected": 0,
+	"guard_inputs_attempted": 0,
+	"confirmed_parries_deflected": 0,
 	"parries_performed": 0,
 	"dashes_performed": 0,
 	"attacks_performed": 0,
@@ -191,6 +193,11 @@ func _on_process_frame() -> void:
 		telemetry["x_max"] = player.global_position.x
 		telemetry["z_min"] = player.global_position.z
 		telemetry["z_max"] = player.global_position.z
+		if player.has_signal("just_parry_succeeded"):
+			player.just_parry_succeeded.connect(func(_attacker):
+				telemetry["confirmed_parries_deflected"] += 1
+				telemetry["parries_performed"] = telemetry["confirmed_parries_deflected"]
+			)
 		print("[V3-021-R1] Player acquired at: ", player.global_position, " HP: ", player.current_hp)
 
 	# Read-only telemetry sampling
@@ -415,16 +422,35 @@ func _process_natural_input_controller(delta: float) -> void:
 					_trigger_just_parry()
 					return
 
-	# Check ANY nearby regular enemy winding up an attack (within 2.15m) -> Just Parry immediately!
+	# Check ANY nearby regular enemy winding up an attack (within 2.15m) -> Just Parry at apex of telegraph!
 	for e in stage.enemies:
 		if e != null and is_instance_valid(e) and not e.get("is_dead") and not (e is SideQVBossClass):
 			var ediff := (e as Node3D).global_position - player.global_position
 			var edist := Vector2(ediff.x, ediff.z).length()
-			if e.get("is_attacking") and edist <= 2.15:
-				_release_movement_inputs()
-				Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
-				_trigger_just_parry()
-				return
+			if e.get("is_attacking") and edist <= 2.2:
+				var phase: String = str(e.get("attack_phase"))
+				if phase == "TELL":
+					var min_parry_t: float = 0.23 if (e is SideQVEliteKnightClass) else 0.17
+					if e.attack_timer >= min_parry_t:
+						_release_movement_inputs()
+						Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
+						_trigger_just_parry()
+						return
+					elif e is SideQVEliteKnightClass and absf(ediff.z) < 0.5:
+						# Tell just started: sidestep in Z!
+						_release_movement_inputs()
+						if ediff.z >= 0.0:
+							Input.action_press("move_up")
+						else:
+							Input.action_press("move_down")
+						return
+				elif phase == "RECOVERY" or e.get("is_stunned"):
+					# Recovery opening: Punish!
+					if edist <= 2.0:
+						_release_movement_inputs()
+						Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
+						_trigger_attack()
+						return
 
 	# If an active ranged sniper is aiming and we haven't observed at least 2 bolts yet, let them fire so projectile flight & parry are clearly visible on screen!
 	if active_sniper != null and bolts_observed_count < 2:
@@ -529,17 +555,60 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 			_steer_towards(target.global_position)
 		return
 
-	# 2. HEAVY SHIELD KNIGHT COMBAT LOGIC (Bait Riposte & Just Parry)
+	# 2. HEAVY SHIELD KNIGHT COMBAT LOGIC (Flank Z-depth or punish bash opening)
 	if target is SideQVEliteKnightClass:
 		var k := target as CharacterBody3D
-		if k.is_attacking and dist_h <= 2.25:
-			_release_movement_inputs()
-			Input.action_press("move_right" if dx > 0.0 else "move_left")
-			_trigger_just_parry()
-			return
+		if k.is_attacking:
+			if k.attack_phase == "TELL" and k.attack_timer >= 0.23 and dist_h <= 2.25:
+				_release_movement_inputs()
+				Input.action_press("move_right" if dx > 0.0 else "move_left")
+				_trigger_just_parry()
+				return
+			elif (k.attack_phase == "RECOVERY" or k.is_stunned) and dist_h <= 2.1:
+				_release_movement_inputs()
+				Input.action_press("move_right" if dx > 0.0 else "move_left")
+				_trigger_attack()
+				return
 
-		# Strike when in melee reach: damages vulnerable knight or baits riposte to parry!
-		if dist_h <= 1.85:
+		var face_x: float = -1.0 if (k.sprite_3d != null and k.sprite_3d.flip_h) else 1.0
+		var is_facing_player: bool = (dx * face_x < 0.0)
+
+		# Behind knight: strike without mercy!
+		if not is_facing_player:
+			if dist_h <= 2.05:
+				_release_movement_inputs()
+				Input.action_press("move_right" if dx > 0.0 else "move_left")
+				_trigger_attack()
+				return
+			else:
+				_steer_towards(target.global_position)
+				return
+
+		# Frontal shield active:
+		if k.is_shield_guarding:
+			# Option A: Dash through/behind him if close!
+			if dist_h < 2.5 and dash_cooldown_timer <= 0.0:
+				_release_movement_inputs()
+				Input.action_press("move_right" if dx > 0.0 else "move_left")
+				_trigger_dash()
+				return
+
+			# Option B: Steer to flanking lane at Z offset (+-0.50m) and advance in X
+			var flank_offset_z: float = 0.50 if k.global_position.z < 0.5 else -0.50
+			var flank_target := Vector3(k.global_position.x, k.global_position.y, k.global_position.z + flank_offset_z)
+			var flank_diff := flank_target - player.global_position
+
+			if absf(dx) <= 1.85 and absf(flank_diff.z) <= 0.35:
+				_release_movement_inputs()
+				Input.action_press("move_right" if dx > 0.0 else "move_left")
+				_trigger_attack()
+				return
+			else:
+				_steer_towards(flank_target)
+				return
+
+		# Knight not shielding (recovering or stunned): strike!
+		if dist_h <= 2.05:
 			_release_movement_inputs()
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			_trigger_attack()
@@ -576,7 +645,7 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 	# 4. CITADEL GRUNT LOGIC
 	if dist_h <= 1.6:
 		# If grunt is winding up attack, parry!
-		if target.get("is_attacking") and dist_h <= 1.2:
+		if target.get("is_attacking") and str(target.get("attack_phase")) == "TELL" and dist_h <= 1.2:
 			_trigger_just_parry()
 			return
 		_release_movement_inputs()
@@ -719,9 +788,9 @@ func _trigger_attack() -> void:
 
 
 func _trigger_just_parry() -> void:
-	guard_hold_timer = 0.16 # Exact Just Parry timing window
+	guard_hold_timer = 0.22 # Safe Just Parry timing window with block safety
 	Input.action_press("guard")
-	telemetry["parries_performed"] += 1
+	telemetry["guard_inputs_attempted"] += 1
 
 
 func _trigger_jump() -> void:
@@ -788,7 +857,9 @@ func _finalize_e2e_results() -> void:
 	print("  - Enemies Defeated Naturally: %d" % telemetry["total_enemies_defeated_naturally"])
 	print("  - Damage Taken: %d HP" % telemetry["damage_taken_total"])
 	print("  - Vitality Orbs Collected: %d" % telemetry["vitality_orbs_collected"])
-	print("  - Parries Performed: %d" % telemetry["parries_performed"])
+	print("  - Guard Inputs Attempted: %d" % telemetry["guard_inputs_attempted"])
+	print("  - Confirmed Parries Deflected: %d" % telemetry["confirmed_parries_deflected"])
+	print("  - Parries Performed (Confirmed): %d" % telemetry["parries_performed"])
 	print("  - Attacks Performed: %d" % telemetry["attacks_performed"])
 	print("  - Boss Patterns Observed Naturally: %s" % JSON.stringify(telemetry["boss_patterns_observed"]))
 	print("  - Direct State Mutations: %d (Zero Cheats: %s)" % [telemetry["direct_state_mutations_performed"], str(telemetry["zero_cheats_audit_passed"])])
@@ -820,12 +891,25 @@ func _finalize_e2e_results() -> void:
 		r4_file.close()
 		print("[V3-024-R4] Results saved to ", r4_json_path)
 
-	# Save Camera Visibility Trace for V3-024-R1 evidence
+	var v25_json_path := "res://../../STUDIO_V3/evidence/V3-025/NATURAL_E2E_RESULT.json"
+	var v25_file := FileAccess.open(v25_json_path, FileAccess.WRITE)
+	if v25_file != null:
+		v25_file.store_string(JSON.stringify(telemetry, "\t"))
+		v25_file.close()
+		print("[V3-025] Results saved to ", v25_json_path)
+
+	# Save Camera Visibility Trace for V3-024-R1 & V3-025 evidence
 	var vis_path := "res://test_boss_visibility_trace.json"
 	var vfile := FileAccess.open(vis_path, FileAccess.WRITE)
 	if vfile != null:
 		vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
 		vfile.close()
+
+	var v25_vis_path := "res://../../STUDIO_V3/evidence/V3-025/CAMERA_VISIBILITY_TRACE.json"
+	var v25_vfile := FileAccess.open(v25_vis_path, FileAccess.WRITE)
+	if v25_vfile != null:
+		v25_vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
+		v25_vfile.close()
 		print("[V3-024-R1] Visibility trace saved to ", vis_path)
 
 	var exit_code: int = 0 if telemetry["stage_cleared_naturally"] else 1

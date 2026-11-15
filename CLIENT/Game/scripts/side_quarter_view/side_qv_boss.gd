@@ -631,6 +631,75 @@ func _show_danger_telegraph(duration: float = 0.35) -> void:
 	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "!", Color(1.4, 0.3, 0.2), true)
 
 
+func _show_charge_runway_telegraph(duration: float = 0.44) -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var runway := MeshInstance3D.new()
+	runway.name = "BossChargeRunway3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(9.5, 1.35)
+	runway.mesh = quad
+	runway.rotation_degrees = Vector3(-90.0, 0.0 if facing_dir_x > 0.0 else 180.0, 0.0)
+
+	var rmat := StandardMaterial3D.new()
+	rmat.albedo_texture = TexShockwaveRing
+	rmat.albedo_color = Color(1.6, 0.5, 0.2, 0.70)
+	rmat.emission_enabled = true
+	rmat.emission_texture = TexShockwaveRing
+	rmat.emission = Color(1.6, 0.5, 0.2, 1.0)
+	rmat.emission_energy_multiplier = 1.45
+	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	runway.material_override = rmat
+	p.add_child(runway)
+	runway.global_position = global_position + Vector3(facing_dir_x * 4.75, 0.035, 0.0)
+
+	var tw := runway.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(rmat, "albedo_color:a", 0.0, duration)
+		tw.chain().tween_callback(runway.queue_free)
+
+	GameFeelManager.damage_popup_3d(p, global_position + Vector3(0.0, 2.6, 0.0), "!", Color(1.4, 0.3, 0.2), true)
+
+
+func _show_cleave_arc_telegraph(duration: float = 0.28) -> void:
+	var p := get_parent()
+	if p == null:
+		return
+	var arc := MeshInstance3D.new()
+	arc.name = "BossCleaveArc3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(2.4, 1.3)
+	arc.mesh = quad
+	arc.rotation_degrees = Vector3(-90.0, 0.0 if facing_dir_x > 0.0 else 180.0, 0.0)
+
+	var amat := StandardMaterial3D.new()
+	amat.albedo_texture = TexShockwaveRing
+	amat.albedo_color = Color(1.8, 0.65, 0.2, 0.75)
+	amat.emission_enabled = true
+	amat.emission_texture = TexShockwaveRing
+	amat.emission = Color(1.8, 0.65, 0.2, 1.0)
+	amat.emission_energy_multiplier = 1.4
+	amat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	amat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	amat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	amat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	arc.material_override = amat
+	p.add_child(arc)
+	arc.global_position = global_position + Vector3(facing_dir_x * 1.2, 0.035, 0.0)
+
+	var tw := arc.create_tween()
+	if tw:
+		tw.set_parallel(true)
+		tw.tween_property(arc, "scale", Vector3(1.15, 1.15, 1.15), duration)
+		tw.tween_property(amat, "albedo_color:a", 0.0, duration)
+		tw.chain().tween_callback(arc.queue_free)
+
+
 func _enter_groggy_state() -> void:
 	is_groggy = true
 	groggy_timer = 1.2
@@ -695,8 +764,8 @@ func _execute_shield_charge() -> void:
 		var z_diff := target_player.global_position.z - global_position.z
 		if absf(z_diff) <= 0.50:
 			global_position.z = move_toward(global_position.z, target_player.global_position.z, 0.25)
-	# PK_GameDesign standard: 0.44s stationary windup telegraph before any rush motion
-	_show_danger_telegraph(0.44)
+	# PK_GameDesign standard: 0.44s stationary runway windup telegraph before rush motion
+	_show_charge_runway_telegraph(0.44)
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 
@@ -711,7 +780,7 @@ func _execute_triple_cleave() -> void:
 		var z_diff := target_player.global_position.z - global_position.z
 		if absf(z_diff) <= 0.40:
 			global_position.z = move_toward(global_position.z, target_player.global_position.z, 0.15)
-	_show_danger_telegraph(0.28)
+	_show_cleave_arc_telegraph(0.28)
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 	await get_tree().create_timer(0.28).timeout

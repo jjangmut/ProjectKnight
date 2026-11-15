@@ -16,6 +16,7 @@ const AXDataViewerClass = preload("res://scripts/ui/ax_data_viewer.gd")
 const AXDataRegistryClass = preload("res://scripts/data/ax_data_registry.gd")
 const SaveManagerClass = preload("res://scripts/system/save_manager.gd")
 const GameFeelManager = preload("res://scripts/system/game_feel_manager.gd")
+const AudioManager = preload("res://scripts/audio/audio_manager.gd")
 
 const TexAvatarFrame = preload("res://assets/ui/hud_player_avatar_frame.png")
 const TexSoulGemFull = preload("res://assets/ui/hud_soul_gem_full.png")
@@ -37,6 +38,10 @@ var camera: SideQVCamera
 var mobile_controls: CanvasLayer
 var touch_controls: QVMobileControls = null
 var onboarding_guide: Control = null
+var pause_modal: Control = null
+var debug_overlay: Control = null
+var debug_label: Label = null
+var is_debug_overlay_visible: bool = false
 var enemies: Array[Node3D] = []
 var active_boss: Node3D = null
 
@@ -506,6 +511,7 @@ func _on_player_dive_slammed(_p: Node, hit_count: int) -> void:
 
 
 func _process(delta: float) -> void:
+	_update_debug_overlay()
 	# Dismiss onboarding guide upon player combat/movement interaction
 	if onboarding_guide != null and is_instance_valid(onboarding_guide):
 		if Input.is_action_just_pressed("attack") or Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("dash") or Input.is_action_just_pressed("guard") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"):
@@ -728,6 +734,160 @@ func _on_player_died() -> void:
 	stage_failed.emit()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_ESCAPE:
+			_toggle_pause_modal()
+		elif event.keycode == KEY_F1:
+			_toggle_debug_overlay()
+		elif event.keycode == KEY_TAB or event.keycode == KEY_H:
+			_toggle_onboarding_guide()
+
+
+func _toggle_pause_modal() -> void:
+	if pause_modal != null and is_instance_valid(pause_modal):
+		get_tree().paused = false
+		pause_modal.queue_free()
+		pause_modal = null
+		return
+
+	if mobile_controls == null:
+		return
+
+	get_tree().paused = true
+	pause_modal = Control.new()
+	pause_modal.name = "TacticalPauseModal"
+	pause_modal.process_mode = Node.PROCESS_MODE_ALWAYS
+	pause_modal.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mobile_controls.add_child(pause_modal)
+
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.04, 0.07, 0.12, 0.85)
+	pause_modal.add_child(bg)
+
+	var plate := Panel.new()
+	plate.custom_minimum_size = Vector2(400, 270)
+	plate.size = Vector2(400, 270)
+	plate.position = Vector2((1280 - 400) * 0.5, (720 - 270) * 0.5)
+	var pstyle := StyleBoxFlat.new()
+	pstyle.bg_color = Color(0.06, 0.11, 0.18, 0.96)
+	pstyle.border_color = Color("00e5ff")
+	pstyle.set_border_width_all(2)
+	pstyle.border_width_left = 6
+	pstyle.corner_radius_top_left = 4
+	pstyle.corner_radius_top_right = 4
+	pstyle.corner_radius_bottom_left = 4
+	pstyle.corner_radius_bottom_right = 4
+	plate.add_theme_stylebox_override("panel", pstyle)
+	pause_modal.add_child(plate)
+
+	var vbox := VBoxContainer.new()
+	vbox.position = Vector2(24, 18)
+	vbox.custom_minimum_size = Vector2(352, 230)
+	vbox.add_theme_constant_override("separation", 12)
+	plate.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "⏸  작전 일시정지 (TACTICAL PAUSE)"
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color("ffb800"))
+	vbox.add_child(title)
+
+	var sub := Label.new()
+	sub.text = "OP-0%d : %s" % [stage_index, stage_title]
+	sub.add_theme_font_size_override("font_size", 12)
+	sub.add_theme_color_override("font_color", Color("94a3b8"))
+	vbox.add_child(sub)
+
+	var btn_resume := _create_modal_btn("▶  작전 계속 (Resume)", func(): _toggle_pause_modal())
+	vbox.add_child(btn_resume)
+
+	var btn_restart := _create_modal_btn("🔄  작전 재도전 (Restart Stage)", func():
+		get_tree().paused = false
+		get_tree().reload_current_scene()
+	)
+	vbox.add_child(btn_restart)
+
+	var btn_hq := _create_modal_btn("🏠  작전 본부 복귀 (Return to HQ)", func():
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+	)
+	vbox.add_child(btn_hq)
+
+
+func _create_modal_btn(text: String, callback: Callable) -> Button:
+	var btn := Button.new()
+	btn.text = text
+	btn.custom_minimum_size = Vector2(0, 40)
+	var bstyle := StyleBoxFlat.new()
+	bstyle.bg_color = Color(0.10, 0.18, 0.28, 0.95)
+	bstyle.border_color = Color("00e5ff")
+	bstyle.set_border_width_all(1)
+	bstyle.corner_radius_top_left = 3
+	bstyle.corner_radius_top_right = 3
+	bstyle.corner_radius_bottom_left = 3
+	bstyle.corner_radius_bottom_right = 3
+	btn.add_theme_stylebox_override("normal", bstyle)
+	btn.add_theme_font_size_override("font_size", 13)
+	btn.add_theme_color_override("font_color", Color("f8fafc"))
+	btn.pressed.connect(callback)
+	return btn
+
+
+func _toggle_debug_overlay() -> void:
+	is_debug_overlay_visible = not is_debug_overlay_visible
+	if is_debug_overlay_visible:
+		if debug_overlay == null and mobile_controls != null:
+			debug_overlay = Control.new()
+			debug_overlay.name = "TacticalDebugOverlay"
+			debug_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			mobile_controls.add_child(debug_overlay)
+
+			var panel := Panel.new()
+			panel.size = Vector2(360, 96)
+			panel.position = Vector2(1280 - 374, 12)
+			panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var dstyle := StyleBoxFlat.new()
+			dstyle.bg_color = Color(0.03, 0.06, 0.10, 0.85)
+			dstyle.border_color = Color("ffb800")
+			dstyle.set_border_width_all(1)
+			panel.add_theme_stylebox_override("panel", dstyle)
+			debug_overlay.add_child(panel)
+
+			debug_label = Label.new()
+			debug_label.position = Vector2(10, 8)
+			debug_label.add_theme_font_size_override("font_size", 11)
+			debug_label.add_theme_color_override("font_color", Color("38bdf8"))
+			panel.add_child(debug_label)
+		if debug_overlay != null:
+			debug_overlay.visible = true
+	else:
+		if debug_overlay != null:
+			debug_overlay.visible = false
+
+
+func _update_debug_overlay() -> void:
+	if not is_debug_overlay_visible or debug_label == null:
+		return
+	var fps: int = Engine.get_frames_per_second()
+	var p_pos: Vector3 = player.global_position if (player != null and is_instance_valid(player)) else Vector3.ZERO
+	var p_hp: int = int(player.current_hp) if (player != null and is_instance_valid(player)) else 0
+	var b_hp: int = int(active_boss.current_hp) if (active_boss != null and is_instance_valid(active_boss)) else 0
+	var enemy_count: int = get_tree().get_nodes_in_group("enemies").size()
+
+	debug_label.text = "[F1 DEBUG ACTIVE]\nFPS: %d | Time: %.1fs\nPlayer: X=%.2f, Z=%.2f | HP: %d/9\nEnemies Left: %d | Boss HP: %d" % [
+		fps, Time.get_ticks_msec() / 1000.0, p_pos.x, p_pos.z, p_hp, enemy_count, b_hp
+	]
+
+
+func _toggle_onboarding_guide() -> void:
+	if onboarding_guide == null or not is_instance_valid(onboarding_guide):
+		_setup_onboarding_guide()
+	else:
+		onboarding_guide.visible = not onboarding_guide.visible
+
+
 func _setup_onboarding_guide() -> void:
 	if mobile_controls == null:
 		return
@@ -739,12 +899,12 @@ func _setup_onboarding_guide() -> void:
 
 	var panel := Panel.new()
 	panel.name = "GuidePlate"
-	panel.size = Vector2(530.0, 52.0)
-	panel.position = Vector2(375.0, 642.0)
+	panel.size = Vector2(680.0, 52.0)
+	panel.position = Vector2(300.0, 642.0)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var pstyle := StyleBoxFlat.new()
-	pstyle.bg_color = Color(0.04, 0.08, 0.14, 0.84)
+	pstyle.bg_color = Color(0.04, 0.08, 0.14, 0.88)
 	pstyle.border_color = Color("00e5ff")
 	pstyle.set_border_width_all(1)
 	pstyle.border_width_left = 4
@@ -757,7 +917,7 @@ func _setup_onboarding_guide() -> void:
 
 	var lbl_title := Label.new()
 	lbl_title.name = "GuideTitle"
-	lbl_title.text = "⚔ TACTICAL ACTION GUIDE"
+	lbl_title.text = "⚔ TACTICAL ACTION GUIDE  ·  [TAB/H] 가이드 토글  ·  [F1] 디버그  ·  [ESC] 일시정지"
 	lbl_title.position = Vector2(14.0, 4.0)
 	lbl_title.add_theme_font_size_override("font_size", 11)
 	lbl_title.add_theme_color_override("font_color", Color("ffb800"))
@@ -765,7 +925,7 @@ func _setup_onboarding_guide() -> void:
 
 	var lbl_guide := Label.new()
 	lbl_guide.name = "GuideText"
-	lbl_guide.text = "[A/D or 스틱] 이동 · [SPACE or ▲] 점프 · [J or ⚔] 공격 · [K or 🛡] 방어 · [SHIFT or 💨] 대시"
+	lbl_guide.text = "[A/D] 횡이동 · [W/S] Z축 회피 기동 · [SPACE] 점프 · [J / 좌클릭] 공격 · [K / 우클릭] 방어/패링 · [L / SHIFT] 대시"
 	lbl_guide.position = Vector2(14.0, 24.0)
 	lbl_guide.add_theme_font_size_override("font_size", 12)
 	lbl_guide.add_theme_color_override("font_color", Color("f1f5f9"))
@@ -787,7 +947,7 @@ func _update_onboarding_guide_layout() -> void:
 		return
 	var win := get_tree().root if get_tree() != null else null
 	var vp_size: Vector2 = Vector2(win.size) if win != null else (get_viewport().get_visible_rect().size if get_viewport() != null else Vector2(1280, 720))
-	panel.position = Vector2(maxf(160.0, (vp_size.x - panel.size.x) * 0.5), vp_size.y - 74.0)
+	panel.position = Vector2(maxf(100.0, (vp_size.x - panel.size.x) * 0.5), vp_size.y - 74.0)
 
 
 func _dismiss_onboarding_guide() -> void:

@@ -1,0 +1,68 @@
+{
+	"milestone": "V3-025",
+	"branch": "studio/v3-025-stage1-combat-readability-pacing",
+	"recorded_at": "2026-11-15T21:06:05+09:00",
+	"engine": "Godot 4.7.2 stable (Windows 64-bit)",
+	"renderer": "Compatibility (OpenGL 3.3)",
+	"hardware": "NVIDIA GeForce RTX 5060 Laptop GPU",
+	"videos": [
+		{
+			"filename": "Stage1_CombatReadability_1x.mp4",
+			"absolute_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-025/Stage1_CombatReadability_1x.mp4",
+			"classification": "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+			"description": "Full uncut natural playthrough of Stage 1 driven purely via simulated keyboard Input events. Covers Traversal, Encounter 1, Encounter 2, Encounter 3, Boss Sanctuary Gate dissolve, full Boss duel across 7 pattern cycles, and victory fanfare.",
+			"zero_cheats_audit": {
+				"direct_state_mutations": 0,
+				"player_hp_writes": 0,
+				"boss_hp_writes": 0,
+				"coordinate_teleports": 0,
+				"audit_passed": true
+			},
+			"resolution": "1280x720",
+			"framerate_fps": 60,
+			"playback_speed": "1.0x (Real-time speed)",
+			"duration_seconds": 38.22,
+			"total_frames": 2293,
+			"file_size_bytes": 85973961,
+			"sha256": "11D641F41E93C6B359F3AD1C7B0F817A2173D74D34E8470A8CCDC26AA873AC5D",
+			"telemetry": {
+				"run_id": "V3-022-R1-E2E-1794744121",
+				"stage_cleared_naturally": true,
+				"total_enemies_defeated": 12,
+				"damage_taken_hp": 3,
+				"vitality_orbs_collected": 1,
+				"guard_inputs_attempted": 33,
+				"confirmed_parries_deflected": 8,
+				"boss_visibility_frames_total": 725,
+				"boss_both_actors_on_screen_frames": 725,
+				"boss_on_screen_percentage": 100.0
+			}
+		},
+		{
+			"filename": "VFX_Telegraph_Readability_1x.mp4",
+			"absolute_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-025/VFX_Telegraph_Readability_1x.mp4",
+			"classification": "ISOLATED_FIXTURE_STATE_SETUP",
+			"description": "Focused fixture showcasing isolated attack tell (anticipation), active damage flash, and recovery opening across Melee Grunt, Crossbow Minion, Heavy Shield Knight, and Boss Commander.",
+			"resolution": "1280x720",
+			"framerate_fps": 60,
+			"playback_speed": "1.0x (Real-time speed)",
+			"duration_seconds": 9.35,
+			"total_frames": 561,
+			"file_size_bytes": 9029539,
+			"sha256": "8B1F285DCA787116C5E57E59EEAB8C7EE20BBC36E3AD0F2CF9EDB32B029CD576"
+		},
+		{
+			"filename": "Enemy_Role_Counterplay_1x.mp4",
+			"absolute_path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-025/Enemy_Role_Counterplay_1x.mp4",
+			"classification": "ISOLATED_FIXTURE_STATE_SETUP",
+			"description": "Tactical counterplay fixture demonstrating: 1) Grunt spacing and whiff punishing during recovery; 2) Crossbow dynamic laser reading and timed Just Parry; 3) Shield Knight frontal block deflection followed by Z-depth flanking slash; 4) Boss charge runway telegraph and Z-dodge evasion.",
+			"resolution": "1280x720",
+			"framerate_fps": 60,
+			"playback_speed": "1.0x (Real-time speed)",
+			"duration_seconds": 8.68,
+			"total_frames": 521,
+			"file_size_bytes": 13935036,
+			"sha256": "D0F824EE492AAEFB4A9F4C672EBA87C4A4C28A08272C710F478B84C4D8AD2F02"
+		}
+	]
+}

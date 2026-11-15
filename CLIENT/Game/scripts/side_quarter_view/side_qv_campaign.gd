@@ -5,6 +5,8 @@ class_name SideQVCampaign
 ## - 플레이어 스탯 및 성장 데이터 승계
 ## - 스테이지 클리어 축하 및 최종 캠페인 승리 연출
 
+const AudioManager = preload("res://scripts/audio/audio_manager.gd")
+
 signal stage_transitioned(stage_idx: int)
 signal campaign_completed
 

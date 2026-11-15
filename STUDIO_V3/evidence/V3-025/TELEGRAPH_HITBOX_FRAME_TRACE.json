@@ -1,0 +1,173 @@
+{
+	"attacks": [
+		{
+			"attack_name": "Directional Slash",
+			"dimensions_world_m": [
+				1.35,
+				0.85
+			],
+			"effective_hitbox_reach_m": 1.45,
+			"enemy_role": "Melee Grunt",
+			"hitbox_tell_sync_verified": true,
+			"mesh_type": "PlaneMesh (TexSlashArcAmber)",
+			"phases": {
+				"ACTIVE": {
+					"damage_active": true,
+					"duration_sec": 0.14,
+					"visual_cue": "Crescent slash blade VFX + forward surge"
+				},
+				"RECOVERY": {
+					"damage_active": false,
+					"duration_sec": 0.22,
+					"visual_cue": "Telegraph cleared, weapon recovery pose, whiff punish opening"
+				},
+				"TELL": {
+					"damage_active": false,
+					"duration_sec": 0.28,
+					"visual_cue": "Floor sweeping arc telegraph visible with amber glow"
+				}
+			},
+			"spatial_delta_pct": 6.9,
+			"telegraph_shape": "Directional Floor Sweeping Arc",
+			"whiff_punish_verified": true
+		},
+		{
+			"attack_name": "Sniper Bolt Fire",
+			"dimensions_world_m": [
+				4.5,
+				0.06
+			],
+			"effective_hitbox_reach_m": 4.5,
+			"enemy_role": "Crossbow Minion",
+			"mesh_type": "BoxMesh Beam + CylinderMesh Reticle",
+			"phases": {
+				"ACTIVE": {
+					"damage_active": true,
+					"duration_sec": 0.35,
+					"visual_cue": "Crossbow bolt projectile in flight along exact locked line"
+				},
+				"RECOVERY": {
+					"damage_active": false,
+					"duration_sec": 0.28,
+					"visual_cue": "Recoil recovery pose, laser extinguished, clear opening"
+				},
+				"TELL_LOCKED": {
+					"duration_sec": 0.14,
+					"player_counterplay": "Dodge roll, Just Parry clash, or jump",
+					"visual_cue": "Crimson locked beam + muzzle flash cue; trajectory frozen"
+				},
+				"TELL_TRACKING": {
+					"duration_sec": 0.28,
+					"player_counterplay": "Z-axis sidestep or position readjustment",
+					"visual_cue": "Amber line tracks player ground position dynamically"
+				}
+			},
+			"spatial_delta_pct": 0.0,
+			"telegraph_shape": "Dynamic Tracking Laser Beam + Impact Reticle",
+			"tracking_freeze_verified": true,
+			"trajectory_synchronization_verified": true
+		},
+		{
+			"attack_name": "Shield Surge Bash",
+			"bash_whiff_opening_verified": true,
+			"dimensions_world_m": [
+				1.85,
+				0.95
+			],
+			"effective_hitbox_reach_m": 1.95,
+			"enemy_role": "Heavy Shield Knight",
+			"frontal_guard_active_outside_bash": true,
+			"mesh_type": "PlaneMesh (TexEnergyBarrierRunic)",
+			"phases": {
+				"ACTIVE": {
+					"damage_active": true,
+					"duration_sec": 0.18,
+					"visual_cue": "Forward concussive surge (3.2m/s) + shockwave VFX"
+				},
+				"RECOVERY": {
+					"damage_active": false,
+					"duration_sec": 0.42,
+					"visual_cue": "Shield lowered to side, staggered stance, vulnerable (0.42s opening)"
+				},
+				"TELL": {
+					"damage_active": false,
+					"duration_sec": 0.35,
+					"visual_cue": "Frontal runway strip with runic crest, shield pulled back"
+				}
+			},
+			"spatial_delta_pct": 5.1,
+			"telegraph_shape": "Directional Runway Strip + Runic Barrier Crest"
+		},
+		{
+			"attack_name": "Shield Line Charge",
+			"dimensions_world_m": [
+				9.5,
+				1.35
+			],
+			"effective_hitbox_reach_m": 9.5,
+			"enemy_role": "Citadel Boss Commander",
+			"lane_alignment_verified": true,
+			"mesh_type": "PlaneMesh Amber Runic Lane",
+			"phases": {
+				"ACTIVE": {
+					"damage_active": true,
+					"duration_sec": 0.72,
+					"visual_cue": "High-velocity forward tackle with concussive sparks"
+				},
+				"RECOVERY": {
+					"damage_active": false,
+					"duration_sec": 0.45,
+					"visual_cue": "Recoil pushback upon wall impact, open for melee punishment"
+				},
+				"TELL": {
+					"duration_sec": 0.44,
+					"player_counterplay": "Sidestep along Z-depth lane + dash",
+					"visual_cue": "Ground runway lane illuminating entire charge lane"
+				}
+			},
+			"spatial_delta_pct": 0.0,
+			"telegraph_shape": "Rectangular Charge Runway Lane"
+		},
+		{
+			"arc_coverage_verified": true,
+			"attack_name": "Triple Cleave",
+			"dimensions_world_m": [
+				2.4,
+				1.3
+			],
+			"effective_hitbox_reach_m": 2.5,
+			"enemy_role": "Citadel Boss Commander",
+			"mesh_type": "PlaneMesh Crescent Floor Arc",
+			"phases": {
+				"ACTIVE": {
+					"damage_active": true,
+					"duration_sec": 0.22,
+					"visual_cue": "Heavy greatsword cleave impact"
+				},
+				"RECOVERY": {
+					"damage_active": false,
+					"duration_sec": 0.35,
+					"visual_cue": "Recovery between combo strikes"
+				},
+				"TELL": {
+					"duration_sec": 0.28,
+					"player_counterplay": "Just Parry clash or hop over fissure",
+					"visual_cue": "Sweeping ground arc projecting strike radius"
+				}
+			},
+			"spatial_delta_pct": 4.0,
+			"telegraph_shape": "Ground Sweeping Cleave Arc"
+		}
+	],
+	"suite": "V3-025 Attack Telegraph & Hitbox Frame Verification",
+	"summary": {
+		"all_phases_distinguishable": true,
+		"all_recovery_openings_punishable": true,
+		"all_spatial_alignments_within_tolerance": true,
+		"all_telegraphs_shape_accurate": true,
+		"total_attacks_tested": 5
+	},
+	"target_fps": 60,
+	"task_id": "V3-025",
+	"timestamp_unix": 1794745427
+}

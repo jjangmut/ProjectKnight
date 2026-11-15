@@ -34,6 +34,10 @@ const MeleeTexture = preload("res://assets/enemy_frames/melee_v1.png")
 const TexMeleeDirectional = preload("res://assets/enemy_frames/directional/melee_directional_aligned.png")
 const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
 const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
+const TexSlashArcAmber = preload("res://assets/vfx/vfx_slash_arc_amber.png")
+const TexEnemySlashCrescent = preload("res://assets/vfx/vfx_enemy_slash_crescent.png")
+
+var active_telegraph_node: Node3D = null
 
 enum FacingDir { SIDE_RIGHT, SIDE_LEFT, FRONT_SOUTH, BACK_NORTH }
 var current_facing_dir: FacingDir = FacingDir.SIDE_LEFT
@@ -159,7 +163,7 @@ func _update_hp_bar() -> void:
 var is_attacking: bool = false
 var attack_timer: float = 0.0
 var attack_phase: String = "IDLE"
-const ATTACK_DURATION: float = 0.52
+const ATTACK_DURATION: float = 0.64
 
 
 func _physics_process(delta: float) -> void:
@@ -211,21 +215,28 @@ func _physics_process(delta: float) -> void:
 		attack_timer += delta
 		velocity.x = move_toward(velocity.x, 0.0, 25.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, 25.0 * delta)
-		if attack_timer < 0.24:
+		var face_x: float = -1.0 if (sprite_3d != null and sprite_3d.flip_h) else 1.0
+
+		if attack_timer < 0.28:
 			attack_phase = "TELL"
 			attack_area_3d.monitoring = false
-		elif attack_timer < 0.38:
-			attack_phase = "ACTIVE"
+		elif attack_timer < 0.42:
+			if attack_phase != "ACTIVE":
+				attack_phase = "ACTIVE"
+				_trigger_active_slash_vfx(face_x)
 			attack_area_3d.monitoring = true
-		else:
-			attack_phase = "RECOVERY"
+		elif attack_timer < 0.64:
+			if attack_phase != "RECOVERY":
+				attack_phase = "RECOVERY"
+				_clear_attack_telegraph()
 			attack_area_3d.monitoring = false
-
-		if attack_timer >= ATTACK_DURATION:
+		else:
 			is_attacking = false
 			is_counter_riposte = false
 			attack_phase = "IDLE"
+			_clear_attack_telegraph()
 			attack_area_3d.monitoring = false
+
 		_apply_enemy_separation(delta)
 		move_and_slide()
 		_update_enemy_animation(delta)
@@ -348,44 +359,105 @@ func _execute_attack(as_riposte: bool = false) -> void:
 	attack_phase = "TELL"
 	velocity.x = 0.0
 	velocity.z = 0.0
+	var face_x: float = -1.0 if (sprite_3d != null and sprite_3d.flip_h) else 1.0
 	if sprite_3d != null:
 		var tw := create_tween()
 		if tw:
-			sprite_3d.modulate = Color(2.4, 0.9, 0.3, 1.0) if as_riposte else Color(2.2, 1.6, 0.4, 1.0) # Weapon gleam telegraph
-			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.22)
-	_spawn_windup_telegraph_ring()
+			sprite_3d.modulate = Color(2.6, 1.1, 0.35, 1.0) if as_riposte else Color(2.4, 1.8, 0.45, 1.0) # Weapon gleam telegraph
+			tw.tween_property(sprite_3d, "modulate", Color.WHITE, 0.24)
+	_spawn_directional_slash_telegraph(face_x, 0.28, as_riposte)
 
 
-func _spawn_windup_telegraph_ring() -> void:
+func _spawn_directional_slash_telegraph(face_x: float, duration: float, is_riposte: bool) -> void:
+	_clear_attack_telegraph()
 	var p := get_parent()
 	if p == null:
 		return
-	var ring := MeshInstance3D.new()
-	ring.name = "EnemyWindupRing3D"
+
+	var root := Node3D.new()
+	root.name = "EnemySlashTelegraph3D"
+	active_telegraph_node = root
+	p.add_child(root)
+	root.global_position = global_position + Vector3(face_x * 0.72, 0.025, 0.0)
+
+	# 1. Directional Floor Sweeping Slash Arc Quad (matching 1.35m x 0.85m attack area reach)
+	var arc_mesh := MeshInstance3D.new()
+	arc_mesh.name = "SlashArcFloor"
 	var quad := QuadMesh.new()
-	quad.size = Vector2(1.3, 1.3)
-	ring.mesh = quad
-	ring.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
-	var rmat := StandardMaterial3D.new()
-	rmat.albedo_texture = TexShockwaveRing
-	rmat.albedo_color = Color(1.4, 0.45, 0.18, 0.85)
-	rmat.emission_enabled = true
-	rmat.emission_texture = TexShockwaveRing
-	rmat.emission = Color(1.4, 0.45, 0.18, 1.0)
-	rmat.emission_energy_multiplier = 1.25
-	rmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	rmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	rmat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	ring.material_override = rmat
-	p.add_child(ring)
-	ring.global_position = global_position + Vector3(0.0, 0.04, 0.0)
-	var tw := ring.create_tween()
+	quad.size = Vector2(1.35, 0.85)
+	arc_mesh.mesh = quad
+	arc_mesh.rotation_degrees = Vector3(-90.0, 0.0 if face_x > 0.0 else 180.0, 0.0)
+
+	var amat := StandardMaterial3D.new()
+	amat.albedo_texture = TexSlashArcAmber
+	amat.albedo_color = Color(1.8, 0.55, 0.2, 0.65) if is_riposte else Color(1.4, 0.75, 0.22, 0.60)
+	amat.emission_enabled = true
+	amat.emission_texture = TexSlashArcAmber
+	amat.emission = Color(1.8, 0.55, 0.2, 1.0) if is_riposte else Color(1.4, 0.75, 0.22, 1.0)
+	amat.emission_energy_multiplier = 1.35
+	amat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	amat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	amat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	amat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	arc_mesh.material_override = amat
+	root.add_child(arc_mesh)
+
+	# Smooth scale expansion indicating windup timing
+	arc_mesh.scale = Vector3(0.65, 0.65, 0.65)
+	var tw := arc_mesh.create_tween()
 	if tw:
 		tw.set_parallel(true)
-		tw.tween_property(ring, "scale", Vector3(1.65, 1.65, 1.65), 0.24)
-		tw.tween_property(rmat, "albedo_color:a", 0.0, 0.24)
-		tw.chain().tween_callback(ring.queue_free)
+		tw.tween_property(arc_mesh, "scale", Vector3(1.15, 1.15, 1.15), duration)
+		tw.tween_property(amat, "albedo_color:a", 0.90, duration)
+
+
+func _trigger_active_slash_vfx(face_x: float) -> void:
+	if active_telegraph_node != null and is_instance_valid(active_telegraph_node):
+		var floor_arc = active_telegraph_node.get_node_or_null("SlashArcFloor")
+		if floor_arc != null and floor_arc.material_override != null:
+			var mat: StandardMaterial3D = floor_arc.material_override
+			mat.albedo_color = Color(2.5, 2.0, 0.8, 0.95)
+			mat.emission = Color(2.5, 2.0, 0.8, 1.0)
+			mat.emission_energy_multiplier = 1.8
+
+	# Crescent Slash Visual Blade swoosh
+	var p := get_parent()
+	if p == null:
+		return
+	var crescent := MeshInstance3D.new()
+	crescent.name = "ActiveSlashCrescent3D"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.5, 0.9)
+	crescent.mesh = quad
+	crescent.rotation_degrees = Vector3(0.0, 0.0 if face_x > 0.0 else 180.0, 0.0)
+	crescent.position = global_position + Vector3(face_x * 0.75, 0.82, 0.0)
+
+	var cmat := StandardMaterial3D.new()
+	cmat.albedo_texture = TexEnemySlashCrescent
+	cmat.albedo_color = Color(2.2, 1.2, 0.35, 0.95)
+	cmat.emission_enabled = true
+	cmat.emission_texture = TexEnemySlashCrescent
+	cmat.emission = Color(2.2, 1.2, 0.35, 1.0)
+	cmat.emission_energy_multiplier = 1.5
+	cmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	cmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	cmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	cmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	crescent.material_override = cmat
+	p.add_child(crescent)
+
+	var ctw := crescent.create_tween()
+	if ctw:
+		ctw.set_parallel(true)
+		ctw.tween_property(crescent, "scale", Vector3(1.35, 1.35, 1.35), 0.14)
+		ctw.tween_property(cmat, "albedo_color:a", 0.0, 0.14)
+		ctw.chain().tween_callback(crescent.queue_free)
+
+
+func _clear_attack_telegraph() -> void:
+	if active_telegraph_node != null and is_instance_valid(active_telegraph_node):
+		active_telegraph_node.queue_free()
+		active_telegraph_node = null
 
 
 func _on_attack_body_entered(body: Node3D) -> void:
@@ -405,6 +477,7 @@ func apply_parry_stun(duration: float = 1.6) -> void:
 	is_counter_riposte = false
 	consecutive_hits_taken = 0
 	attack_phase = "IDLE"
+	_clear_attack_telegraph()
 	if attack_area_3d != null and is_instance_valid(attack_area_3d):
 		attack_area_3d.set_deferred("monitoring", false)
 	velocity = Vector3.ZERO # Firm stop on parry clash; zero slide
@@ -462,6 +535,7 @@ func _die(is_counter: bool = false) -> void:
 	is_recoiling = false
 	is_attacking = false
 	is_stunned = false
+	_clear_attack_telegraph()
 
 	# Immediate collision de-registration & attack prevention
 	collision_layer = 0
