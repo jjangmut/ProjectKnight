@@ -1,0 +1,356 @@
+{
+  "pipeline": "V3-026 Dead Cells Style 3D-to-2D Render Pipeline",
+  "cell_size": [
+    780,
+    780
+  ],
+  "pivot": [
+    390,
+    700
+  ],
+  "paladin_source_glb": "ProjectKnight_Paladin_Animated.glb",
+  "actions": {
+    "combo1": {
+      "output_file": "combo1_slash.png",
+      "grid": [
+        3,
+        2
+      ],
+      "total_frames": 6,
+      "cell_size": [
+        780,
+        780
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "bbox": [
+            192,
+            399,
+            593,
+            779
+          ],
+          "char_height_px": 380,
+          "char_width_px": 401,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 1,
+          "bbox": [
+            165,
+            373,
+            569,
+            779
+          ],
+          "char_height_px": 406,
+          "char_width_px": 404,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 2,
+          "bbox": [
+            164,
+            430,
+            534,
+            779
+          ],
+          "char_height_px": 349,
+          "char_width_px": 370,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 3,
+          "bbox": [
+            139,
+            441,
+            536,
+            779
+          ],
+          "char_height_px": 338,
+          "char_width_px": 397,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 4,
+          "bbox": [
+            203,
+            391,
+            517,
+            779
+          ],
+          "char_height_px": 388,
+          "char_width_px": 314,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 5,
+          "bbox": [
+            199,
+            374,
+            544,
+            779
+          ],
+          "char_height_px": 405,
+          "char_width_px": 345,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        }
+      ]
+    },
+    "combo2": {
+      "output_file": "combo2_slash.png",
+      "grid": [
+        3,
+        2
+      ],
+      "total_frames": 6,
+      "cell_size": [
+        780,
+        780
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "bbox": [
+            195,
+            393,
+            580,
+            779
+          ],
+          "char_height_px": 386,
+          "char_width_px": 385,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 1,
+          "bbox": [
+            209,
+            373,
+            567,
+            779
+          ],
+          "char_height_px": 406,
+          "char_width_px": 358,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 2,
+          "bbox": [
+            11,
+            435,
+            522,
+            779
+          ],
+          "char_height_px": 344,
+          "char_width_px": 511,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 3,
+          "bbox": [
+            30,
+            451,
+            529,
+            779
+          ],
+          "char_height_px": 328,
+          "char_width_px": 499,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 4,
+          "bbox": [
+            199,
+            387,
+            526,
+            779
+          ],
+          "char_height_px": 392,
+          "char_width_px": 327,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 5,
+          "bbox": [
+            199,
+            374,
+            544,
+            779
+          ],
+          "char_height_px": 405,
+          "char_width_px": 345,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        }
+      ]
+    },
+    "combo3": {
+      "output_file": "combo3_cleave.png",
+      "grid": [
+        4,
+        2
+      ],
+      "total_frames": 8,
+      "cell_size": [
+        780,
+        780
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "bbox": [
+            156,
+            373,
+            555,
+            779
+          ],
+          "char_height_px": 406,
+          "char_width_px": 399,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 1,
+          "bbox": [
+            198,
+            405,
+            569,
+            779
+          ],
+          "char_height_px": 374,
+          "char_width_px": 371,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 2,
+          "bbox": [
+            206,
+            395,
+            573,
+            779
+          ],
+          "char_height_px": 384,
+          "char_width_px": 367,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 3,
+          "bbox": [
+            137,
+            387,
+            537,
+            779
+          ],
+          "char_height_px": 392,
+          "char_width_px": 400,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 4,
+          "bbox": [
+            157,
+            410,
+            546,
+            779
+          ],
+          "char_height_px": 369,
+          "char_width_px": 389,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 5,
+          "bbox": [
+            166,
+            406,
+            542,
+            779
+          ],
+          "char_height_px": 373,
+          "char_width_px": 376,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 6,
+          "bbox": [
+            190,
+            389,
+            522,
+            779
+          ],
+          "char_height_px": 390,
+          "char_width_px": 332,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        },
+        {
+          "frame": 7,
+          "bbox": [
+            199,
+            374,
+            544,
+            779
+          ],
+          "char_height_px": 405,
+          "char_width_px": 345,
+          "aligned_pivot": [
+            390,
+            700
+          ]
+        }
+      ]
+    }
+  }
+}

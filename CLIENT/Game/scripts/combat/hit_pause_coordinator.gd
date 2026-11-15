@@ -32,7 +32,7 @@ func _physics_process(delta: float) -> void:
 	if _paused_actors.is_empty():
 		return
 
-	var finished_nodes: Array[Node] = []
+	var finished_nodes: Array = []
 	for node in _paused_actors.keys():
 		if not is_instance_valid(node):
 			finished_nodes.append(node)

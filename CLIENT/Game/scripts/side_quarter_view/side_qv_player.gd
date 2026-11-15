@@ -130,6 +130,9 @@ var hero_aim_arrow_3d: MeshInstance3D = null
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
 const TexRun = preload("res://assets/player_frames/run_v2_aligned.png")      # 3x2 = 6 frames (780x780 cells, Pivot: 390,700)
 const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")# 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
+const TexCombo1 = preload("res://assets/player_frames/combo1_slash.png") # 3x2 = 6 frames
+const TexCombo2 = preload("res://assets/player_frames/combo2_slash.png") # 3x2 = 6 frames
+const TexCombo3 = preload("res://assets/player_frames/combo3_cleave.png") # 4x2 = 8 frames
 const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
@@ -197,13 +200,13 @@ func _init_combat_actions() -> void:
 	action_hero_attack_1.combo_buffer_start = 0.14
 	action_hero_attack_1.swing_sfx = "player_slash_1"
 	action_hero_attack_1.hit_sfx = "enemy_hit_impact"
-	action_hero_attack_1.sprite_texture = TexAttack
-	action_hero_attack_1.hframes = 2
+	action_hero_attack_1.sprite_texture = TexCombo1
+	action_hero_attack_1.hframes = 3
 	action_hero_attack_1.vframes = 2
-	action_hero_attack_1.total_frames = 4
-	action_hero_attack_1.windup_frames = [0]
-	action_hero_attack_1.active_frames = [1, 2]
-	action_hero_attack_1.recovery_frames = [3]
+	action_hero_attack_1.total_frames = 6
+	action_hero_attack_1.windup_frames = [0, 1]
+	action_hero_attack_1.active_frames = [2, 3]
+	action_hero_attack_1.recovery_frames = [4, 5]
 
 	# Action 2: Reverse upward slash
 	action_hero_attack_2 = CombatActionDefClass.new()
@@ -225,13 +228,13 @@ func _init_combat_actions() -> void:
 	action_hero_attack_2.combo_buffer_start = 0.15
 	action_hero_attack_2.swing_sfx = "player_slash_2"
 	action_hero_attack_2.hit_sfx = "enemy_hit_impact"
-	action_hero_attack_2.sprite_texture = TexAttack
-	action_hero_attack_2.hframes = 2
+	action_hero_attack_2.sprite_texture = TexCombo2
+	action_hero_attack_2.hframes = 3
 	action_hero_attack_2.vframes = 2
-	action_hero_attack_2.total_frames = 4
-	action_hero_attack_2.windup_frames = [0]
-	action_hero_attack_2.active_frames = [1, 2]
-	action_hero_attack_2.recovery_frames = [3]
+	action_hero_attack_2.total_frames = 6
+	action_hero_attack_2.windup_frames = [0, 1]
+	action_hero_attack_2.active_frames = [2, 3]
+	action_hero_attack_2.recovery_frames = [4, 5]
 
 	# Action 3: Heavy overhead finisher
 	action_hero_attack_3 = CombatActionDefClass.new()
@@ -253,13 +256,13 @@ func _init_combat_actions() -> void:
 	action_hero_attack_3.combo_buffer_start = 0.22
 	action_hero_attack_3.swing_sfx = "player_slash_3"
 	action_hero_attack_3.hit_sfx = "enemy_hit_counter"
-	action_hero_attack_3.sprite_texture = TexAttack
-	action_hero_attack_3.hframes = 2
+	action_hero_attack_3.sprite_texture = TexCombo3
+	action_hero_attack_3.hframes = 4
 	action_hero_attack_3.vframes = 2
-	action_hero_attack_3.total_frames = 4
-	action_hero_attack_3.windup_frames = [0]
-	action_hero_attack_3.active_frames = [1, 2]
-	action_hero_attack_3.recovery_frames = [3]
+	action_hero_attack_3.total_frames = 8
+	action_hero_attack_3.windup_frames = [0, 1, 2]
+	action_hero_attack_3.active_frames = [3, 4]
+	action_hero_attack_3.recovery_frames = [5, 6, 7]
 
 	attack_actions = {
 		"hero_attack_1": action_hero_attack_1,
@@ -1130,6 +1133,8 @@ func _process_attack_state(delta: float) -> void:
 
 	if timeline_controller != null and timeline_controller.is_busy():
 		var _f: int = timeline_controller.step(delta)
+		if _f >= 0 and sprite_3d != null:
+			sprite_3d.frame = _f
 		var cur_act: CombatActionDefClass = timeline_controller.current_action
 		if cur_act != null:
 			attack_duration_remaining = maxf(0.0, cur_act.total_duration - timeline_controller.elapsed_time)

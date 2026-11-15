@@ -24,7 +24,7 @@
 			"configured_total_sec": 0.3,
 			"configured_windup_sec": 0.08,
 			"contact_frame_matched": true,
-			"hitbox_active_frame_count": 12,
+			"hitbox_active_frame_count": 13,
 			"measured_damage_time_sec": 0.1,
 			"sample_count": 23,
 			"startup_damage_detected": false,
@@ -39,7 +39,7 @@
 			"configured_total_sec": 0.32,
 			"configured_windup_sec": 0.1,
 			"contact_frame_matched": true,
-			"hitbox_active_frame_count": 15,
+			"hitbox_active_frame_count": 13,
 			"measured_damage_time_sec": 0.117,
 			"sample_count": 25,
 			"startup_damage_detected": false,
@@ -54,12 +54,12 @@
 			"configured_total_sec": 0.42,
 			"configured_windup_sec": 0.14,
 			"contact_frame_matched": true,
-			"hitbox_active_frame_count": 21,
+			"hitbox_active_frame_count": 22,
 			"measured_damage_time_sec": 0.167,
 			"sample_count": 31,
 			"startup_damage_detected": false,
 			"test_passed": true
 		}
 	],
-	"timestamp_unix": 1794750668
+	"timestamp_unix": 1794752082
 }
