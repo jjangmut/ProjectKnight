@@ -1,0 +1,97 @@
+{
+  "task_id": "V3-024-R3",
+  "branch": "studio/v3-024-r3-boss-combat-lane-alignment",
+  "recording_mode": "Godot 4.7.2 Movie Maker (--write-movie --fixed-fps 60) -> FFmpeg H.264 MP4 (-r 60)",
+  "playtest_classification": "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+  "human_playtest_status": "HUMAN_PLAYTEST_PENDING",
+  "videos": {
+    "boss_combat_lane_audit": {
+      "path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R3/Stage1_BossLaneAlignment_1x.mp4",
+      "sha256": "585b04061d56c2f10f0e445386ebfedd5cc3d30b1537403d0611e31a354dd88a",
+      "size_bytes": 19967419,
+      "duration_seconds": 12.03,
+      "fps": 60.0,
+      "resolution": "1280x720",
+      "features_verified": [
+        "Same-lane foot Y coordinate alignment (delta-Y <= 12px in >=95% frames)",
+        "Horizontal silhouette separation (X >= 1.60m, zero sprite clipping/overlap)",
+        "Z-dodge sidestep evasion (boss attacks miss off-lane player, zero damage)",
+        "Depth rail duel tracking without parking at arena center Z=0.2m"
+      ]
+    }
+  },
+  "extracted_after_frames": [
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/lane_aligned_center_duel_01.png",
+      "description": "Center Lane (Z=0.0): Perfect Foot-Y Alignment",
+      "timestamp": "00:00:01.500"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/lane_aligned_center_duel_02.png",
+      "description": "Center Lane Melee Clash: Clear Silhouette Clearance",
+      "timestamp": "00:00:02.800"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/top_rail_duel_01.png",
+      "description": "Top Rail Duel: Boss Aligned on Player Z (-1.5m)",
+      "timestamp": "00:00:04.200"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/top_rail_duel_02.png",
+      "description": "Top Rail Combat Exchange: No Occlusion",
+      "timestamp": "00:00:05.500"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/z_dodge_charge_miss_01.png",
+      "description": "Z-Dodge Evasion: Boss Charges Along Original Lane",
+      "timestamp": "00:00:07.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/z_dodge_charge_miss_02.png",
+      "description": "Z-Dodge Evasion: Charge Misses Sidestepped Hero",
+      "timestamp": "00:00:07.800"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/bottom_rail_duel_01.png",
+      "description": "Bottom Rail Duel: Matching Foot-Y Coordinates",
+      "timestamp": "00:00:09.500"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/after/bottom_rail_duel_02.png",
+      "description": "Bottom Rail Melee Strike: Final Contact Alignment",
+      "timestamp": "00:00:11.000"
+    }
+  ],
+  "extracted_before_frames": [
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_22s.png",
+      "description": "Baseline 22s: Hero elevated on screen, delta-foot-Y = 74.2px",
+      "timestamp": "00:00:22.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_24s.png",
+      "description": "Baseline 24s: Hero drifting upward due to pitch projection, delta-foot-Y = 84.8px",
+      "timestamp": "00:00:24.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_26s.png",
+      "description": "Baseline 26s: Severe Occlusion - Hero largely behind 2.45m boss torso, delta-foot-Y = 106.0px",
+      "timestamp": "00:00:26.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_28s.png",
+      "description": "Baseline 28s: Unaligned depth causes silhouette collision, delta-foot-Y = 74.2px",
+      "timestamp": "00:00:28.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_30s.png",
+      "description": "Baseline 30s: Hero feet floating 68.9px above boss feet during cleave",
+      "timestamp": "00:00:30.000"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_32s.png",
+      "description": "Baseline 32s: Lateral separation during boss recovery, delta-foot-Y = 37.1px",
+      "timestamp": "00:00:32.000"
+    }
+  ]
+}

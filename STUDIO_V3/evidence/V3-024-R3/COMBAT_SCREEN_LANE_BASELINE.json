@@ -1,0 +1,91 @@
+{
+  "task_id": "V3-024-R3",
+  "phase": "BASELINE_AUDIT",
+  "base_sha": "04c15e1810384fe292caf22f99754479d8f38deb",
+  "source_video": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R2/Stage1_Full_Playthrough_1x.mp4",
+  "description": "Pre-fix baseline measurements from V3-024-R2 showing projected foot-lane mismatch and boss sprite occlusion",
+  "camera_projection": {
+    "pitch_deg": -32.0,
+    "yaw_deg": 0.0,
+    "fov_deg": 42.0,
+    "offset": [0.0, 5.2, 7.8],
+    "resolution": [1280, 720]
+  },
+  "baseline_frame_samples": [
+    {
+      "timestamp_sec": 22.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_22s.png",
+      "player_pos": [73.8, 0.0, -1.2],
+      "boss_pos": [76.8, 0.0, 0.2],
+      "delta_z_world_m": 1.4,
+      "p_foot_screen_y": 596.7,
+      "b_foot_screen_y": 670.9,
+      "delta_foot_y_px": 74.2,
+      "occlusion_state": "Hero elevated on screen relative to boss; partial weapon overlap"
+    },
+    {
+      "timestamp_sec": 24.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_24s.png",
+      "player_pos": [74.2, 0.0, -1.5],
+      "boss_pos": [77.1, 0.0, 0.1],
+      "delta_z_world_m": 1.6,
+      "p_foot_screen_y": 580.8,
+      "b_foot_screen_y": 665.6,
+      "delta_foot_y_px": 84.8,
+      "occlusion_state": "Hero drifting upward in screen space due to depth pitch projection"
+    },
+    {
+      "timestamp_sec": 26.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_26s.png",
+      "player_pos": [75.0, 0.0, -1.8],
+      "boss_pos": [77.5, 0.0, 0.2],
+      "delta_z_world_m": 2.0,
+      "p_foot_screen_y": 564.9,
+      "b_foot_screen_y": 670.9,
+      "delta_foot_y_px": 106.0,
+      "occlusion_state": "SEVERE OCCLUSION: Hero sprite partially obscured behind 2.45m boss torso and greatsword"
+    },
+    {
+      "timestamp_sec": 28.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_28s.png",
+      "player_pos": [74.5, 0.0, -1.4],
+      "boss_pos": [76.9, 0.0, 0.0],
+      "delta_z_world_m": 1.4,
+      "p_foot_screen_y": 586.1,
+      "b_foot_screen_y": 660.3,
+      "delta_foot_y_px": 74.2,
+      "occlusion_state": "Characters overlap horizontally; lack of lane alignment causes muddy silhouette collision"
+    },
+    {
+      "timestamp_sec": 30.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_30s.png",
+      "player_pos": [75.2, 0.0, -1.0],
+      "boss_pos": [77.8, 0.0, 0.3],
+      "delta_z_world_m": 1.3,
+      "p_foot_screen_y": 607.3,
+      "b_foot_screen_y": 676.2,
+      "delta_foot_y_px": 68.9,
+      "occlusion_state": "Hero feet floating 68.9px above boss feet during active attack pattern"
+    },
+    {
+      "timestamp_sec": 32.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/before/baseline_32s.png",
+      "player_pos": [75.8, 0.0, -0.6],
+      "boss_pos": [78.2, 0.0, 0.1],
+      "delta_z_world_m": 0.7,
+      "p_foot_screen_y": 628.5,
+      "b_foot_screen_y": 665.6,
+      "delta_foot_y_px": 37.1,
+      "occlusion_state": "Characters separated laterally as boss enters recovery"
+    }
+  ],
+  "summary": {
+    "defect_identified": true,
+    "root_cause_1": "Boss attack hitbox Z depth was 2.2m, allowing strikes across disconnected lanes",
+    "root_cause_2": "Boss AI yielded towards Z=0.0 when dist < 1.65m regardless of player depth",
+    "root_cause_3": "player_near_z_wall threshold (1.6m) forced boss to park at Z>=0.2 when player was anywhere in upper arena",
+    "average_foot_y_diff_px": 74.2,
+    "max_foot_y_diff_px": 106.0,
+    "aligned_frames_rate_pct": 0.0
+  }
+}

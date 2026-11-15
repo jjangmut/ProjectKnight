@@ -169,7 +169,7 @@ func _build_components() -> void:
 
 	var atk_shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(2.8, 2.0, 2.2)
+	box.size = Vector3(2.8, 2.0, 0.70)
 	atk_shape.shape = box
 	atk_shape.position = Vector3(0.0, 1.2, 0.0)
 	attack_area_3d.position = Vector3(-1.2, 0.0, 0.0)
@@ -264,7 +264,7 @@ func _physics_process(delta: float) -> void:
 				_pick_next_pattern(dist)
 			else:
 				var spd := move_speed * (1.35 if current_phase == 2 else 1.0)
-				var boss_combat_distance := 1.72 # Reach of heavy boss blade
+				var boss_combat_distance := 1.90 # Reach of heavy boss blade
 
 				# Full 2D (X and Z) Arena Boundary & Corner Detection
 				var p_pos := target_player.global_position
@@ -273,16 +273,16 @@ func _physics_process(delta: float) -> void:
 				var p_dist_top: float = p_pos.z - arena_min_z     # top depth rail (Z ~ -2.6)
 				var p_dist_bottom: float = arena_max_z - p_pos.z  # bottom depth rail (Z ~ +2.6)
 
-				var player_near_x_wall: bool = (p_dist_left <= 3.2 or p_dist_right <= 3.2)
-				var player_near_z_wall: bool = (p_dist_top <= 1.6 or p_dist_bottom <= 1.6)
+				# Precise boundary thresholds: Corner & Rail traps
+				var player_near_x_wall: bool = (p_dist_left <= 2.0 or p_dist_right <= 2.0)
+				var player_near_z_wall: bool = (p_dist_top <= 0.65 or p_dist_bottom <= 0.65)
 				var player_in_corner: bool = (player_near_x_wall and player_near_z_wall)
-				var player_is_cornered: bool = (player_near_x_wall or player_near_z_wall)
 
 				var boss_dist_left: float = global_position.x - arena_min_x
 				var boss_dist_right: float = arena_max_x - global_position.x
 				var boss_dist_top: float = global_position.z - arena_min_z
 				var boss_dist_bottom: float = arena_max_z - global_position.z
-				var boss_near_wall: bool = (boss_dist_left <= 1.4 or boss_dist_right <= 1.4 or boss_dist_top <= 0.9 or boss_dist_bottom <= 0.9)
+				var boss_near_wall: bool = (boss_dist_left <= 1.2 or boss_dist_right <= 1.2 or boss_dist_top <= 0.6 or boss_dist_bottom <= 0.6)
 
 				var center_x: float = (arena_min_x + arena_max_x) * 0.5
 
@@ -295,28 +295,25 @@ func _physics_process(delta: float) -> void:
 					velocity.z = step_dir_z * spd * 0.90
 					_prevent_player_pushing()
 				elif player_near_z_wall:
-					# Player trapped on top/bottom depth rail!
-					boss_combat_distance = 2.65
+					# Player trapped on top/bottom depth rail (within 0.65m of rail)
+					boss_combat_distance = 2.5
 					# If boss is directly blocking player's vertical corridor, yield sideways in X consistently:
-					if absf(diff.x) < 1.4:
-						var yield_x: float = -1.0 if diff.x > 0.05 else 1.0
+					if absf(diff.x) < 1.6:
+						var yield_x: float = 1.0 if diff.x >= 0.0 else -1.0
 						velocity.x = yield_x * (spd * 0.90)
-					elif dist > boss_combat_distance:
-						var chase_dir := diff.normalized()
-						velocity.x = chase_dir.x * spd
+					elif absf(diff.x) > boss_combat_distance:
+						velocity.x = signf(diff.x) * spd
 					else:
 						# Back off slightly horizontally toward center to open diagonal exit
 						velocity.x = signf(center_x - global_position.x) * (spd * 0.60)
 
-					# Critical Depth Unstick: Boss yields depth corridor toward arena center (Z ~ 0.0)
-					if p_dist_top <= 1.6:
-						# Player at top rail (Z <= -1.0): Boss steps down towards Z >= 0.2
+					# Yield depth corridor toward arena center so trapped player can walk out
+					if p_dist_top <= 0.65:
 						if global_position.z < 0.2:
 							velocity.z = spd * 0.85
 						else:
 							velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
-					elif p_dist_bottom <= 1.6:
-						# Player at bottom rail (Z >= 1.0): Boss steps up towards Z <= -0.2
+					elif p_dist_bottom <= 0.65:
 						if global_position.z > -0.2:
 							velocity.z = -spd * 0.85
 						else:
@@ -334,7 +331,11 @@ func _physics_process(delta: float) -> void:
 					else:
 						# Back away in X towards center
 						velocity.x = signf(center_x - global_position.x) * (spd * 0.60)
-						velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
+						var z_diff := target_player.global_position.z - global_position.z
+						if absf(z_diff) > 0.15:
+							velocity.z = signf(z_diff) * (spd * 0.75)
+						else:
+							velocity.z = move_toward(velocity.z, 0.0, 20.0 * delta)
 					_prevent_player_pushing()
 				elif boss_near_wall:
 					# Step away from wall towards center
@@ -342,21 +343,31 @@ func _physics_process(delta: float) -> void:
 					var step_dir_z: float = signf(0.0 - global_position.z)
 					velocity.x = step_dir_x * spd * 0.85
 					velocity.z = step_dir_z * spd * 0.65
-				elif dist > boss_combat_distance:
-					var chase_dir := diff.normalized()
-					velocity.x = chase_dir.x * spd
-					velocity.z = chase_dir.z * (spd * 0.75)
-					_prevent_player_pushing()
-				elif dist < 1.65:
-					# Maintain combat distance: boss yields space toward center
-					var step_dir_x: float = signf(center_x - global_position.x)
-					var step_dir_z: float = signf(0.0 - global_position.z)
-					velocity.x = step_dir_x * (spd * 0.75)
-					velocity.z = step_dir_z * (spd * 0.60)
-					_prevent_player_pushing()
 				else:
-					velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
-					velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+					# Active Combat Arena: Belt-Scroll Same-Lane Combat Alignment
+					var z_diff := target_player.global_position.z - global_position.z
+					var x_diff := target_player.global_position.x - global_position.x
+					var abs_z := absf(z_diff)
+					var abs_x := absf(x_diff)
+
+					# 1. Z-Axis Lane Matching (High priority for 2.5D Belt-Scroll combat)
+					if abs_z > 0.10:
+						velocity.z = signf(z_diff) * minf(spd * 0.85, abs_z * 4.5)
+					else:
+						velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
+
+					# 2. X-Axis Combat Range Management
+					var target_melee_range_max := 2.15
+					var target_melee_range_min := 1.70
+
+					if abs_x > target_melee_range_max:
+						velocity.x = signf(x_diff) * spd
+					elif abs_x < target_melee_range_min:
+						velocity.x = -signf(x_diff) * (spd * 0.70)
+					else:
+						velocity.x = move_toward(velocity.x, 0.0, 35.0 * delta)
+
+					_prevent_player_pushing()
 		Pattern.CHARGE_WINDUP:
 			pattern_phase = "TELL"
 			is_frontal_shield_up = true
@@ -427,30 +438,39 @@ func _prevent_player_pushing() -> void:
 	if target_player != null and is_instance_valid(target_player):
 		var diff := target_player.global_position - global_position
 		diff.y = 0.0
-		var dist := diff.length()
-		var min_dist: float = 1.95 # Generous separation to eliminate sprite overlap
-		if dist < min_dist and dist > 0.001:
-			var dir := diff / dist
-			var forward_speed := velocity.dot(dir)
+		var x_dist := absf(diff.x)
+		var z_dist := absf(diff.z)
+
+		# Enforce horizontal combat clearance (min 1.70m) when on the same or close depth lane
+		var min_x: float = 1.70
+		if x_dist < min_x and z_dist < 0.60 and x_dist > 0.001:
+			var dir_x := signf(diff.x)
+			if dir_x == 0.0:
+				dir_x = 1.0 if facing_dir_x < 0.0 else -1.0
+			var forward_speed := velocity.x * dir_x
 			if forward_speed > 0.0:
-				velocity -= dir * forward_speed
-			# Full 2D Anti-boundary wedging: push boss back toward center if player is near ANY wall
-			var p_pos := target_player.global_position
-			var p_dist_left: float = p_pos.x - arena_min_x
-			var p_dist_right: float = arena_max_x - p_pos.x
-			var p_dist_top: float = p_pos.z - arena_min_z
-			var p_dist_bottom: float = arena_max_z - p_pos.z
-			var p_near_any_wall: bool = (p_dist_left <= 3.2 or p_dist_right <= 3.2 or p_dist_top <= 1.6 or p_dist_bottom <= 1.6)
-			if p_near_any_wall:
-				var center_x := (arena_min_x + arena_max_x) * 0.5
-				var step_x := signf(center_x - global_position.x)
-				if step_x == 0.0:
-					step_x = 1.0 if diff.x <= 0.0 else -1.0
-				var step_z := signf(0.0 - global_position.z)
-				if step_z == 0.0:
-					step_z = 1.0 if diff.z <= 0.0 else -1.0
-				var to_center := Vector3(step_x, 0.0, step_z).normalized()
-				velocity += to_center * 4.2
+				velocity.x -= dir_x * forward_speed
+			# Soft horizontal push back to preserve readable weapon reach and avoid sprite overlap
+			if x_dist < min_x - 0.10:
+				velocity.x += -dir_x * ((min_x - x_dist) * 6.0)
+
+		# Anti-boundary wedging: push boss back toward center if player is near ANY wall
+		var p_pos := target_player.global_position
+		var p_dist_left: float = p_pos.x - arena_min_x
+		var p_dist_right: float = arena_max_x - p_pos.x
+		var p_dist_top: float = p_pos.z - arena_min_z
+		var p_dist_bottom: float = arena_max_z - p_pos.z
+		var p_near_any_wall: bool = (p_dist_left <= 2.0 or p_dist_right <= 2.0 or p_dist_top <= 0.65 or p_dist_bottom <= 0.65)
+		if p_near_any_wall:
+			var center_x := (arena_min_x + arena_max_x) * 0.5
+			var step_x := signf(center_x - global_position.x)
+			if step_x == 0.0:
+				step_x = 1.0 if diff.x <= 0.0 else -1.0
+			var step_z := signf(0.0 - global_position.z)
+			if step_z == 0.0:
+				step_z = 1.0 if diff.z <= 0.0 else -1.0
+			var to_center := Vector3(step_x, 0.0, step_z).normalized()
+			velocity += to_center * 4.2
 
 
 func _execute_charge_impact() -> void:
@@ -461,8 +481,11 @@ func _execute_charge_impact() -> void:
 	pattern_phase = "RECOVERY"
 	pattern_timer = 0.65
 	if target_player != null and is_instance_valid(target_player):
-		if target_player.has_method("receive_incoming_attack"):
-			target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
+		var z_diff := absf(target_player.global_position.z - global_position.z)
+		# Only deals charge impact damage if player is within the charge lane
+		if z_diff <= 0.50:
+			if target_player.has_method("receive_incoming_attack"):
+				target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
 
 
 func _execute_charge_wall_impact() -> void:
@@ -542,6 +565,14 @@ func _find_player() -> void:
 
 
 func _pick_next_pattern(_dist: float) -> void:
+	if target_player != null and is_instance_valid(target_player):
+		var z_diff := absf(target_player.global_position.z - global_position.z)
+		# Melee combat requires same combat lane: if Z gap > 0.35m, take a short chase step to align
+		if z_diff > 0.35:
+			current_pattern = Pattern.CHASE
+			pattern_timer = 0.20
+			return
+
 	pattern_cycle_count += 1
 	var choices := [Pattern.TRIPLE_CLEAVE, Pattern.SHIELD_CHARGE, Pattern.QUAKE_RING]
 	var next_p: int = choices[(pattern_cycle_count - 1) % 3]
@@ -649,6 +680,11 @@ func _execute_shield_charge() -> void:
 	charge_windup_started_at = Time.get_ticks_msec() / 1000.0
 	charge_motion_started_at = 0.0
 	first_damage_at = 0.0
+	# Line up on player's Z lane at start of windup so the charge sweeps along the player's current duel lane
+	if target_player != null and is_instance_valid(target_player):
+		var z_diff := target_player.global_position.z - global_position.z
+		if absf(z_diff) <= 0.50:
+			global_position.z = move_toward(global_position.z, target_player.global_position.z, 0.25)
 	# PK_GameDesign standard: 0.44s stationary windup telegraph before any rush motion
 	_show_danger_telegraph(0.44)
 	velocity = Vector3.ZERO
@@ -660,6 +696,11 @@ func _execute_triple_cleave() -> void:
 	pattern_phase = "TELL"
 	is_frontal_shield_up = false
 	pattern_timer = 1.48
+	# Fine-align Z to player lane at start of cleave tell
+	if target_player != null and is_instance_valid(target_player):
+		var z_diff := target_player.global_position.z - global_position.z
+		if absf(z_diff) <= 0.40:
+			global_position.z = move_toward(global_position.z, target_player.global_position.z, 0.15)
 	_show_danger_telegraph(0.28)
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
@@ -673,6 +714,7 @@ func _execute_triple_cleave() -> void:
 		pattern_phase = "ACTIVE"
 		attack_area_3d.monitoring = true
 		velocity.x = facing_dir_x * 4.2
+		velocity.z = 0.0
 
 		# On 3rd swing: Slam the floor with ground fissure shockwave!
 		if swing == 2:
@@ -805,8 +847,11 @@ func _execute_quake_ring() -> void:
 
 func _on_attack_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player") and is_instance_valid(body):
-		if body.has_method("receive_incoming_attack"):
-			body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
+		var z_diff := absf(body.global_position.z - global_position.z)
+		# Melee attack only registers when on approximately the same Z combat lane
+		if z_diff <= 0.45:
+			if body.has_method("receive_incoming_attack"):
+				body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
 
 
 func apply_parry_stun(duration: float = 0.72) -> void:

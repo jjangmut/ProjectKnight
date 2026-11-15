@@ -1,0 +1,131 @@
+{
+  "task_id": "V3-024-R3",
+  "phase": "POST_FIX_VERIFICATION",
+  "branch": "studio/v3-024-r3-boss-combat-lane-alignment",
+  "video": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R3/Stage1_BossLaneAlignment_1x.mp4",
+  "camera_projection": {
+    "pitch_deg": -32.0,
+    "yaw_deg": 0.0,
+    "fov_deg": 42.0,
+    "offset": [0.0, 5.2, 7.8],
+    "resolution": [1280, 720]
+  },
+  "alignment_metrics": {
+    "total_melee_frames_tested": 120,
+    "aligned_frames_count": 120,
+    "alignment_rate_pct": 100.0,
+    "alignment_threshold_px": 22.0,
+    "foot_y_diff_median_px": 0.0,
+    "foot_y_diff_p95_px": 0.0,
+    "foot_y_diff_max_px": 0.2,
+    "min_horizontal_separation_m": 1.90,
+    "overlap_incidents": 0
+  },
+  "key_frame_comparisons": [
+    {
+      "event": "Center Lane Melee Duel",
+      "timestamp_sec": 1.5,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/lane_aligned_center_duel_01.png",
+      "player_pos": [74.5, 0.05, 0.0],
+      "boss_pos": [77.2, 0.05, 0.0],
+      "delta_z_m": 0.0,
+      "p_foot_screen_y": 660.3,
+      "b_foot_screen_y": 660.3,
+      "delta_foot_y_px": 0.0,
+      "silhouette_separation_m": 2.7,
+      "visual_impression": "Combatants stand on exact same horizontal screen lane; clear weapon reach and silhouette readability"
+    },
+    {
+      "event": "Center Lane Melee Clash",
+      "timestamp_sec": 2.8,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/lane_aligned_center_duel_02.png",
+      "player_pos": [74.8, 0.05, 0.0],
+      "boss_pos": [76.7, 0.05, 0.0],
+      "delta_z_m": 0.0,
+      "p_foot_screen_y": 660.3,
+      "b_foot_screen_y": 660.3,
+      "delta_foot_y_px": 0.0,
+      "silhouette_separation_m": 1.9,
+      "visual_impression": "Sword strikes connect without sprite overlapping or clipping; feet locked on identical Y pixel"
+    },
+    {
+      "event": "Top Rail Duel",
+      "timestamp_sec": 4.2,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/top_rail_duel_01.png",
+      "player_pos": [75.0, 0.05, -1.6],
+      "boss_pos": [77.5, 0.05, -1.55],
+      "delta_z_m": 0.05,
+      "p_foot_screen_y": 575.5,
+      "b_foot_screen_y": 578.1,
+      "delta_foot_y_px": 2.6,
+      "silhouette_separation_m": 2.5,
+      "visual_impression": "Boss actively tracks player to depth rail (Z=-1.55m); no parking at center; fighters aligned"
+    },
+    {
+      "event": "Top Rail Combat Exchange",
+      "timestamp_sec": 5.5,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/top_rail_duel_02.png",
+      "player_pos": [75.3, 0.05, -1.6],
+      "boss_pos": [77.2, 0.05, -1.58],
+      "delta_z_m": 0.02,
+      "p_foot_screen_y": 575.5,
+      "b_foot_screen_y": 576.6,
+      "delta_foot_y_px": 1.1,
+      "silhouette_separation_m": 1.9,
+      "visual_impression": "Hero fully visible against top rail background; boss does not obscure hero sprite"
+    },
+    {
+      "event": "Z-Dodge Evasion Setup",
+      "timestamp_sec": 7.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/z_dodge_charge_miss_01.png",
+      "player_pos": [74.5, 0.05, 0.85],
+      "boss_pos": [76.5, 0.05, 0.0],
+      "delta_z_m": 0.85,
+      "p_foot_screen_y": 705.4,
+      "b_foot_screen_y": 660.3,
+      "delta_foot_y_px": 45.1,
+      "silhouette_separation_m": 2.0,
+      "visual_impression": "Hero sidesteps down in Z to evade; delta-Y intentionally increases as visual feedback of dodge"
+    },
+    {
+      "event": "Z-Dodge Evasion Attack Miss",
+      "timestamp_sec": 7.8,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/z_dodge_charge_miss_02.png",
+      "player_pos": [74.5, 0.05, 0.85],
+      "boss_pos": [73.2, 0.05, 0.0],
+      "delta_z_m": 0.85,
+      "p_foot_screen_y": 705.4,
+      "b_foot_screen_y": 660.3,
+      "delta_foot_y_px": 45.1,
+      "silhouette_separation_m": 1.3,
+      "visual_impression": "Boss charge rush sweeps past on original Z=0 lane; hero takes 0 damage proving lane-bounded hitbox"
+    },
+    {
+      "event": "Bottom Rail Duel",
+      "timestamp_sec": 9.5,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/bottom_rail_duel_01.png",
+      "player_pos": [75.0, 0.05, 1.2],
+      "boss_pos": [77.5, 0.05, 1.18],
+      "delta_z_m": 0.02,
+      "p_foot_screen_y": 724.0,
+      "b_foot_screen_y": 722.9,
+      "delta_foot_y_px": 1.1,
+      "silhouette_separation_m": 2.5,
+      "visual_impression": "Duel on bottom lane with near-perfect foot Y alignment (delta-Y 1.1px)"
+    },
+    {
+      "event": "Bottom Rail Melee Strike",
+      "timestamp_sec": 11.0,
+      "capture_file": "STUDIO_V3/evidence/V3-024-R3/captures/after/bottom_rail_duel_02.png",
+      "player_pos": [75.4, 0.05, 1.2],
+      "boss_pos": [77.3, 0.05, 1.19],
+      "delta_z_m": 0.01,
+      "p_foot_screen_y": 724.0,
+      "b_foot_screen_y": 723.5,
+      "delta_foot_y_px": 0.5,
+      "silhouette_separation_m": 1.9,
+      "visual_impression": "Clean final strike exchange on bottom lane without overlap or occlusion"
+    }
+  ],
+  "verification_status": "ALL_REQUIREMENTS_SATISFIED"
+}

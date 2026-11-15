@@ -1,0 +1,56 @@
+{
+  "task_id": "V3-024-R3",
+  "branch": "studio/v3-024-r3-boss-combat-lane-alignment",
+  "timestamp": "2026-11-15T11:30:00",
+  "overall_regression_pass": true,
+  "suites": [
+    {
+      "suite_name": "V3-022-R1 Mechanics Verification",
+      "script": "res://tests/quality_gate/v3_022_r1_mechanics_verification.gd",
+      "status": "PASSED",
+      "sub_tests": [
+        {
+          "id": "PILLAR-P0",
+          "name": "Pillar Dash & Depth Collision Audit",
+          "result": "PASSED",
+          "details": "Hero dashes around pillar colliders with zero clipping or entrapment"
+        },
+        {
+          "id": "PROJECTILE-P0",
+          "name": "Crossbow Bolt Trace & Trajectory",
+          "result": "PASSED",
+          "details": "Bolts despawn upon ground/shield collision without orphaned nodes"
+        },
+        {
+          "id": "BOSS-AIR-P0",
+          "name": "Boss Air Jump Arc Stability",
+          "result": "PASSED",
+          "details": "max_jump_arc_y = 1.34m vs pre-fix 2.97m (clamped and grounded)"
+        }
+      ]
+    },
+    {
+      "suite_name": "V3-024-R2 Corner Escape & Mobility Suite",
+      "script": "res://tests/quality_gate/v3_024_r2_corner_escape_verification.gd",
+      "status": "PASSED",
+      "metrics": {
+        "total_movement_input_frames": 200,
+        "displacing_frames": 200,
+        "displacement_rate_pct": 100.0,
+        "stuck_frames": 0,
+        "min_combat_distance_seen_m": 0.01
+      },
+      "sub_tests": [
+        { "name": "corner_1_top_left", "status": "PASSED", "duration_s": 0.62 },
+        { "name": "corner_2_top_right", "status": "PASSED", "duration_s": 0.62 },
+        { "name": "corner_3_bottom_left", "status": "PASSED", "duration_s": 0.62 },
+        { "name": "corner_4_bottom_right", "status": "PASSED", "duration_s": 0.62 },
+        { "name": "depth_rail_top_trapped", "status": "PASSED", "duration_s": 0.38 },
+        { "name": "depth_rail_bottom_trapped", "status": "PASSED", "duration_s": 0.38 },
+        { "name": "dash_phase_through_boss", "status": "PASSED" },
+        { "name": "guard_walk_mobility", "status": "PASSED", "displacement_m": 1.74 },
+        { "name": "attack_recovery_drift", "status": "PASSED", "displacement_m": 1.94 }
+      ]
+    }
+  ]
+}

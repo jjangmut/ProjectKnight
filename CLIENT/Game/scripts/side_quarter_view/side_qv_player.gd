@@ -314,7 +314,7 @@ func _build_components() -> void:
 
 	var atk_shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(2.2, 1.8, 1.8)
+	box.size = Vector3(2.2, 1.8, 0.80)
 	atk_shape.shape = box
 	atk_shape.position = Vector3(0.0, 0.85, 0.0)
 	attack_area_3d.position = Vector3(1.0, 0.0, 0.0)
@@ -437,19 +437,23 @@ func _prevent_enemy_pushing() -> void:
 		var enemy_3d := enemy as Node3D
 		var diff := enemy_3d.global_position - global_position
 		diff.y = 0.0
-		var dist := diff.length()
-		var enemy_radius: float = 0.75 if enemy_3d.is_in_group("bosses") else 0.55
-		var min_dist: float = 0.45 + enemy_radius # 1.20m for boss, 1.00m for enemies
-		if dist < min_dist and dist > 0.001:
-			var dir := diff.normalized()
-			var speed_towards := velocity.dot(dir)
-			if speed_towards > 0.0:
-				velocity -= dir * speed_towards
-			# Soft separation push when overlapping too closely on floor
-			if dist < min_dist - 0.08 and current_state != State.DASH:
-				var sep := -dir * ((min_dist - dist) * 8.0)
-				velocity.x += sep.x
-				velocity.z += sep.z
+		var is_boss: bool = enemy_3d.is_in_group("bosses")
+		var min_x_dist: float = 1.65 if is_boss else 1.05
+		var min_z_dist: float = 0.50 if is_boss else 0.40
+		var x_dist: float = absf(diff.x)
+		var z_dist: float = absf(diff.z)
+
+		# Maintain horizontal separation so silhouettes don't overlap while on same depth lane
+		if x_dist < min_x_dist and z_dist < min_z_dist and x_dist > 0.001:
+			var dir_x := signf(diff.x)
+			if dir_x == 0.0:
+				dir_x = -facing_dir_x
+			var speed_x := velocity.x * dir_x
+			if speed_x > 0.0:
+				velocity.x -= dir_x * speed_x
+			# Soft horizontal pushback to preserve weapon reach
+			if x_dist < min_x_dist - 0.10:
+				velocity.x += -dir_x * ((min_x_dist - x_dist) * 6.0)
 
 
 func _update_timers(delta: float) -> void:
@@ -876,7 +880,7 @@ func _check_melee_hit() -> void:
 		var extra_r: float = 0.65 if e3d.is_in_group("bosses") else 0.35
 
 		# Target must be in front of attack cone and within lateral/depth tolerance
-		if forward_dist >= -0.25 and forward_dist <= (2.65 + extra_r) and lateral_dist <= (1.40 + extra_r * 0.5) and y_dist <= 2.2:
+		if forward_dist >= -0.25 and forward_dist <= (2.65 + extra_r) and lateral_dist <= (0.55 + extra_r * 0.25) and y_dist <= 2.2:
 			hit_targets[e3d.get_instance_id()] = e3d
 
 	var dmg: int = current_attack_damage
