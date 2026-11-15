@@ -78,6 +78,9 @@ var current_facing_dir: FacingDir = FacingDir.SIDE_LEFT
 const TexBossFissure = preload("res://assets/vfx/vfx_boss_fissure_magma.png")
 const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
 const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
+const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
+
+var is_hit_paused: bool = false
 
 
 var anim_frame_timer: float = 0.0
@@ -180,6 +183,9 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_hit_paused:
+		return
+
 	if sprite_3d != null and is_instance_valid(sprite_3d):
 		sprite_3d.sorting_offset = clampf(global_position.z * 1.5, -3.0, 3.0)
 
@@ -865,6 +871,7 @@ func _spawn_fissure_shockwave() -> void:
 		if body.is_in_group("player") and is_instance_valid(body):
 			if body.has_method("receive_incoming_attack"):
 				body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
+				HitPauseClass.get_instance().apply_hit_pause(self, body, 0.06, 0.10)
 	)
 
 
@@ -941,6 +948,7 @@ func _on_attack_body_entered(body: Node3D) -> void:
 		if z_diff <= 0.45:
 			if body.has_method("receive_incoming_attack"):
 				body.receive_incoming_attack(2, self, Vector3(facing_dir_x, 0, 0))
+				HitPauseClass.get_instance().apply_hit_pause(self, body, 0.06, 0.10)
 
 
 func apply_parry_stun(duration: float = 0.72) -> void:

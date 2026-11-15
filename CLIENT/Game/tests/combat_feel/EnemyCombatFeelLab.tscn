@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://e7kenemycombatfeellab01"]
+
+[ext_resource type="Script" path="res://tests/combat_feel/enemy_combat_feel_lab.gd" id="1_enemy_lab"]
+
+[node name="EnemyCombatFeelLab" type="Node3D"]
+script = ExtResource("1_enemy_lab")

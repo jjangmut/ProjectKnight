@@ -36,7 +36,9 @@ const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
 const TexShockwaveRing = preload("res://assets/vfx/vfx_shockwave_ring.png")
 const TexSlashArcAmber = preload("res://assets/vfx/vfx_slash_arc_amber.png")
 const TexEnemySlashCrescent = preload("res://assets/vfx/vfx_enemy_slash_crescent.png")
+const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
 
+var is_hit_paused: bool = false
 var active_telegraph_node: Node3D = null
 
 enum FacingDir { SIDE_RIGHT, SIDE_LEFT, FRONT_SOUTH, BACK_NORTH }
@@ -167,6 +169,9 @@ const ATTACK_DURATION: float = 0.64
 
 
 func _physics_process(delta: float) -> void:
+	if is_hit_paused:
+		return
+
 	if sprite_3d != null and is_instance_valid(sprite_3d):
 		sprite_3d.sorting_offset = clampf(global_position.z * 1.5, -3.0, 3.0)
 
@@ -468,6 +473,7 @@ func _on_attack_body_entered(body: Node3D) -> void:
 				atk_dir = Vector3(1.0 if not sprite_3d.flip_h else -1.0, 0, 0)
 			var dmg := attack_damage + (1 if is_counter_riposte else 0)
 			body.receive_incoming_attack(dmg, self, atk_dir)
+			HitPauseClass.get_instance().apply_hit_pause(self, body, 0.04, 0.07)
 
 
 func apply_parry_stun(duration: float = 1.6) -> void:

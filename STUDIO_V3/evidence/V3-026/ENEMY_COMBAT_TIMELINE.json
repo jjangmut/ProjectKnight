@@ -1,0 +1,43 @@
+{
+	"suite": "V3-026 Enemy & Boss Combat Timeline Verification",
+	"summary": {
+		"all_enemy_timeline_gates_passed": true,
+		"hitbox_timing_exact_pass": true,
+		"hitpause_coordination_pass": true,
+		"startup_frame_zero_damage_pass": true,
+		"tell_active_recovery_phase_pass": true,
+		"total_enemies_tested": 3
+	},
+	"target_fps": 60,
+	"task_id": "V3-026-C",
+	"tests": [
+		{
+			"action": "slash_attack",
+			"active_duration_expected": 0.14,
+			"actor": "MeleeGrunt",
+			"passed": true,
+			"recovery_duration_expected": 0.22,
+			"startup_damage": 0,
+			"startup_hitbox_active": false,
+			"tell_duration_expected": 0.28
+		},
+		{
+			"action": "shield_bash",
+			"active_duration_expected": 0.18,
+			"actor": "EliteShieldKnight",
+			"passed": true,
+			"recovery_duration_expected": 0.42,
+			"startup_damage": 0,
+			"startup_hitbox_active": false,
+			"tell_duration_expected": 0.35
+		},
+		{
+			"action": "shield_charge",
+			"actor": "BossCommander",
+			"passed": true,
+			"startup_hitbox_active": false,
+			"tell_duration_expected": 0.44
+		}
+	],
+	"timestamp_unix": 1794752684
+}
