@@ -659,8 +659,8 @@ func _start_boss_sanctuary() -> void:
 	stage_max_x = 86.8
 
 	if camera != null:
-		camera.min_camera_x = 73.0
-		camera.max_camera_x = 83.0
+		camera.min_camera_x = 69.8
+		camera.max_camera_x = 85.2
 
 	_show_stage_banner("BOSS: 성문 수호 기사단장", Color(2.5, 0.3, 0.3))
 	_spawn_stage_boss()
@@ -736,7 +736,7 @@ func _spawn_stage_boss() -> void:
 			camera.base_pos.z = mid_z * 0.35 + camera.camera_offset.z
 			camera.global_position = camera.base_pos
 			var dist_x: float = absf(player.global_position.x - boss.global_position.x)
-			camera.fov = clampf(42.0 + (dist_x - 5.0) * 0.9, 42.0, 52.0)
+			camera.fov = clampf(46.0 + (dist_x - 3.0) * 2.2, 46.0, 64.0)
 
 	boss.boss_defeated.connect(_on_boss_defeated)
 	_setup_boss_ui(boss)

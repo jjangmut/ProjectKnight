@@ -54,20 +54,22 @@ func _physics_process(delta: float) -> void:
 func apply_hit_pause(attacker: Node, victim: Node, attacker_sec: float = 0.040, victim_sec: float = 0.065) -> void:
 	if attacker != null and is_instance_valid(attacker):
 		_paused_actors[attacker] = maxf(_paused_actors.get(attacker, 0.0), attacker_sec)
-		_pause_actor(attacker)
+		_pause_actor(attacker, attacker_sec)
 
 	if victim != null and is_instance_valid(victim):
 		_paused_actors[victim] = maxf(_paused_actors.get(victim, 0.0), victim_sec)
-		_pause_actor(victim)
+		_pause_actor(victim, victim_sec)
 
 
 func is_actor_paused(actor: Node) -> bool:
 	return _paused_actors.has(actor)
 
 
-func _pause_actor(actor: Node) -> void:
+func _pause_actor(actor: Node, duration: float = 0.05) -> void:
 	if "is_hit_paused" in actor:
 		actor.is_hit_paused = true
+	if "hit_pause_timer" in actor:
+		actor.hit_pause_timer = maxf(actor.hit_pause_timer, duration)
 	# Minor kinetic pause on velocity
 	if actor is CharacterBody3D:
 		var cb := actor as CharacterBody3D
@@ -80,5 +82,7 @@ func _unpause_actor(actor: Node) -> void:
 		return
 	if "is_hit_paused" in actor:
 		actor.is_hit_paused = false
+	if "hit_pause_timer" in actor:
+		actor.hit_pause_timer = 0.0
 	if actor.has_meta("pre_pause_vel"):
 		actor.remove_meta("pre_pause_vel")

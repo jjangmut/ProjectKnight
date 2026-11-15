@@ -122,7 +122,7 @@ func _run_single_policy(policy_name: String) -> Dictionary:
 
 	var player: CharacterBody3D = stage.player
 	var sim_t: float = 0.0
-	var max_t: float = 48.0
+	var max_t: float = 65.0
 	var dt: float = 1.0 / 60.0
 
 	if policy_name == "stationary_attack_only":
@@ -222,6 +222,12 @@ func _run_single_policy(policy_name: String) -> Dictionary:
 		atk_cd -= dt
 		jump_cd -= dt
 		dash_cd -= dt
+		if dash_cd <= 0.45:
+			Input.action_release("dash")
+		if jump_cd <= 0.50:
+			Input.action_release("jump")
+		if atk_cd <= 0.12:
+			Input.action_release("attack")
 		if guard_hold > 0.0:
 			guard_hold -= dt
 			Input.action_press("guard")
@@ -333,14 +339,18 @@ func _drive_tactical_step(stage: Node3D, player: CharacterBody3D, dt: float, atk
 					else:
 						Input.action_press("move_down")
 					return res
-			elif (str(e.get("attack_phase")) == "RECOVERY" or e.get("is_stunned")) and edist <= 2.0:
-				_release_all_inputs()
-				Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
-				if atk_cd <= 0.0:
-					Input.action_press("attack")
-					res["atk_cd"] = 0.24
-					res["atk_inc"] = 1
-				return res
+			elif (str(e.get("attack_phase")) == "RECOVERY" or e.get("is_stunned")):
+				if edist <= 1.45:
+					_release_all_inputs()
+					Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
+					if atk_cd <= 0.0:
+						Input.action_press("attack")
+						res["atk_cd"] = 0.24
+						res["atk_inc"] = 1
+					return res
+				else:
+					_steer_to_point(player, (e as Node3D).global_position)
+					return res
 
 	# Check nearby Vitality Orbs to recover HP
 	var closest_orb: Node3D = null
@@ -431,21 +441,25 @@ func _drive_tactical_step(stage: Node3D, player: CharacterBody3D, dt: float, atk
 					res["guard_hold"] = 0.18
 					res["guard_inc"] = 1
 					return res
-			elif (str(k.attack_phase) == "RECOVERY" or k.is_stunned) and dist_h <= 2.1:
-				_release_all_inputs()
-				Input.action_press("move_right" if dx > 0.0 else "move_left")
-				if atk_cd <= 0.0:
-					Input.action_press("attack")
-					res["atk_cd"] = 0.24
-					res["atk_inc"] = 1
-				return res
+			elif (str(k.attack_phase) == "RECOVERY" or k.is_stunned):
+				if dist_h <= 1.50:
+					_release_all_inputs()
+					Input.action_press("move_right" if dx > 0.0 else "move_left")
+					if atk_cd <= 0.0:
+						Input.action_press("attack")
+						res["atk_cd"] = 0.24
+						res["atk_inc"] = 1
+					return res
+				else:
+					_steer_to_point(player, target.global_position)
+					return res
 
 		var face_x: float = -1.0 if (k.sprite_3d != null and k.sprite_3d.flip_h) else 1.0
 		var is_facing_player: bool = (dx * face_x < 0.0)
 
 		# Behind knight: strike without mercy!
 		if not is_facing_player:
-			if dist_h <= 2.05:
+			if dist_h <= 1.50:
 				_release_all_inputs()
 				Input.action_press("move_right" if dx > 0.0 else "move_left")
 				if atk_cd <= 0.0:
@@ -468,12 +482,12 @@ func _drive_tactical_step(stage: Node3D, player: CharacterBody3D, dt: float, atk
 				res["dash_inc"] = 1
 				return res
 
-			# Option B: Flank at Z offset (+-0.50m)
-			var flank_offset_z: float = 0.50 if k.global_position.z < 0.5 else -0.50
+			# Option B: Flank at Z offset (+-0.65m) to clear frontal shield lane (|dz| < 0.42)
+			var flank_offset_z: float = 0.65 if k.global_position.z < 0.5 else -0.65
 			var flank_target := Vector3(k.global_position.x, k.global_position.y, k.global_position.z + flank_offset_z)
 			var flank_diff := flank_target - player.global_position
 
-			if absf(dx) <= 1.85 and absf(flank_diff.z) <= 0.35:
+			if absf(dx) <= 1.50 and absf(flank_diff.z) <= 0.25:
 				_release_all_inputs()
 				Input.action_press("move_right" if dx > 0.0 else "move_left")
 				if atk_cd <= 0.0:
@@ -486,7 +500,7 @@ func _drive_tactical_step(stage: Node3D, player: CharacterBody3D, dt: float, atk
 				return res
 
 		# Knight not shielding (recovering or stunned): strike!
-		if dist_h <= 2.05:
+		if dist_h <= 1.50:
 			_release_all_inputs()
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			if atk_cd <= 0.0:

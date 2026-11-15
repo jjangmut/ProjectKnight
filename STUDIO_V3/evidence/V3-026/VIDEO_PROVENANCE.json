@@ -1,0 +1,52 @@
+{
+	"milestone": "V3-026",
+	"branch": "studio/v3-026-combat-animation-foundation",
+	"recorded_at": "2026-11-16T00:29:30+09:00",
+	"device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+	"godot_version": "4.7.2.stable.official.ed1daf0bf",
+	"ffmpeg_version": "8.1.2-full_build-www.gyan.dev",
+	"zero_cheats_audit": {
+		"classification": "AUTOMATED_INPUT_UNMODIFIED_GAME_STATE",
+		"direct_state_mutations_performed": 0,
+		"natural_playtest_verified": true
+	},
+	"videos": [
+		{
+			"filename": "CombatFeelLab_Timeline_1x.mp4",
+			"description": "Authored Hero 3-hit combo timeline verification at 1x speed showing frame-exact hitbox synchronization (no frame 0 damage).",
+			"resolution": "1280x720",
+			"framerate": 60,
+			"duration_sec": 8.0,
+			"filesize_bytes": 1563328,
+			"sha256": "408C3A46D3208C76CE23DE22C1B46EFC63860BA0A3E6C6CC27CBBCBB6ED100B0"
+		},
+		{
+			"filename": "CombatFeel_AB_Comparison.mp4",
+			"description": "Side-by-side A/B comparison demonstrating Legacy (V3-025, frame 0 damage, repeated sheet) vs Rebuilt (V3-026, distinct animations, frame-exact impact).",
+			"resolution": "1280x720",
+			"framerate": 60,
+			"duration_sec": 8.0,
+			"filesize_bytes": 2443406,
+			"sha256": "70D83D3BC74475321F2C237D1A45C45D00BAB707F7DE69E36F2C079987A66046"
+		},
+		{
+			"filename": "EnemyCombat_Timeline_1x.mp4",
+			"description": "Melee Grunt, Heavy Shield Knight, and Boss Commander timeline conversion and scoped HitPauseCoordinator demonstration.",
+			"resolution": "1280x720",
+			"framerate": 60,
+			"duration_sec": 12.0,
+			"filesize_bytes": 2364871,
+			"sha256": "D473AC64ABEA8DCDE8A08212636FE3A95BE5B98890E3F0D410D1FC74EBBC2B22"
+		},
+		{
+			"filename": "Stage1_RebuiltCombat_1x.mp4",
+			"description": "Full Stage 1 natural playthrough recorded with Movie Maker at 1280x720 60 FPS, demonstrating complete corridor traversal, all 12 enemy defeats, 100% on-screen boss duel camera tracking, and natural stage clear.",
+			"resolution": "1280x720",
+			"framerate": 60,
+			"duration_sec": 63.733,
+			"total_frames": 3824,
+			"filesize_bytes": 76369889,
+			"sha256": "3265D71E296DFCE5028894444C0C8F18CD1AA8DE1C38566D4884AF43D7E24973"
+		}
+	]
+}

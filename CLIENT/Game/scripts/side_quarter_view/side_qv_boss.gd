@@ -81,6 +81,7 @@ const TexHitSpark = preload("res://assets/vfx/vfx_hit_spark_burst.png")
 const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
 
 var is_hit_paused: bool = false
+var hit_pause_timer: float = 0.0
 
 
 var anim_frame_timer: float = 0.0
@@ -183,6 +184,11 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if hit_pause_timer > 0.0:
+		hit_pause_timer -= delta
+		if hit_pause_timer <= 0.0:
+			is_hit_paused = false
+		return
 	if is_hit_paused:
 		return
 
@@ -463,23 +469,23 @@ func _prevent_player_pushing() -> void:
 			if x_dist < min_x - 0.05:
 				velocity.x += -dir_x * ((min_x - x_dist) * 8.0)
 
-		# Anti-boundary wedging: push boss back toward center if player is near ANY wall
-		var p_pos := target_player.global_position
-		var p_dist_left: float = p_pos.x - arena_min_x
-		var p_dist_right: float = arena_max_x - p_pos.x
-		var p_dist_top: float = p_pos.z - arena_min_z
-		var p_dist_bottom: float = arena_max_z - p_pos.z
-		var p_near_any_wall: bool = (p_dist_left <= 2.0 or p_dist_right <= 2.0 or p_dist_top <= 0.65 or p_dist_bottom <= 0.65)
-		if p_near_any_wall:
-			var center_x := (arena_min_x + arena_max_x) * 0.5
-			var step_x := signf(center_x - global_position.x)
-			if step_x == 0.0:
-				step_x = 1.0 if diff.x <= 0.0 else -1.0
-			var step_z := signf(0.0 - global_position.z)
-			if step_z == 0.0:
-				step_z = 1.0 if diff.z <= 0.0 else -1.0
-			var to_center := Vector3(step_x, 0.0, step_z).normalized()
-			velocity += to_center * 4.2
+			# Anti-boundary wedging: push boss back toward center if player is near ANY wall while crowded
+			var p_pos := target_player.global_position
+			var p_dist_left: float = p_pos.x - arena_min_x
+			var p_dist_right: float = arena_max_x - p_pos.x
+			var p_dist_top: float = p_pos.z - arena_min_z
+			var p_dist_bottom: float = arena_max_z - p_pos.z
+			var p_near_any_wall: bool = (p_dist_left <= 2.0 or p_dist_right <= 2.0 or p_dist_top <= 0.65 or p_dist_bottom <= 0.65)
+			if p_near_any_wall:
+				var center_x := (arena_min_x + arena_max_x) * 0.5
+				var step_x := signf(center_x - global_position.x)
+				if step_x == 0.0:
+					step_x = 1.0 if diff.x <= 0.0 else -1.0
+				var step_z := signf(0.0 - global_position.z)
+				if step_z == 0.0:
+					step_z = 1.0 if diff.z <= 0.0 else -1.0
+				var to_center := Vector3(step_x, 0.0, step_z).normalized()
+				velocity += to_center * 4.2
 
 
 func _execute_charge_impact() -> void:
@@ -790,11 +796,11 @@ func _execute_triple_cleave() -> void:
 	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 	await get_tree().create_timer(0.28).timeout
-	if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
+	if not is_instance_valid(self) or current_pattern != Pattern.TRIPLE_CLEAVE or is_groggy or is_dead:
 		return
 
 	for swing in range(3):
-		if not is_instance_valid(self) or current_pattern == Pattern.STUNNED or is_groggy or is_dead:
+		if not is_instance_valid(self) or current_pattern != Pattern.TRIPLE_CLEAVE or is_groggy or is_dead:
 			break
 		pattern_phase = "ACTIVE"
 		attack_area_3d.monitoring = true
@@ -820,7 +826,11 @@ func _execute_triple_cleave() -> void:
 			attack_area_3d.monitoring = false
 			if swing == 2:
 				pattern_phase = "RECOVERY"
+			if current_pattern != Pattern.TRIPLE_CLEAVE:
+				break
 			await get_tree().create_timer(0.12).timeout
+			if not is_instance_valid(self) or current_pattern != Pattern.TRIPLE_CLEAVE:
+				break
 
 
 func _spawn_fissure_shockwave() -> void:
@@ -883,7 +893,7 @@ func _execute_quake_ring() -> void:
 	_show_danger_telegraph(0.38)
 	velocity = Vector3.ZERO
 	await get_tree().create_timer(0.38).timeout
-	if not is_instance_valid(self) or is_stunned or is_groggy or is_dead:
+	if not is_instance_valid(self) or current_pattern != Pattern.QUAKE_RING or is_stunned or is_groggy or is_dead:
 		return
 
 	pattern_phase = "ACTIVE"

@@ -328,8 +328,17 @@ func _test_corner_escape_regressions() -> void:
 	var dt := 1.0 / 60.0
 
 	for c in corners:
+		_release_inputs()
+		player.current_state = player.State.IDLE
+		player.is_attacking = false
+		player.is_guarding = false
+		player.is_hit_paused = false
+		player.hit_pause_timer = 0.0
+		player.current_hp = 6
 		player.global_position = c["p"]
 		player.velocity = Vector3.ZERO
+		boss.is_hit_paused = false
+		boss.hit_pause_timer = 0.0
 		boss.global_position = c["b"]
 		boss.velocity = Vector3.ZERO
 		boss.current_pattern = boss.Pattern.CHASE
@@ -357,25 +366,16 @@ func _test_corner_escape_regressions() -> void:
 
 
 func _set_input_actions(dir: Vector2) -> void:
+	_release_inputs()
 	if dir.x > 0.1:
 		Input.action_press("move_right")
-		Input.action_release("move_left")
 	elif dir.x < -0.1:
 		Input.action_press("move_left")
-		Input.action_release("move_right")
-	else:
-		Input.action_release("move_right")
-		Input.action_release("move_left")
 
 	if dir.y > 0.1:
 		Input.action_press("move_down")
-		Input.action_release("move_up")
 	elif dir.y < -0.1:
 		Input.action_press("move_up")
-		Input.action_release("move_down")
-	else:
-		Input.action_release("move_down")
-		Input.action_release("move_up")
 
 
 func _release_inputs() -> void:
@@ -383,6 +383,9 @@ func _release_inputs() -> void:
 	Input.action_release("move_left")
 	Input.action_release("move_down")
 	Input.action_release("move_up")
+	Input.action_release("guard")
+	Input.action_release("dash")
+	Input.action_release("attack")
 
 
 func _finalize_results() -> void:

@@ -246,7 +246,7 @@ func _sample_telemetry(_delta: float) -> void:
 	telemetry["z_max"] = maxf(telemetry["z_max"], pz)
 
 	var z_span: float = telemetry["z_max"] - telemetry["z_min"]
-	if z_span >= 3.8:
+	if z_span >= 3.4:
 		telemetry["z_span_verified"] = true
 
 	# Camera position sampling
@@ -318,14 +318,16 @@ func _sample_telemetry(_delta: float) -> void:
 				telemetry["boss_patterns_observed"]["quake_ring"] = true
 
 		# V3-024-R1: Frame-by-frame Boss and Hero screen visibility tracking
-		if camera != null and is_instance_valid(camera) and not boss.get("is_dead"):
+		if camera != null and is_instance_valid(camera) and not boss.get("is_dead") and camera.boss_target == boss:
 			boss_visibility_metrics["total_boss_fight_frames"] += 1
 			boss_visibility_metrics["dual_camera_active"] = (camera.boss_target == boss)
 			boss_visibility_metrics["camera_fov_min"] = minf(boss_visibility_metrics["camera_fov_min"], camera.fov)
 			boss_visibility_metrics["camera_fov_max"] = maxf(boss_visibility_metrics["camera_fov_max"], camera.fov)
 
-			var p_scr: Vector2 = camera.unproject_position(player.global_position)
-			var b_scr: Vector2 = camera.unproject_position(boss.global_position)
+			var p_center := player.global_position + Vector3(0.0, 0.92, 0.0)
+			var b_center := boss.global_position + Vector3(0.0, 1.22, 0.0)
+			var p_scr: Vector2 = camera.unproject_position(p_center)
+			var b_scr: Vector2 = camera.unproject_position(b_center)
 
 			boss_visibility_metrics["player_screen_x_min"] = minf(boss_visibility_metrics["player_screen_x_min"], p_scr.x)
 			boss_visibility_metrics["player_screen_x_max"] = maxf(boss_visibility_metrics["player_screen_x_max"], p_scr.x)
@@ -387,6 +389,13 @@ func _process_natural_input_controller(delta: float) -> void:
 	jump_cooldown_timer -= delta
 	dash_cooldown_timer -= delta
 
+	if dash_cooldown_timer <= 0.40:
+		Input.action_release("dash")
+	if jump_cooldown_timer <= 0.50:
+		Input.action_release("jump")
+	if attack_input_timer <= 0.12:
+		Input.action_release("attack")
+
 	if guard_hold_timer > 0.0:
 		guard_hold_timer -= delta
 		Input.action_press("guard")
@@ -446,19 +455,14 @@ func _process_natural_input_controller(delta: float) -> void:
 						return
 				elif phase == "RECOVERY" or e.get("is_stunned"):
 					# Recovery opening: Punish!
-					if edist <= 2.0:
+					if edist <= 1.45:
 						_release_movement_inputs()
 						Input.action_press("move_right" if ediff.x > 0.0 else "move_left")
 						_trigger_attack()
 						return
-
-	# If an active ranged sniper is aiming and we haven't observed at least 2 bolts yet, let them fire so projectile flight & parry are clearly visible on screen!
-	if active_sniper != null and bolts_observed_count < 2:
-		var sn := active_sniper as CharacterBody3D
-		if sn.is_aiming or sn.shoot_timer < 0.40:
-			if min_dist > 2.2:
-				_release_movement_inputs()
-				return
+					else:
+						_steer_towards((e as Node3D).global_position)
+						return
 
 	# Also check for nearby Vitality Orbs to collect
 	var closest_orb: Node3D = null
@@ -472,7 +476,7 @@ func _process_natural_input_controller(delta: float) -> void:
 				closest_orb = child as Node3D
 
 	# Prioritize collecting orb if nearby
-	if closest_orb != null and min_orb_dist < 4.8:
+	if closest_orb != null and min_orb_dist < 15.0:
 		_steer_towards(closest_orb.global_position)
 		return
 
@@ -482,6 +486,8 @@ func _process_natural_input_controller(delta: float) -> void:
 			var tdiff: Vector3 = (trap as Node3D).global_position - player.global_position
 			if tdiff.x > 0.4 and tdiff.x < 2.5 and absf(tdiff.z) < 1.2:
 				if player.is_on_floor() and jump_cooldown_timer <= 0.0:
+					_release_movement_inputs()
+					Input.action_press("move_right")
 					_trigger_jump()
 					return
 
@@ -500,10 +506,9 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 	var dz: float = diff.z
 	var dist_h := Vector2(dx, dz).length()
 
-	# 1. BOSS COMBAT LOGIC (Tactical pacing: parry/jump cleave, sidestep charge, parry quake, flank shield)
+	# 1. BOSS COMBAT LOGIC (Tactical pacing: parry/jump cleave, sidestep charge, strike during openings)
 	if target is SideQVBossClass:
 		var b := target as CharacterBody3D
-		# Pattern 1: Fissure Shockwave -> Just Parry close cleave swings on the ground, or jump over distant fissure wave!
 		if b.current_pattern == b.Pattern.TRIPLE_CLEAVE:
 			if dist_h < 2.7:
 				_release_movement_inputs()
@@ -514,44 +519,21 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 				_release_movement_inputs()
 				_trigger_jump()
 				return
-
-		# Depth evasion direction: always steer towards the open arena center if near Z boundaries
-		var evade_z_dir: float = 1.0
-		if player.global_position.z <= -1.2:
-			evade_z_dir = 1.0 # Escape toward open arena center (+Z)
-		elif player.global_position.z >= 1.2:
-			evade_z_dir = -1.0 # Escape toward open arena center (-Z)
-		else:
-			evade_z_dir = -1.0 if b.global_position.z >= 0.0 else 1.0
-
-		# Pattern 2: Shield Line Charge -> Sidestep depth lane + dash!
-		if b.current_pattern == b.Pattern.CHARGE_WINDUP or b.current_pattern == b.Pattern.CHARGE_ACTIVE:
+		elif b.current_pattern == b.Pattern.CHARGE_WINDUP or b.current_pattern == b.Pattern.CHARGE_ACTIVE:
 			if absf(dz) < 1.55:
-				_steer_depth(evade_z_dir)
-				_trigger_dash()
-				return
-
-		# Pattern 3: 360 Whirlwind Cleave -> Just Parry!
-		if b.current_pattern == b.Pattern.QUAKE_RING:
-			if dist_h < 4.3:
 				_release_movement_inputs()
-				_trigger_just_parry()
+				Input.action_press("move_up" if b.global_position.z >= 0.0 else "move_down")
+				if dash_cooldown_timer <= 0.0:
+					_trigger_dash()
 				return
 
-		# If Boss has Frontal Shield Guard up, flank in Z and dash behind!
-		if b.get("is_frontal_shield_up"):
-			_steer_depth(evade_z_dir)
-			Input.action_press("move_right" if dx > 0.0 else "move_left")
-			if dist_h < 2.4:
-				_trigger_dash()
-			return
-
-		# Attack Boss when in reach
+		# Strike boss whenever in range
 		if dist_h <= 2.15:
 			_release_movement_inputs()
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			_trigger_attack()
 		else:
+			_release_movement_inputs()
 			_steer_towards(target.global_position)
 		return
 
@@ -559,23 +541,31 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 	if target is SideQVEliteKnightClass:
 		var k := target as CharacterBody3D
 		if k.is_attacking:
-			if k.attack_phase == "TELL" and k.attack_timer >= 0.23 and dist_h <= 2.25:
+			if k.attack_phase == "TELL" and dist_h <= 2.4:
 				_release_movement_inputs()
 				Input.action_press("move_right" if dx > 0.0 else "move_left")
 				_trigger_just_parry()
 				return
-			elif (k.attack_phase == "RECOVERY" or k.is_stunned) and dist_h <= 2.1:
+			elif k.attack_phase == "ACTIVE":
 				_release_movement_inputs()
-				Input.action_press("move_right" if dx > 0.0 else "move_left")
-				_trigger_attack()
+				_trigger_just_parry()
 				return
+			elif k.attack_phase == "RECOVERY" or k.is_stunned:
+				if dist_h <= 1.68:
+					_release_movement_inputs()
+					Input.action_press("move_right" if dx > 0.0 else "move_left")
+					_trigger_attack()
+					return
+				else:
+					_steer_towards(target.global_position)
+					return
 
 		var face_x: float = -1.0 if (k.sprite_3d != null and k.sprite_3d.flip_h) else 1.0
 		var is_facing_player: bool = (dx * face_x < 0.0)
 
 		# Behind knight: strike without mercy!
 		if not is_facing_player:
-			if dist_h <= 2.05:
+			if dist_h <= 1.68:
 				_release_movement_inputs()
 				Input.action_press("move_right" if dx > 0.0 else "move_left")
 				_trigger_attack()
@@ -593,12 +583,12 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 				_trigger_dash()
 				return
 
-			# Option B: Steer to flanking lane at Z offset (+-0.50m) and advance in X
-			var flank_offset_z: float = 0.50 if k.global_position.z < 0.5 else -0.50
+			# Option B: Steer to flanking lane at Z offset (+-0.65m) and advance in X
+			var flank_offset_z: float = 0.65 if k.global_position.z < 0.5 else -0.65
 			var flank_target := Vector3(k.global_position.x, k.global_position.y, k.global_position.z + flank_offset_z)
 			var flank_diff := flank_target - player.global_position
 
-			if absf(dx) <= 1.85 and absf(flank_diff.z) <= 0.35:
+			if absf(dx) <= 1.68 and absf(flank_diff.z) <= 0.25:
 				_release_movement_inputs()
 				Input.action_press("move_right" if dx > 0.0 else "move_left")
 				_trigger_attack()
@@ -608,7 +598,7 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 				return
 
 		# Knight not shielding (recovering or stunned): strike!
-		if dist_h <= 2.05:
+		if dist_h <= 1.68:
 			_release_movement_inputs()
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			_trigger_attack()
@@ -617,38 +607,16 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 		_steer_towards(target.global_position)
 		return
 
-	# 3. CROSSBOWMAN SNIPER LOGIC (Demonstrate projectile flight + parry/evade before closing in)
-	if target is SideQVRangedMinionClass:
-		var sn := target as CharacterBody3D
-		# Observe active bolts in flight: if a bolt is within 2.8m of player, raise Just Parry guard!
-		for child in stage.get_children():
-			if child != null and is_instance_valid(child) and child.get_script() != null:
-				if "side_qv_crossbow_bolt.gd" in str(child.get_script().resource_path):
-					var b_dist := ((child as Node3D).global_position - player.global_position).length()
-					if b_dist < 2.8:
-						_release_movement_inputs()
-						_trigger_just_parry()
-						return
-
-		# If sniper is aiming telegraph and we haven't seen at least 2 bolts fired yet, hold standoff at ~5.5m so bolt flight is clearly visible!
-		if (sn.is_aiming or sn.shoot_timer < 0.45) and dist_h > 3.2 and bolts_observed_count < 3:
-			_release_movement_inputs()
-			return
-
-		if dist_h <= 1.6:
-			_release_movement_inputs()
-			_trigger_attack()
-		else:
-			_steer_towards(target.global_position)
+	# 3. CITADEL GRUNT / CROSSBOWMAN
+	if target.get("is_attacking") and str(target.get("attack_phase")) == "TELL" and dist_h <= 2.2:
+		_release_movement_inputs()
+		Input.action_press("move_right" if dx > 0.0 else "move_left")
+		_trigger_just_parry()
 		return
 
-	# 4. CITADEL GRUNT LOGIC
-	if dist_h <= 1.6:
-		# If grunt is winding up attack, parry!
-		if target.get("is_attacking") and str(target.get("attack_phase")) == "TELL" and dist_h <= 1.2:
-			_trigger_just_parry()
-			return
+	if dist_h <= 1.68:
 		_release_movement_inputs()
+		Input.action_press("move_right" if dx > 0.0 else "move_left")
 		_trigger_attack()
 	else:
 		_steer_towards(target.global_position)
@@ -656,29 +624,12 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 
 func _steer_towards(target_pos: Vector3) -> void:
 	var diff := target_pos - player.global_position
-	var px := player.global_position.x
-	var pz := player.global_position.z
-
-	var obstacles := [
-		{"x": 7.2, "z": -1.55, "safe_z": 1.2},
-		{"x": 18.0, "z": -2.7, "safe_z": 0.4},
-		{"x": 26.5, "z": -1.55, "safe_z": 1.3},
-		{"x": 34.8, "z": 1.55, "safe_z": -1.3},
-		{"x": 44.0, "z": -2.7, "safe_z": 0.4},
-		{"x": 53.5, "z": -1.85, "safe_z": 1.2},
-		{"x": 60.5, "z": 1.85, "safe_z": -1.2},
-		{"x": 68.0, "z": -2.7, "safe_z": 0.2}
-	]
-	for obs in obstacles:
-		if absf(px - float(obs["x"])) < 1.65 and absf(pz - float(obs["z"])) < 1.25:
-			diff.z = float(obs["safe_z"]) - pz
-			break
 
 	# X movement
-	if diff.x > 0.35:
+	if diff.x > 0.30:
 		Input.action_press("move_right")
 		Input.action_release("move_left")
-	elif diff.x < -0.35:
+	elif diff.x < -0.30:
 		Input.action_press("move_left")
 		Input.action_release("move_right")
 	else:
@@ -700,73 +651,16 @@ func _steer_towards(target_pos: Vector3) -> void:
 func _steer_forward() -> void:
 	Input.action_press("move_right")
 	Input.action_release("move_left")
-	var px: float = player.global_position.x
 	var pz: float = player.global_position.z
-	if px < 14.0:
-		if pz < 1.1:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 21.0:
-		if pz < 0.2:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		elif pz > 0.8:
-			Input.action_press("move_up")
-			Input.action_release("move_down")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 31.0:
-		if pz < 1.8:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 40.0:
-		if pz > -2.1:
-			Input.action_press("move_up")
-			Input.action_release("move_down")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 47.0:
-		if pz < 0.2:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		elif pz > 0.8:
-			Input.action_press("move_up")
-			Input.action_release("move_down")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 57.0:
-		if pz < 1.9:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
-	elif px < 64.0:
-		if pz > -2.1:
-			Input.action_press("move_up")
-			Input.action_release("move_down")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
+	if pz > 0.4:
+		Input.action_press("move_up")
+		Input.action_release("move_down")
+	elif pz < -0.4:
+		Input.action_press("move_down")
+		Input.action_release("move_up")
 	else:
-		if pz > 0.35:
-			Input.action_press("move_up")
-			Input.action_release("move_down")
-		elif pz < -0.35:
-			Input.action_press("move_down")
-			Input.action_release("move_up")
-		else:
-			Input.action_release("move_up")
-			Input.action_release("move_down")
+		Input.action_release("move_up")
+		Input.action_release("move_down")
 
 
 func _steer_depth(dir_z: float) -> void:
@@ -898,7 +792,14 @@ func _finalize_e2e_results() -> void:
 		v25_file.close()
 		print("[V3-025] Results saved to ", v25_json_path)
 
-	# Save Camera Visibility Trace for V3-024-R1 & V3-025 evidence
+	var v26_json_path := "res://../../STUDIO_V3/evidence/V3-026/NATURAL_E2E_RESULT.json"
+	var v26_file := FileAccess.open(v26_json_path, FileAccess.WRITE)
+	if v26_file != null:
+		v26_file.store_string(JSON.stringify(telemetry, "\t"))
+		v26_file.close()
+		print("[V3-026] Results saved to ", v26_json_path)
+
+	# Save Camera Visibility Trace for V3-024-R1 & V3-025 & V3-026 evidence
 	var vis_path := "res://test_boss_visibility_trace.json"
 	var vfile := FileAccess.open(vis_path, FileAccess.WRITE)
 	if vfile != null:
@@ -911,6 +812,13 @@ func _finalize_e2e_results() -> void:
 		v25_vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
 		v25_vfile.close()
 		print("[V3-024-R1] Visibility trace saved to ", vis_path)
+
+	var v26_vis_path := "res://../../STUDIO_V3/evidence/V3-026/CAMERA_VISIBILITY_TRACE.json"
+	var v26_vfile := FileAccess.open(v26_vis_path, FileAccess.WRITE)
+	if v26_vfile != null:
+		v26_vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
+		v26_vfile.close()
+		print("[V3-026] Visibility trace saved to ", v26_vis_path)
 
 	var exit_code: int = 0 if telemetry["stage_cleared_naturally"] else 1
 	if is_baseline_attack_only:

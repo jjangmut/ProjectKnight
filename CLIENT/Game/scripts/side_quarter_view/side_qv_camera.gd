@@ -41,7 +41,7 @@ func _physics_process(delta: float) -> void:
 			var boss_pos: Vector3 = boss_target.global_position
 			var midpoint: Vector3 = (target_pos + boss_pos) * 0.5
 			var dist_x: float = absf(target_pos.x - boss_pos.x)
-			desired_fov = clampf(42.0 + (dist_x - 5.0) * 0.9, 42.0, 52.0)
+			desired_fov = clampf(46.0 + (dist_x - 3.0) * 2.2, 46.0, 64.0)
 			dest = Vector3(midpoint.x + camera_offset.x, camera_offset.y, midpoint.z * 0.35 + camera_offset.z)
 		else:
 			# Dynamic Lookahead (Celeste / Dead Cells style): Forward view offset in facing direction
@@ -62,7 +62,7 @@ func _physics_process(delta: float) -> void:
 
 		# Lockstep physics tracking without micro-stutter
 		base_pos = base_pos.lerp(dest, follow_smoothness * delta)
-		fov = lerpf(fov, desired_fov, 4.0 * delta)
+		fov = lerpf(fov, desired_fov, 12.0 * delta)
 	
 	global_position = base_pos
 

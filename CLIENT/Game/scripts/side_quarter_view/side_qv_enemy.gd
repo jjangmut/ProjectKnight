@@ -39,6 +39,7 @@ const TexEnemySlashCrescent = preload("res://assets/vfx/vfx_enemy_slash_crescent
 const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
 
 var is_hit_paused: bool = false
+var hit_pause_timer: float = 0.0
 var active_telegraph_node: Node3D = null
 
 enum FacingDir { SIDE_RIGHT, SIDE_LEFT, FRONT_SOUTH, BACK_NORTH }
@@ -169,6 +170,11 @@ const ATTACK_DURATION: float = 0.64
 
 
 func _physics_process(delta: float) -> void:
+	if hit_pause_timer > 0.0:
+		hit_pause_timer -= delta
+		if hit_pause_timer <= 0.0:
+			is_hit_paused = false
+		return
 	if is_hit_paused:
 		return
 

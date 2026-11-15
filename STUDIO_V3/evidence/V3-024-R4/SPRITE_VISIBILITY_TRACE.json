@@ -2,9 +2,9 @@
 	"all_scenarios_passed": true,
 	"avg_hero_silhouette_visibility_pct": 100.0,
 	"critical_overlaps": 0,
-	"min_bounding_box_gap_px": 102.1,
+	"min_bounding_box_gap_px": 96.6,
 	"min_hero_silhouette_visibility_pct": 100.0,
-	"min_horizontal_sep_m": 2.06,
+	"min_horizontal_sep_m": 2.08,
 	"samples": [
 		{
 			"boss_pattern": 2,
@@ -23,11 +23,11 @@
 				-1.6
 			],
 			"scenario": "top_rail_cleave_duel",
-			"screen_gap_px": 204.5
+			"screen_gap_px": 178.8
 		},
 		{
 			"boss_pattern": 2,
-			"boss_phase": "TELL",
+			"boss_phase": "ACTIVE",
 			"boss_pos": [
 				76.5,
 				-1.37
@@ -42,7 +42,7 @@
 				-1.6
 			],
 			"scenario": "top_rail_cleave_duel",
-			"screen_gap_px": 235.1
+			"screen_gap_px": 228.9
 		},
 		{
 			"boss_pattern": 2,
@@ -61,11 +61,11 @@
 				-1.6
 			],
 			"scenario": "top_rail_cleave_duel",
-			"screen_gap_px": 179.6
+			"screen_gap_px": 167.3
 		},
 		{
-			"boss_pattern": 1,
-			"boss_phase": "CHASE",
+			"boss_pattern": 2,
+			"boss_phase": "ACTIVE",
 			"boss_pos": [
 				75.69,
 				-1.37
@@ -80,7 +80,7 @@
 				-1.6
 			],
 			"scenario": "top_rail_cleave_duel",
-			"screen_gap_px": 113.2
+			"screen_gap_px": 103.3
 		},
 		{
 			"boss_pattern": 1,
@@ -99,7 +99,7 @@
 				-1.6
 			],
 			"scenario": "top_rail_cleave_duel",
-			"screen_gap_px": 114.2
+			"screen_gap_px": 103.7
 		},
 		{
 			"boss_pattern": 1,
@@ -118,18 +118,18 @@
 				0.0
 			],
 			"scenario": "center_lane_duel",
-			"screen_gap_px": 252.5
+			"screen_gap_px": 228.6
 		},
 		{
 			"boss_pattern": 1,
 			"boss_phase": "CHASE",
 			"boss_pos": [
-				76.2,
+				76.23,
 				0.0
 			],
 			"frame": 15,
 			"hero_vis_pct": 100.0,
-			"horizontal_sep_m": 2.2,
+			"horizontal_sep_m": 2.22,
 			"intersects": false,
 			"overlap_area_px2": 0.0,
 			"player_pos": [
@@ -137,18 +137,18 @@
 				0.0
 			],
 			"scenario": "center_lane_duel",
-			"screen_gap_px": 127.9
+			"screen_gap_px": 121.2
 		},
 		{
 			"boss_pattern": 1,
 			"boss_phase": "CHASE",
 			"boss_pos": [
-				76.2,
+				76.23,
 				0.0
 			],
 			"frame": 30,
 			"hero_vis_pct": 100.0,
-			"horizontal_sep_m": 2.2,
+			"horizontal_sep_m": 2.22,
 			"intersects": false,
 			"overlap_area_px2": 0.0,
 			"player_pos": [
@@ -156,18 +156,18 @@
 				0.0
 			],
 			"scenario": "center_lane_duel",
-			"screen_gap_px": 127.8
+			"screen_gap_px": 121.1
 		},
 		{
-			"boss_pattern": 1,
-			"boss_phase": "RECOVERY",
+			"boss_pattern": 4,
+			"boss_phase": "TELL",
 			"boss_pos": [
-				76.06,
+				76.23,
 				0.0
 			],
 			"frame": 45,
 			"hero_vis_pct": 100.0,
-			"horizontal_sep_m": 2.06,
+			"horizontal_sep_m": 2.22,
 			"intersects": false,
 			"overlap_area_px2": 0.0,
 			"player_pos": [
@@ -175,18 +175,18 @@
 				0.0
 			],
 			"scenario": "center_lane_duel",
-			"screen_gap_px": 102.1
+			"screen_gap_px": 121.1
 		},
 		{
 			"boss_pattern": 1,
 			"boss_phase": "CHASE",
 			"boss_pos": [
-				76.25,
+				76.23,
 				0.0
 			],
 			"frame": 60,
 			"hero_vis_pct": 100.0,
-			"horizontal_sep_m": 2.26,
+			"horizontal_sep_m": 2.24,
 			"intersects": false,
 			"overlap_area_px2": 0.0,
 			"player_pos": [
@@ -194,7 +194,7 @@
 				0.0
 			],
 			"scenario": "center_lane_duel",
-			"screen_gap_px": 138.0
+			"screen_gap_px": 121.8
 		},
 		{
 			"boss_pattern": 2,
@@ -213,11 +213,11 @@
 				1.4
 			],
 			"scenario": "bottom_rail_cleave_duel",
-			"screen_gap_px": 302.8
+			"screen_gap_px": 273.9
 		},
 		{
 			"boss_pattern": 2,
-			"boss_phase": "ACTIVE",
+			"boss_phase": "TELL",
 			"boss_pos": [
 				76.43,
 				1.4
@@ -232,7 +232,7 @@
 				1.4
 			],
 			"scenario": "bottom_rail_cleave_duel",
-			"screen_gap_px": 293.6
+			"screen_gap_px": 265.5
 		},
 		{
 			"boss_pattern": 2,
@@ -251,11 +251,11 @@
 				1.4
 			],
 			"scenario": "bottom_rail_cleave_duel",
-			"screen_gap_px": 208.8
+			"screen_gap_px": 188.8
 		},
 		{
-			"boss_pattern": 1,
-			"boss_phase": "CHASE",
+			"boss_pattern": 2,
+			"boss_phase": "ACTIVE",
 			"boss_pos": [
 				75.62,
 				1.4
@@ -270,7 +270,7 @@
 				1.4
 			],
 			"scenario": "bottom_rail_cleave_duel",
-			"screen_gap_px": 124.1
+			"screen_gap_px": 112.2
 		},
 		{
 			"boss_pattern": 1,
@@ -289,28 +289,28 @@
 				1.4
 			],
 			"scenario": "bottom_rail_cleave_duel",
-			"screen_gap_px": 124.4
+			"screen_gap_px": 112.5
 		}
 	],
 	"scenarios": {
 		"bottom_rail_cleave_duel": {
 			"avg_hero_silhouette_visibility_pct": 100.0,
 			"critical_overlaps": 0,
-			"min_bounding_box_gap_px": 124.0,
+			"min_bounding_box_gap_px": 112.2,
 			"min_horizontal_sep_m": 2.12,
 			"passed": true
 		},
 		"center_lane_duel": {
 			"avg_hero_silhouette_visibility_pct": 100.0,
 			"critical_overlaps": 0,
-			"min_bounding_box_gap_px": 102.1,
-			"min_horizontal_sep_m": 2.06,
+			"min_bounding_box_gap_px": 96.6,
+			"min_horizontal_sep_m": 2.08,
 			"passed": true
 		},
 		"top_rail_cleave_duel": {
 			"avg_hero_silhouette_visibility_pct": 100.0,
 			"critical_overlaps": 0,
-			"min_bounding_box_gap_px": 112.6,
+			"min_bounding_box_gap_px": 103.2,
 			"min_horizontal_sep_m": 2.18,
 			"passed": true
 		}

@@ -2,31 +2,31 @@
 	"branch": "studio/v3-024-r2-boss-depth-escape-agency",
 	"frame_displacement_metrics": {
 		"displacement_rate_pct": 100.0,
-		"displacing_frames": 204,
+		"displacing_frames": 208,
 		"stuck_frames": 0,
-		"total_input_frames_tested": 204
+		"total_input_frames_tested": 208
 	},
 	"overall_pass": true,
 	"scenarios": {
 		"attack_recovery_drift": {
 			"description": "Player can drift move during late attack recovery",
-			"displacement_x": 1.94,
-			"end_x": 76.94,
+			"displacement_x": 1.66,
+			"end_x": 76.66,
 			"start_x": 75.0,
 			"status": "PASSED"
 		},
 		"corner_1_top_left": {
 			"description": "Corner escape agency and unstick",
-			"escape_frame": 38,
-			"escape_time_seconds": 0.633,
+			"escape_frame": 39,
+			"escape_time_seconds": 0.65,
 			"escaped_to_safe_zone": true,
 			"samples": [
 				{
 					"boss_pos": [
-						72.36,
-						-1.64
+						72.26,
+						-1.74
 					],
-					"dist_to_boss": 2.36,
+					"dist_to_boss": 2.24,
 					"frame": 0,
 					"player_pos": [
 						70.1,
@@ -41,10 +41,10 @@
 				},
 				{
 					"boss_pos": [
-						73.47,
-						-0.11
+						73.24,
+						-1.19
 					],
-					"dist_to_boss": 2.91,
+					"dist_to_boss": 2.23,
 					"frame": 10,
 					"player_pos": [
 						71.09,
@@ -59,13 +59,13 @@
 				},
 				{
 					"boss_pos": [
-						73.87,
-						-0.46
+						73.81,
+						-1.33
 					],
-					"dist_to_boss": 1.95,
+					"dist_to_boss": 2.03,
 					"frame": 20,
 					"player_pos": [
-						72.08,
+						71.78,
 						0.0,
 						-1.21
 					],
@@ -77,13 +77,13 @@
 				},
 				{
 					"boss_pos": [
-						74.65,
-						-0.67
+						74.36,
+						-1.08
 					],
-					"dist_to_boss": 2.09,
+					"dist_to_boss": 2.13,
 					"frame": 30,
 					"player_pos": [
-						72.55,
+						72.28,
 						0.0,
 						-0.65
 					],
@@ -95,15 +95,15 @@
 				},
 				{
 					"boss_pos": [
-						75.1,
-						-0.54
+						74.99,
+						-0.7
 					],
-					"dist_to_boss": 2.08,
-					"frame": 38,
+					"dist_to_boss": 2.0,
+					"frame": 39,
 					"player_pos": [
-						73.05,
+						73.07,
 						0.0,
-						-0.19
+						-0.14
 					],
 					"player_vel": [
 						5.94,
@@ -124,16 +124,16 @@
 		},
 		"corner_2_top_right": {
 			"description": "Corner escape agency and unstick",
-			"escape_frame": 38,
-			"escape_time_seconds": 0.633,
+			"escape_frame": 39,
+			"escape_time_seconds": 0.65,
 			"escaped_to_safe_zone": true,
 			"samples": [
 				{
 					"boss_pos": [
-						82.64,
-						-1.64
+						82.74,
+						-1.74
 					],
-					"dist_to_boss": 2.36,
+					"dist_to_boss": 2.24,
 					"frame": 0,
 					"player_pos": [
 						84.9,
@@ -148,10 +148,10 @@
 				},
 				{
 					"boss_pos": [
-						81.53,
-						-0.11
+						81.76,
+						-1.19
 					],
-					"dist_to_boss": 2.91,
+					"dist_to_boss": 2.23,
 					"frame": 10,
 					"player_pos": [
 						83.91,
@@ -166,13 +166,13 @@
 				},
 				{
 					"boss_pos": [
-						81.13,
-						-0.46
+						81.19,
+						-1.33
 					],
-					"dist_to_boss": 1.95,
+					"dist_to_boss": 2.03,
 					"frame": 20,
 					"player_pos": [
-						82.92,
+						83.22,
 						0.0,
 						-1.21
 					],
@@ -184,13 +184,13 @@
 				},
 				{
 					"boss_pos": [
-						80.35,
-						-0.67
+						80.64,
+						-1.08
 					],
-					"dist_to_boss": 2.09,
+					"dist_to_boss": 2.13,
 					"frame": 30,
 					"player_pos": [
-						82.45,
+						82.72,
 						0.0,
 						-0.65
 					],
@@ -202,15 +202,15 @@
 				},
 				{
 					"boss_pos": [
-						79.9,
-						-0.54
+						80.01,
+						-0.7
 					],
-					"dist_to_boss": 2.08,
-					"frame": 38,
+					"dist_to_boss": 2.0,
+					"frame": 39,
 					"player_pos": [
-						81.95,
+						81.93,
 						0.0,
-						-0.19
+						-0.14
 					],
 					"player_vel": [
 						-5.94,
@@ -231,16 +231,16 @@
 		},
 		"corner_3_bottom_left": {
 			"description": "Corner escape agency and unstick",
-			"escape_frame": 38,
-			"escape_time_seconds": 0.633,
+			"escape_frame": 39,
+			"escape_time_seconds": 0.65,
 			"escaped_to_safe_zone": true,
 			"samples": [
 				{
 					"boss_pos": [
-						72.36,
-						1.64
+						72.26,
+						1.74
 					],
-					"dist_to_boss": 2.36,
+					"dist_to_boss": 2.24,
 					"frame": 0,
 					"player_pos": [
 						70.1,
@@ -255,10 +255,10 @@
 				},
 				{
 					"boss_pos": [
-						73.47,
-						0.11
+						73.24,
+						1.19
 					],
-					"dist_to_boss": 2.91,
+					"dist_to_boss": 2.23,
 					"frame": 10,
 					"player_pos": [
 						71.09,
@@ -273,13 +273,13 @@
 				},
 				{
 					"boss_pos": [
-						73.87,
-						0.46
+						73.81,
+						1.33
 					],
-					"dist_to_boss": 1.95,
+					"dist_to_boss": 2.03,
 					"frame": 20,
 					"player_pos": [
-						72.08,
+						71.78,
 						0.0,
 						1.21
 					],
@@ -291,13 +291,13 @@
 				},
 				{
 					"boss_pos": [
-						74.65,
-						0.67
+						74.36,
+						1.08
 					],
-					"dist_to_boss": 2.09,
+					"dist_to_boss": 2.13,
 					"frame": 30,
 					"player_pos": [
-						72.55,
+						72.28,
 						0.0,
 						0.65
 					],
@@ -309,15 +309,15 @@
 				},
 				{
 					"boss_pos": [
-						75.1,
-						0.54
+						74.99,
+						0.7
 					],
-					"dist_to_boss": 2.08,
-					"frame": 38,
+					"dist_to_boss": 2.0,
+					"frame": 39,
 					"player_pos": [
-						73.05,
+						73.07,
 						0.0,
-						0.19
+						0.14
 					],
 					"player_vel": [
 						5.94,
@@ -338,16 +338,16 @@
 		},
 		"corner_4_bottom_right": {
 			"description": "Corner escape agency and unstick",
-			"escape_frame": 38,
-			"escape_time_seconds": 0.633,
+			"escape_frame": 39,
+			"escape_time_seconds": 0.65,
 			"escaped_to_safe_zone": true,
 			"samples": [
 				{
 					"boss_pos": [
-						82.64,
-						1.64
+						82.74,
+						1.74
 					],
-					"dist_to_boss": 2.36,
+					"dist_to_boss": 2.24,
 					"frame": 0,
 					"player_pos": [
 						84.9,
@@ -362,10 +362,10 @@
 				},
 				{
 					"boss_pos": [
-						81.53,
-						0.11
+						81.76,
+						1.19
 					],
-					"dist_to_boss": 2.91,
+					"dist_to_boss": 2.23,
 					"frame": 10,
 					"player_pos": [
 						83.91,
@@ -380,13 +380,13 @@
 				},
 				{
 					"boss_pos": [
-						81.13,
-						0.46
+						81.19,
+						1.33
 					],
-					"dist_to_boss": 1.95,
+					"dist_to_boss": 2.03,
 					"frame": 20,
 					"player_pos": [
-						82.92,
+						83.22,
 						0.0,
 						1.21
 					],
@@ -398,13 +398,13 @@
 				},
 				{
 					"boss_pos": [
-						80.35,
-						0.67
+						80.64,
+						1.08
 					],
-					"dist_to_boss": 2.09,
+					"dist_to_boss": 2.13,
 					"frame": 30,
 					"player_pos": [
-						82.45,
+						82.72,
 						0.0,
 						0.65
 					],
@@ -416,15 +416,15 @@
 				},
 				{
 					"boss_pos": [
-						79.9,
-						0.54
+						80.01,
+						0.7
 					],
-					"dist_to_boss": 2.08,
-					"frame": 38,
+					"dist_to_boss": 2.0,
+					"frame": 39,
 					"player_pos": [
-						81.95,
+						81.93,
 						0.0,
-						0.19
+						0.14
 					],
 					"player_vel": [
 						-5.94,
@@ -499,10 +499,10 @@
 			"samples": [
 				{
 					"boss_pos": [
-						77.66,
-						1.45
+						77.56,
+						1.54
 					],
-					"dist_to_boss": 0.94,
+					"dist_to_boss": 0.83,
 					"frame": 0,
 					"player_pos": [
 						77.5,
@@ -518,9 +518,9 @@
 				{
 					"boss_pos": [
 						77.5,
-						0.95
+						1.41
 					],
-					"dist_to_boss": 0.62,
+					"dist_to_boss": 0.16,
 					"frame": 10,
 					"player_pos": [
 						77.5,
@@ -536,9 +536,9 @@
 				{
 					"boss_pos": [
 						78.48,
-						1.02
+						1.24
 					],
-					"dist_to_boss": 1.16,
+					"dist_to_boss": 1.22,
 					"frame": 20,
 					"player_pos": [
 						77.35,
@@ -554,19 +554,19 @@
 				{
 					"boss_pos": [
 						79.05,
-						0.94
+						1.11
 					],
-					"dist_to_boss": 1.93,
+					"dist_to_boss": 1.96,
 					"frame": 23,
 					"player_pos": [
-						77.16,
+						77.17,
 						0.0,
-						0.55
+						0.56
 					],
 					"player_vel": [
-						-2.88,
+						-2.3,
 						0.0,
-						-4.14
+						-3.07
 					]
 				}
 			],
@@ -588,10 +588,10 @@
 			"samples": [
 				{
 					"boss_pos": [
-						77.66,
-						-1.45
+						77.56,
+						-1.54
 					],
-					"dist_to_boss": 0.94,
+					"dist_to_boss": 0.83,
 					"frame": 0,
 					"player_pos": [
 						77.5,
@@ -607,9 +607,9 @@
 				{
 					"boss_pos": [
 						77.5,
-						-0.95
+						-1.41
 					],
-					"dist_to_boss": 0.62,
+					"dist_to_boss": 0.16,
 					"frame": 10,
 					"player_pos": [
 						77.5,
@@ -625,9 +625,9 @@
 				{
 					"boss_pos": [
 						78.48,
-						-1.02
+						-1.24
 					],
-					"dist_to_boss": 1.16,
+					"dist_to_boss": 1.22,
 					"frame": 20,
 					"player_pos": [
 						77.35,
@@ -643,19 +643,19 @@
 				{
 					"boss_pos": [
 						79.05,
-						-0.94
+						-1.11
 					],
-					"dist_to_boss": 1.93,
+					"dist_to_boss": 1.96,
 					"frame": 23,
 					"player_pos": [
-						77.16,
+						77.17,
 						0.0,
-						-0.55
+						-0.56
 					],
 					"player_vel": [
-						-2.88,
+						-2.3,
 						0.0,
-						4.14
+						3.07
 					]
 				}
 			],
@@ -678,9 +678,9 @@
 		}
 	},
 	"sprite_separation_metrics": {
-		"min_combat_distance_seen": 0.0239776372909546,
+		"min_combat_distance_seen": 0.0064319372177124,
 		"overlap_incidents_detected": 0
 	},
 	"task_id": "V3-024-R2",
-	"timestamp": "2026-11-15T14:04:49"
+	"timestamp": "2026-11-16T00:40:39"
 }

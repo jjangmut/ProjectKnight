@@ -64,6 +64,7 @@ var action_hero_attack_2: CombatActionDefinition = null
 var action_hero_attack_3: CombatActionDefinition = null
 var attack_actions: Dictionary = {}
 var is_hit_paused: bool = false
+var hit_pause_timer: float = 0.0
 
 # Input Buffering & Coyote Time (Game Quality Director Standard)
 const COYOTE_TIME: float = 0.12
@@ -441,6 +442,14 @@ func _build_components() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if hit_pause_timer > 0.0:
+		hit_pause_timer -= delta
+		if hit_pause_timer <= 0.0:
+			is_hit_paused = false
+		return
+	if is_hit_paused:
+		return
+
 	_update_timers(delta)
 
 	# Dynamic ground-anchored shadow projection (tracks X and Z on ground plane)
@@ -1132,10 +1141,21 @@ func _process_attack_state(delta: float) -> void:
 		return
 
 	if timeline_controller != null and timeline_controller.is_busy():
+		var cur_act: CombatActionDefClass = timeline_controller.current_action
+		if cur_act != null and sprite_3d != null:
+			if cur_act.sprite_texture != null and sprite_3d.texture != cur_act.sprite_texture:
+				sprite_3d.texture = cur_act.sprite_texture
+				sprite_3d.hframes = cur_act.hframes
+				sprite_3d.vframes = cur_act.vframes
+			elif cur_act.sprite_texture == null and sprite_3d.texture != TexAttack:
+				sprite_3d.texture = TexAttack
+				sprite_3d.hframes = 2
+				sprite_3d.vframes = 2
+
 		var _f: int = timeline_controller.step(delta)
 		if _f >= 0 and sprite_3d != null:
-			sprite_3d.frame = _f
-		var cur_act: CombatActionDefClass = timeline_controller.current_action
+			var max_frame: int = mini(cur_act.total_frames - 1, (sprite_3d.hframes * sprite_3d.vframes) - 1) if cur_act != null else (sprite_3d.hframes * sprite_3d.vframes) - 1
+			sprite_3d.frame = clampi(_f, 0, maxi(0, max_frame))
 		if cur_act != null:
 			attack_duration_remaining = maxf(0.0, cur_act.total_duration - timeline_controller.elapsed_time)
 

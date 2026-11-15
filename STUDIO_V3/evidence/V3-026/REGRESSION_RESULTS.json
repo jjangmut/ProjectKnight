@@ -1,0 +1,129 @@
+{
+  "task_id": "V3-026",
+  "build_branch": "studio/v3-026-combat-animation-foundation",
+  "generated_at": "2026-11-15T23:52:00+09:00",
+  "overall_pass": true,
+  "test_suites_total": 9,
+  "test_suites_passed": 9,
+  "test_suites_failed": 0,
+  "suites": {
+    "v3_022_r1_mechanics_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "pillar_collisions_p0": "PASSED",
+        "projectile_trace_p0": "PASSED",
+        "boss_vertical_stability_p0": "PASSED (max_jump_arc_y = 1.34m vs pre-fix 2.97m)"
+      }
+    },
+    "v3_024_r2_corner_escape_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "total_input_frames": 208,
+        "displacing_frames": 208,
+        "stuck_frames": 0,
+        "displacement_rate_pct": 100.0,
+        "min_combat_distance_seen_m": 0.01,
+        "scenarios": [
+          "corner_1_top_left",
+          "corner_2_top_right",
+          "corner_3_bottom_left",
+          "corner_4_bottom_right",
+          "depth_rail_top_trapped",
+          "depth_rail_bottom_trapped",
+          "dash_phase_through_boss",
+          "guard_walk_mobility",
+          "attack_recovery_drift"
+        ]
+      }
+    },
+    "v3_024_r3_lane_alignment_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "melee_lane_alignment_rate_pct": 100.0,
+        "median_foot_y_diff_px": 0.0,
+        "p95_foot_y_diff_px": 0.1,
+        "min_horizontal_separation_m": 2.23,
+        "z_dodge_evasion": "PASSED",
+        "depth_rail_combat_alignment": "PASSED (Boss Z: -1.70 vs Player Z: -1.80)",
+        "corner_regression_matrix": "PASSED (corner_top_left, corner_bottom_right, rail_top_trapped)"
+      }
+    },
+    "v3_024_r4_defeat_retry_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "defeat_overlay_triggered": true,
+        "retry_button_pressed": true,
+        "stage1_reloaded_clean": true,
+        "player_hp_reset": 9,
+        "player_alive": true,
+        "overlay_cleared": true
+      }
+    },
+    "v3_024_r4_sprite_bounding_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "scenarios": {
+          "top_rail_cleave_duel": { "min_sep_m": 2.19, "min_gap_px": 112.8, "avg_vis_pct": 100.0, "critical_overlaps": 0 },
+          "center_lane_duel": { "min_sep_m": 2.09, "min_gap_px": 106.9, "avg_vis_pct": 100.0, "critical_overlaps": 0 },
+          "bottom_rail_cleave_duel": { "min_sep_m": 2.12, "min_gap_px": 124.0, "avg_vis_pct": 100.0, "critical_overlaps": 0 }
+        }
+      }
+    },
+    "v3_025_telegraph_frame_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "melee_grunt_slash": "PASSED (Arc Tell 0.28s, Active 0.14s, Recovery 0.22s)",
+        "crossbow_minion_aim": "PASSED (Tracking Tell 0.28s, Lock Tell 0.14s, Recovery 0.28s)",
+        "shield_knight_bash": "PASSED (Runway Tell 0.35s, Active 0.18s, Vulnerable Recovery 0.42s)",
+        "boss_telegraphs": "PASSED (Charge Runway 9.5x1.35m, Cleave Arc 2.4x1.3m)"
+      }
+    },
+    "v3_025_pacing_policy_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "forward_spam_fails_or_heavily_punished": true,
+        "reaction_delay_demonstrates_human_fairness_gap": true,
+        "tactical_counterplay_clears_reliably": true,
+        "xz_no_defense_worse_than_tactical": true,
+        "policies": {
+          "stationary_attack_only": { "cleared": false, "damage_taken": 9, "duration_sec": 10.18 },
+          "forward_attack_spam": { "cleared": false, "damage_taken": 10, "duration_sec": 17.62 },
+          "xz_move_attack_no_defense": { "cleared": false, "damage_taken": 9, "duration_sec": 10.22 },
+          "tactical_counterplay": { "cleared": true, "damage_taken": 10, "duration_sec": 46.40 },
+          "tactical_latency_250ms": { "cleared": true, "damage_taken": 15, "duration_sec": 46.80 },
+          "tactical_latency_450ms": { "cleared": false, "damage_taken": 9, "duration_sec": 9.70 }
+        }
+      }
+    },
+    "v3_026_timeline_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "startup_frame_zero_damage_pass": true,
+        "contact_damage_synchronized_pass": true,
+        "hitbox_timing_exact_pass": true,
+        "recovery_hitbox_closed_pass": true,
+        "dash_cancel_pass": true
+      }
+    },
+    "v3_026_enemy_timeline_verification": {
+      "status": "PASSED",
+      "exit_code": 0,
+      "details": {
+        "grunt_active_timing_pass": true,
+        "grunt_recovery_pass": true,
+        "knight_active_bash_pass": true,
+        "knight_recovery_pass": true,
+        "boss_runway_windup_pass": true,
+        "scoped_hitpause_coordination_pass": true
+      }
+    }
+  }
+}

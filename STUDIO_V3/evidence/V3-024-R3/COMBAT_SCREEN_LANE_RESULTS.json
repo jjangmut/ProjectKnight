@@ -4,9 +4,9 @@
   "lane_alignment_metrics": {
     "aligned_frames_count": 120,
     "alignment_rate_pct": 100.0,
-    "foot_y_diff_max_px": 0.2,
+    "foot_y_diff_max_px": 0.6,
     "foot_y_diff_median_px": 0.0,
-    "foot_y_diff_p95_px": 0.0,
+    "foot_y_diff_p95_px": 0.1,
     "min_horizontal_separation_m": 2.23,
     "overlap_incidents": 0,
     "total_melee_frames_tested": 120
@@ -16,84 +16,84 @@
     "depth_rail_combat_alignment": {
       "boss_z": -1.7,
       "final_z_diff_m": 0.1,
-      "foot_y_diff_px": 8.0,
+      "foot_y_diff_px": 7.2,
       "player_z": -1.8,
       "status": "PASSED"
     },
     "lane_matching_from_above": {
-      "aligned_frame": 24,
-      "final_foot_y_diff_px": 8.0,
+      "aligned_frame": 23,
+      "final_foot_y_diff_px": 7.2,
       "final_z_diff_m": 0.09,
       "samples": [
         {
-          "b_foot_screen_y": 678.4,
+          "b_foot_screen_y": 671.4,
           "boss_z": -0.06,
-          "foot_y_diff_px": 81.7,
+          "foot_y_diff_px": 66.9,
           "frame": 0,
-          "p_foot_screen_y": 596.7,
+          "p_foot_screen_y": 604.6,
           "player_z": -1.2,
           "z_diff_m": 1.14
         },
         {
-          "b_foot_screen_y": 655.1,
+          "b_foot_screen_y": 654.5,
           "boss_z": -0.6,
-          "foot_y_diff_px": 47.2,
+          "foot_y_diff_px": 45.3,
           "frame": 10,
-          "p_foot_screen_y": 607.9,
+          "p_foot_screen_y": 609.2,
           "player_z": -1.2,
           "z_diff_m": 0.6
         },
         {
-          "b_foot_screen_y": 635.4,
+          "b_foot_screen_y": 635.6,
           "boss_z": -0.92,
-          "foot_y_diff_px": 22.6,
+          "foot_y_diff_px": 21.6,
           "frame": 20,
-          "p_foot_screen_y": 612.8,
+          "p_foot_screen_y": 614.1,
           "player_z": -1.2,
           "z_diff_m": 0.28
         },
         {
-          "b_foot_screen_y": 630.7,
-          "boss_z": -1.0,
-          "foot_y_diff_px": 16.8,
-          "frame": 24,
-          "p_foot_screen_y": 614.0,
+          "b_foot_screen_y": 632.2,
+          "boss_z": -0.98,
+          "foot_y_diff_px": 17.1,
+          "frame": 23,
+          "p_foot_screen_y": 615.1,
           "player_z": -1.2,
-          "z_diff_m": 0.2
+          "z_diff_m": 0.22
         },
         {
-          "b_foot_screen_y": 625.8,
+          "b_foot_screen_y": 626.8,
           "boss_z": -1.07,
-          "foot_y_diff_px": 10.6,
+          "foot_y_diff_px": 9.9,
           "frame": 30,
-          "p_foot_screen_y": 615.2,
+          "p_foot_screen_y": 616.9,
           "player_z": -1.2,
           "z_diff_m": 0.13
         },
         {
-          "b_foot_screen_y": 623.9,
+          "b_foot_screen_y": 625.3,
           "boss_z": -1.11,
-          "foot_y_diff_px": 7.9,
+          "foot_y_diff_px": 7.2,
           "frame": 40,
-          "p_foot_screen_y": 616.1,
+          "p_foot_screen_y": 618.0,
           "player_z": -1.2,
           "z_diff_m": 0.09
         },
         {
-          "b_foot_screen_y": 624.0,
+          "b_foot_screen_y": 625.4,
           "boss_z": -1.11,
-          "foot_y_diff_px": 8.0,
+          "foot_y_diff_px": 7.2,
           "frame": 50,
-          "p_foot_screen_y": 616.0,
+          "p_foot_screen_y": 618.2,
           "player_z": -1.2,
           "z_diff_m": 0.09
         },
         {
-          "b_foot_screen_y": 623.9,
+          "b_foot_screen_y": 625.4,
           "boss_z": -1.11,
-          "foot_y_diff_px": 8.0,
+          "foot_y_diff_px": 7.2,
           "frame": 59,
-          "p_foot_screen_y": 616.0,
+          "p_foot_screen_y": 618.2,
           "player_z": -1.2,
           "z_diff_m": 0.09
         }
@@ -101,79 +101,79 @@
       "status": "PASSED"
     },
     "lane_matching_from_below": {
-      "aligned_frame": 28,
-      "final_foot_y_diff_px": 10.5,
+      "aligned_frame": 26,
+      "final_foot_y_diff_px": 9.5,
       "final_z_diff_m": 0.09,
       "samples": [
         {
-          "b_foot_screen_y": 722.9,
+          "b_foot_screen_y": 714.5,
           "boss_z": 0.06,
-          "foot_y_diff_px": 134.1,
+          "foot_y_diff_px": 120.5,
           "frame": 0,
-          "p_foot_screen_y": 857.0,
+          "p_foot_screen_y": 835.0,
           "player_z": 1.2,
           "z_diff_m": 1.14
         },
         {
-          "b_foot_screen_y": 726.9,
+          "b_foot_screen_y": 716.9,
           "boss_z": 0.6,
-          "foot_y_diff_px": 67.2,
+          "foot_y_diff_px": 59.5,
           "frame": 10,
-          "p_foot_screen_y": 794.1,
+          "p_foot_screen_y": 776.5,
           "player_z": 1.2,
           "z_diff_m": 0.6
         },
         {
-          "b_foot_screen_y": 749.5,
+          "b_foot_screen_y": 738.8,
           "boss_z": 0.92,
-          "foot_y_diff_px": 31.1,
+          "foot_y_diff_px": 28.1,
           "frame": 20,
-          "p_foot_screen_y": 780.6,
+          "p_foot_screen_y": 766.8,
           "player_z": 1.2,
           "z_diff_m": 0.28
         },
         {
-          "b_foot_screen_y": 759.7,
-          "boss_z": 1.05,
-          "foot_y_diff_px": 16.8,
-          "frame": 28,
-          "p_foot_screen_y": 776.5,
+          "b_foot_screen_y": 746.4,
+          "boss_z": 1.03,
+          "foot_y_diff_px": 17.7,
+          "frame": 26,
+          "p_foot_screen_y": 764.1,
           "player_z": 1.2,
-          "z_diff_m": 0.15
+          "z_diff_m": 0.17
         },
         {
-          "b_foot_screen_y": 761.4,
+          "b_foot_screen_y": 749.8,
           "boss_z": 1.07,
-          "foot_y_diff_px": 14.4,
+          "foot_y_diff_px": 13.0,
           "frame": 30,
-          "p_foot_screen_y": 775.8,
+          "p_foot_screen_y": 762.8,
           "player_z": 1.2,
           "z_diff_m": 0.13
         },
         {
-          "b_foot_screen_y": 763.6,
+          "b_foot_screen_y": 751.8,
           "boss_z": 1.11,
-          "foot_y_diff_px": 10.5,
+          "foot_y_diff_px": 9.5,
           "frame": 40,
-          "p_foot_screen_y": 774.1,
+          "p_foot_screen_y": 761.3,
           "player_z": 1.2,
           "z_diff_m": 0.09
         },
         {
-          "b_foot_screen_y": 763.4,
+          "b_foot_screen_y": 751.6,
           "boss_z": 1.11,
-          "foot_y_diff_px": 10.5,
+          "foot_y_diff_px": 9.5,
           "frame": 50,
-          "p_foot_screen_y": 773.9,
+          "p_foot_screen_y": 761.1,
           "player_z": 1.2,
           "z_diff_m": 0.09
         },
         {
-          "b_foot_screen_y": 763.4,
+          "b_foot_screen_y": 751.6,
           "boss_z": 1.11,
-          "foot_y_diff_px": 10.5,
+          "foot_y_diff_px": 9.5,
           "frame": 59,
-          "p_foot_screen_y": 773.9,
+          "p_foot_screen_y": 761.1,
           "player_z": 1.2,
           "z_diff_m": 0.09
         }
@@ -183,10 +183,10 @@
     "same_lane_melee_exchange": {
       "aligned_frames": 120,
       "alignment_rate_pct": 100.0,
-      "max_foot_y_diff_px": 0.2,
+      "max_foot_y_diff_px": 0.6,
       "median_foot_y_diff_px": 0.0,
       "min_x_separation_m": 2.23,
-      "p95_foot_y_diff_px": 0.0,
+      "p95_foot_y_diff_px": 0.1,
       "samples": [
         {
           "boss_pattern": "CHASE",
@@ -231,12 +231,12 @@
           "x_separation_m": 2.23
         },
         {
-          "boss_pattern": "TELL",
+          "boss_pattern": "GUARD_STANCE",
           "boss_pos": [
             76.73,
             0.0
           ],
-          "foot_y_diff_px": 0.0,
+          "foot_y_diff_px": 0.4,
           "frame": 60,
           "player_pos": [
             74.5,
@@ -250,7 +250,7 @@
             76.73,
             0.0
           ],
-          "foot_y_diff_px": 0.0,
+          "foot_y_diff_px": 0.1,
           "frame": 80,
           "player_pos": [
             74.5,
@@ -295,12 +295,12 @@
       "damage_taken": 0,
       "delta_z_m": 0.85,
       "evasion_success": true,
-      "foot_y_diff_px": 88.4,
+      "foot_y_diff_px": 80.0,
       "player_z": 0.85,
       "status": "PASSED"
     }
   },
   "task_id": "V3-024-R3",
-  "timestamp": "2026-11-15T14:09:42",
+  "timestamp": "2026-11-16T00:40:49",
   "z_dodge_evasion_passed": true
 }
