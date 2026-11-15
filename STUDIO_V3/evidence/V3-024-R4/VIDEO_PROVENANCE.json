@@ -1,0 +1,95 @@
+{
+  "task_id": "V3-024-R4",
+  "branch": "studio/v3-024-r4-natural-boss-duel-validation",
+  "source_sha": "7975369",
+  "recording_mode": "Godot 4.7.2 Movie Maker (--write-movie --fixed-fps 60) -> FFmpeg H.264 High Profile (-r 60 -crf 18)",
+  "human_playtest_status": "HUMAN_PLAYTEST_NOT_TESTED",
+  "videos": {
+    "natural_full_stage1_playthrough": {
+      "filename": "Stage1_Natural_Complete_1x.mp4",
+      "path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R4/Stage1_Natural_Complete_1x.mp4",
+      "classification": "NATURAL_INPUT_UNMODIFIED_GAME_STATE",
+      "sha256": "95ce9c7b3d5c191a054fd8ff88fa44392b3ddfb64ff12ba6745480ea2babbd4a",
+      "size_bytes": 76614547,
+      "duration_seconds": 35.63,
+      "fps": 60.0,
+      "resolution": "1280x720",
+      "frame_count": 2138,
+      "run_id": "V3-022-R1-E2E-1794719897",
+      "direct_state_mutations": 0,
+      "zero_cheats_verified": true,
+      "features_verified": [
+        "Full Stage 1 corridor traversal: Encounter 1, 2, 3, and Boss Sanctuary",
+        "All 12 encounter enemies defeated legitimately through combat",
+        "Boss Commander patterns observed naturally (Fissure, Charge, Quake)",
+        "Zero off-screen incidents during entire boss duel (100% on-screen frames)",
+        "Legitimate boss defeat (Boss HP reaches 0) and Stage Cleared Victory Banner display"
+      ]
+    },
+    "boss_overlap_stress_fixture": {
+      "filename": "Boss_Overlap_Stress_Fixture_1x.mp4",
+      "path": "D:/JUNYPAPA_STUDIO/Videos/ProjectKnight/V3-024-R4/Boss_Overlap_Stress_Fixture_1x.mp4",
+      "classification": "ISOLATED_FIXTURE_STATE_SETUP",
+      "sha256": "38b024429d97df407c1fd5db28f06853f14d604ca09802b8b254892b986e4dc7",
+      "size_bytes": 23364766,
+      "duration_seconds": 12.03,
+      "fps": 60.0,
+      "resolution": "1280x720",
+      "frame_count": 722,
+      "features_verified": [
+        "Center Lane (Z=0.0m) duel with zero foot-Y mismatch (Delta-Y = 0.0px)",
+        "Top Rail (Z=-1.6m) duel demonstrating 100% hero silhouette visibility during boss cleaves",
+        "Horizontal separation >= 2.06m preventing any overlap between character bounding boxes",
+        "Z-dodge sidestep evasion: clean projectile/charge miss with 0 damage",
+        "Clean defeat on HP exhaustion and stage reload via Retry verified in accompanying test suite"
+      ]
+    }
+  },
+  "extracted_comparison_frames": [
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/lane_aligned_center_duel_01.png",
+      "timestamp": "00:00:01.500",
+      "description": "Center Lane Duel: Perfect Foot-Y Alignment"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/lane_aligned_center_duel_02.png",
+      "timestamp": "00:00:02.800",
+      "description": "Center Lane Melee Clash: 2.23m Separation with Zero Overlap"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/top_rail_duel_01.png",
+      "timestamp": "00:00:04.200",
+      "description": "Top Rail Duel: Boss Aligned on Player Z (-1.6m)"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/top_rail_duel_02.png",
+      "timestamp": "00:00:05.500",
+      "description": "Top Rail Cleave Windup"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/r4_diag_06_0s.png",
+      "timestamp": "00:00:06.000",
+      "description": "Triple Cleave Execution: 100% Hero Silhouette Visibility (Fix for 5~7s R3 Overlap)"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/z_dodge_charge_miss_01.png",
+      "timestamp": "00:00:07.000",
+      "description": "Z-Dodge Sidestep Evasion: Player Escapes Charge Lane"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/z_dodge_charge_miss_02.png",
+      "timestamp": "00:00:08.000",
+      "description": "Clean Miss: Boss Passes along Original Lane with 0 Damage to Player"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/r4_diag_10_5s.png",
+      "timestamp": "00:00:10.500",
+      "description": "HP 0/9 Exhaustion: Hero Fallen Pose (Proof of EXPECTED_DEFEAT in Stress Fixture)"
+    },
+    {
+      "path": "STUDIO_V3/evidence/V3-024-R4/captures/bottom_lane_duel_final.png",
+      "timestamp": "00:00:11.500",
+      "description": "Bottom Rail Final Framing"
+    }
+  ]
+}

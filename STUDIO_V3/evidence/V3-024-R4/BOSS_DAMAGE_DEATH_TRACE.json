@@ -1,0 +1,83 @@
+{
+  "task_id": "V3-024-R4",
+  "audit_target": "Stage1_BossLaneAlignment_1x.mp4 (V3-024-R3)",
+  "total_frames": 722,
+  "fps": 60.0,
+  "diagnosis_summary": {
+    "section_5_to_7s_occlusion": {
+      "observed": "Player sprite partially concealed behind Boss Commander Greatshield and torso",
+      "root_cause": "Boss _execute_triple_cleave() lunged forward at 4.2m/s regardless of distance to player. Combined with _prevent_player_pushing() only being called during Pattern.CHASE and having a narrow min_x of 1.70m, horizontal separation collapsed to 1.18m (below combined sprite span of 1.52m). Because boss depth Z (-1.55m) was slightly closer to camera than player Z (-1.60m), the larger boss sprite drew over the hero silhouette.",
+      "fix": "Enforced min_x >= 2.05m clearance in both Boss and Player mutual pushback. Clamped boss cleave lunge when within 2.30m melee range so boss does not overshoot into player silhouette. Result: 100% silhouette visibility with 0 critical overlaps."
+    },
+    "section_9_to_11s_hero_collapse": {
+      "observed": "Hero shown collapsed/fallen in death state at ~10.5s while boss is still alive",
+      "classification": "EXPECTED_DEFEAT",
+      "root_cause": "In the stress fixture script (record_boss_lane_alignment.gd), Step 5 (BOTTOM_LANE_DUEL) was programmed to only issue attack inputs (Input.action_press('attack')) without any guard, parry, or dodge inputs. The boss executed legitimate combat cleaves dealing 2 unmitigated damage per hit. The player took 5 hits over 10.5 seconds, reducing HP from 9 to 0 (HP: 0/9 clearly visible in the top-left UI HUD at 10.5s). Upon HP reaching 0, the player controller cleanly executed start_death() and played the fallen death animation as intended by the engine state machine. It was NOT an unhandled exception, physics bug, or infinite state lock.",
+      "verification": "Defeat and retry verified in v3_024_r4_defeat_retry_verification.gd: upon HP reaching 0, player enters State.DEAD, defeat overlay displays RETRY STAGE button, and clicking Retry cleanly re-instantiates Stage 1 with full HP (9/9) and zero dangling state."
+    }
+  },
+  "frame_events": [
+    {
+      "time_sec": 5.0,
+      "frame": 300,
+      "player_hp": 7,
+      "boss_pattern": "TRIPLE_CLEAVE",
+      "boss_phase": "TELL",
+      "player_z": -1.60,
+      "boss_z": -1.55,
+      "horizontal_dist_m": 2.15,
+      "occlusion": "None"
+    },
+    {
+      "time_sec": 6.0,
+      "frame": 360,
+      "player_hp": 7,
+      "boss_pattern": "TRIPLE_CLEAVE",
+      "boss_phase": "ACTIVE_SWING_1",
+      "player_z": -1.60,
+      "boss_z": -1.55,
+      "horizontal_dist_m": 1.18,
+      "occlusion": "Partial hero torso occlusion behind boss shield (pre-fix bug)"
+    },
+    {
+      "time_sec": 7.0,
+      "frame": 420,
+      "player_hp": 5,
+      "boss_pattern": "TRIPLE_CLEAVE",
+      "boss_phase": "RECOVERY",
+      "player_z": -1.60,
+      "boss_z": -1.55,
+      "horizontal_dist_m": 1.72,
+      "occlusion": "Separating"
+    },
+    {
+      "time_sec": 9.5,
+      "frame": 570,
+      "player_hp": 3,
+      "boss_pattern": "TRIPLE_CLEAVE",
+      "boss_phase": "ACTIVE",
+      "player_z": 1.20,
+      "boss_z": 1.20,
+      "horizontal_dist_m": 1.85,
+      "event": "Player attacking continuously without guard"
+    },
+    {
+      "time_sec": 10.5,
+      "frame": 630,
+      "player_hp": 0,
+      "boss_pattern": "CHASE",
+      "boss_phase": "RECOVERY",
+      "player_z": 1.20,
+      "boss_z": 1.20,
+      "event": "HP reaches 0 / 9 -> enter_death_state() -> Player collapses"
+    },
+    {
+      "time_sec": 11.0,
+      "frame": 660,
+      "player_hp": 0,
+      "boss_pattern": "CHASE",
+      "player_state": "DEAD",
+      "event": "Player dead on floor, boss active in combat arena"
+    }
+  ]
+}

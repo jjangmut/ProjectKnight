@@ -400,8 +400,15 @@ func _verify_boss_vertical_stability() -> void:
 				img.save_png(cap_dir + "/after_boss_grounded_combat.png")
 
 	# Part B: Intentional Jump + Mid-Air Horizontal Attack next to Boss (The exact scenario that previously caused infinite 2.97m Pogo launch!)
+	boss.current_pattern = boss.Pattern.IDLE
+	if boss.attack_area_3d != null:
+		boss.attack_area_3d.monitoring = false
+	player.current_state = player.State.IDLE
+	player.is_attacking = false
+	player.invuln_timer = 0.0
+	player.current_hp = 9
 	player.global_position = Vector3(75.8, 0.0, 0.0)
-	boss.global_position = Vector3(77.3, 0.0, 0.0)
+	boss.global_position = Vector3(78.5, 0.0, 0.0)
 	await physics_frame
 	player.start_jump()
 	var max_jump_arc_y := 0.0

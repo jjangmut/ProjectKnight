@@ -1,0 +1,22 @@
+{
+	"camera_rebound_cleanly": true,
+	"defeat_overlay_verified": true,
+	"passed": true,
+	"player_death_verified": true,
+	"post_retry_boss_hp": 0,
+	"post_retry_player_hp": 9,
+	"retry_button_functional": true,
+	"stage_reloaded_cleanly": true,
+	"test_name": "V3-024-R4 Defeat & Retry Verification",
+	"trace": [
+		{
+			"event": "fatal_damage_inflicted",
+			"player_hp": 0,
+			"player_is_dead": true
+		},
+		{
+			"event": "defeat_overlay_opened",
+			"retry_button_present": true
+		}
+	]
+}

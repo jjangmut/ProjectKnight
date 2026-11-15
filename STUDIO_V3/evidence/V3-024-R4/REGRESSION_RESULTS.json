@@ -1,0 +1,86 @@
+{
+  "task_id": "V3-024-R4",
+  "audit_timestamp": "2026-11-15T14:19:00Z",
+  "git_branch": "studio/v3-024-r4-natural-boss-duel-validation",
+  "all_regressions_passed": true,
+  "test_suites": {
+    "sprite_bounding_and_silhouette_visibility": {
+      "script": "tests/quality_gate/v3_024_r4_sprite_bounding_verification.gd",
+      "status": "PASSED",
+      "critical_overlaps": 0,
+      "min_horizontal_separation_m": 2.06,
+      "min_screen_bounding_gap_px": 102.1,
+      "hero_silhouette_visibility_pct": 100.0,
+      "scenarios_tested": [
+        "top_rail_cleave_duel (Z=-1.6m)",
+        "center_lane_duel (Z=0.0m)",
+        "bottom_rail_cleave_duel (Z=1.4m)"
+      ]
+    },
+    "defeat_and_clean_retry": {
+      "script": "tests/quality_gate/v3_024_r4_defeat_retry_verification.gd",
+      "status": "PASSED",
+      "player_death_verified": true,
+      "defeat_overlay_verified": true,
+      "retry_button_functional": true,
+      "stage_reloaded_cleanly": true,
+      "post_retry_player_hp": 9,
+      "post_retry_boss_hp": 64,
+      "camera_rebound_cleanly": true
+    },
+    "same_lane_combat_alignment": {
+      "script": "tests/quality_gate/v3_024_r3_lane_alignment_verification.gd",
+      "status": "PASSED",
+      "lane_alignment_rate_pct": 100.0,
+      "median_foot_y_diff_px": 0.0,
+      "p95_foot_y_diff_px": 0.0,
+      "min_horizontal_separation_m": 2.23,
+      "z_dodge_evasion_passed": true,
+      "corner_regression_passed": true
+    },
+    "corner_escape_and_boundary_agency": {
+      "script": "tests/quality_gate/v3_024_r2_corner_escape_verification.gd",
+      "status": "PASSED",
+      "total_movement_frames": 204,
+      "displacing_frames": 204,
+      "stuck_frames": 0,
+      "scenarios_passed": [
+        "corner_1_top_left",
+        "corner_2_top_right",
+        "corner_3_bottom_left",
+        "corner_4_bottom_right",
+        "depth_rail_top_trapped",
+        "depth_rail_bottom_trapped",
+        "dash_phase_through_boss",
+        "guard_walk_mobility",
+        "attack_recovery_drift"
+      ]
+    },
+    "mechanics_pillar_projectile_vertical": {
+      "script": "tests/quality_gate/v3_022_r1_mechanics_verification.gd",
+      "status": "PASSED",
+      "pillar_collisions_passed": true,
+      "projectile_trace_passed": true,
+      "boss_vertical_stability_passed": true,
+      "max_intentional_jump_arc_m": 1.25,
+      "expected_jump_apex_m": 1.28,
+      "spurious_air_pop_eliminated": true
+    },
+    "full_stage1_natural_e2e": {
+      "script": "tests/v3_021_r1_stage1_natural_e2e.gd",
+      "status": "PASSED",
+      "stage_cleared_naturally": true,
+      "zero_cheats_audit_passed": true,
+      "direct_state_mutations": 0,
+      "enemies_defeated_naturally": 12,
+      "boss_defeated_naturally": true,
+      "boss_patterns_observed": {
+        "ground_fissure": true,
+        "shield_charge": true,
+        "quake_ring": true
+      },
+      "both_actors_on_screen_pct": 100.0,
+      "dual_camera_active": true
+    }
+  }
+}

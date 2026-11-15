@@ -1,5 +1,6 @@
 extends SceneTree
-## ProjectKnight V3-024-R3: Boss Combat Lane Alignment & Evasion Recording Suite
+## ProjectKnight V3-024-R4: Boss Overlap Stress Fixture Suite
+## Explicit Label: ISOLATED_FIXTURE_STATE_SETUP
 ## Drives deterministic in-engine combat sequence for 1.0x 60 FPS Movie Maker capture
 
 const Stage1ScenePath := "res://scenes/side_quarter_view/SideQVStage1.tscn"
@@ -140,10 +141,17 @@ func _on_physics_tick() -> void:
 				_transition_to(SequenceStep.BOTTOM_LANE_DUEL)
 
 		SequenceStep.BOTTOM_LANE_DUEL:
-			# Fast-forward intense exchange on bottom lane (Z=1.2)
-			if step_ticks % 22 == 5:
+			# Intense tactical exchange on bottom lane (Z=1.2) with guard and strike
+			if step_ticks % 40 < 15:
+				Input.action_press("guard")
+				Input.action_release("attack")
+			elif step_ticks % 40 == 20:
+				Input.action_release("guard")
 				Input.action_press("attack")
-			elif step_ticks % 22 == 8:
+			elif step_ticks % 40 == 24:
+				Input.action_release("attack")
+			else:
+				Input.action_release("guard")
 				Input.action_release("attack")
 
 			if step_ticks >= 150: # ~2.5 seconds

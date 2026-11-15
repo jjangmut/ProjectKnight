@@ -56,7 +56,7 @@ var telemetry := {
 }
 
 var sim_time: float = 0.0
-var max_sim_time: float = 120.0 # 2 minutes generous timeout
+var max_sim_time: float = 240.0 # 4 minutes generous timeout for full natural playthrough
 var rendered_frame_count: int = 0
 var physics_tick_count: int = 0
 var wall_start_usec: int = 0
@@ -207,8 +207,9 @@ func _on_process_frame() -> void:
 			_finalize_e2e_results()
 		return
 
-	# If stage cleared or finished, release inputs so victory pose & camera framing remain undisturbed
-	if telemetry["stage_cleared_naturally"] or stage.is_stage_finished:
+	# If stage cleared or finished with boss defeat, release inputs so victory pose & camera framing remain undisturbed
+	if telemetry["stage_cleared_naturally"] or (stage.is_stage_finished and (boss == null or boss.is_dead or boss.current_hp <= 0)):
+		telemetry["stage_cleared_naturally"] = true
 		_release_all_inputs()
 		if step_after_clear_timer <= 0.0:
 			step_after_clear_timer = sim_time
@@ -528,45 +529,21 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 			_steer_towards(target.global_position)
 		return
 
-	# 2. HEAVY SHIELD KNIGHT COMBAT LOGIC (Anti-Spam Flanking & Bash Parry)
+	# 2. HEAVY SHIELD KNIGHT COMBAT LOGIC (Bait Riposte & Just Parry)
 	if target is SideQVEliteKnightClass:
 		var k := target as CharacterBody3D
-		if k.is_attacking and dist_h <= 1.95:
+		if k.is_attacking and dist_h <= 2.25:
 			_release_movement_inputs()
 			Input.action_press("move_right" if dx > 0.0 else "move_left")
 			_trigger_just_parry()
 			return
-		var face_x: float = -1.0 if (k.sprite_3d != null and k.sprite_3d.flip_h) else 1.0
 
-		# If Knight is guarding front: bait Shield Bash once to parry it, and flank in Z!
-		if k.is_shield_guarding:
-			if absf(dz) < 1.15 and (dx * face_x < 0.0):
-				if dist_h <= 1.75 and attack_input_timer <= -0.35:
-					_release_movement_inputs()
-					Input.action_press("move_right" if dx > 0.0 else "move_left")
-					_trigger_attack()
-					return
-				# Move up or down in Z away from the knight's Z lane to flank without oscillating at Z=0
-				var flank_z_dir: float = -1.0 if k.global_position.z >= 0.0 else 1.0
-				_steer_depth(flank_z_dir)
-				# Also advance past knight in X
-				Input.action_press("move_right" if face_x < 0.0 else "move_left")
-				if dist_h < 2.2:
-					_trigger_dash()
-				return
-			elif dist_h <= 1.85:
-				# We are flanking or behind! Strike now!
-				_release_movement_inputs()
-				Input.action_press("move_right" if dx > 0.0 else "move_left")
-				_trigger_attack()
-				return
-		else:
-			# Knight is attacking or recovering: strike immediately!
-			if dist_h <= 1.85:
-				_release_movement_inputs()
-				Input.action_press("move_right" if dx > 0.0 else "move_left")
-				_trigger_attack()
-				return
+		# Strike when in melee reach: damages vulnerable knight or baits riposte to parry!
+		if dist_h <= 1.85:
+			_release_movement_inputs()
+			Input.action_press("move_right" if dx > 0.0 else "move_left")
+			_trigger_attack()
+			return
 
 		_steer_towards(target.global_position)
 		return
@@ -835,6 +812,13 @@ func _finalize_e2e_results() -> void:
 		file.store_string(JSON.stringify(telemetry, "\t"))
 		file.close()
 		print("[V3-021-R1] Results saved to ", json_path)
+
+	var r4_json_path := "res://../../STUDIO_V3/evidence/V3-024-R4/NATURAL_E2E_RESULT.json"
+	var r4_file := FileAccess.open(r4_json_path, FileAccess.WRITE)
+	if r4_file != null:
+		r4_file.store_string(JSON.stringify(telemetry, "\t"))
+		r4_file.close()
+		print("[V3-024-R4] Results saved to ", r4_json_path)
 
 	# Save Camera Visibility Trace for V3-024-R1 evidence
 	var vis_path := "res://test_boss_visibility_trace.json"

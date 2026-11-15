@@ -438,7 +438,7 @@ func _prevent_enemy_pushing() -> void:
 		var diff := enemy_3d.global_position - global_position
 		diff.y = 0.0
 		var is_boss: bool = enemy_3d.is_in_group("bosses")
-		var min_x_dist: float = 1.65 if is_boss else 1.05
+		var min_x_dist: float = 2.05 if is_boss else 1.05
 		var min_z_dist: float = 0.50 if is_boss else 0.40
 		var x_dist: float = absf(diff.x)
 		var z_dist: float = absf(diff.z)

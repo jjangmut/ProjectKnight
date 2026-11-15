@@ -7,16 +7,16 @@
     "foot_y_diff_max_px": 0.2,
     "foot_y_diff_median_px": 0.0,
     "foot_y_diff_p95_px": 0.0,
-    "min_horizontal_separation_m": 1.9,
+    "min_horizontal_separation_m": 2.23,
     "overlap_incidents": 0,
     "total_melee_frames_tested": 120
   },
   "overall_pass": true,
   "scenarios": {
     "depth_rail_combat_alignment": {
-      "boss_z": -1.56,
-      "final_z_diff_m": 0.24,
-      "foot_y_diff_px": 19.3,
+      "boss_z": -1.7,
+      "final_z_diff_m": 0.1,
+      "foot_y_diff_px": 8.0,
       "player_z": -1.8,
       "status": "PASSED"
     },
@@ -185,7 +185,7 @@
       "alignment_rate_pct": 100.0,
       "max_foot_y_diff_px": 0.2,
       "median_foot_y_diff_px": 0.0,
-      "min_x_separation_m": 1.9,
+      "min_x_separation_m": 2.23,
       "p95_foot_y_diff_px": 0.0,
       "samples": [
         {
@@ -205,7 +205,7 @@
         {
           "boss_pattern": "CHASE",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -214,12 +214,12 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         },
         {
           "boss_pattern": "GUARD_STANCE",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -228,12 +228,12 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         },
         {
           "boss_pattern": "TELL",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -242,12 +242,12 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         },
         {
           "boss_pattern": "TELL",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -256,12 +256,12 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         },
         {
           "boss_pattern": "TELL",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -270,12 +270,12 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         },
         {
           "boss_pattern": "TELL",
           "boss_pos": [
-            76.4,
+            76.73,
             0.0
           ],
           "foot_y_diff_px": 0.0,
@@ -284,7 +284,7 @@
             74.5,
             0.0
           ],
-          "x_separation_m": 1.9
+          "x_separation_m": 2.23
         }
       ],
       "status": "PASSED",
@@ -301,6 +301,6 @@
     }
   },
   "task_id": "V3-024-R3",
-  "timestamp": "2026-11-15T11:38:15",
+  "timestamp": "2026-11-15T14:09:42",
   "z_dodge_evasion_passed": true
 }

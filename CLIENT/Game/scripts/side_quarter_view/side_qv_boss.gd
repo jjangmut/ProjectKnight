@@ -357,8 +357,8 @@ func _physics_process(delta: float) -> void:
 						velocity.z = move_toward(velocity.z, 0.0, 35.0 * delta)
 
 					# 2. X-Axis Combat Range Management
-					var target_melee_range_max := 2.15
-					var target_melee_range_min := 1.70
+					var target_melee_range_max := 2.45
+					var target_melee_range_min := 2.05
 
 					if abs_x > target_melee_range_max:
 						velocity.x = signf(x_diff) * spd
@@ -396,8 +396,8 @@ func _physics_process(delta: float) -> void:
 			var at_bottom_wall: bool = (global_position.z >= arena_max_z - 0.45)
 			if (is_on_wall() or at_left_wall or at_right_wall or at_top_wall or at_bottom_wall) and pattern_timer > 0.15:
 				_execute_charge_wall_impact()
-			elif dist <= 1.45 and pattern_timer > 0.22:
-				# Stop charge upon contact with player
+			elif dist <= 2.05 and pattern_timer > 0.22:
+				# Stop charge upon contact with player at outer shield reach
 				if first_damage_at == 0.0:
 					first_damage_at = Time.get_ticks_msec() / 1000.0
 				_execute_charge_impact()
@@ -422,6 +422,9 @@ func _physics_process(delta: float) -> void:
 				pattern_phase = "RECOVERY"
 				pattern_timer = 0.60
 
+	if current_pattern != Pattern.CHARGE_ACTIVE and current_pattern != Pattern.SHIELD_CHARGE:
+		_prevent_player_pushing()
+
 	move_and_slide()
 	_clamp_arena_bounds()
 	_update_boss_animation(delta)
@@ -441,8 +444,8 @@ func _prevent_player_pushing() -> void:
 		var x_dist := absf(diff.x)
 		var z_dist := absf(diff.z)
 
-		# Enforce horizontal combat clearance (min 1.70m) when on the same or close depth lane
-		var min_x: float = 1.70
+		# Enforce horizontal combat clearance (min 2.05m) when on the same or close depth lane
+		var min_x: float = 2.05
 		if x_dist < min_x and z_dist < 0.60 and x_dist > 0.001:
 			var dir_x := signf(diff.x)
 			if dir_x == 0.0:
@@ -451,8 +454,8 @@ func _prevent_player_pushing() -> void:
 			if forward_speed > 0.0:
 				velocity.x -= dir_x * forward_speed
 			# Soft horizontal push back to preserve readable weapon reach and avoid sprite overlap
-			if x_dist < min_x - 0.10:
-				velocity.x += -dir_x * ((min_x - x_dist) * 6.0)
+			if x_dist < min_x - 0.05:
+				velocity.x += -dir_x * ((min_x - x_dist) * 8.0)
 
 		# Anti-boundary wedging: push boss back toward center if player is near ANY wall
 		var p_pos := target_player.global_position
@@ -474,7 +477,6 @@ func _prevent_player_pushing() -> void:
 
 
 func _execute_charge_impact() -> void:
-	velocity = Vector3.ZERO
 	attack_area_3d.monitoring = false
 	sprite_3d.texture = BossTextureNormal
 	current_pattern = Pattern.CHASE
@@ -486,6 +488,14 @@ func _execute_charge_impact() -> void:
 		if z_diff <= 0.50:
 			if target_player.has_method("receive_incoming_attack"):
 				target_player.receive_incoming_attack(charge_damage, self, Vector3(facing_dir_x, 0, 0))
+		# Recoil back to preserve readable combat spacing and avoid silhouette overlap
+		var recoil_dir := signf(global_position.x - target_player.global_position.x)
+		if recoil_dir == 0.0:
+			recoil_dir = -facing_dir_x
+		velocity.x = recoil_dir * 3.5
+		velocity.z = 0.0
+	else:
+		velocity = Vector3.ZERO
 
 
 func _execute_charge_wall_impact() -> void:
@@ -713,7 +723,17 @@ func _execute_triple_cleave() -> void:
 			break
 		pattern_phase = "ACTIVE"
 		attack_area_3d.monitoring = true
-		velocity.x = facing_dir_x * 4.2
+
+		# V3-024-R4: Prevent overshooting into player silhouette during cleave swings
+		var forward_dist: float = 999.0
+		if target_player != null and is_instance_valid(target_player):
+			forward_dist = absf(target_player.global_position.x - global_position.x)
+
+		# Only lunge forward if outside melee range; if already within 2.30m, perform a short step
+		if forward_dist > 2.30:
+			velocity.x = facing_dir_x * 4.2
+		else:
+			velocity.x = facing_dir_x * 0.5
 		velocity.z = 0.0
 
 		# On 3rd swing: Slam the floor with ground fissure shockwave!

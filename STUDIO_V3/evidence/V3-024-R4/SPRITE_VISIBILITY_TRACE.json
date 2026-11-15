@@ -1,0 +1,320 @@
+{
+	"all_scenarios_passed": true,
+	"avg_hero_silhouette_visibility_pct": 100.0,
+	"critical_overlaps": 0,
+	"min_bounding_box_gap_px": 102.1,
+	"min_hero_silhouette_visibility_pct": 100.0,
+	"min_horizontal_sep_m": 2.06,
+	"samples": [
+		{
+			"boss_pattern": 2,
+			"boss_phase": "TELL",
+			"boss_pos": [
+				76.5,
+				-1.37
+			],
+			"frame": 0,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 3.0,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				-1.6
+			],
+			"scenario": "top_rail_cleave_duel",
+			"screen_gap_px": 204.5
+		},
+		{
+			"boss_pattern": 2,
+			"boss_phase": "TELL",
+			"boss_pos": [
+				76.5,
+				-1.37
+			],
+			"frame": 15,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 3.0,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				-1.6
+			],
+			"scenario": "top_rail_cleave_duel",
+			"screen_gap_px": 235.1
+		},
+		{
+			"boss_pattern": 2,
+			"boss_phase": "ACTIVE",
+			"boss_pos": [
+				76.09,
+				-1.37
+			],
+			"frame": 30,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.6,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				-1.6
+			],
+			"scenario": "top_rail_cleave_duel",
+			"screen_gap_px": 179.6
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				75.69,
+				-1.37
+			],
+			"frame": 45,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.18,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				-1.6
+			],
+			"scenario": "top_rail_cleave_duel",
+			"screen_gap_px": 113.2
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				75.69,
+				-1.37
+			],
+			"frame": 60,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.18,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				-1.6
+			],
+			"scenario": "top_rail_cleave_duel",
+			"screen_gap_px": 114.2
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				76.8,
+				0.0
+			],
+			"frame": 0,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.8,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				74.0,
+				0.0
+			],
+			"scenario": "center_lane_duel",
+			"screen_gap_px": 252.5
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				76.2,
+				0.0
+			],
+			"frame": 15,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.2,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				74.0,
+				0.0
+			],
+			"scenario": "center_lane_duel",
+			"screen_gap_px": 127.9
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				76.2,
+				0.0
+			],
+			"frame": 30,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.2,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				74.0,
+				0.0
+			],
+			"scenario": "center_lane_duel",
+			"screen_gap_px": 127.8
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "RECOVERY",
+			"boss_pos": [
+				76.06,
+				0.0
+			],
+			"frame": 45,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.06,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				74.0,
+				0.0
+			],
+			"scenario": "center_lane_duel",
+			"screen_gap_px": 102.1
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				76.25,
+				0.0
+			],
+			"frame": 60,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.26,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				74.0,
+				0.0
+			],
+			"scenario": "center_lane_duel",
+			"screen_gap_px": 138.0
+		},
+		{
+			"boss_pattern": 2,
+			"boss_phase": "TELL",
+			"boss_pos": [
+				76.43,
+				1.4
+			],
+			"frame": 0,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.94,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				1.4
+			],
+			"scenario": "bottom_rail_cleave_duel",
+			"screen_gap_px": 302.8
+		},
+		{
+			"boss_pattern": 2,
+			"boss_phase": "ACTIVE",
+			"boss_pos": [
+				76.43,
+				1.4
+			],
+			"frame": 15,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.94,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				1.4
+			],
+			"scenario": "bottom_rail_cleave_duel",
+			"screen_gap_px": 293.6
+		},
+		{
+			"boss_pattern": 2,
+			"boss_phase": "ACTIVE",
+			"boss_pos": [
+				76.03,
+				1.4
+			],
+			"frame": 30,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.52,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				1.4
+			],
+			"scenario": "bottom_rail_cleave_duel",
+			"screen_gap_px": 208.8
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				75.62,
+				1.4
+			],
+			"frame": 45,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.12,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				1.4
+			],
+			"scenario": "bottom_rail_cleave_duel",
+			"screen_gap_px": 124.1
+		},
+		{
+			"boss_pattern": 1,
+			"boss_phase": "CHASE",
+			"boss_pos": [
+				75.62,
+				1.4
+			],
+			"frame": 60,
+			"hero_vis_pct": 100.0,
+			"horizontal_sep_m": 2.12,
+			"intersects": false,
+			"overlap_area_px2": 0.0,
+			"player_pos": [
+				73.5,
+				1.4
+			],
+			"scenario": "bottom_rail_cleave_duel",
+			"screen_gap_px": 124.4
+		}
+	],
+	"scenarios": {
+		"bottom_rail_cleave_duel": {
+			"avg_hero_silhouette_visibility_pct": 100.0,
+			"critical_overlaps": 0,
+			"min_bounding_box_gap_px": 124.0,
+			"min_horizontal_sep_m": 2.12,
+			"passed": true
+		},
+		"center_lane_duel": {
+			"avg_hero_silhouette_visibility_pct": 100.0,
+			"critical_overlaps": 0,
+			"min_bounding_box_gap_px": 102.1,
+			"min_horizontal_sep_m": 2.06,
+			"passed": true
+		},
+		"top_rail_cleave_duel": {
+			"avg_hero_silhouette_visibility_pct": 100.0,
+			"critical_overlaps": 0,
+			"min_bounding_box_gap_px": 112.6,
+			"min_horizontal_sep_m": 2.18,
+			"passed": true
+		}
+	},
+	"test_name": "V3-024-R4 Sprite Bounding Box & Silhouette Visibility",
+	"total_frames_analyzed": 225
+}
