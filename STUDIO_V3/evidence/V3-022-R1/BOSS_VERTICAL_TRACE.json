@@ -1762,7 +1762,7 @@
 					0.0
 				]
 			],
-			"player_state": 5,
+			"player_state": 3,
 			"player_vy": 0.0,
 			"player_y": 0.0
 		},
@@ -1852,6 +1852,16 @@
 			"frame": 94,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
+			"player_on_floor": true,
+			"player_vy": 6.8,
+			"player_y": 0.0
+		},
+		{
+			"boss_pattern": 0,
+			"boss_y": 0.0,
+			"frame": 95,
+			"jump_input": false,
+			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
 			"player_vy": 6.8,
 			"player_y": 0.12
@@ -1859,7 +1869,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 95,
+			"frame": 96,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1869,7 +1879,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 96,
+			"frame": 97,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1879,7 +1889,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 97,
+			"frame": 98,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1889,7 +1899,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 98,
+			"frame": 99,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1899,7 +1909,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 99,
+			"frame": 100,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1909,7 +1919,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 100,
+			"frame": 101,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1919,7 +1929,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 101,
+			"frame": 102,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1929,22 +1939,12 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 102,
-			"jump_input": false,
-			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
-			"player_on_floor": false,
-			"player_vy": 4.4,
-			"player_y": 0.84
-		},
-		{
-			"boss_pattern": 0,
-			"boss_y": 0.0,
 			"frame": 103,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": 4.4,
-			"player_y": 0.84
+			"player_vy": 4.7,
+			"player_y": 0.76
 		},
 		{
 			"boss_pattern": 0,
@@ -1953,13 +1953,23 @@
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
+			"player_vy": 4.7,
+			"player_y": 0.76
+		},
+		{
+			"boss_pattern": 0,
+			"boss_y": 0.0,
+			"frame": 105,
+			"jump_input": false,
+			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
+			"player_on_floor": false,
 			"player_vy": 4.4,
 			"player_y": 0.84
 		},
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 105,
+			"frame": 106,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1969,7 +1979,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 106,
+			"frame": 107,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1979,7 +1989,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 107,
+			"frame": 108,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1989,7 +1999,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 108,
+			"frame": 109,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -1999,7 +2009,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 109,
+			"frame": 110,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2009,7 +2019,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 110,
+			"frame": 111,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2019,7 +2029,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 111,
+			"frame": 112,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2029,7 +2039,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 112,
+			"frame": 113,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2039,22 +2049,12 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 113,
-			"jump_input": false,
-			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
-			"player_on_floor": false,
-			"player_vy": 1.7,
-			"player_y": 1.28
-		},
-		{
-			"boss_pattern": 0,
-			"boss_y": 0.0,
 			"frame": 114,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": 1.7,
-			"player_y": 1.28
+			"player_vy": 2.0,
+			"player_y": 1.24
 		},
 		{
 			"boss_pattern": 0,
@@ -2063,13 +2063,23 @@
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": 1.7,
-			"player_y": 1.28
+			"player_vy": 2.0,
+			"player_y": 1.24
 		},
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
 			"frame": 116,
+			"jump_input": false,
+			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
+			"player_on_floor": false,
+			"player_vy": 2.0,
+			"player_y": 1.24
+		},
+		{
+			"boss_pattern": 0,
+			"boss_y": 0.0,
+			"frame": 117,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2079,7 +2089,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 117,
+			"frame": 118,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2089,7 +2099,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 118,
+			"frame": 119,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2099,7 +2109,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 119,
+			"frame": 120,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2109,7 +2119,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 120,
+			"frame": 121,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2119,7 +2129,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 121,
+			"frame": 122,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2129,7 +2139,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 122,
+			"frame": 123,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2139,7 +2149,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 123,
+			"frame": 124,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2149,7 +2159,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 124,
+			"frame": 125,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2159,7 +2169,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 125,
+			"frame": 126,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2169,22 +2179,12 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 126,
-			"jump_input": false,
-			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
-			"player_on_floor": false,
-			"player_vy": -1.3,
-			"player_y": 1.28
-		},
-		{
-			"boss_pattern": 0,
-			"boss_y": 0.0,
 			"frame": 127,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": -1.3,
-			"player_y": 1.28
+			"player_vy": -1.0,
+			"player_y": 1.3
 		},
 		{
 			"boss_pattern": 0,
@@ -2193,8 +2193,8 @@
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": -1.3,
-			"player_y": 1.28
+			"player_vy": -1.0,
+			"player_y": 1.3
 		},
 		{
 			"boss_pattern": 0,
@@ -2203,13 +2203,23 @@
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
-			"player_vy": -1.3,
-			"player_y": 1.28
+			"player_vy": -1.0,
+			"player_y": 1.3
 		},
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
 			"frame": 130,
+			"jump_input": false,
+			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
+			"player_on_floor": false,
+			"player_vy": -1.0,
+			"player_y": 1.3
+		},
+		{
+			"boss_pattern": 0,
+			"boss_y": 0.0,
+			"frame": 131,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2219,7 +2229,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 131,
+			"frame": 132,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2229,7 +2239,7 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 132,
+			"frame": 133,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
@@ -2239,22 +2249,12 @@
 		{
 			"boss_pattern": 0,
 			"boss_y": 0.0,
-			"frame": 133,
+			"frame": 134,
 			"jump_input": false,
 			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
 			"player_on_floor": false,
 			"player_vy": -2.2,
 			"player_y": 1.18
-		},
-		{
-			"boss_pattern": 0,
-			"boss_y": 0.0,
-			"frame": 134,
-			"jump_input": false,
-			"phase": "INTENTIONAL_JUMP_WITH_AIR_ATTACK",
-			"player_on_floor": false,
-			"player_vy": -2.5,
-			"player_y": 1.14
 		}
 	]
 }

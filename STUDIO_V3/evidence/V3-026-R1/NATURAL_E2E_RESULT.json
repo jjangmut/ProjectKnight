@@ -1,0 +1,1054 @@
+{
+	"attacks_performed": 71,
+	"attempt_count": 1,
+	"bolts_observed_count": 5,
+	"boss_patterns_observed": {
+		"ground_fissure": true,
+		"quake_ring": true,
+		"shield_charge": true
+	},
+	"boss_visibility_metrics": {
+		"all_frames_verified_on_screen": true,
+		"boss_off_screen_frames": 0,
+		"boss_screen_x_max": 958.613464355469,
+		"boss_screen_x_min": 699.192016601563,
+		"boss_screen_y_max": 305.366119384766,
+		"boss_screen_y_min": 254.095901489258,
+		"both_on_screen_frames": 419,
+		"camera_fov_max": 57.851806640625,
+		"camera_fov_min": 46.0000076293945,
+		"dual_camera_active": true,
+		"player_off_screen_frames": 0,
+		"player_screen_x_max": 708.991943359375,
+		"player_screen_x_min": 335.701263427734,
+		"player_screen_y_max": 329.116119384766,
+		"player_screen_y_min": 273.322143554688,
+		"samples": [
+			{
+				"boss_screen_px": [
+					934.6,
+					304.3
+				],
+				"boss_world": [
+					78.0,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 55.9,
+				"camera_x": 74.24,
+				"player_screen_px": [
+					387.8,
+					327.0
+				],
+				"player_world": [
+					70.98,
+					0.0,
+					0.21
+				],
+				"sim_time": 24.52
+			},
+			{
+				"boss_screen_px": [
+					884.8,
+					300.4
+				],
+				"boss_world": [
+					77.82,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 52.9,
+				"camera_x": 74.9,
+				"player_screen_px": [
+					432.4,
+					324.6
+				],
+				"player_world": [
+					72.38,
+					0.0,
+					0.21
+				],
+				"sim_time": 24.68
+			},
+			{
+				"boss_screen_px": [
+					835.1,
+					295.3
+				],
+				"boss_world": [
+					77.59,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 49.2,
+				"camera_x": 75.45,
+				"player_screen_px": [
+					490.6,
+					321.6
+				],
+				"player_world": [
+					73.78,
+					0.0,
+					0.21
+				],
+				"sim_time": 24.85
+			},
+			{
+				"boss_screen_px": [
+					780.4,
+					291.0
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.5,
+				"camera_x": 76.08,
+				"player_screen_px": [
+					533.0,
+					319.0
+				],
+				"player_world": [
+					74.96,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.02
+			},
+			{
+				"boss_screen_px": [
+					770.8,
+					291.3
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.2,
+				"camera_x": 76.19,
+				"player_screen_px": [
+					521.7,
+					320.1
+				],
+				"player_world": [
+					74.96,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.18
+			},
+			{
+				"boss_screen_px": [
+					746.6,
+					290.2
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.44,
+				"player_screen_px": [
+					548.3,
+					318.6
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.35
+			},
+			{
+				"boss_screen_px": [
+					740.0,
+					289.9
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.51,
+				"player_screen_px": [
+					541.7,
+					318.6
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.52
+			},
+			{
+				"boss_screen_px": [
+					740.1,
+					290.2
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.51,
+				"player_screen_px": [
+					541.7,
+					318.5
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.68
+			},
+			{
+				"boss_screen_px": [
+					739.6,
+					290.5
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.51,
+				"player_screen_px": [
+					541.2,
+					318.7
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 25.85
+			},
+			{
+				"boss_screen_px": [
+					739.8,
+					290.2
+				],
+				"boss_world": [
+					77.53,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.51,
+				"player_screen_px": [
+					541.4,
+					318.5
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 26.02
+			},
+			{
+				"boss_screen_px": [
+					747.3,
+					290.2
+				],
+				"boss_world": [
+					77.61,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.52,
+				"player_screen_px": [
+					541.0,
+					318.5
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 26.18
+			},
+			{
+				"boss_screen_px": [
+					748.7,
+					289.8
+				],
+				"boss_world": [
+					77.66,
+					0.0,
+					0.15
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.55,
+				"player_screen_px": [
+					537.6,
+					318.5
+				],
+				"player_world": [
+					75.49,
+					0.0,
+					0.21
+				],
+				"sim_time": 26.35
+			},
+			{
+				"boss_screen_px": [
+					747.9,
+					292.8
+				],
+				"boss_world": [
+					77.71,
+					0.0,
+					0.21
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 76.62,
+				"player_screen_px": [
+					553.3,
+					318.5
+				],
+				"player_world": [
+					75.72,
+					0.0,
+					0.21
+				],
+				"sim_time": 26.52
+			},
+			{
+				"boss_screen_px": [
+					763.5,
+					292.3
+				],
+				"boss_world": [
+					79.14,
+					0.0,
+					0.21
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 77.88,
+				"player_screen_px": [
+					690.8,
+					318.1
+				],
+				"player_world": [
+					78.41,
+					0.0,
+					0.21
+				],
+				"sim_time": 26.68
+			},
+			{
+				"boss_screen_px": [
+					761.0,
+					293.7
+				],
+				"boss_world": [
+					80.65,
+					0.0,
+					0.21
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 79.43,
+				"player_screen_px": [
+					575.1,
+					301.3
+				],
+				"player_world": [
+					78.73,
+					0.0,
+					-0.19
+				],
+				"sim_time": 26.85
+			},
+			{
+				"boss_screen_px": [
+					712.9,
+					299.5
+				],
+				"boss_world": [
+					80.34,
+					0.0,
+					0.21
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 79.61,
+				"player_screen_px": [
+					560.9,
+					273.3
+				],
+				"player_world": [
+					78.71,
+					0.0,
+					-0.99
+				],
+				"sim_time": 27.02
+			},
+			{
+				"boss_screen_px": [
+					706.2,
+					288.3
+				],
+				"boss_world": [
+					80.61,
+					0.0,
+					-0.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 79.93,
+				"player_screen_px": [
+					610.2,
+					276.8
+				],
+				"player_world": [
+					79.6,
+					0.0,
+					-0.99
+				],
+				"sim_time": 27.18
+			},
+			{
+				"boss_screen_px": [
+					730.2,
+					271.9
+				],
+				"boss_world": [
+					81.35,
+					0.0,
+					-0.58
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 80.39,
+				"player_screen_px": [
+					619.5,
+					274.2
+				],
+				"player_world": [
+					80.16,
+					0.0,
+					-1.13
+				],
+				"sim_time": 27.35
+			},
+			{
+				"boss_screen_px": [
+					757.1,
+					263.9
+				],
+				"boss_world": [
+					82.26,
+					0.0,
+					-0.85
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.0,
+				"player_screen_px": [
+					544.9,
+					276.1
+				],
+				"player_world": [
+					79.92,
+					0.0,
+					-1.16
+				],
+				"sim_time": 27.52
+			},
+			{
+				"boss_screen_px": [
+					745.7,
+					260.9
+				],
+				"boss_world": [
+					82.26,
+					0.0,
+					-0.96
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.11,
+				"player_screen_px": [
+					553.8,
+					278.6
+				],
+				"player_world": [
+					80.14,
+					0.0,
+					-1.13
+				],
+				"sim_time": 27.68
+			},
+			{
+				"boss_screen_px": [
+					750.2,
+					258.9
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.51,
+				"player_screen_px": [
+					561.2,
+					279.4
+				],
+				"player_world": [
+					80.63,
+					0.0,
+					-1.13
+				],
+				"sim_time": 27.85
+			},
+			{
+				"boss_screen_px": [
+					739.1,
+					259.3
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.64,
+				"player_screen_px": [
+					550.4,
+					279.8
+				],
+				"player_world": [
+					80.63,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.02
+			},
+			{
+				"boss_screen_px": [
+					733.8,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.69,
+				"player_screen_px": [
+					552.0,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.18
+			},
+			{
+				"boss_screen_px": [
+					732.3,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.5,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.35
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.52
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.68
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.2
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.7
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 28.85
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.02
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.18
+			},
+			{
+				"boss_screen_px": [
+					732.4,
+					259.2
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.6,
+					279.7
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.35
+			},
+			{
+				"boss_screen_px": [
+					732.1,
+					259.0
+				],
+				"boss_world": [
+					82.72,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.71,
+				"player_screen_px": [
+					550.3,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.52
+			},
+			{
+				"boss_screen_px": [
+					748.3,
+					259.0
+				],
+				"boss_world": [
+					82.92,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.73,
+				"player_screen_px": [
+					548.5,
+					279.6
+				],
+				"player_world": [
+					80.71,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.68
+			},
+			{
+				"boss_screen_px": [
+					742.8,
+					259.0
+				],
+				"boss_world": [
+					82.96,
+					0.0,
+					-1.03
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 81.84,
+				"player_screen_px": [
+					552.7,
+					279.6
+				],
+				"player_world": [
+					80.86,
+					0.0,
+					-1.13
+				],
+				"sim_time": 29.85
+			},
+			{
+				"boss_screen_px": [
+					754.0,
+					255.3
+				],
+				"boss_world": [
+					83.63,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.37,
+				"player_screen_px": [
+					575.7,
+					279.7
+				],
+				"player_world": [
+					81.65,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.02
+			},
+			{
+				"boss_screen_px": [
+					737.9,
+					255.7
+				],
+				"boss_world": [
+					83.7,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.63,
+				"player_screen_px": [
+					553.0,
+					280.2
+				],
+				"player_world": [
+					81.65,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.18
+			},
+			{
+				"boss_screen_px": [
+					730.7,
+					256.8
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.75,
+				"player_screen_px": [
+					548.7,
+					281.2
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.35
+			},
+			{
+				"boss_screen_px": [
+					733.6,
+					254.4
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.72,
+				"player_screen_px": [
+					551.3,
+					279.2
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.52
+			},
+			{
+				"boss_screen_px": [
+					731.9,
+					255.8
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.74,
+				"player_screen_px": [
+					549.8,
+					280.3
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.68
+			},
+			{
+				"boss_screen_px": [
+					733.0,
+					254.1
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.73,
+				"player_screen_px": [
+					550.6,
+					278.6
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 30.85
+			},
+			{
+				"boss_screen_px": [
+					731.5,
+					255.7
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.74,
+				"player_screen_px": [
+					549.4,
+					280.3
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 31.02
+			},
+			{
+				"boss_screen_px": [
+					731.8,
+					255.8
+				],
+				"boss_world": [
+					83.75,
+					0.0,
+					-1.13
+				],
+				"both_actors_on_screen": true,
+				"camera_fov": 46.0,
+				"camera_x": 82.74,
+				"player_screen_px": [
+					549.7,
+					280.3
+				],
+				"player_world": [
+					81.73,
+					0.0,
+					-1.13
+				],
+				"sim_time": 31.18
+			}
+		],
+		"total_boss_fight_frames": 419
+	},
+	"camera_x_max": 82.7576446533203,
+	"camera_x_min": -6.80000019073486,
+	"confirmed_parries_deflected": 8,
+	"damage_taken_total": 9,
+	"dashes_performed": 5,
+	"direct_state_mutations_performed": 0,
+	"duration_seconds": 34.57,
+	"encounter_timestamps": {
+		"boss_defeated_sec": 31.35,
+		"boss_started_sec": 24.37,
+		"encounter_1_cleared_sec": 3.8,
+		"encounter_2_cleared_sec": 13.77,
+		"encounter_2_started_sec": 6.15,
+		"encounter_3_cleared_sec": 22.53,
+		"encounter_3_started_sec": 15.18,
+		"run_started_sec": 0.0
+	},
+	"final_boss_hp": 0,
+	"final_player_hp": 9,
+	"guard_inputs_attempted": 29,
+	"max_boss_y_during_boss": 0.1,
+	"max_player_y_during_boss": 0.0,
+	"max_time_scale_seen": 1.0,
+	"min_time_scale_seen": 0.04,
+	"mode": "NATURAL_INPUT_E2E",
+	"parries_performed": 8,
+	"physics_tick_count": 2073,
+	"player_death_occurred": false,
+	"rendered_frame_count": 2074,
+	"run_id": "V3-022-R1-E2E-1794764185",
+	"stage_cleared_naturally": true,
+	"total_enemies_defeated_naturally": 12,
+	"vitality_orbs_collected": 5,
+	"wall_elapsed_seconds": 36.56,
+	"x_max": 81.7274017333984,
+	"x_min": -6.0,
+	"z_max": 1.17020905017853,
+	"z_min": -2.2239031791687,
+	"z_span_verified": false,
+	"zero_cheats_audit_passed": true
+}

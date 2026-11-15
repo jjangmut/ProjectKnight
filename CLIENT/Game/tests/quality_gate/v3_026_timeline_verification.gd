@@ -11,7 +11,7 @@ const SideQVPlayerClass = preload("res://scripts/side_quarter_view/side_qv_playe
 const SideQVEnemyClass = preload("res://scripts/side_quarter_view/side_qv_enemy.gd")
 const CombatTimelineClass = preload("res://scripts/combat/combat_timeline_controller.gd")
 
-const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-026/STUDIO_V3/evidence/V3-026/"
+const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-026-R1/STUDIO_V3/evidence/V3-026-R1/"
 const OUTPUT_FILE := "COMBAT_EVENT_TIMELINE.json"
 
 var trace_data := {

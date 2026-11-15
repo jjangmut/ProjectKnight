@@ -13,7 +13,7 @@ const SideQVBossClass = preload("res://scripts/side_quarter_view/side_qv_boss.gd
 const SideQVPlayerClass = preload("res://scripts/side_quarter_view/side_qv_player.gd")
 const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
 
-const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-026/STUDIO_V3/evidence/V3-026/"
+const EVIDENCE_DIR := "D:/JUNYPAPA_STUDIO/Worktrees/ProjectKnight/V3-026-R1/STUDIO_V3/evidence/V3-026-R1/"
 const OUTPUT_FILE := "ENEMY_COMBAT_TIMELINE.json"
 
 var trace_data := {

@@ -131,9 +131,9 @@ var hero_aim_arrow_3d: MeshInstance3D = null
 const TexIdle = preload("res://assets/player_frames/idle_v1_aligned.png")     # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
 const TexRun = preload("res://assets/player_frames/run_v2_aligned.png")      # 3x2 = 6 frames (780x780 cells, Pivot: 390,700)
 const TexAttack = preload("res://assets/player_frames/attack_v1_aligned.png")# 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
-const TexCombo1 = TexAttack # TEMPORARY 2D-ONLY FALLBACK: rejected Blender combo atlas disabled
-const TexCombo2 = TexAttack # TEMPORARY 2D-ONLY FALLBACK: rejected Blender combo atlas disabled
-const TexCombo3 = TexAttack # TEMPORARY 2D-ONLY FALLBACK: rejected Blender combo atlas disabled
+const TexCombo1 = preload("res://assets/player_frames/native2d_combo1_slash.png") # 2x2 = 4 frames
+const TexCombo2 = preload("res://assets/player_frames/native2d_combo2_slash.png") # 2x2 = 4 frames
+const TexCombo3 = preload("res://assets/player_frames/native2d_combo3_cleave.png") # 2x2 = 4 frames
 const TexJump = preload("res://assets/player_frames/jump_v1.png")            # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexGuard = preload("res://assets/player_frames/guard_v1_aligned.png")  # 3x1 = 3 frames (780x780 cells, Pivot: 390,700)
 const TexDodge = preload("res://assets/player_frames/dodge_v1.png")          # 2x2 = 4 frames (780x780 cells, Pivot: 390,700)
@@ -261,8 +261,8 @@ func _init_combat_actions() -> void:
 	action_hero_attack_3.hframes = 2
 	action_hero_attack_3.vframes = 2
 	action_hero_attack_3.total_frames = 4
-	action_hero_attack_3.windup_frames = [0]
-	action_hero_attack_3.active_frames = [1, 2]
+	action_hero_attack_3.windup_frames = [0, 1]
+	action_hero_attack_3.active_frames = [2]
 	action_hero_attack_3.recovery_frames = [3]
 
 	attack_actions = {

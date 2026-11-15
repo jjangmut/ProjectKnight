@@ -393,7 +393,7 @@ func _process_natural_input_controller(delta: float) -> void:
 		Input.action_release("dash")
 	if jump_cooldown_timer <= 0.50:
 		Input.action_release("jump")
-	if attack_input_timer <= 0.12:
+	if attack_input_timer <= 0.08:
 		Input.action_release("attack")
 
 	if guard_hold_timer > 0.0:
@@ -614,7 +614,10 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 		_trigger_just_parry()
 		return
 
-	if dist_h <= 1.68:
+	if absf(dz) > 0.40:
+		_steer_towards(target.global_position)
+		return
+	if absf(dx) <= 1.65:
 		_release_movement_inputs()
 		Input.action_press("move_right" if dx > 0.0 else "move_left")
 		_trigger_attack()
@@ -624,6 +627,12 @@ func _combat_steer_and_fight(target: Node3D, _delta: float) -> void:
 
 func _steer_towards(target_pos: Vector3) -> void:
 	var diff := target_pos - player.global_position
+	var px := player.global_position.x
+	var pz := player.global_position.z
+
+	# Caltrop zone bypass: if traversing through X [27.0, 31.8] towards a target further ahead in X
+	if px >= 27.0 and px <= 31.8 and target_pos.x > 31.5:
+		diff.z = 2.0 - pz
 
 	# X movement
 	if diff.x > 0.30:
@@ -651,7 +660,19 @@ func _steer_towards(target_pos: Vector3) -> void:
 func _steer_forward() -> void:
 	Input.action_press("move_right")
 	Input.action_release("move_left")
+	var px: float = player.global_position.x
 	var pz: float = player.global_position.z
+
+	# Caltrop zone bypass: if advancing through X [27.0, 31.8]
+	if px >= 27.0 and px <= 31.8:
+		if pz < 1.8:
+			Input.action_press("move_down") # steer to Z=2.0
+			Input.action_release("move_up")
+		else:
+			Input.action_release("move_up")
+			Input.action_release("move_down")
+		return
+
 	if pz > 0.4:
 		Input.action_press("move_up")
 		Input.action_release("move_down")
@@ -674,7 +695,7 @@ func _steer_depth(dir_z: float) -> void:
 
 func _trigger_attack() -> void:
 	if attack_input_timer <= 0.0:
-		attack_input_timer = 0.26
+		attack_input_timer = 0.15
 		Input.action_press("attack")
 		telemetry["attacks_performed"] += 1
 	else:
@@ -799,6 +820,13 @@ func _finalize_e2e_results() -> void:
 		v26_file.close()
 		print("[V3-026] Results saved to ", v26_json_path)
 
+	var vr1_json_path := "res://../../STUDIO_V3/evidence/V3-026-R1/NATURAL_E2E_RESULT.json"
+	var vr1_file := FileAccess.open(vr1_json_path, FileAccess.WRITE)
+	if vr1_file != null:
+		vr1_file.store_string(JSON.stringify(telemetry, "\t"))
+		vr1_file.close()
+		print("[V3-026-R1] Results saved to ", vr1_json_path)
+
 	# Save Camera Visibility Trace for V3-024-R1 & V3-025 & V3-026 evidence
 	var vis_path := "res://test_boss_visibility_trace.json"
 	var vfile := FileAccess.open(vis_path, FileAccess.WRITE)
@@ -819,6 +847,13 @@ func _finalize_e2e_results() -> void:
 		v26_vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
 		v26_vfile.close()
 		print("[V3-026] Visibility trace saved to ", v26_vis_path)
+
+	var vr1_vis_path := "res://../../STUDIO_V3/evidence/V3-026-R1/CAMERA_VISIBILITY_TRACE.json"
+	var vr1_vfile := FileAccess.open(vr1_vis_path, FileAccess.WRITE)
+	if vr1_vfile != null:
+		vr1_vfile.store_string(JSON.stringify(boss_visibility_metrics, "\t"))
+		vr1_vfile.close()
+		print("[V3-026-R1] Visibility trace saved to ", vr1_vis_path)
 
 	var exit_code: int = 0 if telemetry["stage_cleared_naturally"] else 1
 	if is_baseline_attack_only:

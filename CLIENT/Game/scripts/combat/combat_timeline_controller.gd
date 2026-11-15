@@ -95,7 +95,7 @@ func step(delta: float) -> int:
 	# 3. Check Recovery -> Finished
 	if current_phase == Phase.RECOVERY:
 		if elapsed_time >= current_action.total_duration:
-			var act_id := current_action.action_id
+			var act_id: String = current_action.action_id
 			current_phase = Phase.IDLE
 			current_action = null
 			action_finished.emit(act_id)
@@ -108,7 +108,7 @@ func step(delta: float) -> int:
 
 func cancel() -> void:
 	if current_action != null:
-		var act_id := current_action.action_id
+		var act_id: String = current_action.action_id
 		current_action = null
 		current_phase = Phase.IDLE
 		action_finished.emit(act_id)
