@@ -50,9 +50,20 @@ var is_attacking: bool = false
 var attack_hit_checked: bool = false
 var attack_cooldown: float = 0.0
 var attack_duration_remaining: float = 0.0
-const ATTACK_TOTAL_DURATION: float = 0.24
+const ATTACK_TOTAL_DURATION: float = 0.30
 var base_attack_damage: int = 2
 var current_attack_damage: int = 2
+
+# V3-026: Deterministic Combat Timeline & Hitpause
+const CombatActionDefClass = preload("res://scripts/combat/combat_action_definition.gd")
+const CombatTimelineClass = preload("res://scripts/combat/combat_timeline_controller.gd")
+const HitPauseClass = preload("res://scripts/combat/hit_pause_coordinator.gd")
+var timeline_controller: CombatTimelineController = null
+var action_hero_attack_1: CombatActionDefinition = null
+var action_hero_attack_2: CombatActionDefinition = null
+var action_hero_attack_3: CombatActionDefinition = null
+var attack_actions: Dictionary = {}
+var is_hit_paused: bool = false
 
 # Input Buffering & Coyote Time (Game Quality Director Standard)
 const COYOTE_TIME: float = 0.12
@@ -153,7 +164,111 @@ func _ready() -> void:
 
 	_sync_stage_bounds()
 	_build_components()
+	_init_combat_actions()
 	emit_signal("hp_changed", current_hp, max_hp)
+
+
+func _init_combat_actions() -> void:
+	timeline_controller = CombatTimelineClass.new()
+	timeline_controller.name = "PlayerCombatTimeline"
+	add_child(timeline_controller)
+
+	timeline_controller.hitbox_opened.connect(_on_attack_hitbox_opened)
+	timeline_controller.contact_frame_reached.connect(_on_attack_contact_reached)
+	timeline_controller.hitbox_closed.connect(_on_attack_hitbox_closed)
+
+	# Action 1: Quick horizontal slash
+	action_hero_attack_1 = CombatActionDefClass.new()
+	action_hero_attack_1.action_id = "hero_attack_1"
+	action_hero_attack_1.attacker_kind = "hero"
+	action_hero_attack_1.total_duration = 0.30
+	action_hero_attack_1.windup_duration = 0.08
+	action_hero_attack_1.active_duration = 0.08
+	action_hero_attack_1.recovery_duration = 0.14
+	action_hero_attack_1.contact_time = 0.09
+	action_hero_attack_1.damage = 2
+	action_hero_attack_1.hitbox_reach_x = 1.65
+	action_hero_attack_1.hitbox_depth_z = 0.65
+	action_hero_attack_1.knockback_force = 3.2
+	action_hero_attack_1.hitstop_attacker_sec = 0.035
+	action_hero_attack_1.hitstop_victim_sec = 0.055
+	action_hero_attack_1.camera_trauma = 0.12
+	action_hero_attack_1.cancel_window_start = 0.19
+	action_hero_attack_1.combo_buffer_start = 0.14
+	action_hero_attack_1.swing_sfx = "player_slash_1"
+	action_hero_attack_1.hit_sfx = "enemy_hit_impact"
+	action_hero_attack_1.sprite_texture = TexAttack
+	action_hero_attack_1.hframes = 2
+	action_hero_attack_1.vframes = 2
+	action_hero_attack_1.total_frames = 4
+	action_hero_attack_1.windup_frames = [0]
+	action_hero_attack_1.active_frames = [1, 2]
+	action_hero_attack_1.recovery_frames = [3]
+
+	# Action 2: Reverse upward slash
+	action_hero_attack_2 = CombatActionDefClass.new()
+	action_hero_attack_2.action_id = "hero_attack_2"
+	action_hero_attack_2.attacker_kind = "hero"
+	action_hero_attack_2.total_duration = 0.32
+	action_hero_attack_2.windup_duration = 0.10
+	action_hero_attack_2.active_duration = 0.08
+	action_hero_attack_2.recovery_duration = 0.14
+	action_hero_attack_2.contact_time = 0.11
+	action_hero_attack_2.damage = 3
+	action_hero_attack_2.hitbox_reach_x = 1.75
+	action_hero_attack_2.hitbox_depth_z = 0.70
+	action_hero_attack_2.knockback_force = 4.0
+	action_hero_attack_2.hitstop_attacker_sec = 0.045
+	action_hero_attack_2.hitstop_victim_sec = 0.070
+	action_hero_attack_2.camera_trauma = 0.18
+	action_hero_attack_2.cancel_window_start = 0.20
+	action_hero_attack_2.combo_buffer_start = 0.15
+	action_hero_attack_2.swing_sfx = "player_slash_2"
+	action_hero_attack_2.hit_sfx = "enemy_hit_impact"
+	action_hero_attack_2.sprite_texture = TexAttack
+	action_hero_attack_2.hframes = 2
+	action_hero_attack_2.vframes = 2
+	action_hero_attack_2.total_frames = 4
+	action_hero_attack_2.windup_frames = [0]
+	action_hero_attack_2.active_frames = [1, 2]
+	action_hero_attack_2.recovery_frames = [3]
+
+	# Action 3: Heavy overhead finisher
+	action_hero_attack_3 = CombatActionDefClass.new()
+	action_hero_attack_3.action_id = "hero_attack_3"
+	action_hero_attack_3.attacker_kind = "hero"
+	action_hero_attack_3.total_duration = 0.42
+	action_hero_attack_3.windup_duration = 0.14
+	action_hero_attack_3.active_duration = 0.10
+	action_hero_attack_3.recovery_duration = 0.18
+	action_hero_attack_3.contact_time = 0.16
+	action_hero_attack_3.damage = 5
+	action_hero_attack_3.hitbox_reach_x = 2.05
+	action_hero_attack_3.hitbox_depth_z = 0.85
+	action_hero_attack_3.knockback_force = 6.5
+	action_hero_attack_3.hitstop_attacker_sec = 0.065
+	action_hero_attack_3.hitstop_victim_sec = 0.100
+	action_hero_attack_3.camera_trauma = 0.28
+	action_hero_attack_3.cancel_window_start = 0.26
+	action_hero_attack_3.combo_buffer_start = 0.22
+	action_hero_attack_3.swing_sfx = "player_slash_3"
+	action_hero_attack_3.hit_sfx = "enemy_hit_counter"
+	action_hero_attack_3.sprite_texture = TexAttack
+	action_hero_attack_3.hframes = 2
+	action_hero_attack_3.vframes = 2
+	action_hero_attack_3.total_frames = 4
+	action_hero_attack_3.windup_frames = [0]
+	action_hero_attack_3.active_frames = [1, 2]
+	action_hero_attack_3.recovery_frames = [3]
+
+	attack_actions = {
+		"hero_attack_1": action_hero_attack_1,
+		"player_combo_1": action_hero_attack_1,
+		"hero_attack_2": action_hero_attack_2,
+		"player_combo_2": action_hero_attack_2,
+		"hero_attack_3": action_hero_attack_3,
+		"player_combo_3": action_hero_attack_3
+	}
 
 
 func _sync_stage_bounds() -> void:
@@ -784,14 +899,65 @@ func _spawn_thunder_step_spark(pos: Vector3) -> void:
 func start_attack() -> void:
 	if is_dead or current_state == State.VICTORY:
 		return
+
 	combo_step = (combo_step % 3) + 1
 	combo_reset_timer = 0.95
 	is_attacking = true
 	attack_hit_checked = false
-	attack_cooldown = 0.24
-	attack_duration_remaining = ATTACK_TOTAL_DURATION
 
-	# Distinct combat swing SFX per combo step
+	# Pick action definition
+	var act_def: CombatActionDefClass = action_hero_attack_1
+	match combo_step:
+		1:
+			act_def = action_hero_attack_1
+		2:
+			act_def = action_hero_attack_2
+		3:
+			act_def = action_hero_attack_3
+
+	attack_cooldown = act_def.total_duration
+	attack_duration_remaining = act_def.total_duration
+
+	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
+	if timeline_controller != null:
+		timeline_controller.start_action(act_def, facing_dir_x, atk_dir)
+
+	# Setup sprite for action
+	if act_def.sprite_texture != null:
+		sprite_3d.texture = act_def.sprite_texture
+		sprite_3d.hframes = act_def.hframes
+		sprite_3d.vframes = act_def.vframes
+	else:
+		sprite_3d.texture = TexAttack
+		sprite_3d.hframes = 2
+		sprite_3d.vframes = 2
+	sprite_3d.pixel_size = 0.00282
+	sprite_3d.frame = 0
+	sprite_3d.flip_h = (facing_dir_x < 0.0)
+
+	# Position hitbox and visual
+	attack_area_3d.position = atk_dir * act_def.hitbox_reach_x * 0.70 + Vector3(0.0, 0.85, 0.0)
+	slash_visual_3d.position = atk_dir * 0.72 + Vector3(0.0, 0.95, 0.0)
+	var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
+	slash_visual_3d.rotation_degrees.y = angle_y
+	var tilt_x := 68.0 if absf(atk_dir.z) > 0.65 else (32.0 * absf(atk_dir.z))
+	slash_visual_3d.rotation_degrees.x = tilt_x
+
+	# STRICT ZERO-DAMAGE WINDUP: Hitbox is OFF, Slash visual is OFF
+	attack_area_3d.monitoring = false
+	slash_visual_3d.visible = false
+
+	emit_signal("attack_swung", combo_step)
+	_set_state(State.ATTACK)
+
+
+func _on_attack_hitbox_opened(act_id: String) -> void:
+	if not is_attacking or is_dead:
+		return
+	attack_area_3d.monitoring = true
+	slash_visual_3d.visible = true
+
+	# Play action swing audio when blade sweeps
 	match combo_step:
 		1:
 			AudioManager.play("player_slash_1")
@@ -800,58 +966,43 @@ func start_attack() -> void:
 		3:
 			AudioManager.play("player_slash_3")
 
-	# Symmetric Aligned 2D Attack Animation (Starts at windup frame 0)
-	sprite_3d.texture = TexAttack
-	sprite_3d.hframes = 2
-	sprite_3d.vframes = 2
-	sprite_3d.pixel_size = 0.00282
-	sprite_3d.frame = 0
-	sprite_3d.flip_h = (facing_dir_x < 0.0)
-
-	var atk_dir := facing_attack_dir if facing_attack_dir.length_squared() > 0.01 else Vector3(facing_dir_x, 0.0, 0.0)
-	attack_area_3d.position = atk_dir * 1.15 + Vector3(0.0, 0.85, 0.0)
-	slash_visual_3d.visible = true
-	slash_visual_3d.position = atk_dir * 0.72 + Vector3(0.0, 0.95, 0.0)
-
-	var angle_y := rad_to_deg(atan2(-atk_dir.z, atk_dir.x))
-	slash_visual_3d.rotation_degrees.y = angle_y
-	# When aiming along Z depth (+Z or -Z), tilt the slash arc horizontally so its sweep is clearly readable from the side-quarter camera
-	var tilt_x := 68.0 if absf(atk_dir.z) > 0.65 else (32.0 * absf(atk_dir.z))
-	slash_visual_3d.rotation_degrees.x = tilt_x
-
+	# Slash visual tween during active frames
 	var thrust_tween := create_tween()
 	if thrust_tween:
 		thrust_tween.set_parallel(true)
 		if combo_step == 1:
 			slash_visual_3d.rotation_degrees.z = -30.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.35, 0.35, 0.35)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.14)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.95, 0.95, 0.95), 0.08)
-			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", 25.0 * facing_dir_x, 0.08)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.95, 0.95, 0.95), 0.05)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.03)
 		elif combo_step == 2:
 			slash_visual_3d.rotation_degrees.z = 35.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.35, 0.35, 0.35)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.14)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.05, 1.05, 1.05), 0.08)
-			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
-		else: # Combo 3 Finisher
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -35.0 * facing_dir_x, 0.08)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.05, 1.05, 1.05), 0.05)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.03)
+		else:
 			slash_visual_3d.rotation_degrees.z = 65.0 * facing_dir_x
 			slash_visual_3d.scale = Vector3(facing_dir_x * 0.40, 0.40, 0.40)
-			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.16)
-			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.20, 1.20, 1.20), 0.09)
-			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.07)
-	attack_area_3d.monitoring = true
-	emit_signal("attack_swung", combo_step)
+			thrust_tween.tween_property(slash_visual_3d, "rotation_degrees:z", -25.0 * facing_dir_x, 0.10)
+			thrust_tween.tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 1.20, 1.20, 1.20), 0.06)
+			thrust_tween.chain().tween_property(slash_visual_3d, "scale", Vector3(facing_dir_x * 0.20, 0.20, 0.20), 0.04)
 
-	# Responsive melee hit check (Direction-aligned spatial + Area3D check)
+
+func _on_attack_contact_reached(act_id: String) -> void:
+	if not is_attacking or is_dead or attack_hit_checked:
+		return
 	attack_hit_checked = true
 	_check_melee_hit()
 
-	# Combo 3 Finisher: Fire glowing 3D piercing sword wave along attack direction!
 	if combo_step == 3:
 		_fire_sword_beam()
 
-	_set_state(State.ATTACK)
+
+func _on_attack_hitbox_closed(act_id: String) -> void:
+	attack_area_3d.monitoring = false
+	slash_visual_3d.visible = false
 
 
 func _check_melee_hit() -> void:
@@ -883,12 +1034,16 @@ func _check_melee_hit() -> void:
 		if forward_dist >= -0.25 and forward_dist <= (2.65 + extra_r) and lateral_dist <= (0.55 + extra_r * 0.25) and y_dist <= 2.2:
 			hit_targets[e3d.get_instance_id()] = e3d
 
-	var dmg: int = current_attack_damage
+	var act_def: CombatActionDefClass = timeline_controller.current_action if timeline_controller != null else null
+	var base_dmg: int = act_def.damage if act_def != null else current_attack_damage
+	var dmg: int = base_dmg
 	var was_counter: bool = false
 	if counter_attack_buff and not hit_targets.is_empty():
-		dmg = current_attack_damage * 2 + (1 if has_relic("abyssal_crown") else 0)
+		dmg = base_dmg * 2 + (1 if has_relic("abyssal_crown") else 0)
 		counter_attack_buff = false
 		was_counter = true
+
+	var kb_mult: float = (act_def.knockback_force * 0.3) if act_def != null else 1.0
 
 	for id in hit_targets.keys():
 		var target_node: Node = hit_targets[id]
@@ -899,7 +1054,7 @@ func _check_melee_hit() -> void:
 				if diff.length_squared() >= 0.01:
 					push_dir = diff.normalized()
 			if target_node.has_method("receive_hit"):
-				target_node.receive_hit(dmg, push_dir, was_counter)
+				target_node.receive_hit(dmg, push_dir * kb_mult, was_counter)
 			if target_node is Node3D:
 				var t3d := target_node as Node3D
 				_spawn_hit_impact_vfx(t3d.global_position + Vector3(0.0, 0.95, 0.0), was_counter)
@@ -909,10 +1064,16 @@ func _check_melee_hit() -> void:
 			enemy_hit.emit(target_node, dmg, was_counter)
 
 	if not hit_targets.is_empty():
+		var atk_hp: float = act_def.hitstop_attacker_sec if act_def != null else 0.035
+		var vic_hp: float = act_def.hitstop_victim_sec if act_def != null else 0.055
+		for id in hit_targets.keys():
+			HitPauseClass.get_instance().apply_hit_pause(self, hit_targets[id], atk_hp, vic_hp)
+
 		if was_counter:
 			AudioManager.play("enemy_hit_counter")
 		else:
-			AudioManager.play("enemy_hit_impact")
+			var hit_snd: String = act_def.hit_sfx if act_def != null else "enemy_hit_impact"
+			AudioManager.play(hit_snd)
 		var p := get_parent()
 		if was_counter:
 			GameFeelManager.hit_stop_3d(0.08, 0.04)
@@ -921,11 +1082,11 @@ func _check_melee_hit() -> void:
 		elif combo_step == 3:
 			GameFeelManager.hit_stop_3d(0.05, 0.06)
 			if p != null and "camera" in p and p.camera != null and p.camera.has_method("add_trauma"):
-				p.camera.add_trauma(0.18)
+				p.camera.add_trauma(0.22)
 		else:
 			GameFeelManager.hit_stop_3d(0.025, 0.12)
 			if p != null and "camera" in p and p.camera != null and p.camera.has_method("add_trauma"):
-				p.camera.add_trauma(0.08)
+				p.camera.add_trauma(0.12)
 
 		# Air Pogo Bounce (Hollow Knight style downward slash bounce: requires holding Down in mid-air while striking an enemy below, max once per airtime)
 		var any_target_below := false
@@ -964,53 +1125,72 @@ func _fire_sword_beam() -> void:
 
 
 func _process_attack_state(delta: float) -> void:
-	attack_duration_remaining -= delta
+	if is_hit_paused:
+		return
 
-	# Attack Recovery Cancel into Dash or Guard (fluid high-tier combat responsiveness)
-	if attack_duration_remaining <= 0.14:
-		if (Input.is_action_just_pressed("dash") or dash_buffer_timer > 0.0) and (is_on_floor() or can_air_dash):
-			dash_buffer_timer = 0.0
-			slash_visual_3d.visible = false
-			is_attacking = false
-			start_dash()
-			return
-		elif Input.is_action_pressed("guard") and is_on_floor():
-			slash_visual_3d.visible = false
-			is_attacking = false
-			start_guard()
-			return
+	if timeline_controller != null and timeline_controller.is_busy():
+		var _f: int = timeline_controller.step(delta)
+		var cur_act: CombatActionDefClass = timeline_controller.current_action
+		if cur_act != null:
+			attack_duration_remaining = maxf(0.0, cur_act.total_duration - timeline_controller.elapsed_time)
 
-	# Movement Drift during Late Recovery (t <= 0.10s) to prevent input lock
-	if attack_duration_remaining <= 0.10:
-		var input_x := 0.0
-		if Input.is_action_pressed("move_left"):
-			input_x -= 1.0
-		if Input.is_action_pressed("move_right"):
-			input_x += 1.0
-		var input_z := 0.0
-		if Input.is_action_pressed("move_up"):
-			input_z -= 1.0
-		if Input.is_action_pressed("move_down"):
-			input_z += 1.0
+		# Attack Recovery Cancel into Dash or Guard (fluid high-tier combat responsiveness)
+		if timeline_controller.can_cancel():
+			if (Input.is_action_just_pressed("dash") or dash_buffer_timer > 0.0) and (is_on_floor() or can_air_dash):
+				dash_buffer_timer = 0.0
+				slash_visual_3d.visible = false
+				attack_area_3d.monitoring = false
+				is_attacking = false
+				timeline_controller.cancel()
+				start_dash()
+				return
+			elif Input.is_action_pressed("guard") and is_on_floor():
+				slash_visual_3d.visible = false
+				attack_area_3d.monitoring = false
+				is_attacking = false
+				timeline_controller.cancel()
+				start_guard()
+				return
 
-		if input_x != 0.0 or input_z != 0.0:
-			var input_vec := Vector2(input_x, input_z).normalized()
-			velocity.x = input_vec.x * (move_speed_x * 0.55)
-			velocity.z = input_vec.y * (move_speed_z * 0.55)
+		# Movement Drift during Late Recovery (t <= recovery) to prevent input lock
+		if timeline_controller.is_in_recovery():
+			var input_x := 0.0
+			if Input.is_action_pressed("move_left"):
+				input_x -= 1.0
+			if Input.is_action_pressed("move_right"):
+				input_x += 1.0
+			var input_z := 0.0
+			if Input.is_action_pressed("move_up"):
+				input_z -= 1.0
+			if Input.is_action_pressed("move_down"):
+				input_z += 1.0
+
+			if input_x != 0.0 or input_z != 0.0:
+				var input_vec := Vector2(input_x, input_z).normalized()
+				velocity.x = input_vec.x * (move_speed_x * 0.55)
+				velocity.z = input_vec.y * (move_speed_z * 0.55)
+			else:
+				velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
+				velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
 			velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, 30.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 30.0 * delta)
 
-	if attack_duration_remaining <= 0.0:
-		slash_visual_3d.visible = false
-		is_attacking = false
-		_set_state(State.IDLE)
-		if attack_buffer_timer > 0.0 and attack_cooldown <= 0.0:
-			attack_buffer_timer = 0.0
-			start_attack()
+		if not timeline_controller.is_busy():
+			slash_visual_3d.visible = false
+			attack_area_3d.monitoring = false
+			is_attacking = false
+			_set_state(State.IDLE)
+			if attack_buffer_timer > 0.0 and attack_cooldown <= 0.0:
+				attack_buffer_timer = 0.0
+				start_attack()
+	else:
+		attack_duration_remaining -= delta
+		if attack_duration_remaining <= 0.0:
+			slash_visual_3d.visible = false
+			attack_area_3d.monitoring = false
+			is_attacking = false
+			_set_state(State.IDLE)
 
 
 func start_guard() -> void:
@@ -1537,16 +1717,31 @@ func _update_character_animation(delta: float) -> void:
 			sprite_3d.frame = 2 # Descent
 		return
 
-	# 2. Attack Action (Multi-frame sequence across attack duration: 0 -> 1 -> 2 -> 3)
+	# 2. Attack Action (Multi-frame sequence driven by CombatTimelineController)
 	if is_attacking:
-		if sprite_3d.texture != TexAttack:
-			sprite_3d.texture = TexAttack
-			sprite_3d.hframes = 2
-			sprite_3d.vframes = 2
+		if timeline_controller != null and timeline_controller.current_action != null:
+			var act: CombatActionDefClass = timeline_controller.current_action
+			if act.sprite_texture != null and sprite_3d.texture != act.sprite_texture:
+				sprite_3d.texture = act.sprite_texture
+				sprite_3d.hframes = act.hframes
+				sprite_3d.vframes = act.vframes
+			elif act.sprite_texture == null and sprite_3d.texture != TexAttack:
+				sprite_3d.texture = TexAttack
+				sprite_3d.hframes = 2
+				sprite_3d.vframes = 2
 			sprite_3d.pixel_size = 0.00282
-		var progress: float = clampf(1.0 - (attack_duration_remaining / ATTACK_TOTAL_DURATION), 0.0, 0.999)
-		sprite_3d.frame = clampi(int(progress * 4.0), 0, 3)
-		return
+			var f: int = act.get_frame_for_time(timeline_controller.elapsed_time)
+			sprite_3d.frame = clampi(f, 0, act.total_frames - 1)
+			return
+		else:
+			if sprite_3d.texture != TexAttack:
+				sprite_3d.texture = TexAttack
+				sprite_3d.hframes = 2
+				sprite_3d.vframes = 2
+				sprite_3d.pixel_size = 0.00282
+			var progress: float = clampf(1.0 - (attack_duration_remaining / ATTACK_TOTAL_DURATION), 0.0, 0.999)
+			sprite_3d.frame = clampi(int(progress * 4.0), 0, 3)
+			return
 
 	# 3. Guard / Parry Stance Action
 	if is_guarding:

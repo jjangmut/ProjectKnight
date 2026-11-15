@@ -1,0 +1,65 @@
+{
+	"recovery_cancel_test": {
+		"cancel_succeeded": true,
+		"cancel_tested": true
+	},
+	"suite": "V3-026 Combat Timeline & Deterministic Hitbox Verification",
+	"summary": {
+		"all_timeline_gates_passed": true,
+		"contact_damage_synchronized_pass": true,
+		"hitbox_timing_exact_pass": true,
+		"recovery_hitbox_closed_pass": true,
+		"startup_frame_zero_damage_pass": true,
+		"total_attacks_tested": 3
+	},
+	"target_fps": 60,
+	"task_id": "V3-026-A",
+	"tests": [
+		{
+			"action_id": "player_combo_1",
+			"combo_index": 1,
+			"configured_active_sec": 0.08,
+			"configured_contact_sec": 0.09,
+			"configured_recovery_sec": 0.14,
+			"configured_total_sec": 0.3,
+			"configured_windup_sec": 0.08,
+			"contact_frame_matched": true,
+			"hitbox_active_frame_count": 12,
+			"measured_damage_time_sec": 0.1,
+			"sample_count": 23,
+			"startup_damage_detected": false,
+			"test_passed": true
+		},
+		{
+			"action_id": "player_combo_2",
+			"combo_index": 2,
+			"configured_active_sec": 0.08,
+			"configured_contact_sec": 0.11,
+			"configured_recovery_sec": 0.14,
+			"configured_total_sec": 0.32,
+			"configured_windup_sec": 0.1,
+			"contact_frame_matched": true,
+			"hitbox_active_frame_count": 15,
+			"measured_damage_time_sec": 0.117,
+			"sample_count": 25,
+			"startup_damage_detected": false,
+			"test_passed": true
+		},
+		{
+			"action_id": "player_combo_3",
+			"combo_index": 3,
+			"configured_active_sec": 0.1,
+			"configured_contact_sec": 0.16,
+			"configured_recovery_sec": 0.18,
+			"configured_total_sec": 0.42,
+			"configured_windup_sec": 0.14,
+			"contact_frame_matched": true,
+			"hitbox_active_frame_count": 21,
+			"measured_damage_time_sec": 0.167,
+			"sample_count": 31,
+			"startup_damage_detected": false,
+			"test_passed": true
+		}
+	],
+	"timestamp_unix": 1794750668
+}
